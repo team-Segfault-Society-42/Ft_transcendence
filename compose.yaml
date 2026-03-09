@@ -1,0 +1,45 @@
+services:
+  # ── Frontend (React) ───────────────────────────────────────────────────────
+  frontend:
+    container_name: React
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    networks:
+      - client-side
+    ports:
+      - "3000:3000"
+  
+  # ── Backend (Nest.js) ──────────────────────────────────────────────────────
+  backend:
+    container_name: Nest.js
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    networks:
+      - client-side
+      - server-side
+    ports:
+      - "5000:5000"
+  
+  # ── Reverse Proxy (Nginx) ──────────────────────────────────────────────────
+  proxy:
+    container_name: Nginx
+    build:
+      context: ./Proxy
+      dockerfile: Dockerfile
+    networks:
+      - client-side
+    ports:
+      - "443:443"
+  
+  # ── Database (Postgres) ────────────────────────────────────────────────────
+  db:
+    container_name: Postgres
+    build: 
+      context: ./DB
+      dockerfile: Dockerfile
+    networks:
+      - server-side
+    ports:
+      - "5432:5432"
