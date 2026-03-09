@@ -1,3 +1,12 @@
+# ── Docker Networks ──────────────────────────────────────────────────────────
+networks:
+  client-side:
+    driver:
+      bridge
+  server-side:
+    driver:
+      bridge
+
 services:
   # ── Frontend (React) ───────────────────────────────────────────────────────
   frontend:
