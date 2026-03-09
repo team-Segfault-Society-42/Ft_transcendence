@@ -32,14 +32,15 @@ services:
       - client-side
     ports:
       - "443:443"
+    depends_on:
+      - frontend
+      - backend
   
   # ── Database (Postgres) ────────────────────────────────────────────────────
-  db:
-    container_name: Postgres
-    build: 
-      context: ./DB
-      dockerfile: Dockerfile
-    networks:
-      - server-side
-    ports:
-      - "5432:5432"
+  # db:
+  #   container_name: Postgres
+  #   image: postgres:alpine
+  #   networks:
+  #     - server-side
+  #   ports:
+  #     - "5432:5432"
