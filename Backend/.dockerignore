@@ -2,5 +2,10 @@
 .git
 .gitignore
 *.md
+*.log
 .env
 docs
+
+# NestJS specific
+node_modules
+dist
