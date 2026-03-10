@@ -10,11 +10,11 @@ networks:
 services:
   # ── Frontend (React) ───────────────────────────────────────────────────────
   frontend:
-    container_name: React
+    container_name: react
+    image: react
     build:
       context: ./Frontend
       dockerfile: Dockerfile
-    image: node:alpine
     networks:
       - client-side
     # Port set to default Vite Port (can be changed)
@@ -23,7 +23,8 @@ services:
   
   # ── Backend (Nest.js) ──────────────────────────────────────────────────────
   backend:
-    container_name: Nest.js
+    container_name: nestJS
+    image: nestJS
     build:
       context: ./Backend
       dockerfile: Dockerfile
@@ -31,11 +32,12 @@ services:
       - client-side
       - server-side
     ports:
-      - "5000:5000"
+      - "3000:3000"
   
   # ── Reverse Proxy (Nginx) ──────────────────────────────────────────────────
   proxy:
-    container_name: Nginx
+    container_name: nginx
+    image: nginx
     build:
       context: ./Proxy
       dockerfile: Dockerfile
@@ -49,7 +51,7 @@ services:
   
   # ── Database (Postgres) ────────────────────────────────────────────────────
   # db:
-  #   container_name: Postgres
+  #   container_name: postgres
   #   image: postgres:alpine
   #   networks:
   #     - server-side
