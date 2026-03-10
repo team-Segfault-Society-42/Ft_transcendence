@@ -17,8 +17,9 @@ services:
     image: node:alpine
     networks:
       - client-side
+    # Port set to default Vite Port (can be changed)
     ports:
-      - "3000:3000"
+      - "5173:5173"
   
   # ── Backend (Nest.js) ──────────────────────────────────────────────────────
   backend:
