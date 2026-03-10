@@ -8,6 +8,9 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+# Vite default port 5173, adjust depending on setup, port can be modified
+# in command line with the --port <port_number> option
+# or in vite.config.ts using the server { port: <port_number> } directive
+EXPOSE 5173
 
-CMD [ "npm", "start" ]
+CMD [ "npx", "vite", "--host" ]
