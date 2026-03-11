@@ -1,0 +1,10 @@
+# defaults
+.git
+.gitignore
+*.md
+.env
+docs
+
+# React/node specific
+build
+node_modules

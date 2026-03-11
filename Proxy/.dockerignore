@@ -1,0 +1,6 @@
+# defaults
+.git
+.gitignore
+*.md
+.env
+docs
