@@ -17,9 +17,9 @@ services:
       dockerfile: Dockerfile
     networks:
       - client-side
-    # Port set to default Vite Port (can be changed)
-    ports:
-      - "5173:5173"
+# Uncomment to test frontend only (as a single service)
+    # ports:
+    #   - "5173:5173"
   
   # ── Backend (Nest.js) ──────────────────────────────────────────────────────
   backend:
@@ -31,8 +31,9 @@ services:
     networks:
       - client-side
       - server-side
-    ports:
-      - "3000:3000"
+# Uncomment to test backend only (as a single service)
+    # ports:
+    #   - "3000:3000"
   
   # ── Reverse Proxy (Nginx) ──────────────────────────────────────────────────
   proxy:
