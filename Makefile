@@ -33,7 +33,7 @@ ps:
 	@$(COMPOSE) ps
 	
 ls:
-	docker image ls -a
+	@docker image ls -a
 	
 logs:
 	@$(SHOW_LOGS)
