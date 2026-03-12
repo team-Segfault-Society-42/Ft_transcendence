@@ -1,7 +1,17 @@
+# defaults
+.env
+.DS_Store
+.vscode/
+.gitignore
+
+# frontend
 node_modules/
 dist/
 frontend/node_modules/
 frontend/dist/
-.env
-.DS_Store
-.vscode/
+
+# backend
+backend/node_modules
+
+# documentation
+doc/
