@@ -13,8 +13,8 @@ SHOW_LOGS			= docker compose logs
 #                 CORE DOCKER TARGETS
 # ══════════════════════════════════════════════════════
 
-all:
-	@$(COMPOSE) up -d
+up:
+	$(COMPOSE) up -d
 	
 build:
 	@$(COMPOSE) build
