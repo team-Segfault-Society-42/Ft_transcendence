@@ -11,7 +11,6 @@ services:
   # ── Frontend (React) ───────────────────────────────────────────────────────
   frontend:
     container_name: react
-    image: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -24,7 +23,6 @@ services:
   # ── Backend (Nest.js) ──────────────────────────────────────────────────────
   backend:
     container_name: nestJS
-    image: backend
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -38,7 +36,6 @@ services:
   # ── Reverse Proxy (Nginx) ──────────────────────────────────────────────────
   proxy:
     container_name: nginx
-    image: proxy
     build:
       context: ./proxy
       dockerfile: Dockerfile
