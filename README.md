@@ -12,27 +12,47 @@ Our project is based on a modern web architecture using a forntend, backend and 
 
 ## Technical Stack
 
--Frontend : React
--Backend : NestJS
--Reverse proxy : NGINX
--Database : PostgreSQL
--Containerization : Docker
+Frontend :
+-React
+-Vite
+-React Router
+-Tailwind CSS
+
+Backend :
+-NestJS
+
+Infrastructure :
+-NGINX (reverse proxy)
+-Docker / Docker compose
+
+Database :
+-PostgreSQL
 
 ## Instructions
 
 ### Requirements
 
+You must have the following installed :
 -Docker
 -Docker compose
 
+Check installation :
+```bash
+docker --version
+docker compose version
+```
+
 ### Run the project
 
-Build and start the containers :
+Basic utility commands :
+docker compose build	(make build) 	-> Builds all containers
+docker compose up -d	(make)			-> Builds and starts all containers
+docker compose down		(make down) 	-> Stops all containers
+docker image ls			(make ls) 		-> Shows list of containers
+docker compose logs		(make logs) 	-> Shows logs for all containers
 
-docker-compose up --build ?????
-
-If everything went well, you should be able to access the website at https://localhost:433
-
-Stop the containers :
-
-docker-compose down ??????
+Container specific commands :
+make logs-proxy	-> Shows logs for NGINX service container
+make logs-front -> Shows logs for FRONTEND service container
+make logs-back	-> Shows logs for BACKEND service container
+make no-cache	-> Rebuilds all images with --no-cache
