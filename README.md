@@ -44,11 +44,9 @@ docker Compose version
 
 ### Run the project
 
-### Basic utility commands
-
 ### Basic Utility Commands
 
-| Alias | What it does |
+| Alias | Description |
 | ------- | ------- |
 | `make up` | _Builds and starts all containers_
 | `make build` | _Builds all containers (does NOT start them)_
