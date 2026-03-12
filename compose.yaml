@@ -13,33 +13,34 @@ services:
     container_name: react
     image: frontend
     build:
-      context: ./Frontend
+      context: ./frontend
       dockerfile: Dockerfile
     networks:
       - client-side
-    # Port set to default Vite Port (can be changed)
-    ports:
-      - "5173:5173"
+# Uncomment to test frontend only (as a single service)
+    # ports:
+    #   - "5173:5173"
   
   # ── Backend (Nest.js) ──────────────────────────────────────────────────────
   backend:
     container_name: nestJS
     image: backend
     build:
-      context: ./Backend
+      context: ./backend
       dockerfile: Dockerfile
     networks:
       - client-side
       - server-side
-    ports:
-      - "3000:3000"
+# Uncomment to test backend only (as a single service)
+    # ports:
+    #   - "3000:3000"
   
   # ── Reverse Proxy (Nginx) ──────────────────────────────────────────────────
   proxy:
     container_name: nginx
     image: proxy
     build:
-      context: ./Proxy
+      context: ./proxy
       dockerfile: Dockerfile
     networks:
       - client-side
