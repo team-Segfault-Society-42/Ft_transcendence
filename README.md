@@ -46,19 +46,22 @@ docker Compose version
 
 ### Basic utility commands
 
-| Command | Alias | Description |
-|-------|-------|-------------|
-| docker compose build | make build | Builds all containers |
-| docker compose up -d | make | Builds and starts all containers |
-| docker compose down | make down | Stops all containers |
-| docker image ls | make ls | Shows list of images |
-| docker compose logs | make logs | Shows logs for all containers |
+### Basic Utility Commands
+
+| Alias | What it does |
+| ------- | ------- |
+| `make up` | _Builds and starts all containers_
+| `make build` | _Builds all containers (does NOT start them)_
+| `make no-cache` | _Rebuilds all images with_ `--no-cache`
+| `make down` | _Stops all containers_
+| `make ls` | _Shows list of containers_
+| `make logs` | _Shows logs for all containers_
 
 ### Container specific commands
 
 | Alias | Description |
 |-------|-------------|
-| make logs-proxy | Shows logs for NGINX service container
-| make logs-front | Shows logs for FRONTEND service container
-| make logs-back | Shows logs for BACKEND service container
-| make no-cache | Rebuilds all images with --no-cache
+| `make logs-proxy` | _Shows logs for NGINX service container_
+| `make logs-front` | _Shows logs for FRONTEND service container_
+| `make logs-back` | _Shows logs for BACKEND service container_
+| `make no-cache` | _Rebuilds all images with --no-cache_
