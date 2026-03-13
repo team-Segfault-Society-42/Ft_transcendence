@@ -26,7 +26,7 @@ no-cache:
 	@$(COMPOSE) build --no-cache
 	
 # ══════════════════════════════════════════════════════
-#                  UTILITY TARGETS
+#               UTILITY & LOGS TARGETS
 # ══════════════════════════════════════════════════════
 
 ps:
@@ -46,4 +46,5 @@ logs-front:
 
 logs-back:
 	@$(SHOW_LOGS) $(SERVICE_BACKEND)
-	
+
+.PHONY: up build down no-cache ps ls logs logs-proxy logs-front logs-back clean nuke
