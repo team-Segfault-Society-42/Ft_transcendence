@@ -6,7 +6,7 @@ SERVICE_PROXY		= proxy
 SERVICE_FRONTEND	= frontend
 SERVICE_BACKEND		= backend
 
-COMPOSE				= docker compose
+COMPOSE_FILE		= compose.yaml
 SHOW_LOGS			= docker compose logs
 
 # ══════════════════════════════════════════════════════
@@ -14,23 +14,23 @@ SHOW_LOGS			= docker compose logs
 # ══════════════════════════════════════════════════════
 
 up: ## Build and run all containers
-	$(COMPOSE) up -d
+	docker compose -f $(COMPOSE_FILE) up -d
 	
 build: ## Build all containers
-	@$(COMPOSE) build
+	@docker compose -f $(COMPOSE_FILE) build
 
 down: ## Stop all running containers
-	@$(COMPOSE) down
+	@docker compose -f $(COMPOSE_FILE) down
 
 no-cache: ## Rebuild all containers in no-cache mode
-	@$(COMPOSE) build --no-cache
+	@docker compose -f $(COMPOSE_FILE) build --no-cache
 	
 # ══════════════════════════════════════════════════════
 #               UTILITY & LOGS TARGETS
 # ══════════════════════════════════════════════════════
 
 ps: ## Display all running containers
-	@$(COMPOSE) ps
+	@docker compose -f $(COMPOSE_FILE) ps
 	
 ls: ## Display all images
 	@docker image ls -a
