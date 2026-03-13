@@ -50,10 +50,13 @@ docker Compose version
 | ------- | ------- |
 | `make up` | _Builds and starts all containers_
 | `make build` | _Builds all containers (does NOT start them)_
-| `make no-cache` | _Rebuilds all images with_ `--no-cache`
 | `make down` | _Stops all containers_
+| `make no-cache` | _Rebuilds all images with_ `--no-cache`
+| `make ps` | _Display all running containers_
 | `make ls` | _Shows list of containers_
 | `make logs` | _Shows logs for all containers_
+| `make clean` | _Remove dangling images, stopped containers, unused networks + build cache_
+| `make nuke` | _Full wipe — stops stack, removes volumes + images_
 
 ### Container specific commands
 
