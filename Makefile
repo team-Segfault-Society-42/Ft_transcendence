@@ -45,5 +45,5 @@ logs-front:
 	@$(SHOW_LOGS) $(SERVICE_FRONTEND)
 
 logs-back:
-	@$(SHOW_LOGS) $(SERVICE_FRONTEND)
+	@$(SHOW_LOGS) $(SERVICE_BACKEND)
 	
