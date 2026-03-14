@@ -1,14 +1,17 @@
 import Board from "../components/Board"
 
-export default function game() {
-	return <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 px-4">
-		<h1 className="text-4xl font-bold text-amber-300">
-			Game page
+export default function Game() {
+	return <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 via-fuchsia-700 to-pink-500">
+		<h1 className="mt-4 text-8xl font-bold text-cyan-50">
+			Game
 		</h1>
-
-		<p className="mt-10 text-amber-50">
-			Board coming soon
+		<p className="mt-4 font-light text-4xl text-amber-50">
+			game loading ...
 		</p>
 		<Board />
+
+
+
+
 	</main>
 }
