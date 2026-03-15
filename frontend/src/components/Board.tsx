@@ -66,36 +66,47 @@ export default function Board() {
 
 	return <div className="relative inline-block text-center">
 		<div className="mt-4 mb-6 flex flex-col gap-4 w-full max-w-sm mx-auto">
-			<div className={`py-2 rounded-full text-xl font-black uppercase tracking-widest transition-all duration-300 shadow-lg
+			<div className={`py-2 rounded-full text-xl font-black tracking-widest transition-all duration-300 shadow-lg
 				${!isXturn
 					? `bg-cyan-500 text-fuchsia-500 shadow-cyan-500/50`
 					: `bg-fuchsia-500 text-cyan-500 `}`}>
-				{!isXturn ? "Tour de : X" : "Tour de : O"}
+				{!isXturn ? "Turn of X" : "Turn of O"}
 			</div>
 
-
-			<p>Score x = {scores.x}</p>
-			<p>draw = {scores.d}</p>
-			<p>Score o = {scores.o}</p>
-
-		</div>
-		{showPopup && (
-			<div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl z-40">
-				<div className="bg-white p-8 rounded-xl shadow-2xl flex flex-col items-center">
-					<h2 className="text-2xl font-bold text-fuchsia-500 mb-2">
-						{winner === "Draw" ? "🤝 It's a Draw !" : `🎉 Player ${winner} Youuuu wiiiin !`}
-						<br />Score : Draw = {scores.d}
-						<br />Score : X = {scores.x}
-						<br />Score : O = {scores.o}
-					</h2>
-					<button
-						className="rounded-xl bg-fuchsia-400 px-6 py-2 text-2xl font-bold text-white shadow-md hover:bg-fuchsia-500"
-						onClick={handleReplay}>
-						Replay
-					</button>
+			<div className="grid grid-cols-3">
+				<div className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/20">
+					<p className="text-[12px] uppercase opacity-60 font-bold"> Player X </p>
+					<p className="text-2xl font-black"> {scores.x} </p>
+				</div>
+				<div className="bg-white/5 backdrop-blur-md p-2 rounded-xl border border-white/10">
+					<p className="text-[12px] uppercase opacity-60 font-bold"> Draw </p>
+					<p className="text-2xl font-black"> {scores.d} </p>
+				</div>
+				<div className="bg-white/20 backdrop-blur-md p-2 rounded-xl border border-white/20">
+					<p className="text-[12px] uppercase opacity-60 font-bold"> Player O </p>
+					<p className="text-2xl font-black"> {scores.o} </p>
 				</div>
 			</div>
-		)}
+		</div>
+		{
+			showPopup && (
+				<div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl z-40">
+					<div className="bg-white p-8 rounded-xl shadow-2xl flex flex-col items-center">
+						<h2 className="text-2xl font-bold text-fuchsia-500 mb-2">
+							{winner === "Draw" ? "🤝 It's a Draw !" : `🎉 Player ${winner} Youuuu wiiiin !`}
+							<br />Score : Draw = {scores.d}
+							<br />Score : X = {scores.x}
+							<br />Score : O = {scores.o}
+						</h2>
+						<button
+							className="rounded-xl bg-fuchsia-400 px-6 py-2 text-2xl font-bold text-white shadow-md hover:bg-fuchsia-500"
+							onClick={handleReplay}>
+							Replay
+						</button>
+					</div>
+				</div>
+			)
+		}
 
 		<div className="mt-4 grid grid-cols-3 gap-3">
 			{state.map((value, i) => (
@@ -118,5 +129,5 @@ export default function Board() {
 			</button>
 		</div>
 
-	</div>
+	</div >
 }
