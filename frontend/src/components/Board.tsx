@@ -75,15 +75,13 @@ export default function Board() {
 		)}
 
 		<div className="mt-4 grid grid-cols-3 gap-3">
-			<Square value={state[0]} onSquareClick={() => handleSquareClicked(0)} />
-			<Square value={state[1]} onSquareClick={() => handleSquareClicked(1)} />
-			<Square value={state[2]} onSquareClick={() => handleSquareClicked(2)} />
-			<Square value={state[3]} onSquareClick={() => handleSquareClicked(3)} />
-			<Square value={state[4]} onSquareClick={() => handleSquareClicked(4)} />
-			<Square value={state[5]} onSquareClick={() => handleSquareClicked(5)} />
-			<Square value={state[6]} onSquareClick={() => handleSquareClicked(6)} />
-			<Square value={state[7]} onSquareClick={() => handleSquareClicked(7)} />
-			<Square value={state[8]} onSquareClick={() => handleSquareClicked(8)} />
+			{state.map((value, i) => (
+				<Square
+					key={i}
+					value={value}
+					onSquareClick={() => handleSquareClicked(i)}
+				/>
+			))}
 		</div>
 
 		<div className="mt-20 flex justify-center">
