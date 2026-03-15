@@ -7,9 +7,7 @@ export default function Board() {
 	const [state, setState] = useState(Array(9).fill(""))
 	const [showPopup, setShowPopup] = useState(false)
 	const [winner, setWinner] = useState<string | null>(null)
-	const [count_X, setCountX] = useState(0)
-	const [count_O, setCountO] = useState(0)
-	const [count_Draw, setCountDraw] = useState(0)
+	const [scores, setScore] = useState({ x: 0, o: 0, d: 0 })
 
 
 
@@ -25,37 +23,29 @@ export default function Board() {
 			if (cState[a] && cState[a] === cState[b] && cState[a] == cState[c]) {
 				setWinner(cState[a])
 				if (cState[a] === "X")
-					setCountX(c => c + 1)
+					setScore(s => ({ ...s, x: s.x + 1 }))
 				else if (cState[a] === "O")
-					setCountO(c => c + 1)
+					setScore(s => ({ ...s, o: s.o + 1 }))
 				setShowPopup(true)
 				return
 			}
 		}
 		if (cState.every(cell => cell !== "")) {
 			setWinner("Draw")
-			setCountDraw(c => c + 1)
+			setScore(s => ({ ...s, d: s.d + 1 }))
 			setShowPopup(true)
 		}
 	}
 
 	function handleSquareClicked(index: number) {
-		if (showPopup) return;
+		if (showPopup || state[index] !== "") return;
 
-		const copy: string[] = Array.from(state)
+		const copy = [...state]
 
-		if (copy[index] === "") {
-			if (!isXturn) {
-				copy[index] = 'X'
-				setRole(!isXturn)
-			}
-			else {
-				copy[index] = 'O'
-				setRole(!isXturn)
-			}
-			setState(copy)
-			handleCheckWin(copy)
-		}
+		copy[index] = isXturn ? 'O' : 'X';
+		setState(copy)
+		setRole(!isXturn)
+		handleCheckWin(copy)
 	}
 
 	function handleReset() {
@@ -63,9 +53,7 @@ export default function Board() {
 		setShowPopup(false)
 		setRole(false)
 		setWinner(null)
-		setCountX(0)
-		setCountO(0)
-		setCountDraw(0)
+		setScore({ x: 0, o: 0, d: 0 })
 
 	}
 
@@ -85,9 +73,9 @@ export default function Board() {
 				<div className="bg-white p-8 rounded-xl shadow-2xl flex flex-col items-center">
 					<h2 className="text-2xl font-bold text-fuchsia-500 mb-2">
 						{winner === "Draw" ? "🤝 It's a Draw !" : `🎉 Player ${winner} Youuuu wiiiin !`}
-						<br />Score : Draw = {count_Draw}
-						<br />Score : X = {count_X}
-						<br />Score : O = {count_O}
+						<br />Score : Draw = {scores.d}
+						<br />Score : X = {scores.x}
+						<br />Score : O = {scores.o}
 					</h2>
 					<button
 						className="rounded-xl bg-fuchsia-400 px-6 py-2 text-2xl font-bold text-white shadow-md hover:bg-fuchsia-500"
