@@ -6,20 +6,25 @@ export default function Board() {
 	const [isXturn, setRole] = useState(false)
 	const [state, setState] = useState(Array(9).fill(""))
 	const [showPopup, setShowPopup] = useState(false)
+	const [winner, setWinner] = useState<string | null>(null)
 
 	function handleCheckWin(cState: string[]) {
-		let win: boolean = false;
+		const lines = [
+			[0, 1, 2], [3, 4, 5], [6, 7, 8],
+			[0, 3, 6], [1, 4, 7], [2, 5, 8],
+			[0, 4, 8], [2, 4, 6]
+		]
 
-		if (cState[0] !== "" && cState[0] === cState[1] && cState[1] === cState[2]) win = true;
-		else if (cState[3] !== "" && cState[3] === cState[4] && cState[4] === cState[5]) win = true;
-		else if (cState[6] !== "" && cState[6] === cState[7] && cState[7] === cState[8]) win = true;
-		else if (cState[0] !== "" && cState[0] === cState[3] && cState[3] === cState[6]) win = true;
-		else if (cState[1] !== "" && cState[1] === cState[4] && cState[4] === cState[7]) win = true;
-		else if (cState[2] !== "" && cState[2] === cState[5] && cState[5] === cState[8]) win = true;
-		else if (cState[0] !== "" && cState[0] === cState[4] && cState[4] === cState[8]) win = true;
-		else if (cState[2] !== "" && cState[2] === cState[4] && cState[4] === cState[6]) win = true;
-
-		if (win) {
+		for (let i = 0; i < lines.length; i++) {
+			const [a, b, c] = lines[i]
+			if (cState[a] && cState[a] === cState[b] && cState[a] == cState[c]) {
+				setWinner(cState[a])
+				setShowPopup(true)
+				return
+			}
+		}
+		if (cState.every(cell => cell !== "")) {
+			setWinner("Draw")
 			setShowPopup(true)
 		}
 	}
@@ -47,14 +52,18 @@ export default function Board() {
 		setState(Array(9).fill(""))
 		setShowPopup(false)
 		setRole(false)
+		setWinner(null)
 	}
 
-	return <div className="relative inline-block">
+	return <div className="relative inline-block text-center">
+		<div className="mt-4 text-2xl font-bold text-white bg-fuchsia-500/20 py-2 rounded-lg">
+			{!isXturn ? "Tour de : X" : "Tour de : O"}
+		</div>
 		{showPopup && (
 			<div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl z-40">
 				<div className="bg-white p-8 rounded-xl shadow-2xl flex flex-col items-center">
 					<h2 className="text-2xl font-bold text-fuchsia-500 mb-2">
-						Youuuu wiiiin ! 🎉
+						{winner === "Draw" ? "🤝 It's a Draw !" : `🎉 Player ${winner} Youuuu wiiiin !`}
 					</h2>
 					<button
 						className="rounded-xl bg-fuchsia-400 px-6 py-2 text-2xl font-bold text-white shadow-md hover:bg-fuchsia-500"
