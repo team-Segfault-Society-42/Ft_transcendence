@@ -65,8 +65,19 @@ export default function Board() {
 	}
 
 	return <div className="relative inline-block text-center">
-		<div className="mt-4 text-2xl font-bold text-white bg-fuchsia-500/20 py-2 rounded-lg">
-			{!isXturn ? "Tour de : X" : "Tour de : O"}
+		<div className="mt-4 mb-6 flex flex-col gap-4 w-full max-w-sm mx-auto">
+			<div className={`py-2 rounded-full text-xl font-black uppercase tracking-widest transition-all duration-300 shadow-lg
+				${!isXturn
+					? `bg-cyan-500 text-fuchsia-500 shadow-cyan-500/50`
+					: `bg-fuchsia-500 text-cyan-500 `}`}>
+				{!isXturn ? "Tour de : X" : "Tour de : O"}
+			</div>
+
+
+			<p>Score x = {scores.x}</p>
+			<p>draw = {scores.d}</p>
+			<p>Score o = {scores.o}</p>
+
 		</div>
 		{showPopup && (
 			<div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl z-40">
@@ -94,6 +105,10 @@ export default function Board() {
 					onSquareClick={() => handleSquareClicked(i)}
 				/>
 			))}
+		</div>
+
+		<div className="mt-4 text-2xl font-bold text-white bg-fuchsia-500/20 py-2 rounded-lg">
+			2 players
 		</div>
 
 		<div className="mt-20 flex justify-center">
