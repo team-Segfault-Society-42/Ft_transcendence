@@ -8,7 +8,17 @@ const lines = [
 	[0, 4, 8], [2, 4, 6]
 ]
 
-export default function Board() {
+type Player = {
+	id: number;
+	nickname: string;
+	avatar: string;
+};
+
+type BoardProps = {
+	players: { X: Player; O: Player };
+};
+
+export default function Board({ players }: BoardProps) {
 	const [isXturn, setRole] = useState(false)
 	const [state, setState] = useState(Array(9).fill(""))
 	const [showPopup, setShowPopup] = useState(false)
@@ -68,21 +78,37 @@ export default function Board() {
 			</Link>
 			<div className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${!isXturn ? "bg-cyan-500 text-white" : "bg-fuchsia-500 text-white"
 				}`}>
-				{isXturn ? "Player O's Turn" : "Player X's Turn"}
+				{isXturn ? `${players.O.nickname}'s Turn` : `${players.X.nickname}'s Turn`}
 			</div>
 
-			<div className="grid grid-cols-3 gap-2 mb-8 text-white">
-				<div className="bg-white/20 p-2 rounded-lg border border-white/10">
-					<p className="text-xs uppercase font-bold">X</p>
-					<p className="text-xl font-bold">{scores.x}</p>
+			<div className="grid grid-cols-3 gap-4 mb-8 text-white">
+				<div className="bg-gray-800 p-4 rounded flex flex-col items-center">
+					{players.X.avatar ? (
+						<img src={players.X.avatar} className="w-12 h-12 rounded-full mb-2" alt="p1" />
+					) : (
+						<div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mb-2">
+							{players.X.nickname[0]}
+						</div>
+					)}
+					<p className="font-bold">{players.X.nickname}</p>
+					<p className="text-xl">{scores.x}</p>
 				</div>
-				<div className="bg-white/10 p-2 rounded-lg">
-					<p className="text-xs uppercase font-bold">Draw</p>
+
+				<div className="bg-gray-700 p-4 rounded flex flex-col items-center justify-center">
+					<p className="text-sm">Nuls</p>
 					<p className="text-xl font-bold">{scores.d}</p>
 				</div>
-				<div className="bg-white/20 p-2 rounded-lg border border-white/10">
-					<p className="text-xs uppercase font-bold">O</p>
-					<p className="text-xl font-bold">{scores.o}</p>
+
+				<div className="bg-gray-800 p-4 rounded flex flex-col items-center">
+					{players.O.avatar ? (
+						<img src={players.O.avatar} className="w-12 h-12 rounded-full mb-2" alt="p2" />
+					) : (
+						<div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mb-2">
+							{players.O.nickname[0]}
+						</div>
+					)}
+					<p className="font-bold">{players.O.nickname}</p>
+					<p className="text-xl">{scores.o}</p>
 				</div>
 			</div>
 
@@ -92,7 +118,9 @@ export default function Board() {
 						<div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center">
 							<h2 className={`text-2xl font-bold mb-4 ${winner === "X" ? "text-cyan-500" : winner === "O" ? "text-fuchsia-500" : "text-gray-700"
 								}`}>
-								{winner === "Draw" ? "🤝 DRAW!" : `🎉 ${winner} WINS!`}
+								{winner === "Draw"
+									? "🤝 DRAW!"
+									: `🎉 ${players[winner as 'X' | 'O'].nickname} WINS!`}
 							</h2>
 							<button
 								className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
