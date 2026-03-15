@@ -2,14 +2,11 @@ import { useState } from "react"
 import Square from "./Square"
 
 export default function Board() {
-
 	const [isXturn, setRole] = useState(false)
 	const [state, setState] = useState(Array(9).fill(""))
 	const [showPopup, setShowPopup] = useState(false)
 	const [winner, setWinner] = useState<string | null>(null)
 	const [scores, setScore] = useState({ x: 0, o: 0, d: 0 })
-
-
 
 	function handleCheckWin(cState: string[]) {
 		const lines = [
@@ -17,15 +14,12 @@ export default function Board() {
 			[0, 3, 6], [1, 4, 7], [2, 5, 8],
 			[0, 4, 8], [2, 4, 6]
 		]
-
 		for (let i = 0; i < lines.length; i++) {
 			const [a, b, c] = lines[i]
-			if (cState[a] && cState[a] === cState[b] && cState[a] == cState[c]) {
+			if (cState[a] && cState[a] === cState[b] && cState[a] === cState[c]) {
 				setWinner(cState[a])
-				if (cState[a] === "X")
-					setScore(s => ({ ...s, x: s.x + 1 }))
-				else if (cState[a] === "O")
-					setScore(s => ({ ...s, o: s.o + 1 }))
+				if (cState[a] === "X") setScore(s => ({ ...s, x: s.x + 1 }))
+				else setScore(s => ({ ...s, o: s.o + 1 }))
 				setShowPopup(true)
 				return
 			}
@@ -38,96 +32,80 @@ export default function Board() {
 	}
 
 	function handleSquareClicked(index: number) {
-		if (showPopup || state[index] !== "") return;
-
+		if (showPopup || state[index] !== "") return
 		const copy = [...state]
-
-		copy[index] = isXturn ? 'O' : 'X';
+		copy[index] = isXturn ? 'O' : 'X'
 		setState(copy)
 		setRole(!isXturn)
 		handleCheckWin(copy)
 	}
 
-	function handleReset() {
+	const handleReset = () => {
 		setState(Array(9).fill(""))
 		setShowPopup(false)
 		setRole(false)
 		setWinner(null)
 		setScore({ x: 0, o: 0, d: 0 })
-
 	}
 
-	function handleReplay() {
+	const handleReplay = () => {
 		setState(Array(9).fill(""))
 		setShowPopup(false)
 		setRole(false)
 		setWinner(null)
 	}
 
-	return <div className="relative inline-block text-center">
-		<div className="mt-4 mb-6 flex flex-col gap-4 w-full max-w-sm mx-auto">
-			<div className={`py-2 rounded-full text-xl font-black tracking-widest transition-all duration-300 shadow-lg
-				${!isXturn
-					? `bg-cyan-500 text-fuchsia-500 shadow-cyan-500/50`
-					: `bg-fuchsia-500 text-cyan-500 `}`}>
-				{!isXturn ? "Turn of X" : "Turn of O"}
+	return (
+		<div className="relative inline-block text-center p-4">
+			<div className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${!isXturn ? "bg-cyan-500 text-white" : "bg-fuchsia-500 text-white"
+				}`}>
+				{isXturn ? "Player O's Turn" : "Player X's Turn"}
 			</div>
 
-			<div className="grid grid-cols-3">
-				<div className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/20">
-					<p className="text-[12px] uppercase opacity-60 font-bold"> Player X </p>
-					<p className="text-2xl font-black"> {scores.x} </p>
+			<div className="grid grid-cols-3 gap-2 mb-8 text-white">
+				<div className="bg-white/20 p-2 rounded-lg border border-white/10">
+					<p className="text-xs uppercase font-bold">X</p>
+					<p className="text-xl font-bold">{scores.x}</p>
 				</div>
-				<div className="bg-white/5 backdrop-blur-md p-2 rounded-xl border border-white/10">
-					<p className="text-[12px] uppercase opacity-60 font-bold"> Draw </p>
-					<p className="text-2xl font-black"> {scores.d} </p>
+				<div className="bg-white/10 p-2 rounded-lg">
+					<p className="text-xs uppercase font-bold">Draw</p>
+					<p className="text-xl font-bold">{scores.d}</p>
 				</div>
-				<div className="bg-white/20 backdrop-blur-md p-2 rounded-xl border border-white/20">
-					<p className="text-[12px] uppercase opacity-60 font-bold"> Player O </p>
-					<p className="text-2xl font-black"> {scores.o} </p>
+				<div className="bg-white/20 p-2 rounded-lg border border-white/10">
+					<p className="text-xs uppercase font-bold">O</p>
+					<p className="text-xl font-bold">{scores.o}</p>
 				</div>
 			</div>
-		</div>
-		{
-			showPopup && (
-				<div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-xl z-40">
-					<div className="bg-white p-8 rounded-xl shadow-2xl flex flex-col items-center">
-						<h2 className="text-2xl font-bold text-fuchsia-500 mb-2">
-							{winner === "Draw" ? "🤝 It's a Draw !" : `🎉 Player ${winner} Youuuu wiiiin !`}
-							<br />Score : Draw = {scores.d}
-							<br />Score : X = {scores.x}
-							<br />Score : O = {scores.o}
+
+			{showPopup && (
+				<div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
+					<div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center">
+						<h2 className={`text-2xl font-bold mb-4 ${winner === "X" ? "text-cyan-500" : winner === "O" ? "text-fuchsia-500" : "text-gray-700"
+							}`}>
+							{winner === "Draw" ? "🤝 DRAW!" : `🎉 ${winner} WINS!`}
 						</h2>
 						<button
-							className="rounded-xl bg-fuchsia-400 px-6 py-2 text-2xl font-bold text-white shadow-md hover:bg-fuchsia-500"
-							onClick={handleReplay}>
-							Replay
+							className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+							onClick={handleReplay}
+						>
+							REPLAY
 						</button>
 					</div>
 				</div>
-			)
-		}
+			)}
+			<div className="grid grid-cols-3 gap-3">
+				{state.map((value, i) => (
+					<Square key={i} value={value} onSquareClick={() => handleSquareClicked(i)} />
+				))}
+			</div>
 
-		<div className="mt-4 grid grid-cols-3 gap-3">
-			{state.map((value, i) => (
-				<Square
-					key={i}
-					value={value}
-					onSquareClick={() => handleSquareClicked(i)}
-				/>
-			))}
-		</div>
-
-		<div className="mt-4 text-2xl font-bold text-white bg-fuchsia-500/20 py-2 rounded-lg">
-			2 players
-		</div>
-
-		<div className="mt-20 flex justify-center">
-			<button className="rounded-xl border border-white bg-fuchsia-400 p-3 text-4xl font-bold text-white shadow-md"
-				onClick={handleReset}>
-				Reset
+			<p className="mt-6 text-white/60 font-medium italic">2 players mode</p>
+			<button
+				className="mt-12 bg-white/10 hover:bg-white/20 text-white border border-white/30 px-10 py-2 rounded-lg font-bold transition-all"
+				onClick={handleReset}
+			>
+				RESET SESSION
 			</button>
 		</div>
-
-	</div >
+	)
 }

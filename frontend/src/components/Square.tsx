@@ -3,11 +3,17 @@ type SquareProps = {
 	onSquareClick: () => void
 }
 
-
-
 export default function Square({ value, onSquareClick }: SquareProps) {
-	return <button className="h-32 w-32 rounded-xl border border-white bg-fuchsia-400 text-7xl font-bold text-white shadow-md"
-		onClick={onSquareClick}>
-		{value}
-	</button>
+	return (
+		<button
+			className="h-32 w-32 rounded-xl border border-white/40 bg-white/10 text-7xl font-bold shadow-md active:scale-95 hover:bg-white/20 transition-all flex items-center justify-center"
+			onClick={onSquareClick}
+		>
+			<span className={`
+                ${value === 'X' ? 'text-cyan-400' : 'text-fuchsia-400'}
+            `}>
+				{value}
+			</span>
+		</button>
+	)
 }
