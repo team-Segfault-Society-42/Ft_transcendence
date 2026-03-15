@@ -1,6 +1,12 @@
 import { useState } from "react"
 import Square from "./Square"
 
+const lines = [
+	[0, 1, 2], [3, 4, 5], [6, 7, 8],
+	[0, 3, 6], [1, 4, 7], [2, 5, 8],
+	[0, 4, 8], [2, 4, 6]
+]
+
 export default function Board() {
 	const [isXturn, setRole] = useState(false)
 	const [state, setState] = useState(Array(9).fill(""))
@@ -9,11 +15,7 @@ export default function Board() {
 	const [scores, setScore] = useState({ x: 0, o: 0, d: 0 })
 
 	function handleCheckWin(cState: string[]) {
-		const lines = [
-			[0, 1, 2], [3, 4, 5], [6, 7, 8],
-			[0, 3, 6], [1, 4, 7], [2, 5, 8],
-			[0, 4, 8], [2, 4, 6]
-		]
+
 		for (let i = 0; i < lines.length; i++) {
 			const [a, b, c] = lines[i]
 			if (cState[a] && cState[a] === cState[b] && cState[a] === cState[c]) {

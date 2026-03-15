@@ -1,4 +1,5 @@
 import Board from "../components/Board"
+import { Link } from 'react-router-dom'
 
 export default function Game() {
 	return <main className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-blue-600 via-fuchsia-700 to-cyan-800">

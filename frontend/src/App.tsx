@@ -1,7 +1,17 @@
-import Game from "./pages/Game"
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Game from './pages/Game';
 
 function App() {
-	return <Game />
+	return (
+		<Router>
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/game" element={<Game />} />
+
+			</Routes>
+		</Router>
+	);
 }
 
-export default App
+export default App;
