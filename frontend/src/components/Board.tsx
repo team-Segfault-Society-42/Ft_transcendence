@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Square from "./Square"
+import { Link } from 'react-router-dom'
 
 const lines = [
 	[0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -59,6 +60,12 @@ export default function Board() {
 
 	return (
 		<div className="relative inline-block text-center p-4">
+			<Link
+				to="/"
+				className="fixed top-6 left-6 text-white/40 hover:text-white hover:scale-110 transition-all flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] z-50"
+			>
+				<span className="text-lg">←</span> Home
+			</Link>
 			<div className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${!isXturn ? "bg-cyan-500 text-white" : "bg-fuchsia-500 text-white"
 				}`}>
 				{isXturn ? "Player O's Turn" : "Player X's Turn"}
@@ -79,22 +86,24 @@ export default function Board() {
 				</div>
 			</div>
 
-			{showPopup && (
-				<div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
-					<div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center">
-						<h2 className={`text-2xl font-bold mb-4 ${winner === "X" ? "text-cyan-500" : winner === "O" ? "text-fuchsia-500" : "text-gray-700"
-							}`}>
-							{winner === "Draw" ? "🤝 DRAW!" : `🎉 ${winner} WINS!`}
-						</h2>
-						<button
-							className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-							onClick={handleReplay}
-						>
-							REPLAY
-						</button>
+			{
+				showPopup && (
+					<div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
+						<div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center">
+							<h2 className={`text-2xl font-bold mb-4 ${winner === "X" ? "text-cyan-500" : winner === "O" ? "text-fuchsia-500" : "text-gray-700"
+								}`}>
+								{winner === "Draw" ? "🤝 DRAW!" : `🎉 ${winner} WINS!`}
+							</h2>
+							<button
+								className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+								onClick={handleReplay}
+							>
+								REPLAY
+							</button>
+						</div>
 					</div>
-				</div>
-			)}
+				)
+			}
 			<div className="grid grid-cols-3 gap-3">
 				{state.map((value, i) => (
 					<Square key={i} value={value} onSquareClick={() => handleSquareClicked(i)} />
@@ -108,6 +117,6 @@ export default function Board() {
 			>
 				RESET SESSION
 			</button>
-		</div>
+		</div >
 	)
 }
