@@ -7,6 +7,11 @@ export default function Board() {
 	const [state, setState] = useState(Array(9).fill(""))
 	const [showPopup, setShowPopup] = useState(false)
 	const [winner, setWinner] = useState<string | null>(null)
+	const [count_X, setCountX] = useState(0)
+	const [count_O, setCountO] = useState(0)
+	const [count_Draw, setCountDraw] = useState(0)
+
+
 
 	function handleCheckWin(cState: string[]) {
 		const lines = [
@@ -19,12 +24,17 @@ export default function Board() {
 			const [a, b, c] = lines[i]
 			if (cState[a] && cState[a] === cState[b] && cState[a] == cState[c]) {
 				setWinner(cState[a])
+				if (cState[a] === "X")
+					setCountX(c => c + 1)
+				else if (cState[a] === "O")
+					setCountO(c => c + 1)
 				setShowPopup(true)
 				return
 			}
 		}
 		if (cState.every(cell => cell !== "")) {
 			setWinner("Draw")
+			setCountDraw(c => c + 1)
 			setShowPopup(true)
 		}
 	}
@@ -53,6 +63,17 @@ export default function Board() {
 		setShowPopup(false)
 		setRole(false)
 		setWinner(null)
+		setCountX(0)
+		setCountO(0)
+		setCountDraw(0)
+
+	}
+
+	function handleReplay() {
+		setState(Array(9).fill(""))
+		setShowPopup(false)
+		setRole(false)
+		setWinner(null)
 	}
 
 	return <div className="relative inline-block text-center">
@@ -64,11 +85,14 @@ export default function Board() {
 				<div className="bg-white p-8 rounded-xl shadow-2xl flex flex-col items-center">
 					<h2 className="text-2xl font-bold text-fuchsia-500 mb-2">
 						{winner === "Draw" ? "🤝 It's a Draw !" : `🎉 Player ${winner} Youuuu wiiiin !`}
+						<br />Score : Draw = {count_Draw}
+						<br />Score : X = {count_X}
+						<br />Score : O = {count_O}
 					</h2>
 					<button
 						className="rounded-xl bg-fuchsia-400 px-6 py-2 text-2xl font-bold text-white shadow-md hover:bg-fuchsia-500"
-						onClick={handleReset}>
-						Rejouer
+						onClick={handleReplay}>
+						Replay
 					</button>
 				</div>
 			</div>
