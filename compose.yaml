@@ -57,11 +57,14 @@ services:
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PW_FILE=/run/secrets/postgres_pw
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_root_pw
+      - BACKEND_USER=${BACKEND_USER}
+      - BACKEND_PW_FILE=/run/secrets/backend_pw
     volumes:
       - postgres_data:/var/lib/postgresql/data
     secrets:
-      - postgres_pw
+      - backend_pw
+      - postgres_root_pw
 
 # ── Docker Volumes ──────────────────────────────────────────────────────────
 volumes:
@@ -69,5 +72,7 @@ volumes:
 
 # ── Docker Secrets ──────────────────────────────────────────────────────────
 secrets:
-  postgres_pw:
-    file: /secrets/postgres_pw.txt
+  backend_pw:
+    file: ./secrets/backend_pw.txt
+  postgres_root_pw:
+    file: ./secrets/postgres_root_pw.txt
