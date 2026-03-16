@@ -58,8 +58,14 @@ services:
       - POSTGRES_DB = ${POSTGRES_DB}
       - POSTGRES_USER = ${POSTGRES_USER}
       - POSTGRES_PW_FILE=/run/secrets/postgres_pw
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     secrets:
       - postgres_pw
+
+# ── Docker Volumes ──────────────────────────────────────────────────────────
+  volumes:
+    postgres_data:
 
 # ── Docker Secrets ──────────────────────────────────────────────────────────
 secrets:
