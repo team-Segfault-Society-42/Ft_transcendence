@@ -7,8 +7,9 @@ networks:
     driver:
       bridge
 
+# ── Docker Services ──────────────────────────────────────────────────────────
 services:
-  # ── Frontend (React) ───────────────────────────────────────────────────────
+  # ── Frontend (React) ─────────────────────────────────────────────
   frontend:
     container_name: react
     build:
@@ -20,7 +21,7 @@ services:
     # ports:
     #   - "5173:5173"
   
-  # ── Backend (Nest.js) ──────────────────────────────────────────────────────
+  # ── Backend (Nest.js) ────────────────────────────────────────────
   backend:
     container_name: nestJS
     build:
@@ -33,7 +34,7 @@ services:
     # ports:
     #   - "3000:3000"
   
-  # ── Reverse Proxy (Nginx) ──────────────────────────────────────────────────
+  # ── Reverse Proxy (Nginx) ────────────────────────────────────────
   proxy:
     container_name: nginx
     build:
@@ -47,12 +48,20 @@ services:
       - frontend
       - backend
   
-  # ── Database (Postgres) ────────────────────────────────────────────────────
+  # ── Database (Postgres) ──────────────────────────────────────────
   db:
     container_name: postgres
     image: postgres:alpine
     networks:
       - server-side
     environment:
-      POSTGRES_DB = ${POSTGRES_DB}
-      POSTGRES_USER = ${POSTGRES_USER}
+      - POSTGRES_DB = ${POSTGRES_DB}
+      - POSTGRES_USER = ${POSTGRES_USER}
+      - POSTGRES_PW_FILE=/run/secrets/postgres_pw
+    secrets:
+      - postgres_pw
+
+# ── Docker Secrets ──────────────────────────────────────────────────────────
+secrets:
+  postgres_pw:
+    file: /secrets/postgres_pw.txt
