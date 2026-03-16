@@ -55,8 +55,8 @@ services:
     networks:
       - server-side
     environment:
-      - POSTGRES_DB = ${POSTGRES_DB}
-      - POSTGRES_USER = ${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PW_FILE=/run/secrets/postgres_pw
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -64,8 +64,8 @@ services:
       - postgres_pw
 
 # ── Docker Volumes ──────────────────────────────────────────────────────────
-  volumes:
-    postgres_data:
+volumes:
+  postgres_data:
 
 # ── Docker Secrets ──────────────────────────────────────────────────────────
 secrets:
