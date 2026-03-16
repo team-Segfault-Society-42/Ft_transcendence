@@ -53,3 +53,6 @@ services:
     image: postgres:alpine
     networks:
       - server-side
+    environment:
+      POSTGRES_DB = ${POSTGRES_DB}
+      POSTGRES_USER = ${POSTGRES_USER}
