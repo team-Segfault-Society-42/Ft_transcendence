@@ -1,3 +1,6 @@
+# Secrets
+/secrets
+
 # compiled output
 /backend/dist
 /backend/node_modules
