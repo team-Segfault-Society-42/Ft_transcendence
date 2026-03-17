@@ -27,13 +27,10 @@ export default function Profile() {
     const [bio, setBio] = useState(data.bio)
 
     function handleSave() {
-        isInEdit(!isEdit)
-        if (isEdit == true) {
+        if (isEdit) {
             setData({... data, username: userName, bio: bio})
-            isInEdit(!isEdit)
-
         }
-            
+        isInEdit(!isEdit)   
     }
  
     return (
