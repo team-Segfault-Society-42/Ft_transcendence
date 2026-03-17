@@ -1,6 +1,5 @@
 import { useState } from "react"
 import Square from "./Square"
-import { Link } from 'react-router-dom'
 
 const lines = [
 	[0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -70,12 +69,6 @@ export default function Board({ players }: BoardProps) {
 
 	return (
 		<div className="relative inline-block text-center p-4">
-			<Link
-				to="/"
-				className="fixed top-6 left-6 text-white/40 hover:text-white hover:scale-110 transition-all flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] z-50"
-			>
-				<span className="text-lg">←</span> Home
-			</Link>
 			<div className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${!isXturn ? "bg-cyan-500 text-white" : "bg-fuchsia-500 text-white"
 				}`}>
 				{isXturn ? `${players.O.nickname}'s Turn` : `${players.X.nickname}'s Turn`}
