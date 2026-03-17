@@ -20,7 +20,6 @@ interface infoUsers {
 
 export default function Profile() {
 
-
     const [data, setData] = useState<infoUsers>(MOCK_USER)
     const totalGames = data.wins + data.losses + data.draws
     const [isEdit, isInEdit] = useState(false)
@@ -29,8 +28,6 @@ export default function Profile() {
         isInEdit(!isEdit)
     }
  
-  
-
     return (
     <main>
         <div align="center" > Profile </div>
