@@ -1,7 +1,7 @@
 import { useState } from "react"
 import Square from "./Square"
 
-const lines = [
+const combin = [
 	[0, 1, 2], [3, 4, 5], [6, 7, 8],
 	[0, 3, 6], [1, 4, 7], [2, 5, 8],
 	[0, 4, 8], [2, 4, 6]
@@ -19,41 +19,58 @@ type BoardProps = {
 
 export default function Board({ players }: BoardProps) {
 	const [isXturn, setRole] = useState(false)
-	const [state, setState] = useState(Array(9).fill(""))
+	const [grid, setGrid] = useState(Array(9).fill(""))
+	const [queue, setQueue] = useState([-1, -1, -1, -1, -1, -1])
+	const [idx, setIdx] = useState(0)
+
+
+
 	const [showPopup, setShowPopup] = useState(false)
 	const [winner, setWinner] = useState<string | null>(null)
 	const [scores, setScore] = useState({ x: 0, o: 0, d: 0 })
 
-	function handleCheckWin(cState: string[]) {
+	function handleCheckWin(copyGrid: string[]) {
 
-		for (let i = 0; i < lines.length; i++) {
-			const [a, b, c] = lines[i]
-			if (cState[a] && cState[a] === cState[b] && cState[a] === cState[c]) {
-				setWinner(cState[a])
-				if (cState[a] === "X") setScore(s => ({ ...s, x: s.x + 1 }))
+		for (let i = 0; i < combin.length; i++) {
+			const [a, b, c] = combin[i]
+			if (copyGrid[a] && copyGrid[a] === copyGrid[b] && copyGrid[a] === copyGrid[c]) {
+				setWinner(copyGrid[a])
+				if (copyGrid[a] === "X") setScore(s => ({ ...s, x: s.x + 1 }))
 				else setScore(s => ({ ...s, o: s.o + 1 }))
 				setShowPopup(true)
+				setQueue(Array(6).fill(-1))
 				return
 			}
 		}
-		if (cState.every(cell => cell !== "")) {
-			setWinner("Draw")
-			setScore(s => ({ ...s, d: s.d + 1 }))
-			setShowPopup(true)
-		}
+		
 	}
 
 	function handleSquareClicked(index: number) {
-		if (showPopup || state[index] !== "") return
-		const copy = [...state]
-		copy[index] = isXturn ? 'O' : 'X'
-		setState(copy)
+		if (showPopup || grid[index] !== "") return
+		
+		const copyGrid = [...grid]
+		const copyQueue = [...queue]
+		const currentIdx = idx
+
+		if (currentIdx >= 6) {
+			const oldMoveIdx = copyQueue[currentIdx % 6]
+			copyGrid[oldMoveIdx] = ""
+		}
+
+		copyGrid[index] = isXturn ? 'O' : 'X'
+		copyQueue[currentIdx % 6] = index
+		
+		const nextIdx = currentIdx + 1
+		setGrid(copyGrid)
+		setQueue(copyQueue)
+		setIdx(nextIdx)
 		setRole(!isXturn)
-		handleCheckWin(copy)
+
+		handleCheckWin(copyGrid)
 	}
 
 	const handleReset = () => {
-		setState(Array(9).fill(""))
+		setGrid(Array(9).fill(""))
 		setShowPopup(false)
 		setRole(false)
 		setWinner(null)
@@ -61,7 +78,7 @@ export default function Board({ players }: BoardProps) {
 	}
 
 	const handleReplay = () => {
-		setState(Array(9).fill(""))
+		setGrid(Array(9).fill(""))
 		setShowPopup(false)
 		setRole(false)
 		setWinner(null)
@@ -126,7 +143,7 @@ export default function Board({ players }: BoardProps) {
 				)
 			}
 			<div className="grid grid-cols-3 gap-3">
-				{state.map((value, i) => (
+				{grid.map((value, i) => (
 					<Square key={i} value={value} onSquareClick={() => handleSquareClicked(i)} />
 				))}
 			</div>
