@@ -24,7 +24,7 @@ export default function Profile() {
     const totalGames = data.wins + data.losses + data.draws
     const [isEdit, isInEdit] = useState(false)
 
-    function edit() {
+    function handleSave() {
         isInEdit(!isEdit)
     }
  
@@ -39,7 +39,7 @@ export default function Profile() {
         <h1> Winrate : {((data.wins / totalGames) * 100).toFixed(2)} % </h1>
         <h1> Total Games : {totalGames} </h1>
         <img src={data.avatar} alt="Avatar" />
-        <button onClick={edit}> {isEdit ? "Save" : "Edit"} </button>
+        <button onClick={handleSave}> {isEdit ? "Save" : "Edit"} </button>
     </main>
     )
 }
