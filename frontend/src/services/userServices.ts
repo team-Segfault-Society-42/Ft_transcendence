@@ -3,14 +3,14 @@ const url = "http://localhost:1024/api/"
 export async function getUser(id) { // here i will make a UUID
 
     try {
-        const response = await fetch(url + "user/" + id + "/")
+        const response = await fetch(url + "users/" + id)
         if (!response.ok) {
             throw new Error("User not found") // to define
         }
         const res = await response.json()
         console.log(res)
         return (res)
-        
+
     } catch (error: any) {
         console.log("Error : " + error.message)
         throw new Error("User not found")
@@ -19,7 +19,7 @@ export async function getUser(id) { // here i will make a UUID
 
 export async function updateUser(id, data) { // here i will make a UUID
     try {
-        const response = await fetch(url + "user/" + id + "/", 
+        const response = await fetch(url + "users/" + id, 
         {
                 method: 'PATCH',
                 headers: {
