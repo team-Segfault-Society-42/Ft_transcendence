@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import Home from './pages/Home';
 import Game from './pages/Game';
+import Profile from './pages/Profile';
 
 function App() {
 	return (
