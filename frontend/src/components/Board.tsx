@@ -21,17 +21,6 @@ type BoardProps = {
 
 
 export default function Board({ players }: BoardProps) {
-	// const [isXturn, setRole] = useState(false)
-	// const [grid, setGrid] = useState(Array(9).fill(""))
-	// const [queue, setQueue] = useState([-1, -1, -1, -1, -1, -1])
-	// const [idx, setIdx] = useState(0)
-	// const [history, setHistory] = useState<number[]>([])
-
-
-
-	// const [showPopup, setShowPopup] = useState(false)
-	// const [winner, setWinner] = useState<string | null>(null)
-	// const [scores, setScore] = useState({ x: 0, o: 0, d: 0 })
 
 	const {
 		isXturn,
@@ -43,56 +32,16 @@ export default function Board({ players }: BoardProps) {
 		winner,
 		scores,
 		resetSession,
-		replayGame
+		replayGame,
+		playMove
 		} = useGameStore()
 
-	function handleCheckWin(copyGrid: string[]) {
-
-		for (let i = 0; i < COMBIN.length; i++) {
-			const [a, b, c] = COMBIN[i]
-			if (copyGrid[a] && copyGrid[a] === copyGrid[b] && copyGrid[a] === copyGrid[c]) {
-				setWinner(copyGrid[a])
-				if (copyGrid[a] === "X") setScore(s => ({ ...s, x: s.x + 1 }))
-				else setScore(s => ({ ...s, o: s.o + 1 }))
-				setShowPopup(true)
-				setQueue(Array(6).fill(-1))
-				setIdx(0)
-				setHistory([]) // send to backend befor reset ?
-				return
-			}
-		}
-		
-	}
-
-	function handleSquareClicked(move: number) {
-		if (showPopup || grid[move] !== "") return
-		
-		const copyGrid = [...grid]
-		const copyQueue = [...queue]
-		const currentIdx = idx
-
-		if (currentIdx >= 6) {
-			const oldMoveIdx = copyQueue[currentIdx % 6]
-			copyGrid[oldMoveIdx] = ""
-		}
-
-		copyGrid[move] = isXturn ? 'O' : 'X'
-		copyQueue[currentIdx % 6] = move
-		
-		const nextIdx = currentIdx + 1
-		setGrid(copyGrid)
-		setQueue(copyQueue)
-		setIdx(nextIdx)
-		setRole(!isXturn)
-
-		setHistory([...history, move])
-		handleCheckWin(copyGrid)
-	}
+	playMove(moveIdx)
 
 	
-	console.log(queue)
-	console.log(idx)
-	console.log(history)
+	// console.log(queue)
+	// console.log(idx)
+	// console.log(history)
 
 	return (
 		<div className="relative inline-block text-center p-4">
