@@ -10,7 +10,7 @@ export async function getUser(id) { // here i will make a UUID
         const res = await response.json()
         console.log(res)
         return (res)
-
+        
     } catch (error: any) {
         console.log("Error : " + error.message)
         throw new Error("User not found")
@@ -37,9 +37,7 @@ export async function updateUser(id, data) { // here i will make a UUID
     } catch (error: any) {
         console.log("Error : " + error.message)
         throw new Error("Edit not permited")
-
     }
-
 }
 
 export const userService = {

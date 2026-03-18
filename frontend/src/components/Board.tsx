@@ -1,11 +1,5 @@
-import { useState } from "react"
 import Square from "./Square"
-
-const combin = [
-	[0, 1, 2], [3, 4, 5], [6, 7, 8],
-	[0, 3, 6], [1, 4, 7], [2, 5, 8],
-	[0, 4, 8], [2, 4, 6]
-]
+import { useGameStore } from "../Store/gameStore";
 
 type Player = {
 	id: number;
@@ -17,78 +11,40 @@ type BoardProps = {
 	players: { X: Player; O: Player };
 };
 
+
+
 export default function Board({ players }: BoardProps) {
-	const [isXturn, setRole] = useState(false)
-	const [grid, setGrid] = useState(Array(9).fill(""))
-	const [queue, setQueue] = useState([-1, -1, -1, -1, -1, -1])
-	const [idx, setIdx] = useState(0)
+
+	const {
+		isXturn,
+		grid,
+		queue,
+		idx,
+		history,
+		showPopup,
+		winner,
+		scores,
+		resetSession,
+		replayGame,
+		playMove
+		} = useGameStore()
+
+	const toDisapear = idx > 5 ? queue[idx % 6] : -1
 
 
 
-	const [showPopup, setShowPopup] = useState(false)
-	const [winner, setWinner] = useState<string | null>(null)
-	const [scores, setScore] = useState({ x: 0, o: 0, d: 0 })
+	
 
-	function handleCheckWin(copyGrid: string[]) {
-
-		for (let i = 0; i < combin.length; i++) {
-			const [a, b, c] = combin[i]
-			if (copyGrid[a] && copyGrid[a] === copyGrid[b] && copyGrid[a] === copyGrid[c]) {
-				setWinner(copyGrid[a])
-				if (copyGrid[a] === "X") setScore(s => ({ ...s, x: s.x + 1 }))
-				else setScore(s => ({ ...s, o: s.o + 1 }))
-				setShowPopup(true)
-				setQueue(Array(6).fill(-1))
-				return
-			}
-		}
-		
-	}
-
-	function handleSquareClicked(index: number) {
-		if (showPopup || grid[index] !== "") return
-		
-		const copyGrid = [...grid]
-		const copyQueue = [...queue]
-		const currentIdx = idx
-
-		if (currentIdx >= 6) {
-			const oldMoveIdx = copyQueue[currentIdx % 6]
-			copyGrid[oldMoveIdx] = ""
-		}
-
-		copyGrid[index] = isXturn ? 'O' : 'X'
-		copyQueue[currentIdx % 6] = index
-		
-		const nextIdx = currentIdx + 1
-		setGrid(copyGrid)
-		setQueue(copyQueue)
-		setIdx(nextIdx)
-		setRole(!isXturn)
-
-		handleCheckWin(copyGrid)
-	}
-
-	const handleReset = () => {
-		setGrid(Array(9).fill(""))
-		setShowPopup(false)
-		setRole(false)
-		setWinner(null)
-		setScore({ x: 0, o: 0, d: 0 })
-	}
-
-	const handleReplay = () => {
-		setGrid(Array(9).fill(""))
-		setShowPopup(false)
-		setRole(false)
-		setWinner(null)
-	}
+	
+	console.log(queue)
+	console.log(idx)
+	console.log(history)
 
 	return (
 		<div className="relative inline-block text-center p-4">
 			<div className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${!isXturn ? "bg-cyan-500 text-white" : "bg-fuchsia-500 text-white"
 				}`}>
-				{isXturn ? `${players.O.nickname}'s Turn` : `${players.X.nickname}'s Turn`}
+				{isXturn ? `${players.O.nickname}'s Turn O` : `${players.X.nickname}'s Turn X`}
 			</div>
 
 			<div className="grid grid-cols-3 gap-4 mb-8 text-white">
@@ -134,7 +90,7 @@ export default function Board({ players }: BoardProps) {
 							</h2>
 							<button
 								className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-								onClick={handleReplay}
+								onClick={replayGame}
 							>
 								REPLAY
 							</button>
@@ -144,14 +100,14 @@ export default function Board({ players }: BoardProps) {
 			}
 			<div className="grid grid-cols-3 gap-3">
 				{grid.map((value, i) => (
-					<Square key={i} value={value} onSquareClick={() => handleSquareClicked(i)} />
+					<Square key={i} value={value} onSquareClick={() => playMove(i)} isWarning={i === toDisapear}/>
 				))}
 			</div>
 
 			<p className="mt-6 text-white/60 font-medium italic">2 players mode</p>
 			<button
 				className="mt-12 bg-white/10 hover:bg-white/20 text-white border border-white/30 px-10 py-2 rounded-lg font-bold transition-all"
-				onClick={handleReset}
+				onClick={resetSession}
 			>
 				RESET SESSION
 			</button>
