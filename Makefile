@@ -4,13 +4,14 @@ export
 # ══════════════════════════════════════════════════════
 #                       COLOURS
 # ══════════════════════════════════════════════════════
-RES		= "\033[0m"
-RED		= "\033[91m"
-GREEN	= "\033[92m"
-YELLOW	= "\033[93m"
-ORANGE	= "\033[38;5;208m"
-CYAN	= "\033[96m"
-GOLD	= "\033[38;5;220m"
+RES			= "\033[0m"
+RED			= "\033[91m"
+GREEN		= "\033[92m"
+YELLOW		= "\033[93m"
+ORANGE		= "\033[38;5;208m"
+CYAN		= "\033[96m"
+GOLD		= "\033[38;5;220m"
+BOLD_YEL	= "\033[1m\033[33m"
 
 # ══════════════════════════════════════════════════════
 #                      VARIABLES
@@ -31,10 +32,10 @@ SHOW_LOGS			= docker compose logs
 help: ## Show available targets
 	@grep -hE '^[a-zA-Z_-]+:.*?##|^##@' Makefile \
 		| awk ' \
-			/^##@/ { printf "\n\033[1m\033[33m< %s >\033[0m\n", substr($$0, 5) } \
+			/^##@/ { printf "\n"$(BOLD_YEL)"< %s >"$(RES)"\n", substr($$0, 5) } \
 			/^[a-zA-Z_-]+:.*?##/ { \
 				split($$0, a, ":.*?## "); \
-				printf "  \033[36m・%-14s\033[0m %s\n", a[1], a[2] \
+				printf " ・"$(CYAN)"%-14s"$(RES)" %s\n", a[1], a[2] \
 			}'
 
 # ══════════════════════════════════════════════════════
@@ -81,6 +82,8 @@ logs-back: ## Display logs for the backend container
 #                  CLEAN TARGETS
 # ══════════════════════════════════════════════════════
 ##@ CLEAN
+info: ## Display Docker system information, build cache, etc. 
+	@docker system df
 
 clean: ## Remove dangling images, stopped containers, unused networks + build cache
 # ── Remove stopped containers ───────
