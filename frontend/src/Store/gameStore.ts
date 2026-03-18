@@ -70,6 +70,7 @@ export const useGameStore = create<GameState>((set) => ({
 		if (state.idx >= 6) {
 			const oldMoveIdx = nextQueue[state.idx % 6]
 			nextGrid[oldMoveIdx] = ""
+			console.log(oldMoveIdx)
 		}
 		const symbol = state.isXturn ? 'O': 'X'
 		nextGrid[moveIdx] = symbol;

@@ -1,12 +1,5 @@
-import { useState } from "react"
 import Square from "./Square"
 import { useGameStore } from "../Store/gameStore";
-
-// const COMBIN = [
-// 	[0, 1, 2], [3, 4, 5], [6, 7, 8],
-// 	[0, 3, 6], [1, 4, 7], [2, 5, 8],
-// 	[0, 4, 8], [2, 4, 6]
-// ]
 
 type Player = {
 	id: number;
@@ -36,12 +29,16 @@ export default function Board({ players }: BoardProps) {
 		playMove
 		} = useGameStore()
 
-	playMove(moveIdx)
+	const toDisapear = idx > 5 ? queue[idx % 6] : -1
+
+
 
 	
-	// console.log(queue)
-	// console.log(idx)
-	// console.log(history)
+
+	
+	console.log(queue)
+	console.log(idx)
+	console.log(history)
 
 	return (
 		<div className="relative inline-block text-center p-4">
@@ -103,7 +100,7 @@ export default function Board({ players }: BoardProps) {
 			}
 			<div className="grid grid-cols-3 gap-3">
 				{grid.map((value, i) => (
-					<Square key={i} value={value} onSquareClick={() => handleSquareClicked(i)} />
+					<Square key={i} value={value} onSquareClick={() => playMove(i)} isWarning={i === toDisapear}/>
 				))}
 			</div>
 
