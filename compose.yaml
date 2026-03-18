@@ -51,7 +51,7 @@ services:
   # ── Database (Postgres) ──────────────────────────────────────────
   db:
     container_name: postgres
-    image: postgres:alpine
+    image: postgres:${POSTGRES_VERSION:-18-alpine} #fallback to 18-alpine if var not set
     networks:
       - server-side
     environment:
