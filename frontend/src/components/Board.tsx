@@ -69,8 +69,8 @@ export default function Board({ players }: BoardProps) {
 		setIdx(nextIdx)
 		setRole(!isXturn)
 
-		handleCheckWin(copyGrid)
 		setHistory([...history, move])
+		handleCheckWin(copyGrid)
 	}
 
 	const handleReset = () => {
