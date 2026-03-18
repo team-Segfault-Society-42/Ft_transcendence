@@ -24,8 +24,23 @@ COMPOSE_FILE		= compose.yaml
 SHOW_LOGS			= docker compose logs
 
 # ══════════════════════════════════════════════════════
+#                      HELP
+# ══════════════════════════════════════════════════════
+##@ HELP
+
+help: ## Show available targets
+	@grep -hE '^[a-zA-Z_-]+:.*?##|^##@' Makefile \
+		| awk ' \
+			/^##@/ { printf "\n\033[1m\033[33m< %s >\033[0m\n", substr($$0, 5) } \
+			/^[a-zA-Z_-]+:.*?##/ { \
+				split($$0, a, ":.*?## "); \
+				printf "  \033[36m・%-14s\033[0m %s\n", a[1], a[2] \
+			}'
+
+# ══════════════════════════════════════════════════════
 #                 CORE DOCKER TARGETS
 # ══════════════════════════════════════════════════════
+##@ STACK
 
 up: ## Build and run all containers
 	docker compose -f $(COMPOSE_FILE) up -d
@@ -42,6 +57,7 @@ no-cache: ## Rebuild all containers in no-cache mode
 # ══════════════════════════════════════════════════════
 #               UTILITY & LOGS TARGETS
 # ══════════════════════════════════════════════════════
+##@ UTILITY & LOGS
 
 ps: ## Display all running containers
 	@docker compose -f $(COMPOSE_FILE) ps
@@ -64,6 +80,7 @@ logs-back: ## Display logs for the backend container
 # ══════════════════════════════════════════════════════
 #                  CLEAN TARGETS
 # ══════════════════════════════════════════════════════
+##@ CLEAN
 
 clean: ## Remove dangling images, stopped containers, unused networks + build cache
 # ── Remove stopped containers ───────
@@ -81,7 +98,7 @@ clean: ## Remove dangling images, stopped containers, unused networks + build ca
 	@docker system df
 
 
-nuke: ## ⚠️  Full wipe — stops stack, removes volumes + images.
+nuke: ## Full wipe — stops stack, removes volumes + images.
 	@echo $(ORANGE)"⚠️  This will destroy all containers, images, and volumes for this stack."
 	@echo "   Postgres data will be wiped."$(RES)
 	@printf "   Continue? [y/N] " && read ans && [ "$$ans" = "y" ] || (echo $(RED)"   Aborted"$(RES) && exit 1)
@@ -107,4 +124,4 @@ nuke: ## ⚠️  Full wipe — stops stack, removes volumes + images.
 	@echo ""
 	@docker system df
 
-.PHONY: up build down no-cache ps ls logs logs-proxy logs-front logs-back clean nuke
+.PHONY: up build down no-cache ps ls logs logs-proxy logs-front logs-back clean nuke help
