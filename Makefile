@@ -1,3 +1,6 @@
+include .env
+export
+
 # ══════════════════════════════════════════════════════
 #                       COLOURS
 # ══════════════════════════════════════════════════════
@@ -91,6 +94,9 @@ nuke: ## ⚠️  Full wipe — stops stack, removes volumes + images.
 	@echo $(CYAN)"<Removing images built by this stack>"$(RES)
 	@docker compose -f $(COMPOSE_FILE) down --rmi local 2>/dev/null || true
 	@docker image prune -f
+ 
+	@echo $(CYAN)"<Removing postgres:$(POSTGRES_VERSION)>"$(RES)
+	@docker image rm postgres:$(POSTGRES_VERSION) 2>/dev/null || true
  
 	@echo $(CYAN)"<Clearing all build cache>"$(RES)
 	@docker buildx prune -f
