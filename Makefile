@@ -20,6 +20,7 @@ BOLD_YEL	= "\033[1m\033[33m"
 SERVICE_PROXY		= proxy
 SERVICE_FRONTEND	= frontend
 SERVICE_BACKEND		= backend
+SERVICE_DATABASE	= db
 
 COMPOSE_FILE		= compose.yaml
 SHOW_LOGS			= docker compose logs
@@ -80,6 +81,9 @@ logs-front: ## Display logs for the frontend container
 
 logs-back: ## Display logs for the backend container
 	@$(SHOW_LOGS) $(SERVICE_BACKEND)
+
+logs-db: ## Display logs for the database container
+	@$(SHOW_LOGS) $(SERVICE_DATABASE)
 
 # ══════════════════════════════════════════════════════
 #                  CLEAN TARGETS
