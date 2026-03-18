@@ -2,11 +2,11 @@ import { useState } from "react"
 import Square from "./Square"
 import { useGameStore } from "../Store/gameStore";
 
-const combin = [
-	[0, 1, 2], [3, 4, 5], [6, 7, 8],
-	[0, 3, 6], [1, 4, 7], [2, 5, 8],
-	[0, 4, 8], [2, 4, 6]
-]
+// const COMBIN = [
+// 	[0, 1, 2], [3, 4, 5], [6, 7, 8],
+// 	[0, 3, 6], [1, 4, 7], [2, 5, 8],
+// 	[0, 4, 8], [2, 4, 6]
+// ]
 
 type Player = {
 	id: number;
@@ -48,8 +48,8 @@ export default function Board({ players }: BoardProps) {
 
 	function handleCheckWin(copyGrid: string[]) {
 
-		for (let i = 0; i < combin.length; i++) {
-			const [a, b, c] = combin[i]
+		for (let i = 0; i < COMBIN.length; i++) {
+			const [a, b, c] = COMBIN[i]
 			if (copyGrid[a] && copyGrid[a] === copyGrid[b] && copyGrid[a] === copyGrid[c]) {
 				setWinner(copyGrid[a])
 				if (copyGrid[a] === "X") setScore(s => ({ ...s, x: s.x + 1 }))
@@ -87,29 +87,6 @@ export default function Board({ players }: BoardProps) {
 
 		setHistory([...history, move])
 		handleCheckWin(copyGrid)
-	}
-
-	const handleReset = () => {
-		setGrid(Array(9).fill(""))
-		setShowPopup(false)
-		setRole(false)
-		setWinner(null)
-		setScore({ x: 0, o: 0, d: 0 })
-		setQueue(Array(6).fill(-1))
-		setIdx(0)
-		setHistory([])
-	}
-
-	const handleReplay = () => {
-		setGrid(Array(9).fill(""))
-		setShowPopup(false)
-		setRole(false)
-		setWinner(null)
-		setQueue(Array(6).fill(-1))
-		setIdx(0)
-		// 
-		setHistory([]) // maybe send to backend befor reset ?
-		// or setHistory([... history,-1]) to more games ???
 	}
 
 	
