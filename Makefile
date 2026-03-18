@@ -58,7 +58,11 @@ down-v: ## Remove volumes and stop running containers
 
 no-cache: ## Rebuild all containers in no-cache mode
 	@docker compose -f $(COMPOSE_FILE) build --no-cache
-	
+
+re: down build up ## Stop, rebuild, and restart the full stack
+
+reset: down-v no-cache up ## Stop (remove volumes), full rebuild (no cache), restart containers
+
 # ══════════════════════════════════════════════════════
 #               UTILITY & LOGS TARGETS
 # ══════════════════════════════════════════════════════
