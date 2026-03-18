@@ -22,6 +22,7 @@ export default function Board({ players }: BoardProps) {
 	const [grid, setGrid] = useState(Array(9).fill(""))
 	const [queue, setQueue] = useState([-1, -1, -1, -1, -1, -1])
 	const [idx, setIdx] = useState(0)
+	const [history, setHistory] = useState<number[]>([])
 
 
 
@@ -39,14 +40,16 @@ export default function Board({ players }: BoardProps) {
 				else setScore(s => ({ ...s, o: s.o + 1 }))
 				setShowPopup(true)
 				setQueue(Array(6).fill(-1))
+				setIdx(0)
+				setHistory([]) // send to backend befor reset ?
 				return
 			}
 		}
 		
 	}
 
-	function handleSquareClicked(index: number) {
-		if (showPopup || grid[index] !== "") return
+	function handleSquareClicked(move: number) {
+		if (showPopup || grid[move] !== "") return
 		
 		const copyGrid = [...grid]
 		const copyQueue = [...queue]
@@ -57,8 +60,8 @@ export default function Board({ players }: BoardProps) {
 			copyGrid[oldMoveIdx] = ""
 		}
 
-		copyGrid[index] = isXturn ? 'O' : 'X'
-		copyQueue[currentIdx % 6] = index
+		copyGrid[move] = isXturn ? 'O' : 'X'
+		copyQueue[currentIdx % 6] = move
 		
 		const nextIdx = currentIdx + 1
 		setGrid(copyGrid)
@@ -67,6 +70,7 @@ export default function Board({ players }: BoardProps) {
 		setRole(!isXturn)
 
 		handleCheckWin(copyGrid)
+		setHistory([...history, move])
 	}
 
 	const handleReset = () => {
@@ -75,6 +79,9 @@ export default function Board({ players }: BoardProps) {
 		setRole(false)
 		setWinner(null)
 		setScore({ x: 0, o: 0, d: 0 })
+		setQueue(Array(6).fill(-1))
+		setIdx(0)
+		setHistory([])
 	}
 
 	const handleReplay = () => {
@@ -82,13 +89,23 @@ export default function Board({ players }: BoardProps) {
 		setShowPopup(false)
 		setRole(false)
 		setWinner(null)
+		setQueue(Array(6).fill(-1))
+		setIdx(0)
+		// 
+		setHistory([]) // maybe send to backend befor reset ?
+		// or setHistory([... history,-1]) to more games ???
 	}
+
+	
+	console.log(queue)
+	console.log(idx)
+	console.log(history)
 
 	return (
 		<div className="relative inline-block text-center p-4">
 			<div className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${!isXturn ? "bg-cyan-500 text-white" : "bg-fuchsia-500 text-white"
 				}`}>
-				{isXturn ? `${players.O.nickname}'s Turn` : `${players.X.nickname}'s Turn`}
+				{isXturn ? `${players.O.nickname}'s Turn O` : `${players.X.nickname}'s Turn X`}
 			</div>
 
 			<div className="grid grid-cols-3 gap-4 mb-8 text-white">
