@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Square from "./Square"
+import { useGameStore } from "../Store/gameStore";
 
 const combin = [
 	[0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -17,18 +18,33 @@ type BoardProps = {
 	players: { X: Player; O: Player };
 };
 
+
+
 export default function Board({ players }: BoardProps) {
-	const [isXturn, setRole] = useState(false)
-	const [grid, setGrid] = useState(Array(9).fill(""))
-	const [queue, setQueue] = useState([-1, -1, -1, -1, -1, -1])
-	const [idx, setIdx] = useState(0)
-	const [history, setHistory] = useState<number[]>([])
+	// const [isXturn, setRole] = useState(false)
+	// const [grid, setGrid] = useState(Array(9).fill(""))
+	// const [queue, setQueue] = useState([-1, -1, -1, -1, -1, -1])
+	// const [idx, setIdx] = useState(0)
+	// const [history, setHistory] = useState<number[]>([])
 
 
 
-	const [showPopup, setShowPopup] = useState(false)
-	const [winner, setWinner] = useState<string | null>(null)
-	const [scores, setScore] = useState({ x: 0, o: 0, d: 0 })
+	// const [showPopup, setShowPopup] = useState(false)
+	// const [winner, setWinner] = useState<string | null>(null)
+	// const [scores, setScore] = useState({ x: 0, o: 0, d: 0 })
+
+	const {
+		isXturn,
+		grid,
+		queue,
+		idx,
+		history,
+		showPopup,
+		winner,
+		scores,
+		resetSession,
+		replayGame
+		} = useGameStore()
 
 	function handleCheckWin(copyGrid: string[]) {
 
@@ -151,7 +167,7 @@ export default function Board({ players }: BoardProps) {
 							</h2>
 							<button
 								className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-								onClick={handleReplay}
+								onClick={replayGame}
 							>
 								REPLAY
 							</button>
@@ -168,7 +184,7 @@ export default function Board({ players }: BoardProps) {
 			<p className="mt-6 text-white/60 font-medium italic">2 players mode</p>
 			<button
 				className="mt-12 bg-white/10 hover:bg-white/20 text-white border border-white/30 px-10 py-2 rounded-lg font-bold transition-all"
-				onClick={handleReset}
+				onClick={resetSession}
 			>
 				RESET SESSION
 			</button>

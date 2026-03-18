@@ -10,8 +10,12 @@ interface GameState {
 	winner: string | null
 	scores: {x: number, o: number, d:number}
 
+	
+
+
 	// functions
-	// reset session 
+	resetSession: () => void
+	replayGame: () => void
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -23,4 +27,24 @@ export const useGameStore = create<GameState>((set) => ({
 	showPopup: false,
 	winner: null,
 	scores: { x: 0, o: 0, d: 0 },
+
+	resetSession: () => set({
+		isXturn: false,
+		grid: Array(9).fill(""),
+		queue: [-1, -1, -1, -1, -1, -1],
+		idx: 0,
+		history: [],
+		showPopup: false,
+		winner: null,
+		scores: { x: 0, o: 0, d: 0 },
+	}),
+
+	replayGame: () => set({
+		grid: Array(9).fill(""),
+		showPopup: false,
+		isXturn: false,
+		winner: null,
+		queue: [-1, -1, -1, -1, -1, -1],
+		idx: 0,
+	})
 }))
