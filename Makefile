@@ -52,6 +52,9 @@ build: ## Build all containers
 down: ## Stop all running containers
 	@docker compose -f $(COMPOSE_FILE) down
 
+down-v: ## Remove volumes and stop running containers
+	@ docker compose -f $(COMPOSE_FILE) down -v
+
 no-cache: ## Rebuild all containers in no-cache mode
 	@docker compose -f $(COMPOSE_FILE) build --no-cache
 	
