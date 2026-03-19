@@ -1,43 +1,39 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateUserDto} from './dto/update-user.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
+	constructor(private prisma: PrismaService) {}
 
-	private users = [
-		{
-			id : 1,
-			username : "nico_42",
-			wins : 10,
-			losses : 2,
-			avatar: "placeholder.png"
-		}
-	];
-
-	getUsers(){
-		return this.users;
+	async getUsers() {
+		return this.prisma.user.findMany();
 	}
 
-	getUser(id:  number){
-		const user = this.users.find(user => user.id === id);//this.users.find(({ id: userId }) => userId === id);//is the same
+	async getUser(id: number) {
+		const user = await this.prisma.user.findUnique({
+			where: { id },
+		});
 
-
-		if(!user) {
-			throw new NotFoundException('User not found');
-		}
-		return user;
+	if (!user) {
+		throw new NotFoundException('User not found');
 	}
 
-	updateUser(id: number, updateUserDto: UpdateUserDto) {
-		const user = this.users.find(user => user.id === id);
+	return user;
+	}
 
-		if(!user) {
-			throw new NotFoundException('User not found');
-		}
+	async updateUser(id: number, updateUserDto: UpdateUserDto) {
+		const user = await this.prisma.user.findUnique({
+			where: { id },
+		});
 
-		Object.assign(user, updateUserDto);
+	if (!user) {
+		throw new NotFoundException('User not found');
+	}
 
-		return user;
+	return this.prisma.user.update({
+		where: { id },
+		data: updateUserDto,
+	});
 	}
 }
-
