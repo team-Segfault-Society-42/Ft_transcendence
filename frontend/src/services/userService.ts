@@ -1,11 +1,11 @@
 const url = "http://localhost:1024/api/"
 
-export async function getUser(id) { // here i will make a UUID
+export async function getUser(id) {
 
     try {
         const response = await fetch(url + "users/" + id)
         if (!response.ok) {
-            throw new Error("User not found") // to define
+            throw new Error("User not found")
         }
         const res = await response.json()
         console.log(res) // debug
@@ -17,7 +17,7 @@ export async function getUser(id) { // here i will make a UUID
     }
 }
 
-export async function updateUser(id, data) { // here i will make a UUID
+export async function updateUser(id, data) {
     try {
         const response = await fetch(url + "users/" + id, 
         {
@@ -28,7 +28,7 @@ export async function updateUser(id, data) { // here i will make a UUID
                 body: JSON.stringify(data),
             })
         if (!response.ok) {
-            throw new Error("Edit not permited") // to define 
+            throw new Error("Edit not permited")
         }
         const res = await response.json()
         console.log(res) // debug
