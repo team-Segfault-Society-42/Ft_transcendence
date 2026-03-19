@@ -19,7 +19,7 @@ SHOW_LOGS			= docker compose logs
 ##@ HELP
 
 help: ## Show available targets
-	@grep -hE '^[a-zA-Z_-]+:.*?##|^##@' Makefile \
+	@grep -hE '^[a-zA-Z_-]+:.*?##|^##@' $(MAKEFILE_LIST) \
 		| awk ' \
 			/^##@/ { printf "\n"$(BOLD_YEL)"< %s >"$(RES)"\n", substr($$0, 5) } \
 			/^[a-zA-Z_-]+:.*?##/ { \
