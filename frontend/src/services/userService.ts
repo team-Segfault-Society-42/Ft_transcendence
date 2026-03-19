@@ -1,4 +1,4 @@
-const url = "http://localhost:1024/api/"
+const url = "http://localhost:3000/"
 
 export async function getUser(id) {
 
