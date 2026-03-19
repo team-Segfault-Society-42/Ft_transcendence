@@ -61,8 +61,7 @@ export default function Board({ players }: BoardProps) {
 				</div>
 
 				<div className="bg-gray-700 p-4 rounded flex flex-col items-center justify-center">
-					<p className="text-sm">Nuls</p>
-					<p className="text-xl font-bold">{scores.d}</p>
+					<p className="text-sm">VS</p>
 				</div>
 
 				<div className="bg-gray-800 p-4 rounded flex flex-col items-center">
@@ -82,12 +81,16 @@ export default function Board({ players }: BoardProps) {
 				showPopup && (
 					<div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
 						<div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center">
-							<h2 className={`text-2xl font-bold mb-4 ${winner === "X" ? "text-cyan-500" : winner === "O" ? "text-fuchsia-500" : "text-gray-700"
+
+							<h2
+								className={`text-2xl font-bold mb-4 ${
+									winner === "X"
+										? "text-cyan-500"
+										: "text-fuchsia-500"
 								}`}>
-								{winner === "Draw"
-									? "🤝 DRAW!"
-									: `🎉 ${players[winner as 'X' | 'O'].nickname} WINS!`}
+								🎉 {players[winner as 'X' | 'O'].nickname} WINS!
 							</h2>
+
 							<button
 								className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
 								onClick={replayGame}

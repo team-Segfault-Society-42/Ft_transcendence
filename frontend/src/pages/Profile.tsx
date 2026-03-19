@@ -6,7 +6,6 @@ const MOCK_USER: infoUsers = {
     username: "SimSim",
     wins: 42,
     losses: 21,
-    draws: 4,
     bio: "The Best !",
     avatar: avatarImg
 }
@@ -15,7 +14,6 @@ interface infoUsers {
     username: string,
     wins: number,
     losses: number,
-    draws: number,
     bio: string,
     avatar: string
 }
@@ -23,7 +21,7 @@ interface infoUsers {
 export default function Profile() {
 
     const [data, setData] = useState<infoUsers>(MOCK_USER)
-    const totalGames = data.wins + data.losses + data.draws
+    const totalGames = data.wins + data.losses
     const [isEdit, isInEdit] = useState(false)
     const [userName, setUserName] = useState(data.username)
     const [bio, setBio] = useState(data.bio)
@@ -91,12 +89,11 @@ export default function Profile() {
             </div>
       
             {/* STATS */}
-            <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+            <div className="mt-8 grid grid-cols-2 gap-4 text-center">
       
               {[
                 { label: "Wins", value: data.wins },
                 { label: "Losses", value: data.losses },
-                { label: "Draws", value: data.draws }
               ].map((stat, i) => (
                 <div
                   key={i}

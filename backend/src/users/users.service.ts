@@ -10,7 +10,6 @@ export class UsersService {
 			username : "simo_42",
 			wins : 0,
 			losses : 282344,
-			draws : 0,
 			bio : "The best",
 			avatar: "avatar.png"
 		}
