@@ -1,6 +1,7 @@
-import { Controller, Get, Param, ParseIntPipe, Patch, Body } from '@nestjs/common';
+import { Controller, Param, ParseIntPipe, Body, Get, Patch, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto} from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 // @UseGuards(AuthGuard) // TODO later with AUTH
 @Controller('users')
@@ -26,6 +27,10 @@ export class UsersController {
 		return this.usersService.updateUser(id, updateUserDto);
 	}
 
+	@Post()
+	createUser(@Body() createUserDto: CreateUserDto) {
+		return this.usersService.createUser(createUserDto);
+	}
 }
 
 
