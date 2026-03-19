@@ -62,6 +62,7 @@ services:
       - BACKEND_PW_FILE=/run/secrets/backend_pw
     volumes:
       - postgres_data:/var/lib/postgresql
+      - ./database/init.sh:/docker-entrypoint-initdb.d/init.sh
     secrets:
       - backend_pw
       - postgres_root_pw
