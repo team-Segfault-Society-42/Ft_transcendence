@@ -16,7 +16,7 @@ export default function Home() {
 				</button>
 				{showSignup && (
 					<div>
-						<SignupModal/>
+						<SignupModal  closed={() => setShowSignup(false)} />
 						<button style={{ border: '2px solid black', padding: '3px', margin: '10px' }} onClick={() => setShowSignup(false)}>
 							Close
 						</button>
