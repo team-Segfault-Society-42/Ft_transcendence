@@ -63,8 +63,5 @@ export default function Profile() {
             <img src={data.avatar} alt="Avatar" />
             <button onClick={handleSave}> {isEdit ? "Save" : "Edit"} </button>
         </main>
-
-
-
     )
 }

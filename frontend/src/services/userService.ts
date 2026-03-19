@@ -26,7 +26,6 @@ export async function updateUser(id, data) { // here i will make a UUID
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data),
-
             })
         if (!response.ok) {
             throw new Error("Edit not permited") // to define 
