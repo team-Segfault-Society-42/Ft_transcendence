@@ -1,4 +1,5 @@
-include .env make/colours.mk make/clean.mk
+include make/colours.mk make/clean.mk make/setup.mk 
+-include .env
 export
 
 # ══════════════════════════════════════════════════════
