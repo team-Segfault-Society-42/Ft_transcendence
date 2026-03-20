@@ -1,9 +1,11 @@
 export default function Footer() {
     return (
-        <footer className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-            <div className="text-lg text-white/40 hover:text-white transition-colors flex items-center gap-12 font-black uppercase">
-                <p>© 2026 ft_transcendence - 42 Lausanne</p>
-            </div>
+        <footer className="w-full text-center py-6 text-white/40 border-t border-white/10 bg-black/20 backdrop-blur">
+            
+                <p>
+                    © 2026 ft_transcendence - 42 Lausanne
+                </p>
+            
         </footer>
     )
 }
