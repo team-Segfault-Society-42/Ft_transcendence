@@ -1,13 +1,46 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 export default function Header() {
     return (
-        <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
-        <nav className="text-lg fixed top-6 left-1/2 -translate-x-1/2 text-white/40 hover:text-white transition-colors flex items-center gap-12 font-black uppercase z-50">
-            <Link to="/">Home</Link>
-		    <Link to="/game">Game</Link>
-		    <Link to="/profile">Profile</Link>
-        </nav>
-      </header>
+        <header className="w-full text-center py-6 text-white/20 border-t border-white/10 bg-black/20 backdrop-blur">
+
+            <nav className="flex justify-center gap-12 font-black uppercase text-xl z-50">
+
+                <NavLink
+                    to="/"
+                    className={({ isActive }) =>
+                        isActive
+                            ? "text-white"
+                            : "text-white/40 hover:text-white transition-colors"
+                    }
+                >
+                    Home
+                </NavLink>
+
+                <NavLink
+                    to="/game"
+                    className={({ isActive }) =>
+                        isActive
+                            ? "text-white"
+                            : "text-white/40 hover:text-white transition-colors"
+                    }
+                >
+                    Game
+                </NavLink>
+
+                <NavLink
+                    to="/profile"
+                    className={({ isActive }) =>
+                        isActive
+                            ? "text-white"
+                            : "text-white/40 hover:text-white transition-colors"
+                    }
+                >
+                    Profile
+                </NavLink>
+
+            </nav>
+
+        </header>
     )
-  }
+}

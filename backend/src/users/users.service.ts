@@ -7,10 +7,11 @@ export class UsersService {
 	private users = [
 		{
 			id : 1,
-			username : "nico_42",
-			wins : 10,
-			losses : 2,
-			avatar: "placeholder.png"
+			username : "simo_42",
+			wins : 0,
+			losses : 282344,
+			bio : "The best",
+			avatar: "avatar.png"
 		}
 	];
 
