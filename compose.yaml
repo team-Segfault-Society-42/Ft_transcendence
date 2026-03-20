@@ -20,7 +20,7 @@ services:
 # Uncomment to test frontend only (as a single service)
     # ports:
     #   - "5173:5173"
-  
+
   # ── Backend (Nest.js) ────────────────────────────────────────────
   backend:
     container_name: nestJS
@@ -30,10 +30,15 @@ services:
     networks:
       - client-side
       - server-side
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      db:
+        condition: service_healthy
 # Uncomment to test backend only (as a single service)
     # ports:
     #   - "3000:3000"
-  
+
   # ── Reverse Proxy (Nginx) ────────────────────────────────────────
   proxy:
     container_name: nginx
@@ -47,7 +52,7 @@ services:
     depends_on:
       - frontend
       - backend
-  
+
   # ── Database (Postgres) ──────────────────────────────────────────
   db:
     container_name: postgres
@@ -66,6 +71,11 @@ services:
     secrets:
       - backend_pw
       - postgres_root_pw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 # ── Docker Volumes ──────────────────────────────────────────────────────────
 volumes:
