@@ -1,61 +1,67 @@
+import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import SignupModal from '../components/layout/SignupModal'
 
 export default function Home() {
-	const [data, setData] = useState("");
-	const url = "/api/hello";
-
-	async function getResponse() {
-		try {
-			const response = await fetch(url);
-			if (!response.ok) {
-				throw new Error("Nothing to see !")
-			}
-			const res = await response.text();
-			setData(res);
-			console.log("Succes:", res);
-		}
-		catch (error: any) {
-			setData("Error : " + error.message)
-		}
-	}
-
-	function redir() {
-		window.location.href = url;
-	}
+	const [showSignup, setShowSignup] = useState(false)
 
 	return (
-		<main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 px-4">
-			<section className="text-center">
-				<h1 className="text-5xl font-bold text-white">
+		<section className="flex flex-col items-center text-center gap-12">
+
+			<div className="space-y-6">
+
+				<h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
 					ft_transcendence
 				</h1>
 
-				<p className="mt-4 text-2xl text-white">
-					Hello Nassiiiiim from frontend
+				<p className="text-white/60 max-w-md mx-auto text-lg">
+					Play. Compete. Improve.  
+					Challenge players and become the best.
 				</p>
 
-				<div className="mt-6 flex justify-center gap-4">
-					<button
-						type="button"
-						onClick={getResponse}
-						className="rounded-xl bg-white px-5 py-3 font-semibold text-purple-700"
-					>
-						Call BE
-					</button>
+			</div>
 
-					<button
-						type="button"
-						onClick={redir}
-						className="rounded-xl border border-white/40 bg-white/20 px-5 py-3 font-semibold text-white"
-					>
-						Redir BE
-					</button>
-				</div>
+			{/* REGISTER */}
+			<button
+				onClick={() => setShowSignup(true)}
+				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95"
+			>
+				REGISTER
+			</button>
 
-				<p className="mt-6 text-xl text-white">
-					Response back: {data}
-				</p>
-			</section>
-		</main>
+			{/* START GAME */}
+			<Link
+				to="/game"
+				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95"
+			>
+				START GAME
+			</Link>
+
+			{/* MODAL */}
+			<SignupModal
+				isOpen={showSignup}
+				onClose={() => setShowSignup(false)}
+			/>
+
+			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
+
+				<Link to="/" className="bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur hover:scale-105 transition group">
+					<h3 className="font-bold text-lg mb-2 group-hover:text-cyan-300 transition">🏠 Home</h3>
+					<p className="text-white/70 text-sm">Welcome to the main page ! Explore the app !</p>
+				</Link>
+
+				<Link to="/game" className="bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur hover:scale-105 transition group">
+					<h3 className="font-bold text-lg mb-2 group-hover:text-cyan-300 transition">🎮 Game</h3>
+					<p className="text-white/70 text-sm">Start a match and challenge yourself.</p>
+				</Link>
+
+				<Link to="/profile" className="bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur hover:scale-105 transition group">
+					<h3 className="font-bold text-lg mb-2 group-hover:text-cyan-300 transition">👤 Profile</h3>
+					<p className="text-white/70 text-sm">View your stats and customize your profile.</p>
+				</Link>
+
+			</div>
+
+		</section>
 	)
 }

@@ -1,9 +1,14 @@
+# Secrets
+/secrets
+
 # compiled output
 /backend/dist
 /backend/node_modules
+/frontend/node_modules
 /backend/build
 /docs
 /backend/.gitignore
+
 
 # Logs
 logs

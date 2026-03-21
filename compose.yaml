@@ -7,8 +7,9 @@ networks:
     driver:
       bridge
 
+# ── Docker Services ──────────────────────────────────────────────────────────
 services:
-  # ── Frontend (React) ───────────────────────────────────────────────────────
+  # ── Frontend (React) ─────────────────────────────────────────────
   frontend:
     container_name: react
     build:
@@ -19,8 +20,8 @@ services:
 # Uncomment to test frontend only (as a single service)
     # ports:
     #   - "5173:5173"
-  
-  # ── Backend (Nest.js) ──────────────────────────────────────────────────────
+
+  # ── Backend (Nest.js) ────────────────────────────────────────────
   backend:
     container_name: nestJS
     build:
@@ -29,11 +30,16 @@ services:
     networks:
       - client-side
       - server-side
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    depends_on:
+      db:
+        condition: service_healthy
 # Uncomment to test backend only (as a single service)
     # ports:
     #   - "3000:3000"
-  
-  # ── Reverse Proxy (Nginx) ──────────────────────────────────────────────────
+
+  # ── Reverse Proxy (Nginx) ────────────────────────────────────────
   proxy:
     container_name: nginx
     build:
@@ -46,12 +52,38 @@ services:
     depends_on:
       - frontend
       - backend
-  
-  # ── Database (Postgres) ────────────────────────────────────────────────────
-  # db:
-  #   container_name: postgres
-  #   image: postgres:alpine
-  #   networks:
-  #     - server-side
-  #   ports:
-  #     - "5432:5432"
+
+  # ── Database (Postgres) ──────────────────────────────────────────
+  db:
+    container_name: postgres
+    image: postgres:${POSTGRES_VERSION:-18-alpine} #fallback to 18-alpine if var not set
+    networks:
+      - server-side
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_root_pw
+      - BACKEND_USER=${BACKEND_USER}
+      - BACKEND_PW_FILE=/run/secrets/backend_pw
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./database/init.sh:/docker-entrypoint-initdb.d/init.sh
+    secrets:
+      - backend_pw
+      - postgres_root_pw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+# ── Docker Volumes ──────────────────────────────────────────────────────────
+volumes:
+  postgres_data:
+
+# ── Docker Secrets ──────────────────────────────────────────────────────────
+secrets:
+  backend_pw:
+    file: ./secrets/backend_pw.txt
+  postgres_root_pw:
+    file: ./secrets/postgres_root_pw.txt

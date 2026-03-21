@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:25-alpine3.23
 
 WORKDIR /app
 
@@ -15,4 +15,4 @@ EXPOSE 3000
 	# start 		-> plain run, no waching
 	# start:dev		-> Watches for file changes, auto-restart
 	# start:prod	-> Runs the compiled `/dist` output
-CMD [ "npm", "run", "start:dev" ]
+CMD [ "sh", "-c", "npx prisma generate && npx prisma db push && npm run start:dev" ]
