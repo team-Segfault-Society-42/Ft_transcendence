@@ -28,7 +28,7 @@ nuke: ## Full wipe — stops stack, removes volumes + images.
  
 	@echo ""
 	@echo $(CYAN)"<Stopping stack and removing containers + volumes>"$(RES)
-	@docker compose -f $(COMPOSE_FILE) down --volumes --remove-orphans
+	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --volumes --remove-orphans
 	@docker volume prune -f
  
 	@echo $(CYAN)"<Removing images built by this stack>"$(RES)
