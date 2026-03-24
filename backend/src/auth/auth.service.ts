@@ -57,9 +57,24 @@ export class AuthService {
 		if (!user) {
 			throw new UnauthorizedException('Invalid credentials');
 		}
+		const passwordMatches = await bcrypt.compare(
+			loginDto.password,
+			user.passwordHash,
+		);
+
+		if (!passwordMatches) {
+			throw new UnauthorizedException('Invalid credentials');
+		}
+
 		return {
-			found : !!user,
-			email: user?.email ?? null,
-		};
+			id: user.id,
+			email: user.email,
+			username: user.username,
+			bio: user.bio,
+			avatar: user.avatar,
+			wins: user.wins,
+			losses: user.losses,
+			draws: user.draws,
+			}
 	}
 }
