@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+	ConflictException,
+	Injectable,
+	UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -6,75 +11,79 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-	constructor(private readonly prisma: PrismaService) {}
+  constructor(
+	private readonly prisma: PrismaService,
+	private readonly jwtService: JwtService,
+  ) {}
 
-	async register(registerDto: RegisterDto) {
-		const passwordHash = await bcrypt.hash(registerDto.password, 10);
+  async register(registerDto: RegisterDto) {
+	const passwordHash = await bcrypt.hash(registerDto.password, 10);
 
-		try {
-			const user = await this.prisma.user.create({
-				data: {
-					email: registerDto.email,
-					passwordHash,
-					username: registerDto.username,
-					bio: registerDto.bio ?? '',
-					avatar: registerDto.avatar ?? 'default.png',
-					wins: 0,
-					losses: 0,
-					draws: 0,
-				},
-			});
+	try {
+	  const user = await this.prisma.user.create({
+		data: {
+			email: registerDto.email,
+			passwordHash,
+			username: registerDto.username,
+			bio: registerDto.bio ?? '',
+			avatar: registerDto.avatar ?? 'default.png',
+			wins: 0,
+			losses: 0,
+			draws: 0,
+		},
+	  });
 
-			return {
-				id: user.id,
-				email: user.email,
-				username: user.username,
-				bio: user.bio,
-				avatar: user.avatar,
-				wins: user.wins,
-				losses: user.losses,
-				draws: user.draws,
-			};
-		} catch (error: unknown) {
-			if (
-				typeof error === 'object' &&
-				error !== null &&
-				'code' in error &&
-				error.code === 'P2002'
-			) {
-				throw new ConflictException('Email or username already exists');
-			}
+	  return {
+		id: user.id,
+		email: user.email,
+		username: user.username,
+		bio: user.bio,
+		avatar: user.avatar,
+		wins: user.wins,
+		losses: user.losses,
+		draws: user.draws,
+	  };
+	} catch (error: unknown) {
+	  if (
+		typeof error === 'object' &&
+		error !== null &&
+		'code' in error &&
+		error.code === 'P2002'
+	  ) {
+		throw new ConflictException('Email or username already exists');
+	  }
 
-			throw error;
-		}
+	  throw error;
+	}
+  }
+
+  async login(loginDto: LoginDto) {
+	const user = await this.prisma.user.findUnique({
+	  where: { email: loginDto.email },
+	});
+
+	if (!user) {
+	  throw new UnauthorizedException('Invalid credentials');
 	}
 
-	async login(loginDto: LoginDto) {
-		const user = await this.prisma.user.findUnique({
-			where: { email: loginDto.email },
-			});
+	const passwordMatches = await bcrypt.compare(
+	  loginDto.password,
+	  user.passwordHash,
+	);
 
-		if (!user) {
-			throw new UnauthorizedException('Invalid credentials');
-		}
-		const passwordMatches = await bcrypt.compare(
-			loginDto.password,
-			user.passwordHash,
-		);
+	if (!passwordMatches) {
+	  throw new UnauthorizedException('Invalid credentials');
+	}
 
-		if (!passwordMatches) {
-			throw new UnauthorizedException('Invalid credentials');
-		}
-
-		return {
-			id: user.id,
-			email: user.email,
-			username: user.username,
-			bio: user.bio,
-			avatar: user.avatar,
-			wins: user.wins,
-			losses: user.losses,
-			draws: user.draws,
-			}
+	return {
+		id: user.id,
+		email: user.email,
+		username: user.username,
+		bio: user.bio,
+		avatar: user.avatar,
+		wins: user.wins,
+		losses: user.losses,
+		draws: user.draws,
+		};
 	}
 }
