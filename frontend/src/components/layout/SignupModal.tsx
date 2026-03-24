@@ -1,67 +1,70 @@
 import { useState } from 'react'
+import { userService } from '../../services/userService'
+import * as z from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { 
+  Form, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormControl, 
+  FormMessage 
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-type Props = {
-	isOpen: boolean
-	onClose: () => void
-}
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
-export default function SignupModal({ isOpen, onClose }: Props) {
 
-	const [userName, setUserName] = useState("")
-	const [bio, setBio] = useState("")
+export default function SignupModal(props) {
 
-	if (!isOpen) return null
 
-	return (
-		<div
-			className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
-			onClick={onClose}>
-          
+    const formSchema = z.object({
+        username: z.string().min(3, "The username must be longer than 3 characters."), // add here error message in all language
+        email: z.string().email("Invalid email adress."),
+        password: z.string().min(8, "The password must be 8 characters"),
+    })
 
-			<div
-				className="bg-linear-to-br from-slate-900 to-slate-800 border border-white/10 rounded-2xl p-8 w-87.5 shadow-2xl"
-				onClick={(e) => e.stopPropagation()}>
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            username: "",
+            email: "",
+            password: "",
+        },
+    })
 
-				<h2 className="text-2xl font-bold mb-6 text-white text-center">
-					Create Account
-				</h2>
+    const [isLoading, setIsLoading] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
 
-				<input
-					className="w-full mb-4 p-3 rounded-lg bg-white/10 text-white placeholder-white/40 border border-white/10 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-					placeholder="Username"
-					value={userName}
-					onChange={(e) => setUserName(e.target.value)}
-                />
 
-				<input
-					className="w-full mb-6 p-3 rounded-lg bg-white/10 text-white placeholder-white/40 border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-400"
-					placeholder="Bio"
-					value={bio}
-					onChange={(e) => setBio(e.target.value)}
-				/>
+    async function onSubmit(data: z.infer<typeof formSchema>) {
+        try {
+            await userService.createUser(data)
+            toast.success("User successfully created!")
+            setIsSuccess(true)
+            setTimeout(() => {props.onClose();}, 2000 )
 
-				<div className="flex justify-between gap-4">
+        } catch(error: any){
+            toast.error("Error : " + error.message)
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
-					<button
-						className="w-full py-3 rounded-lg border border-white/20 text-white/70 hover:bg-white/10 transition"
-						onClick={onClose}
-					>
-						Cancel
-					</button>
+return (
+    <Dialog open={props.isOpen} onOpenChange={props.onClose}>
+       
+    </Dialog>
+);
 
-					<button
-						className="w-full py-3 rounded-lg bg-linear-to-r from-cyan-500 to-purple-500 font-bold text-white hover:scale-105 transition"
-						onClick={() => {
-							alert("Welcome " + userName)
-							onClose()
-						}}
-					>
-						Register
-					</button>
 
-				</div>
-
-			</div>
-		</div>
-	)
 }
