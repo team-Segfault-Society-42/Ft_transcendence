@@ -1,32 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ft_transcendence Pages test</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ft_transcendence trailer</title>
   <style>
     body {
       margin: 0;
       min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: #0b1020;
+      background: #030b2a;
       color: white;
       font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .wrap {
+      width: min(1000px, 95vw);
       text-align: center;
     }
-    .box {
-      padding: 32px;
-      border: 1px solid #2a3350;
-      border-radius: 16px;
-      background: #12182b;
+    h1 {
+      margin-bottom: 24px;
+    }
+    video {
+      width: 100%;
+      border-radius: 14px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.4);
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>GitHub Pages test</h1>
-    <p>If you can see this page, Pages is working.</p>
+  <div class="wrap">
+    <h1>ft_transcendence – Concept Trailer</h1>
+    <video controls autoplay muted loop playsinline>
+  <source src="https://github.com/user-attachments/assets/0d787ea5-7ca5-4e7f-a420-b1b0087026d3" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
   </div>
 </body>
 </html>
