@@ -1,5 +1,97 @@
 {
-    "welcome": "Bienvenue",
-    "play": "Jouer",
-    "signup": "S'inscrire"
+    "title": "ft_transcendence",
+
+    "header": {
+        "home": "Accueil",
+        "game": "Jeu",
+        "profile": "Profil"
+    },
+
+    "home": {
+        "hero":{
+            "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
+        },
+        "buttons":{
+            "register": "S'enregistrer",
+            "start": "LANCER LA PARTIE"
+        },
+        "cards":{
+            "home":{
+                "title": "🏠 Accueil",
+                "description": "Bienvenue sur la page principal ! Explore l'application."
+            },
+            "game":{
+                "title": "🎮 Jeu",
+                "description": "Lance une partie et dépasse toi !"
+            },
+            "profile":{
+                "title": "👤 Profil",
+                "description": "Consulte tes statistiques et personnalise ton profil."
+            }
+        }
+    },
+
+    "game": {
+        "turn": "Au tour de {{player}} : {{symbol}}",
+        "vs": "VS",
+        "wins": "GAGNE !",
+        "replay": "RECOMMENCER",
+        "mode": "Mode 2 joueurs",
+        "reset": "REDEMARRER SESSION"
+    },
+
+    "profile": {
+        "loading": "Chargement...",
+        "stats": {
+            "wins": "Victoires",
+            "losses": "Défaites",
+            "winrate": "Taux de victoires",
+            "games": "{{count}} parties jouées"
+        },
+        "bio": "Bio",
+        "buttons": {
+            "edit": "Modifier le profil",
+            "save": "Sauvegarder les changements"
+        }
+    },
+    
+    "footer": {
+        "projectname": "ft_transcendence",
+        "privacy": "Confidentialité",
+        "terms": "Conditions d'utilisation"
+    },
+
+    "privacy": {
+        "title": "Politique de confidentialité",
+        "intro": "Cette application collecte et traite des données utilisateur afin de fournir ses services.",
+        "data":{
+            "title": "Données collectées",
+            "items": ["Nom d'utilisateur", "Statistiques de jeu", "Informations du profil"]
+        },
+        "usage":{
+            "title": "Utilisation",
+            "content": "Les données sont utilisées uniquement pour le fonctionnement de l'application et ne sont pas partagées avec des tiers."
+        },
+        "security":{
+            "title": "Sécurité",
+            "content": "Nous mettons en place des mesures appropriées pour protéger les données des utilisateurs."
+        }
+    },
+
+    "terms": {
+        "title": "Conditions d'utilisation",
+        "intro": "En utilisant cette application, vous acceptez les conditions suivantes.",
+        "usage":{
+            "title": "Utilisation",
+            "content": "Les utilisateurs doivent utiliser l'application de manière respectueuse et ne pas tenter de l'exploiter."
+        },
+        "account": {
+            "title": "Comptes",
+            "content": "Les utilisateurs sont responsables de leurs comptes et de leur activité."
+        },
+        "limitation": {
+            "title": "Limitation",
+            "content": "L'application est fournie \"telle quelle\" sans garantie."
+        }
+    }
 }

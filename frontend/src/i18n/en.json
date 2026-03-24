@@ -1,9 +1,12 @@
 {
-    "welcome": "Welcome",
-    "play": "Play",
-    "signup": "Sign up",
-
     "title": "ft_transcendence",
+
+    "header": {
+        "home": "Home",
+        "game": "Game",
+        "profile": "Profile"
+    },
+
     "home": {
         "hero":{
             "texte": "Play. Compete. Improve. Challenge players and become the best."
@@ -26,6 +29,36 @@
                 "description": "View your stats and customize your profile."
             }
         }
+    },
+
+    "game": {
+        "turn": "{{player}}'s Turn {{symbol}}",
+        "vs": "VS",
+        "wins": "WINS!",
+        "replay": "REPLAY",
+        "mode": "2 players mode",
+        "reset": "RESET SESSION"
+    },
+
+    "profile": {
+        "loading": "Loading...",
+        "stats": {
+            "wins": "Wins",
+            "losses": "Losses",
+            "winrate": "Winrate",
+            "games": "{{count}} games played"
+        },
+        "bio": "Bio",
+        "buttons": {
+            "edit": "Edit profile",
+            "save": "Save changes"
+        }
+    },
+    
+    "footer": {
+        "projectname": "ft_transcendence",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service"
     },
 
     "privacy": {
@@ -60,40 +93,5 @@
             "title": "Limitation",
             "content": "The application is provided \"as is\" without guarantees."
         }
-    },
-
-    "header": {
-        "home": "Home",
-        "game": "Game",
-        "profile": "Profile"
-    },
-
-    "footer": {
-        "projectname": "ft_transcendence",
-        "privacy": "Privacy Policy",
-        "terms": "Terms of Service"
-    },
-
-    "profile": {
-        "loading": "Loading...",
-        "stats": {
-            "wins": "Wins",
-            "losses": "Losses",
-            "winrate": "Winrate",
-            "games": "{{count}} games played"
-        },
-        "bio": "Bio",
-        "buttons": {
-            "edit": "Edit profile",
-            "save": "Save changes"
-        }
-    },
-    "game": {
-        "turn": "{{player}}'s Turn {{symbol}}",
-        "vs": "VS",
-        "wins": "WINS!",
-        "replay": "REPLAY",
-        "mode": "2 players mode",
-        "reset": "RESET SESSION"
     }
 }
