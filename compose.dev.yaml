@@ -1,0 +1,24 @@
+# ── Docker Services ──────────────────────────────────────────────────────────
+services:
+  # ── Frontend (React) ─────────────────────────────────────────────
+  frontend:
+    volumes:
+      - ./frontend:/app                         # reflect host changes instantly
+      - frontend_node_modules:/app/node_modules # 
+# Uncomment to test frontend only (as a single service)
+    # ports:
+    #   - "5173:5173"
+ 
+  # ── Backend (Nest.js) ────────────────────────────────────────────
+  backend:
+    volumes:
+      - ./backend:/app                          # reflect host changes instantly
+      - backend_node_modules:/app/node_modules  # prevent node_module overwrite in container
+# Uncomment to test backend only (as a single service)
+    # ports:
+    #   - "3000:3000"
+ 
+# ── Docker Volumes ──────────────────────────────────────────────────────────
+volumes:
+  frontend_node_modules:
+  backend_node_modules:
