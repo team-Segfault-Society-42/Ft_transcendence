@@ -2,6 +2,8 @@
 services:
   # ── Frontend (React) ─────────────────────────────────────────────
   frontend:
+    build:
+      target: dev
     volumes:
       - ./frontend:/app                         # reflect host changes instantly
       - frontend_node_modules:/app/node_modules # prevent node_module overwrite in container
@@ -9,10 +11,17 @@ services:
  
   # ── Backend (Nest.js) ────────────────────────────────────────────
   backend:
+    build:
+      target: dev
     volumes:
       - ./backend:/app                          # reflect host changes instantly
       - backend_node_modules:/app/node_modules  # prevent node_module overwrite in container
- 
+
+  # ── Reverse Proxy (Nginx) ────────────────────────────────────────
+  proxy:
+    build:
+      target: dev
+
 # ── Docker Volumes ──────────────────────────────────────────────────────────
 volumes:
   frontend_node_modules:
