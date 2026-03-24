@@ -3,8 +3,6 @@
 # ══════════════════════════════════════════════════════
 
 ##@ CLEAN
-info: ## Display Docker system information, build cache, etc. 
-	@docker system df
 
 clean: ## Remove dangling images, stopped containers, unused networks + build cache
 # ── Remove stopped containers ───────

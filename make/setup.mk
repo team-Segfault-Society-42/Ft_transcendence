@@ -6,7 +6,7 @@ SECRETS_DIR				= secrets/
 BACKEND_PW_FILE			= backend_pw.txt
 POSTGRES_ROOT_PW_FILE	= postgres_root_pw.txt
 
-##@ DEVS
+##@ FAST SETUP
 setup: check-env create-secrets set-defaults-env ## Initialise all files needed to run the project (uses default values)
 	@echo $(GREEN)"✓ Setup complete. Run \`make up\` to start the stack."$(RES)
 

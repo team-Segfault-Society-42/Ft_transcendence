@@ -1,4 +1,4 @@
-include make/colours.mk make/clean.mk make/setup.mk 
+include make/colours.mk make/help.mk make/clean.mk make/setup.mk 
 -include .env
 export
 
@@ -18,36 +18,35 @@ COMPOSE_ALL 		= $(COMPOSE_FILE) -f $(COMPOSE_DEV) -f $(COMPOSE_PROD)
 SHOW_LOGS			= docker compose logs
 
 # ══════════════════════════════════════════════════════
-#                      HELP
+#                 STARTING THE STACK
 # ══════════════════════════════════════════════════════
-##@ HELP
+##@ START STACK
 
-help: ## Show available targets
-	@grep -hE '^[a-zA-Z_-]+:.*?##|^##@' $(MAKEFILE_LIST) \
-		| awk ' \
-			/^##@/ { printf "\n"$(BOLD_YEL)"< %s >"$(RES)"\n", substr($$0, 5) } \
-			/^[a-zA-Z_-]+:.*?##/ { \
-				split($$0, a, ":.*?## "); \
-				printf " ・"$(CYAN)"%-14s"$(RES)" %s\n", a[1], a[2] \
-			}'
-
-.PHONY: help
-
-# ══════════════════════════════════════════════════════
-#                 CORE DOCKER TARGETS
-# ══════════════════════════════════════════════════════
-##@ STACK
-
-up: ## Build and run all containers in dev mode
+up: ##  Build and run all containers [DEV]
 	@echo $(GOLD)"Building in Dev Mode"$(RES)
 	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d
 
-prod: ## Build and run all containers in production mode
+build: ##  Build all containers [DEV]
+	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build
+
+no-cache: ##  Rebuild all containers in no-cache mode [DEV]
+	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build --no-cache
+
+re: down build up ##  Stop, rebuild, and restart the full stack [DEV]
+
+reset: down-v no-cache up ##  Stop (remove volumes), full rebuild (no cache), restart containers [DEV]
+
+prod: ## Build and run all containers [PRODUCTION]
 	@echo $(GREEN)"Building in Production Mode"$(RES)
 	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) up -d
 
-build: ## Build all containers (dev build)
-	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build
+.PHONY: up build no-cache re reset prod
+
+# ══════════════════════════════════════════════════════
+#                 STOPING THE STACK
+# ══════════════════════════════════════════════════════
+
+##@ STOP STACK
 
 down: ## Stop all running containers
 	@docker compose -f $(COMPOSE_ALL) down
@@ -55,19 +54,12 @@ down: ## Stop all running containers
 down-v: ## Remove volumes and stop running containers
 	@ docker compose -f $(COMPOSE_ALL) down -v
 
-no-cache: ## Rebuild all containers in no-cache mode (dev build)
-	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build --no-cache
-
-re: down build up ## Stop, rebuild, and restart the full stack
-
-reset: down-v no-cache up ## Stop (remove volumes), full rebuild (no cache), restart containers
-
-.PHONY: dev prod build down down-v no-cache re reset
+.PHONY: down down-v
 
 # ══════════════════════════════════════════════════════
-#               UTILITY & LOGS TARGETS
+#               		UTILITY
 # ══════════════════════════════════════════════════════
-##@ UTILITY & LOGS
+##@ UTILITY
 
 ps: ## Display all running containers
 	@docker compose -f $(COMPOSE_ALL) ps
@@ -75,6 +67,15 @@ ps: ## Display all running containers
 ls: ## Display all images
 	@docker image ls -a
 	
+info: ## Display Docker system information, build cache, etc. 
+	@docker system df
+
+# ══════════════════════════════════════════════════════
+#               	 	 LOGS
+# ══════════════════════════════════════════════════════
+
+##@ LOGS
+
 logs: ## Display logs for all containers
 	@$(SHOW_LOGS)
 
