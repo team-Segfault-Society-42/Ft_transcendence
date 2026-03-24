@@ -13,6 +13,7 @@ SERVICE_DATABASE	= db
 
 COMPOSE_FILE		= compose.yaml
 COMPOSE_DEV			= compose.dev.yaml
+COMPOSE_PROD		= compose.prod.yaml
 SHOW_LOGS			= docker compose logs
 
 # ══════════════════════════════════════════════════════
@@ -34,8 +35,8 @@ help: ## Show available targets
 # ══════════════════════════════════════════════════════
 ##@ STACK
 
-up: ## Build and run all containers
-	docker compose -f $(COMPOSE_FILE) up -d
+prod: ## Build and run all containers in production mode
+	docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) up -d
 
 dev: ## Build and run all containers in dev mode (hot reload)
 	docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d
