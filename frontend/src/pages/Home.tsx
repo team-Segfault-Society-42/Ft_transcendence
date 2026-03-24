@@ -25,24 +25,21 @@ export default function Home() {
 			{/* REGISTER */}
 			<button
 				onClick={() => setShowSignup(true)}
-				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95"
-			>
+				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95">
 				{t("home.buttons.register")}
 			</button>
 
 			{/* START GAME */}
 			<Link
 				to="/game"
-				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95"
-			>
+				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95">
 				{t("home.buttons.start")}
 			</Link>
 
 			{/* MODAL */}
 			<SignupModal
 				isOpen={showSignup}
-				onClose={() => setShowSignup(false)}
-			/>
+				onClose={() => setShowSignup(false)}/>
 
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
 

@@ -27,7 +27,7 @@
             }
         }
     },
-    
+
     "privacy": {
         "title": "Privacy Policy",
         "intro": "This application collects and processes user data in order to provide its services.",
@@ -72,5 +72,28 @@
         "projectname": "ft_transcendence",
         "privacy": "Privacy Policy",
         "terms": "Terms of Service"
+    },
+
+    "profile": {
+        "loading": "Loading...",
+        "stats": {
+            "wins": "Wins",
+            "losses": "Losses",
+            "winrate": "Winrate",
+            "games": "{{count}} games played"
+        },
+        "bio": "Bio",
+        "buttons": {
+            "edit": "Edit profile",
+            "save": "Save changes"
+        }
+    },
+    "game": {
+        "turn": "{{player}}'s Turn {{symbol}}",
+        "vs": "VS",
+        "wins": "WINS!",
+        "replay": "REPLAY",
+        "mode": "2 players mode",
+        "reset": "RESET SESSION"
     }
 }
