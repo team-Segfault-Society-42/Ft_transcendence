@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import SignupModal from '../components/layout/SignupModal'
+import SignupModal from "../components/layout/SignupModal"
+import { useTranslation } from "react-i18next"
 
 export default function Home() {
 	const [showSignup, setShowSignup] = useState(false)
+	const { t } = useTranslation()
 
 	return (
 		<section className="flex flex-col items-center text-center gap-12">
