@@ -1,6 +1,7 @@
 # ══════════════════════════════════════════════════════
 #                  CLEAN TARGETS
 # ══════════════════════════════════════════════════════
+
 ##@ CLEAN
 info: ## Display Docker system information, build cache, etc. 
 	@docker system df
@@ -28,11 +29,11 @@ nuke: ## Full wipe — stops stack, removes volumes + images.
  
 	@echo ""
 	@echo $(CYAN)"<Stopping stack and removing containers + volumes>"$(RES)
-	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --volumes --remove-orphans
+	@docker compose -f $(COMPOSE_ALL) down --volumes --remove-orphans
 	@docker volume prune -f
  
 	@echo $(CYAN)"<Removing images built by this stack>"$(RES)
-	@docker compose -f $(COMPOSE_FILE) down --rmi local 2>/dev/null || true
+	@docker compose -f $(COMPOSE_ALL) down --rmi local 2>/dev/null || true
 	@docker image prune -f
  
 	@echo $(CYAN)"<Removing postgres:$(POSTGRES_VERSION)>"$(RES)
