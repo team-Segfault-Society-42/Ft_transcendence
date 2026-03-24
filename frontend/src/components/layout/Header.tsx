@@ -1,6 +1,9 @@
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from "react-i18next"
 
 export default function Header() {
+    const { t } = useTranslation()
+
     return (
         <header className="w-full text-center py-6 text-white/20 border-t border-white/10 bg-black/20 backdrop-blur">
 
@@ -14,7 +17,7 @@ export default function Header() {
                             : "text-white/40 hover:text-white transition-colors"
                     }
                 >
-                    Home
+                    {t("header.home")}
                 </NavLink>
 
                 <NavLink
@@ -25,7 +28,7 @@ export default function Header() {
                             : "text-white/40 hover:text-white transition-colors"
                     }
                 >
-                    Game
+                    {t("header.game")}
                 </NavLink>
 
                 <NavLink
@@ -36,7 +39,7 @@ export default function Header() {
                             : "text-white/40 hover:text-white transition-colors"
                     }
                 >
-                    Profile
+                    {t("header.profile")}
                 </NavLink>
 
             </nav>

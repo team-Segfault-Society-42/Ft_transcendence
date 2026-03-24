@@ -1,5 +1,76 @@
 {
     "welcome": "Welcome",
     "play": "Play",
-    "signup": "Sign up"
+    "signup": "Sign up",
+
+    "title": "ft_transcendence",
+    "home": {
+        "hero":{
+            "texte": "Play. Compete. Improve. Challenge players and become the best."
+        },
+        "buttons":{
+            "register": "Register",
+            "start": "START GAME"
+        },
+        "cards":{
+            "home":{
+                "title": "🏠 Home",
+                "description": "Welcome to the main page ! Explore the app !"
+            },
+            "game":{
+                "title": "🎮 Game",
+                "description": "Start a match and challenge yourself."
+            },
+            "profile":{
+                "title": "👤 Profile",
+                "description": "View your stats and customize your profile."
+            }
+        }
+    },
+    
+    "privacy": {
+        "title": "Privacy Policy",
+        "intro": "This application collects and processes user data in order to provide its services.",
+        "data":{
+            "title": "Data collected",
+            "items": ["Username", "Game statistics", "Profile information"]
+        },
+        "usage":{
+            "title": "Usage",
+            "content": "Data is used only for application functionality and is not shared with third parties."
+        },
+        "security":{
+            "title": "Security",
+            "content": "We take appropriate measures to protect user data."
+        }
+    },
+
+    "terms": {
+        "title": "Terms of service",
+        "intro": "By using this application, you agree to the following terms.",
+        "usage":{
+            "title": "Usage",
+            "content": "Users must use the application respectfully and not attempt to exploit it."
+        },
+        "account": {
+            "title": "Accounts",
+            "content": "Users are responsible for their accounts and activity."
+        },
+        "limitation": {
+            "title": "Limitation",
+            "content": "The application is provided \"as is\" without guarantees."
+        }
+    },
+
+    "header": {
+        "home": "Home",
+        "game": "Game",
+        "profile": "Profile"
+    },
+
+    "footer": {
+        "projectname": "ft_transcendence",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service"
+    }
 }
