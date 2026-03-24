@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -49,7 +49,17 @@ export class AuthService {
 		}
 	}
 
-	login(loginDto: LoginDto) {
-		return {message: 'login endpoint reached' };
+	async login(loginDto: LoginDto) {
+		const user = await this.prisma.user.findUnique({
+			where: { email: loginDto.email },
+			});
+
+		if (!user) {
+			throw new UnauthorizedException('Invalid credentials');
+		}
+		return {
+			found : !!user,
+			email: user?.email ?? null,
+		};
 	}
 }
