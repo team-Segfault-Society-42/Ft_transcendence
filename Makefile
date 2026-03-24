@@ -23,7 +23,7 @@ SHOW_LOGS			= docker compose logs
 ##@ START STACK
 
 up: ##  Build and run all containers [DEV]
-	@echo $(GOLD)"Building in Dev Mode"$(RES)
+	@echo "$(GOLD)Building in Dev Mode$(RES)"
 	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d
 
 build: ##  Build all containers [DEV]
@@ -37,7 +37,7 @@ re: down build up ##  Stop, rebuild, and restart the full stack [DEV]
 reset: down-v no-cache up ##  Stop (remove volumes), full rebuild (no cache), restart containers [DEV]
 
 prod: ## Build and run all containers [PRODUCTION]
-	@echo $(GREEN)"Building in Production Mode"$(RES)
+	@echo "$(GREEN)Building in Production Mode$(RES)"
 	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) up -d
 
 .PHONY: up build no-cache re reset prod
@@ -70,6 +70,8 @@ ls: ## Display all images
 info: ## Display Docker system information, build cache, etc. 
 	@docker system df
 
+.PHONY: ps ls info
+
 # ══════════════════════════════════════════════════════
 #               	 	 LOGS
 # ══════════════════════════════════════════════════════
@@ -91,4 +93,4 @@ logs-back: ## Display logs for the backend container
 logs-db: ## Display logs for the database container
 	@$(SHOW_LOGS) $(SERVICE_DATABASE)
 
-.PHONY: ps ls logs logs-proxy logs-front logs-back
+.PHONY: logs logs-proxy logs-front logs-back logs-db

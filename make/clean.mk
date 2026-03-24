@@ -45,3 +45,5 @@ nuke: ## Full wipe — stops stack, removes volumes + images.
 	@echo "   Run \`make up\` to rebuild from scratch."
 	@echo ""
 	@docker system df
+	
+.PHONY: clean nuke
