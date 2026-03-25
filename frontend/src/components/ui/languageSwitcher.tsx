@@ -10,7 +10,7 @@ export default function LanguageSwitcher() {
 
 	return (
 		<div className="flex gap-2 text-sm font-bold uppercase">
-			{["EN", "FR", "ES"].map((lang) => (
+			{["en", "fr", "es"].map((lang) => (
 				<button
 					key={lang}
 					onClick={() => changeLang(lang)}
@@ -20,7 +20,7 @@ export default function LanguageSwitcher() {
 							: "text-white/40 hover:text-white"
 					}`}
 				>
-					{lang}
+					{lang.toUpperCase()}
 				</button>
 			))}
 		</div>

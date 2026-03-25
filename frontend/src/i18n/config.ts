@@ -7,12 +7,12 @@ import es from "./es.json"
 
 i18n.use(initReactI18next).init({
   resources: {
-    EN: { translation: en },
-    FR: { translation: fr },
-    ES: { translation: es },
+    en: { translation: en },
+    fr: { translation: fr },
+    es: { translation: es },
   },
-  lng: "EN",
-  fallbackLng: "EN",
+  lng: localStorage.getItem("lang") || "en",
+  fallbackLng: "en",
   interpolation: {
     escapeValue: false,
   },
