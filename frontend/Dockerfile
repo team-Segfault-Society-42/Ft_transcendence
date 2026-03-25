@@ -26,7 +26,7 @@ COPY . .
 RUN npm run build 
 
 # ── Stage 3: Production ──────────────────────────────────────────────────────
-FROM nginx:stable-alpine AS prod
+FROM nginx:1.28-alpine AS prod
 
 RUN rm -rf /usr/share/nginx/html/*
 COPY nginx.conf /etc/nginx/conf.d/default.conf
