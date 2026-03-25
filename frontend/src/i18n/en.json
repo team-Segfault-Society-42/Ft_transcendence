@@ -73,9 +73,9 @@
             "loading": "Connecting to server...",
             "change_method": "Change method"
           },   
-          "success": "User successfully created!",
-          "error": "An error occurred: ",
-          "errors": {
+        "success": "User successfully created!",
+        "error": "An error occurred: ",
+        "errors": {
             "username": "The username must be at least 3 characters long.",
             "email": "Invalid email address.",
             "password": "The password must be at least 8 characters long."
