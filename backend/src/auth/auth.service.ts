@@ -86,18 +86,35 @@ export class AuthService {
 	}
 
 	async me(authHeader: string) {
-		if (!authHeader) {
-			throw new UnauthorizedException('Missing token');
+	if (!authHeader) {
+		throw new UnauthorizedException('Missing token');
+	}
+
+	const token = authHeader.split(' ')[1];
+
+	try {
+		const payload = await this.jwtService.verifyAsync(token);
+
+		const user = await this.prisma.user.findUnique({
+		where: { id: payload.sub },
+		});
+
+		if (!user) {
+		throw new UnauthorizedException('Invalid token');
 		}
 
-		const token = authHeader.split(' ')[1];
-
-		try {
-			const payload = await this.jwtService.verifyAsync(token);
-
-			return payload;
-		} catch {
-			throw new UnauthorizedException('Invalid token');
-		}
+		return {
+		id: user.id,
+		email: user.email,
+		username: user.username,
+		bio: user.bio,
+		avatar: user.avatar,
+		wins: user.wins,
+		losses: user.losses,
+		draws: user.draws,
+		};
+	} catch {
+		throw new UnauthorizedException('Invalid token');
+	}
 	}
 }
