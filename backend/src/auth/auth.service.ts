@@ -84,4 +84,20 @@ export class AuthService {
 
 	return { access_token: accessToken,};
 	}
+
+	async me(authHeader: string) {
+		if (!authHeader) {
+			throw new UnauthorizedException('Missing token');
+		}
+
+		const token = authHeader.split(' ')[1];
+
+		try {
+			const payload = await this.jwtService.verifyAsync(token);
+
+			return payload;
+		} catch {
+			throw new UnauthorizedException('Invalid token');
+		}
+	}
 }
