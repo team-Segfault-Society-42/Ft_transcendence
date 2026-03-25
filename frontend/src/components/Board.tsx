@@ -1,5 +1,6 @@
 import Square from "./Square"
 import { useGameStore } from "../Store/gameStore";
+import { useTranslation } from "react-i18next"
 
 type Player = {
 	id: number;
@@ -10,8 +11,6 @@ type Player = {
 type BoardProps = {
 	players: { X: Player; O: Player };
 };
-
-
 
 export default function Board({ players }: BoardProps) {
 
@@ -30,21 +29,21 @@ export default function Board({ players }: BoardProps) {
 		} = useGameStore()
 
 	const toDisapear = idx > 5 ? queue[idx % 6] : -1
-
-
-
-	
-
 	
 	console.log(queue)
 	console.log(idx)
 	console.log(history)
 
+	const { t } = useTranslation()
+	
 	return (
 		<div className="relative inline-block text-center p-4">
-			<div className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${!isXturn ? "bg-cyan-500 text-white" : "bg-fuchsia-500 text-white"
-				}`}>
-				{isXturn ? `${players.O.nickname}'s Turn O` : `${players.X.nickname}'s Turn X`}
+
+			<div className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${!isXturn ? "bg-cyan-500 text-white" : "bg-fuchsia-500 text-white"}`}>
+				{isXturn
+  					? t("game.turn", { player: players.O.nickname, symbol: "O" })
+  					: t("game.turn", { player: players.X.nickname, symbol: "X" })
+				}
 			</div>
 
 			<div className="grid grid-cols-3 gap-4 mb-8 text-white">
@@ -61,7 +60,9 @@ export default function Board({ players }: BoardProps) {
 				</div>
 
 				<div className="bg-gray-700 p-4 rounded flex flex-col items-center justify-center">
-					<p className="text-sm">VS</p>
+					<p className="text-sm">
+						{t("game.vs")}
+					</p>
 				</div>
 
 				<div className="bg-gray-800 p-4 rounded flex flex-col items-center">
@@ -88,14 +89,13 @@ export default function Board({ players }: BoardProps) {
 										? "text-cyan-500"
 										: "text-fuchsia-500"
 								}`}>
-								🎉 {players[winner as 'X' | 'O'].nickname} WINS!
+								🎉 {players[winner as 'X' | 'O'].nickname} {t("game.wins")}
 							</h2>
 
 							<button
 								className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-								onClick={replayGame}
-							>
-								REPLAY
+								onClick={replayGame}>
+								{t("game.replay")}
 							</button>
 						</div>
 					</div>
@@ -107,12 +107,14 @@ export default function Board({ players }: BoardProps) {
 				))}
 			</div>
 
-			<p className="mt-6 text-white/60 font-medium italic">2 players mode</p>
+			<p className="mt-6 text-white/60 font-medium italic">
+				{t("game.mode")}
+			</p>
+
 			<button
 				className="mt-12 bg-white/10 hover:bg-white/20 text-white border border-white/30 px-10 py-2 rounded-lg font-bold transition-all"
-				onClick={resetSession}
-			>
-				RESET SESSION
+				onClick={resetSession}>
+				{t("game.reset")}
 			</button>
 		</div >
 	)

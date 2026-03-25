@@ -1,0 +1,124 @@
+{
+    "title": "ft_transcendence",
+
+    "header": {
+        "home": "Home",
+        "game": "Game",
+        "profile": "Profile"
+    },
+
+    "home": {
+        "hero":{
+            "texte": "Play. Compete. Improve. Challenge players and become the best."
+        },
+        "buttons":{
+            "register": "Register",
+            "start": "START GAME"
+        },
+        "cards":{
+            "home":{
+                "title": "🏠 Home",
+                "description": "Welcome to the main page ! Explore the app !"
+            },
+            "game":{
+                "title": "🎮 Game",
+                "description": "Start a match and challenge yourself."
+            },
+            "profile":{
+                "title": "👤 Profile",
+                "description": "View your stats and customize your profile."
+            }
+        }
+    },
+
+    "game": {
+        "turn": "{{player}}'s Turn {{symbol}}",
+        "vs": "VS",
+        "wins": "WINS!",
+        "replay": "REPLAY",
+        "mode": "2 players mode",
+        "reset": "RESET SESSION"
+    },
+
+    "profile": {
+        "loading": "Loading...",
+        "stats": {
+            "wins": "Wins",
+            "losses": "Losses",
+            "winrate": "Winrate",
+            "games": "{{count}} games played"
+        },
+        "bio": "Bio",
+        "buttons": {
+            "edit": "Edit profile",
+            "save": "Save changes"
+        }
+    },
+
+    "auth": {
+        "title": "Segfault Society",
+        "description": "Create your account",
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+      
+        "placeholders": {
+            "username": "Enter your username",
+            "email": "example@42.ch",
+            "password": "Your secure password"
+          },
+      
+        "buttons": {
+            "register": "Register",
+            "loading": "Connecting to server...",
+            "change_method": "Change method"
+          },   
+        "success": "User successfully created!",
+        "error": "An error occurred: ",
+        "errors": {
+            "username": "The username must be at least 3 characters long.",
+            "email": "Invalid email address.",
+            "password": "The password must be at least 8 characters long."
+          }
+      },
+
+    "footer": {
+        "projectname": "ft_transcendence",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service"
+    },
+
+    "privacy": {
+        "title": "Privacy Policy",
+        "intro": "This application collects and processes user data in order to provide its services.",
+        "data":{
+            "title": "Data collected",
+            "items": ["Username", "Game statistics", "Profile information"]
+        },
+        "usage":{
+            "title": "Usage",
+            "content": "Data is used only for application functionality and is not shared with third parties."
+        },
+        "security":{
+            "title": "Security",
+            "content": "We take appropriate measures to protect user data."
+        }
+    },
+
+    "terms": {
+        "title": "Terms of service",
+        "intro": "By using this application, you agree to the following terms.",
+        "usage":{
+            "title": "Usage",
+            "content": "Users must use the application respectfully and not attempt to exploit it."
+        },
+        "account": {
+            "title": "Accounts",
+            "content": "Users are responsible for their accounts and activity."
+        },
+        "limitation": {
+            "title": "Limitation",
+            "content": "The application is provided \"as is\" without guarantees."
+        }
+    }
+}

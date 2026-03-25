@@ -1,28 +1,46 @@
+import { useTranslation } from "react-i18next"
+
 export default function Privacy() {
+    const { t } = useTranslation()
+
     return (
         <div className="max-w-3xl mx-auto text-white p-6">
-            <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
+            
+            <h1 className="text-3xl font-bold mb-4">
+                {t("privacy.title")}
+            </h1>
 
             <p className="mb-4">
-                This application collects and processes user data in order to provide its services.
+                {t("privacy.intro")}
             </p>
 
-            <h2 className="text-xl font-semibold mt-4">Data collected</h2>
+            <h2 className="text-xl font-semibold mt-4">
+                {t("privacy.data.title")}
+            </h2>
+
             <ul className="list-disc ml-6">
-                <li>Username</li>
-                <li>Game statistics</li>
-                <li>Profile information</li>
+                {(t("privacy.data.items", { returnObjects: true }) as string[]).map((item, i) => (
+                <li key={i}>
+                    {item}
+                </li>))}
             </ul>
 
-            <h2 className="text-xl font-semibold mt-4">Usage</h2>
+            <h2 className="text-xl font-semibold mt-4">
+                {t("privacy.usage.title")}
+            </h2>
+
             <p>
-                Data is used only for application functionality and is not shared with third parties.
+                {t("privacy.usage.content")}
             </p>
 
-            <h2 className="text-xl font-semibold mt-4">Security</h2>
+            <h2 className="text-xl font-semibold mt-4">
+                {t("privacy.security.title")}
+            </h2>
+
             <p>
-                We take appropriate measures to protect user data.
+                {t("privacy.security.content")}
             </p>
+
         </div>
     )
 }

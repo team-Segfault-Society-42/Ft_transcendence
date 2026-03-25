@@ -8,15 +8,17 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription,} from "@/components/ui/dialog";
-
+import { useTranslation } from "react-i18next"
 
 export default function SignupModal(props) {
 
-    const formSchema = z.object({
-        username: z.string().min(3, "The username must be longer than 3 characters."),
-        email: z.string().email("Invalid email adress."),
-        password: z.string().min(6, "The password must be 6 characters"),
-    })
+	const { t } = useTranslation()
+
+	const formSchema = z.object({
+		username: z.string().min(3, { message: t("auth.errors.username") }),
+		email: z.string().email({ message: t("auth.errors.email") }),
+		password: z.string().min(6, { message: t("auth.errors.password") }),
+	})	
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -27,21 +29,19 @@ export default function SignupModal(props) {
     })
 
     const [isLoading, setIsLoading] = useState(false)
-    const [isSuccess, setIsSuccess] = useState(false)
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
         try {
 			setIsLoading(true)
             await userService.createUser(data)
-            toast.success("User successfully created!", {position: "top-left" })
+            toast.success(t("auth.success"), {position: "top-left" })
 			form.reset()
-            setIsSuccess(true)
             setTimeout(() => {props.onClose();}, 2000 )
 
         } catch(error: any){
 			const serverMessage = error.response?.data?.message || error.message
 			const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
-            toast.error("Error : " + finalMessage, { position: "bottom-right" })
+            toast.error(t("auth.error") + finalMessage, { position: "bottom-right" })
         } finally {
             setIsLoading(false)
         }
@@ -49,11 +49,13 @@ export default function SignupModal(props) {
 
 return (
     <Dialog open={props.isOpen} onOpenChange={props.onClose}>
-       <DialogContent className="sm:max-w-[425px] bg-slate-800 border-slate-800 text-white">
+       <DialogContent className="sm:max-w-106.25 bg-slate-800 border-slate-800 text-white">
 			<DialogHeader>
-				<DialogTitle className="text-2xl font-bold text-cyan-600">Segfault Society</DialogTitle>
+				<DialogTitle className="text-2xl font-bold text-cyan-600">
+					{t("auth.title")}
+				</DialogTitle>
 				<DialogDescription className="text-slate-300">
-					Create your account 
+					{t("auth.description")}
 				</DialogDescription>
 			</DialogHeader>
 				<Form {...form}>
@@ -63,9 +65,11 @@ return (
   						name="username"
   						render={({ field }) => (
     					<FormItem>
-      					<FormLabel>Username</FormLabel>
+      					<FormLabel>
+							{t("auth.username")}
+						</FormLabel>
       					<FormControl>
-        				<Input placeholder="Enter your username" className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+        				<Input placeholder={t("auth.placeholders.username")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
       					</FormControl>
      					 <FormMessage />
     					</FormItem>
@@ -76,9 +80,11 @@ return (
   						name="email"
   						render={({ field }) => (
     					<FormItem>
-      					<FormLabel>Email</FormLabel>
+      					<FormLabel>
+							{t("auth.email")}
+						</FormLabel>
       					<FormControl>
-        				<Input type='email' placeholder="exemple@42.ch" className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+        				<Input type='email' placeholder={t("auth.placeholders.email")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
       					</FormControl>
      					 <FormMessage />
     					</FormItem>
@@ -89,19 +95,21 @@ return (
   						name="password"
   						render={({ field }) => (
     					<FormItem>
-      					<FormLabel>Password</FormLabel>
+      					<FormLabel>
+							{t("auth.password")}
+						</FormLabel>
       					<FormControl>
-						<Input type='password' placeholder="Qwertzuiop42#" className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+						<Input type='password' placeholder={t("auth.placeholders.password")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
       					</FormControl>
      					 <FormMessage />
     					</FormItem>
   						)}
 					/>
         				<Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
-            			{isLoading ? "Connection to server..." : "REGISTER"}
+            			{isLoading ? t("auth.buttons.loading") : t("auth.buttons.register")}
         				</Button>
 						<Button type="button" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
-            			{"CHANGE METHOD"}
+            				{t("auth.buttons.change_method")}
         				</Button>
     				</form>
 			</Form>
