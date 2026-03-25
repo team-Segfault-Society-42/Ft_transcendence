@@ -32,6 +32,13 @@ services:
       - server-side
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      - ./backend:/app                          # reflect host changes instantly
+      - backend_node_modules:/app/node_modules  # prevent node_module overwrite in container
+    secrets:
+      - backend_pw
+      - jwt_secret
     depends_on:
       db:
         condition: service_healthy
@@ -80,6 +87,7 @@ services:
 # ── Docker Volumes ──────────────────────────────────────────────────────────
 volumes:
   postgres_data:
+  backend_node_modules:
 
 # ── Docker Secrets ──────────────────────────────────────────────────────────
 secrets:
@@ -87,3 +95,5 @@ secrets:
     file: ./secrets/backend_pw.txt
   postgres_root_pw:
     file: ./secrets/postgres_root_pw.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt
