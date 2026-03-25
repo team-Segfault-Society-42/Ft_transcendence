@@ -41,7 +41,7 @@ export async function updateUser(id, data) {
 
 export async function createUser(data) {
     try {
-        const response = await fetch(url + "users", 
+        const response = await fetch(url + "auth/register", 
         {
             method: 'POST',
             headers: {
