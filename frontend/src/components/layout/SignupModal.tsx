@@ -95,13 +95,6 @@ return (
   						)}
 					/>
 					
-					
-
-						
-
-
-
-        
         				<Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
             			{isLoading ? "Connection to server..." : "REGISTER"}
         				</Button>
