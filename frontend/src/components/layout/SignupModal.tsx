@@ -13,7 +13,7 @@ import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription,} from 
 export default function SignupModal(props) {
 
     const formSchema = z.object({
-        username: z.string().min(3, "The username must be longer than 3 characters."), // add here error message in all language
+        username: z.string().min(3, "The username must be longer than 3 characters."),
         email: z.string().email("Invalid email adress."),
         password: z.string().min(6, "The password must be 6 characters"),
     })
@@ -107,7 +107,5 @@ return (
 			</Form>
 	   </DialogContent>
     </Dialog>
-);
-
-
+	);
 }
