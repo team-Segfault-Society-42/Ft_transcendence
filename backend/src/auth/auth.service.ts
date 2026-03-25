@@ -1,6 +1,7 @@
 import {
 	ConflictException,
 	Injectable,
+	NotFoundException,
 	UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -11,110 +12,98 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  constructor(
-	private readonly prisma: PrismaService,
-	private readonly jwtService: JwtService,
-  ) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly jwtService: JwtService,
+	) {}
 
-  async register(registerDto: RegisterDto) {
-	const passwordHash = await bcrypt.hash(registerDto.password, 10);
+	async register(registerDto: RegisterDto) {
+		const passwordHash = await bcrypt.hash(registerDto.password, 10);
 
-	try {
-	  const user = await this.prisma.user.create({
-		data: {
-			email: registerDto.email,
-			passwordHash,
-			username: registerDto.username,
-			bio: registerDto.bio ?? '',
-			avatar: registerDto.avatar ?? 'default.png',
-			wins: 0,
-			losses: 0,
-			draws: 0,
-		},
-	  });
+		try {
+			const user = await this.prisma.user.create({
+				data: {
+					email: registerDto.email,
+					passwordHash,
+					username: registerDto.username,
+					bio: registerDto.bio ?? '',
+					avatar: registerDto.avatar ?? 'default.png',
+					wins: 0,
+					losses: 0,
+					draws: 0,
+				},
+			});
 
-	  return {
-		id: user.id,
-		email: user.email,
-		username: user.username,
-		bio: user.bio,
-		avatar: user.avatar,
-		wins: user.wins,
-		losses: user.losses,
-		draws: user.draws,
-	  };
-	} catch (error: unknown) {
-	  if (
-		typeof error === 'object' &&
-		error !== null &&
-		'code' in error &&
-		error.code === 'P2002'
-	  ) {
-		throw new ConflictException('Email or username already exists');
-	  }
+			return {
+				id: user.id,
+				email: user.email,
+				username: user.username,
+				bio: user.bio,
+				avatar: user.avatar,
+				wins: user.wins,
+				losses: user.losses,
+				draws: user.draws,
+			};
+		} catch (error: unknown) {
+			if (
+				typeof error === 'object' &&
+				error !== null &&
+				'code' in error &&
+				error.code === 'P2002'
+			) {
+				throw new ConflictException('Email or username already exists');
+			}
 
-	  throw error;
-	}
-  }
-
-  async login(loginDto: LoginDto) {
-	const user = await this.prisma.user.findUnique({
-	  where: { email: loginDto.email },
-	});
-
-	if (!user) {
-	  throw new UnauthorizedException('Invalid credentials');
+			throw error;
+		}
 	}
 
-	const passwordMatches = await bcrypt.compare(
-	  loginDto.password,
-	  user.passwordHash,
-	);
-
-	if (!passwordMatches) {
-	  throw new UnauthorizedException('Invalid credentials');
-	}
-
-	const payload = {
-		sub: user.id,
-		email: user.email,
-	};
-
-	const accessToken = await this.jwtService.signAsync(payload);
-
-	return { access_token: accessToken,};
-	}
-
-	async me(authHeader: string) {
-	if (!authHeader) {
-		throw new UnauthorizedException('Missing token');
-	}
-
-	const token = authHeader.split(' ')[1];
-
-	try {
-		const payload = await this.jwtService.verifyAsync(token);
-
+	async login(loginDto: LoginDto) {
 		const user = await this.prisma.user.findUnique({
-		where: { id: payload.sub },
+			where: { email: loginDto.email },
 		});
 
 		if (!user) {
-		throw new UnauthorizedException('Invalid token');
+			throw new UnauthorizedException('Invalid credentials');
+		}
+
+		const passwordMatches = await bcrypt.compare(
+			loginDto.password,
+			user.passwordHash,
+		);
+
+		if (!passwordMatches) {
+			throw new UnauthorizedException('Invalid credentials');
+		}
+
+		const payload = {
+			sub: user.id,
+			email: user.email,
+		};
+
+		const accessToken = await this.jwtService.signAsync(payload);
+
+		return { access_token: accessToken };
+	}
+
+	async me(userId: number) {
+		const user = await this.prisma.user.findUnique({
+			where: { id: userId },
+		});
+
+		if (!user) {
+			throw new NotFoundException('User not found');
 		}
 
 		return {
-		id: user.id,
-		email: user.email,
-		username: user.username,
-		bio: user.bio,
-		avatar: user.avatar,
-		wins: user.wins,
-		losses: user.losses,
-		draws: user.draws,
+			id: user.id,
+			email: user.email,
+			username: user.username,
+			bio: user.bio,
+			avatar: user.avatar,
+			wins: user.wins,
+			losses: user.losses,
+			draws: user.draws,
 		};
-	} catch {
-		throw new UnauthorizedException('Invalid token');
-	}
 	}
 }
