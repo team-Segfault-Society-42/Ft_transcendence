@@ -54,7 +54,34 @@
             "save": "Save changes"
         }
     },
-    
+
+    "auth": {
+        "title": "Segfault Society",
+        "description": "Create your account",
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+      
+        "placeholders": {
+            "username": "Enter your username",
+            "email": "example@42.ch",
+            "password": "Your secure password"
+          },
+      
+        "buttons": {
+            "register": "Register",
+            "loading": "Connecting to server...",
+            "change_method": "Change method"
+          },   
+          "success": "User successfully created!",
+          "error": "An error occurred: ",
+          "errors": {
+            "username": "The username must be at least 3 characters long.",
+            "email": "Invalid email address.",
+            "password": "The password must be at least 8 characters long."
+          }
+      },
+
     "footer": {
         "projectname": "ft_transcendence",
         "privacy": "Privacy Policy",
