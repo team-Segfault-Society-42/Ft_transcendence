@@ -15,7 +15,7 @@ export default function SignupModal(props) {
     const formSchema = z.object({
         username: z.string().min(3, "The username must be longer than 3 characters."), // add here error message in all language
         email: z.string().email("Invalid email adress."),
-        password: z.string().min(8, "The password must be 8 characters"),
+        password: z.string().min(6, "The password must be 6 characters"),
     })
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -34,11 +34,14 @@ export default function SignupModal(props) {
 			setIsLoading(true)
             await userService.createUser(data)
             toast.success("User successfully created!", {position: "top-left" })
+			form.reset()
             setIsSuccess(true)
             setTimeout(() => {props.onClose();}, 2000 )
 
         } catch(error: any){
-            toast.error("Error : " + error.message, { position: "bottom-right" })
+			const serverMessage = error.response?.data?.message || error.message
+			const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
+            toast.error("Error : " + finalMessage, { position: "bottom-right" })
         } finally {
             setIsLoading(false)
         }
@@ -94,7 +97,6 @@ return (
     					</FormItem>
   						)}
 					/>
-					
         				<Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
             			{isLoading ? "Connection to server..." : "REGISTER"}
         				</Button>
@@ -103,7 +105,6 @@ return (
         				</Button>
     				</form>
 			</Form>
-
 	   </DialogContent>
     </Dialog>
 );
