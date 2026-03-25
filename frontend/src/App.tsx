@@ -5,19 +5,21 @@ import Game from './pages/Game';
 import Profile from './pages/Profile';
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import { Toaster } from "sonner";
 
 function App() {
 	return (
 		<div>
 			<Routes>
 				<Route element={<MainLayout />}>
-					<Route path="/" element={<Home />} />
+					<Route path="/" element={<Home /> } Toaster richColors theme="dark" />
 					<Route path="/game" element={<Game />} />
 					<Route path="/profile" element={<Profile />} />
 					<Route path="/privacy" element={<Privacy />} />
 					<Route path="/terms" element={<Terms />} />
 				</Route>
 			</Routes>
+			<Toaster richColors theme="dark" />
 		</div>
 	);
 }
