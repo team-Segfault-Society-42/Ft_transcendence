@@ -12,7 +12,7 @@ function App() {
 		<div>
 			<Routes>
 				<Route element={<MainLayout />}>
-					<Route path="/" element={<Home /> } Toaster richColors theme="dark" />
+					<Route path="/" element={<Home /> }/>
 					<Route path="/game" element={<Game />} />
 					<Route path="/profile" element={<Profile />} />
 					<Route path="/privacy" element={<Privacy />} />
