@@ -12,3 +12,16 @@ export function isCellEmpty(
 ): boolean {
   return gameState.board[position.r][position.c] === null;
 }
+
+export function initGameState(): GameState {
+  return {
+    board: [
+      [null, null, null],
+      [null, null, null],
+      [null, null, null],
+    ],
+    currentPlayer: 'X',
+    status: 'playing',
+    winner: null,
+  };
+}

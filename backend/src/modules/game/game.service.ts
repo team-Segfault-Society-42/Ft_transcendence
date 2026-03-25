@@ -6,17 +6,12 @@ import {
   CellValue,
   GameStatus,
 } from './game.types';
+import { initGameState } from './game.logic';
 
 @Injectable()
 export class GameService {
-  private gameState: GameState = {
-    board: [
-      [null, null, null],
-      [null, null, null],
-      [null, null, null],
-    ],
-    currentPlayer: 'X',
-    status: 'playing',
-    winner: null,
-  };
+  private gameState: GameState = initGameState();
+  getGameState(): GameState {
+    return; //...
+  }
 }
