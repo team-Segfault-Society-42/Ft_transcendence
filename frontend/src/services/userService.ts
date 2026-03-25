@@ -1,62 +1,25 @@
-const url = "http://localhost:1024/api/"
+import axios from 'axios'
+
+const api = axios.create({
+    baseURL: "http://localhost:1024/api/",
+    headers: {
+        'Content-Type': 'application/json',
+    },
+})
+
+export async function createUser(data) {
+    const response = await api.post('auth/register', data)
+    return response.data;
+}
 
 export async function getUser(id) {
-
-    try {
-        const response = await fetch(url + "users/" + id)
-        if (!response.ok) {
-            throw new Error("User not found") // change here to backend message
-        }
-        const res = await response.json()
-        console.log(res) // debug
-        return (res)
-
-    } catch (error: any) {
-        console.log("Error : " + error.message)
-        throw new Error("User not found") // change here to backend message
-    }
+    const response = await api.get('users/' + id)
+    return response.data
 }
 
 export async function updateUser(id, data) {
-    try {
-        const response = await fetch(url + "users/" + id, 
-        {
-                method: 'PATCH',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            })
-        if (!response.ok) {
-            throw new Error("Edit not permited") // change here to backend message
-        }
-        const res = await response.json()
-        console.log(res) // debug
-        return (res)
-    } catch (error: any) {
-        console.log("Error : " + error.message)
-        throw new Error("Edit not permited") // change here to backend message
-    }
-}
-
-export async function createUser(data) {
-    try {
-        const response = await fetch(url + "auth/register", 
-        {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        })
-        if (!response.ok) {
-        throw Error("User creation failed !") // change here to backend message
-    }
-    const res = await response.json()
-    return res
-    } catch (error: any) {
-        throw Error("User creation failed !") // change here to backend message
-    }
+    const response = await api.patch('users/' + id, data)
+    return response.data
 }
 
 export const userService = {
