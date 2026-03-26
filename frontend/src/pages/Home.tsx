@@ -73,7 +73,6 @@ export default function Home() {
 					isOpen={activeModal === "login"}
 					onClose={closeModals}/>
 			</div>
-
 		</section>
 	)
 }

@@ -16,13 +16,11 @@ export default function LoginModal(props) {
 
     const { t } = useTranslation() 
     const navigate = useNavigate()
-
     const loginSchema = z.object({
         email: z.string().email( { message: t("auth.errors.email")}),
         password: z.string().min(6, { message: t("auth.errors.password") }),
 
     })
-
     const form = useForm({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -50,57 +48,55 @@ export default function LoginModal(props) {
         }
     }
 
-return (
-    <Dialog open={props.isOpen} onOpenChange={props.onClose}>
-       <DialogContent className="sm:max-w-106.25 bg-slate-800 border-slate-800 text-white">
-			<DialogHeader>
-				<DialogTitle className="text-2xl font-bold text-cyan-600">
-					{t("auth.title")}
-				</DialogTitle>
-				<DialogDescription className="text-slate-300">
-					{t("auth.description")}
-				</DialogDescription>
-			</DialogHeader>
-				<Form {...form}>
-    				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-						<FormField
-  						control={form.control}
-  						name="email"
-  						render={({ field }) => (
-    					<FormItem>
-      					<FormLabel>
-							{t("auth.email")}
-						</FormLabel>
-      					<FormControl>
-        				<Input placeholder={t("auth.placeholders.email")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
-      					</FormControl>
-     					 <FormMessage />
-    					</FormItem>
-  						)}
-					/>
-						<FormField
-  						control={form.control}
-  						name="password"
-  						render={({ field }) => (
-    					<FormItem>
-      					<FormLabel>
-							{t("auth.password")}
-						</FormLabel>
-      					<FormControl>
-						<Input type='password' placeholder={t("auth.placeholders.password")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
-      					</FormControl>
-     					 <FormMessage />
-    					</FormItem>
-  						)}
-					/>
-        				<Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
-            			{isLoading ? t("auth.buttons.loading") : t("auth.buttons.login")}
-        				</Button>
-    				</form>
-			</Form>
-	   </DialogContent>
-    </Dialog>
+    return (
+        <Dialog open={props.isOpen} onOpenChange={props.onClose}>
+            <DialogContent className="sm:max-w-106.25 bg-slate-800 border-slate-800 text-white">
+			    <DialogHeader>
+				    <DialogTitle className="text-2xl font-bold text-cyan-600">
+					    {t("auth.title")}
+				    </DialogTitle>
+				    <DialogDescription className="text-slate-300">
+					    {t("auth.description")}
+				    </DialogDescription>
+			    </DialogHeader>
+				    <Form {...form}>
+    				    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+						    <FormField
+  						    control={form.control}
+  						    name="email"
+  						    render={({ field }) => (
+    					    <FormItem>
+      					    <FormLabel>
+							    {t("auth.email")}
+						    </FormLabel>
+      					    <FormControl>
+        				    <Input placeholder={t("auth.placeholders.email")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+      					    </FormControl>
+     					    <FormMessage />
+    					    </FormItem>
+  						    )}
+					    />
+						    <FormField
+  						    control={form.control}
+  						    name="password"
+  						    render={({ field }) => (
+    					    <FormItem>
+      					    <FormLabel>
+							    {t("auth.password")}
+						    </FormLabel>
+      					    <FormControl>
+						    <Input type='password' placeholder={t("auth.placeholders.password")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+      					    </FormControl>
+     					    <FormMessage />
+    					    </FormItem>
+  						    )}
+					    />
+        				    <Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
+            			    {isLoading ? t("auth.buttons.loading") : t("auth.buttons.login")}
+        				    </Button>
+    				    </form>
+			        </Form>
+	        </DialogContent>
+        </Dialog>
 	);
-
-
 }
