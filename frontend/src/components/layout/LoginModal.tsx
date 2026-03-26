@@ -18,8 +18,8 @@ export default function LoginModal(props) {
     const navigate = useNavigate()
 
     const loginSchema = z.object({
-        email: z.string().email( { message: "auth.errors.email"}),
-        password: z.string().min(6, { message: "auth.errors.password" }),
+        email: z.string().email( { message: t("auth.errors.email")}),
+        password: z.string().min(6, { message: t("auth.errors.password") }),
 
     })
 
@@ -37,7 +37,7 @@ export default function LoginModal(props) {
         try {
             setIsLoading(true)
             await userService.userLogin(data)
-            navigate("/")
+            navigate("/profile")
             toast.success(t("auth.success"), { position: "top-left" })
             form.reset()
             setTimeout(() => {props.onClose();}, 500 )
