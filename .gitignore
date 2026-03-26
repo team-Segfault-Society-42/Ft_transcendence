@@ -1,14 +1,15 @@
 # Secrets
 /secrets
+.env*
+!.env.example
 
 # compiled output
+node_modules/
+**/node_modules/
 /backend/dist
-/backend/node_modules
-/frontend/node_modules
+/frontend/dist
 /backend/build
 /docs
-/backend/.gitignore
-
 
 # Logs
 logs
@@ -21,6 +22,7 @@ lerna-debug.log*
 
 # OS
 .DS_Store
+**/.DS_Store
 
 # Tests
 /coverage
@@ -43,7 +45,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # dotenv environment variable files
-.env
+# (Already covered by .env* in Secrets, but listed here for clarity)
 .env.development.local
 .env.test.local
 .env.production.local
