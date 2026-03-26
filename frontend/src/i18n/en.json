@@ -13,6 +13,7 @@
         },
         "buttons":{
             "register": "Register",
+            "login": "Login",
             "start": "START GAME"
         },
         "cards":{

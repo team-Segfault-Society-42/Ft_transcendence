@@ -13,6 +13,7 @@
         },
         "buttons":{
             "register": "S'enregistrer",
+            "login": "Se connecter",
             "start": "LANCER LA PARTIE"
         },
         "cards":{

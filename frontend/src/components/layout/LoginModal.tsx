@@ -37,14 +37,14 @@ export default function LoginModal(props) {
         try {
             setIsLoading(true)
             await userService.userLogin(data)
-            navigate("/home")
-            toast.success(t("login.success"), { position: "top-left" })
+            navigate("/")
+            toast.success(t("auth.success"), { position: "top-left" })
             form.reset()
             setTimeout(() => {props.onClose();}, 2000 )
         } catch (error: any) {
             const serverMessage = error.response?.data?.message || error.message
 			const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
-            toast.error(t("login.error") + finalMessage, { position: "bottom-right" })
+            toast.error(t("auth.error") + finalMessage, { position: "bottom-right" })
         } finally {
             setIsLoading(false)
         }
