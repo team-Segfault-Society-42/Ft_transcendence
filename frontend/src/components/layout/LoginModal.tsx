@@ -40,7 +40,7 @@ export default function LoginModal(props) {
             navigate("/")
             toast.success(t("auth.success"), { position: "top-left" })
             form.reset()
-            setTimeout(() => {props.onClose();}, 2000 )
+            setTimeout(() => {props.onClose();}, 500 )
         } catch (error: any) {
             const serverMessage = error.response?.data?.message || error.message
 			const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
@@ -94,10 +94,7 @@ return (
   						)}
 					/>
         				<Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
-            			{isLoading ? t("auth.buttons.loading") : t("auth.buttons.register")}
-        				</Button>
-						<Button type="button" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
-            				{t("auth.buttons.change_method")}
+            			{isLoading ? t("auth.buttons.loading") : t("auth.buttons.login")}
         				</Button>
     				</form>
 			</Form>

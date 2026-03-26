@@ -72,7 +72,8 @@
         "buttons": {
             "register": "Register",
             "loading": "Connecting to server...",
-            "change_method": "Change method"
+            "change_method": "Change method",
+            "login": "Login"
           },   
         "success": "User successfully created!",
         "error": "An error occurred: ",
