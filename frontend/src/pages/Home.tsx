@@ -2,10 +2,20 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import SignupModal from "../components/layout/SignupModal"
 import { useTranslation } from "react-i18next"
+import { LoginModal } from '../components/layout/LoginModal.tsx'
 
 export default function Home() {
 	const [showSignup, setShowSignup] = useState(false)
+	const [activeModal, setActiveModal] = useState("signup")
 	const { t } = useTranslation()
+
+	function openLogin() {
+		setActiveModal("login")
+	}
+
+	function closeModals() {
+		setActiveModal("")
+	}
 
 	return (
 		<section className="flex flex-col items-center text-center gap-12">

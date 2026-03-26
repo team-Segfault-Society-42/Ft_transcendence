@@ -7,6 +7,11 @@ const api = axios.create({
     },
 })
 
+export async function userLogin(data) {
+    const response = await api.post('auth/login', data)
+    return response.data
+}
+
 export async function createUser(data) {
     const response = await api.post('auth/register', data)
     return response.data;
@@ -25,5 +30,6 @@ export async function updateUser(id, data) {
 export const userService = {
     getUser,
     updateUser,
-    createUser
+    createUser,
+    userLogin,
 }
