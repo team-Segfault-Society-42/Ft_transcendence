@@ -2,20 +2,15 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import SignupModal from "../components/layout/SignupModal"
 import { useTranslation } from "react-i18next"
-import { LoginModal } from '../components/layout/LoginModal.tsx'
+import  LoginModal  from '../components/layout/LoginModal.tsx'
 
 export default function Home() {
-	const [showSignup, setShowSignup] = useState(false)
-	const [activeModal, setActiveModal] = useState("signup")
+	const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(null)
 	const { t } = useTranslation()
 
-	function openLogin() {
-		setActiveModal("login")
-	}
-
-	function closeModals() {
-		setActiveModal("")
-	}
+	const openLogin = () => setActiveModal("login")
+	const openSignup = () => setActiveModal("signup")
+	const closeModals = () => setActiveModal(null)
 
 	return (
 		<section className="flex flex-col items-center text-center gap-12">
@@ -34,9 +29,15 @@ export default function Home() {
 
 			{/* REGISTER */}
 			<button
-				onClick={() => setShowSignup(true)}
+				onClick={openSignup}
 				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95">
 				{t("home.buttons.register")}
+			</button>
+			{/* LOGIN */}
+			<button
+				onClick={openLogin}
+				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95">
+				{t("home.buttons.login")}
 			</button>
 
 			{/* START GAME */}
@@ -48,8 +49,8 @@ export default function Home() {
 
 			{/* MODAL */}
 			<SignupModal
-				isOpen={showSignup}
-				onClose={() => setShowSignup(false)}/>
+				isOpen={activeModal === "signup"}
+				onClose={closeModals}/>
 
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
 
@@ -68,6 +69,9 @@ export default function Home() {
 					<p className="text-white/70 text-sm">{t("home.cards.profile.description")}</p>
 				</Link>
 
+				<LoginModal 
+					isOpen={activeModal === "login"}
+					onClose={closeModals}/>
 			</div>
 
 		</section>
