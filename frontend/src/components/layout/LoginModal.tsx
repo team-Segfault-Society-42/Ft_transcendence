@@ -11,8 +11,13 @@ import { useTranslation } from "react-i18next"
 import { userService } from '../../services/userService';
 import { useNavigate } from 'react-router-dom';
 
+interface LoginModalProps {
+	isOpen: boolean
+	onClose: () => void
+}
 
-export default function LoginModal(props) {
+
+export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
     const { t } = useTranslation() 
     const navigate = useNavigate()
@@ -35,10 +40,10 @@ export default function LoginModal(props) {
         try {
             setIsLoading(true)
             await userService.userLogin(data)
-            navigate("/profile")
+            navigate("/")
             toast.success(t("auth.success"), { position: "top-left" })
             form.reset()
-            setTimeout(() => {props.onClose();}, 500 )
+            setTimeout(() => {onClose();}, 500 )
         } catch (error: any) {
             const serverMessage = error.response?.data?.message || error.message
 			const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
@@ -49,7 +54,7 @@ export default function LoginModal(props) {
     }
 
     return (
-        <Dialog open={props.isOpen} onOpenChange={props.onClose}>
+        <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-106.25 bg-slate-800 border-slate-800 text-white">
 			    <DialogHeader>
 				    <DialogTitle className="text-2xl font-bold text-cyan-600">

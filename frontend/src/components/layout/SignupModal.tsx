@@ -10,7 +10,12 @@ import { Button } from "@/components/ui/button";
 import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription,} from "@/components/ui/dialog";
 import { useTranslation } from "react-i18next"
 
-export default function SignupModal(props) {
+interface SignupModalProps {
+	isOpen: boolean
+	onClose: () => void
+}
+
+export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
 
 	const { t } = useTranslation()
 
@@ -36,7 +41,7 @@ export default function SignupModal(props) {
             await userService.createUser(data)
             toast.success(t("auth.success"), {position: "top-left" })
 			form.reset()
-            setTimeout(() => {props.onClose();}, 2000 )
+            setTimeout(() => {onClose();}, 2000 )
 
         } catch(error: any){
 			const serverMessage = error.response?.data?.message || error.message
@@ -48,7 +53,7 @@ export default function SignupModal(props) {
     }
 
 return (
-    <Dialog open={props.isOpen} onOpenChange={props.onClose}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
        <DialogContent className="sm:max-w-106.25 bg-slate-800 border-slate-800 text-white">
 			<DialogHeader>
 				<DialogTitle className="text-2xl font-bold text-cyan-600">
