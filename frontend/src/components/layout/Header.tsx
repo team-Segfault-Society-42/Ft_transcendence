@@ -18,7 +18,11 @@ export default function Header({ onLoginClick }: LoginClick) {
             </div>
 
             <div className="absolute right-6 top-1/2 -translate-y-1/2 ">
-                <Button onClick={onLoginClick} > {t("home.buttons.login")} </Button>
+                <Button 
+                    onClick={onLoginClick} 
+                    className="px-4 rounded-full bg-transparent border border-border transition-all duration-200 hover:scale-105 hover:bg-white/5"
+                    > {t("home.buttons.login")} 
+                </Button>
             </div>
 
                 <nav className="flex justify-center gap-12 font-black uppercase text-xl">

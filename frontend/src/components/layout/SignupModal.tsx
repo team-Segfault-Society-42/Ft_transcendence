@@ -114,7 +114,7 @@ return (
         				<Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
             			{isLoading ? t("auth.buttons.loading") : t("auth.buttons.register")}
 						</Button>
-						<Button type='button' onClick={onSwitchToSignin} >
+						<Button variant='ghost' type='button' onClick={onSwitchToSignin} className="hover:bg-blue-400/20 hover:text-blue-200" >
 							<p> { t("auth.buttons.already_account") } </p>
 						</Button>
     				</form>

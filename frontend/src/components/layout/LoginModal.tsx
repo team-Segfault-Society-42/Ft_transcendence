@@ -100,7 +100,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }: LoginM
         				    <Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
             			    {isLoading ? t("auth.buttons.loading") : t("auth.buttons.login")}
         				    </Button>
-							<Button type='button' onClick={onSwitchToSignup} >
+							<Button variant="ghost" type='button' onClick={onSwitchToSignup} className="hover:bg-blue-400/20 hover:text-blue-200" >
 								<p> { t("auth.buttons.no_account") } </p>
 							</Button>
 							
