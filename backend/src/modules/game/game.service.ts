@@ -6,7 +6,7 @@ import {
   CellValue,
   GameStatus,
 } from './game.types';
-import { initGameState } from './game.logic';
+import { checkWinner, initGameState } from './game.logic';
 
 @Injectable()
 export class GameService {
@@ -14,4 +14,5 @@ export class GameService {
   getGameState(): GameState {
     return { ...this.gameState };
   }
+  //const winner = checkWinner(this.gameState.board);
 }
