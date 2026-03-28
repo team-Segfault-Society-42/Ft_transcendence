@@ -14,10 +14,11 @@ import { useNavigate } from 'react-router-dom';
 interface LoginModalProps {
 	isOpen: boolean
 	onClose: () => void
+	onSwitchToSignup: () => void
 }
 
 
-export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
+export default function LoginModal({ isOpen, onClose, onSwitchToSignup }: LoginModalProps) {
 
     const { t } = useTranslation() 
     const navigate = useNavigate()
@@ -99,6 +100,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         				    <Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
             			    {isLoading ? t("auth.buttons.loading") : t("auth.buttons.login")}
         				    </Button>
+							<Button onClick={onSwitchToSignup} >
+								<p>Pas de compte ? <span onClick={onSwitchToSignup}>S'inscrire</span></p>
+							</Button>
+							
     				    </form>
 			        </Form>
 	        </DialogContent>

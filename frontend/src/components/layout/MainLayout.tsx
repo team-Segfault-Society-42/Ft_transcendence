@@ -3,11 +3,12 @@ import Header from "./Header"
 import Footer from "./Footer"
 import SignupModal from "./SignupModal"
 import LoginModal from "./LoginModal"
+import { useState } from 'react'
+
 
 export default function MainLayout() {
 
   	const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(null)
-	  const { t } = useTranslation()
 
 	  const openLogin = () => setActiveModal("login")
 	  const openSignup = () => setActiveModal("signup")
@@ -16,7 +17,7 @@ export default function MainLayout() {
     return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-900 via-slate-800 to-black text-white">
 
-      <Header />
+      <Header onLoginClick={openLogin} onSwitchToSignup={openSignup} />
 
       <main className="flex flex-1 justify-center items-start pt-14 pb-14 px-4">
 
@@ -34,7 +35,8 @@ export default function MainLayout() {
 
       <LoginModal 
 				isOpen={activeModal === "login"}
-				onClose={closeModals}/>
+				onClose={closeModals}
+        onSwitchToSignup={openSignup} />
     </div>
   )
 }

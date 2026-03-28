@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
-import SignupModal from "../components/layout/SignupModal"
 import { useTranslation } from "react-i18next"
-import  LoginModal  from '../components/layout/LoginModal.tsx'
 
 export default function Home() {
+
+	const { t } = useTranslation()
 
 	return (
 		<section className="flex flex-col items-center text-center gap-12">
@@ -20,20 +19,6 @@ export default function Home() {
 				</p>
 
 			</div>
-
-			{/* REGISTER */}
-			<button
-				onClick={openSignup}
-				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95">
-				{t("home.buttons.register")}
-			</button>
-			{/* LOGIN */}
-			<button
-				onClick={openLogin}
-				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95">
-				{t("home.buttons.login")}
-			</button>
-
 			{/* START GAME */}
 			<Link
 				to="/game"
