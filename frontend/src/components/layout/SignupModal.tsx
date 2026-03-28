@@ -115,7 +115,7 @@ return (
             			{isLoading ? t("auth.buttons.loading") : t("auth.buttons.register")}
 						</Button>
 						<Button type='button' onClick={onSwitchToSignin} >
-							<p>Vous avez deja un compte ? Se connecter</p>
+							<p> { t("auth.buttons.already_account") } </p>
 						</Button>
     				</form>
 			</Form>

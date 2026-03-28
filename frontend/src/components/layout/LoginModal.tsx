@@ -101,7 +101,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }: LoginM
             			    {isLoading ? t("auth.buttons.loading") : t("auth.buttons.login")}
         				    </Button>
 							<Button type='button' onClick={onSwitchToSignup} >
-								<p>S'inscrire</p>
+								<p> { t("auth.buttons.no_account") } </p>
 							</Button>
 							
     				    </form>

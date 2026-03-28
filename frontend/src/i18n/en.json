@@ -73,7 +73,9 @@
             "register": "Register",
             "loading": "Connecting to server...",
             "change_method": "Change method",
-            "login": "Login"
+            "login": "Login",
+            "no_account": "Don't have an account ? Sign up",
+            "already_account": "Already have an account ? Log in"
           },   
         "success": "User successfully created!",
         "error": "An error occurred: ",

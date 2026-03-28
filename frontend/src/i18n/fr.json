@@ -73,7 +73,9 @@
             "register": "S'inscrire",
             "loading": "Connection au serveur...",
             "change_method": "Changer de méthode",
-            "login": "Se connecter"
+            "login": "Se connecter",
+            "no_account": "Pas encore de compte ? S'inscrire",
+            "already_account": "Déjà un compte ? Se connecter"
           },   
           "success": "Utilisateur créé avec succès !",
           "error": "Une erreur est survenue : ",
