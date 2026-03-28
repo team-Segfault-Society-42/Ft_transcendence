@@ -1,3 +1,4 @@
+import { count } from 'console';
 import {
   GameState,
   Move,
@@ -23,6 +24,8 @@ export function initGameState(): GameState {
     currentPlayer: 'X',
     status: 'playing',
     winner: null,
+    moveCount: 0,
+    startTime: 0,
   };
 }
 
@@ -59,4 +62,12 @@ export function checkWinner(board: CellValue[][]): PlayerSymbol | null {
     return board[0][2];
   }
   return null;
+}
+
+const maxTime = 5;
+const maxMoves = 100;
+
+export function checkDraw(countMoves: number, startTime: number): boolean {
+  if (countMoves >= maxMoves || startTime >= maxTime) return false;
+  return true;
 }

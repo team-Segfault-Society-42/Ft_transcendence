@@ -18,4 +18,6 @@ export interface GameState {
   currentPlayer: PlayerSymbol;
   status: GameStatus;
   winner: PlayerSymbol | null;
+  moveCount: number;
+  startTime: number;
 }
