@@ -62,7 +62,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }: LoginM
 					    {t("auth.title")}
 				    </DialogTitle>
 				    <DialogDescription className="text-slate-300">
-					    {t("auth.description")}
+					    {t("auth.description_login")}
 				    </DialogDescription>
 			    </DialogHeader>
 				    <Form {...form}>

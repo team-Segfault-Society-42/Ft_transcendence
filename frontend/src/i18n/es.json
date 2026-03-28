@@ -60,6 +60,7 @@
     "auth": {
         "title": "Segfault Society",
         "description": "Crea tu cuenta",
+        "description_login": "Acceso",
 
         "username": "Nombre de usuario",
         "email": "Correo electrónico",
