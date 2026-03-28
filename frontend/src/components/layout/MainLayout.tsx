@@ -17,7 +17,7 @@ export default function MainLayout() {
     return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-900 via-slate-800 to-black text-white">
 
-      <Header onLoginClick={openLogin} onSwitchToSignup={openSignup} />
+      <Header onLoginClick={openLogin} />
 
       <main className="flex flex-1 justify-center items-start pt-14 pb-14 px-4">
 

@@ -5,6 +5,7 @@ import { Button } from '../ui/button';
 
 interface LoginClick {
     onLoginClick: () => void
+    
 }
 
 export default function Header({ onLoginClick }: LoginClick) {
