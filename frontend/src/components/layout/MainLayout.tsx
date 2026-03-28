@@ -31,7 +31,8 @@ export default function MainLayout() {
 
       <SignupModal
         isOpen={activeModal === "signup"}
-        onClose={closeModals}/>
+        onClose={closeModals}
+        onSwitchToSignin={openLogin}/>
 
       <LoginModal 
 				isOpen={activeModal === "login"}

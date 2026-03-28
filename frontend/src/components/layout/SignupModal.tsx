@@ -13,9 +13,10 @@ import { useTranslation } from "react-i18next"
 interface SignupModalProps {
 	isOpen: boolean
 	onClose: () => void
+	onSwitchToSignin: () => void
 }
 
-export default function SignupModal({ isOpen, onClose }: SignupModalProps) {
+export default function SignupModal({ isOpen, onClose, onSwitchToSignin }: SignupModalProps) {
 
 	const { t } = useTranslation()
 
@@ -112,7 +113,10 @@ return (
 					/>
         				<Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
             			{isLoading ? t("auth.buttons.loading") : t("auth.buttons.register")}
-        				</Button>
+						</Button>
+						<Button type='button' onClick={onSwitchToSignin} >
+							<p>Vous avez deja un compte ? Se connecter</p>
+						</Button>
     				</form>
 			</Form>
 	   </DialogContent>
