@@ -1,8 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from "react-i18next"
 import LanguageSwitcher from "../ui/languageSwitcher"
+import { Button } from '../ui/button';
 
-export default function Header() {
+interface LoginClick {
+    onLoginClick: () => void
+}
+
+export default function Header({ onLoginClick }: LoginClick) {
     const { t } = useTranslation()
 
     return (
@@ -10,6 +15,10 @@ export default function Header() {
 
             <div className="absolute left-6 top-1/2 -translate-y-1/2">
                 <LanguageSwitcher />
+            </div>
+
+            <div className="absolute right-6 top-1/2 -translate-y-1/2 ">
+                <Button onClick={onLoginClick} > {t("home.buttons.login")} </Button>
             </div>
 
                 <nav className="flex justify-center gap-12 font-black uppercase text-xl">

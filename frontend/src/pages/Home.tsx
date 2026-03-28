@@ -5,12 +5,6 @@ import { useTranslation } from "react-i18next"
 import  LoginModal  from '../components/layout/LoginModal.tsx'
 
 export default function Home() {
-	const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(null)
-	const { t } = useTranslation()
-
-	const openLogin = () => setActiveModal("login")
-	const openSignup = () => setActiveModal("signup")
-	const closeModals = () => setActiveModal(null)
 
 	return (
 		<section className="flex flex-col items-center text-center gap-12">
@@ -47,11 +41,6 @@ export default function Home() {
 				{t("home.buttons.start")}
 			</Link>
 
-			{/* MODAL */}
-			<SignupModal
-				isOpen={activeModal === "signup"}
-				onClose={closeModals}/>
-
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
 
 				<Link to="/" className="bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur hover:scale-105 transition group">
@@ -69,9 +58,6 @@ export default function Home() {
 					<p className="text-white/70 text-sm">{t("home.cards.profile.description")}</p>
 				</Link>
 
-				<LoginModal 
-					isOpen={activeModal === "login"}
-					onClose={closeModals}/>
 			</div>
 		</section>
 	)

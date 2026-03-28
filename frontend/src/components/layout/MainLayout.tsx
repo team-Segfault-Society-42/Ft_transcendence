@@ -1,9 +1,19 @@
 import { Outlet } from "react-router-dom"
 import Header from "./Header"
 import Footer from "./Footer"
+import SignupModal from "./SignupModal"
+import LoginModal from "./LoginModal"
 
 export default function MainLayout() {
-  return (
+
+  	const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(null)
+	  const { t } = useTranslation()
+
+	  const openLogin = () => setActiveModal("login")
+	  const openSignup = () => setActiveModal("signup")
+	  const closeModals = () => setActiveModal(null)
+
+    return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-900 via-slate-800 to-black text-white">
 
       <Header />
@@ -17,7 +27,14 @@ export default function MainLayout() {
       </main>
 
       <Footer />
-      
+
+      <SignupModal
+        isOpen={activeModal === "signup"}
+        onClose={closeModals}/>
+
+      <LoginModal 
+				isOpen={activeModal === "login"}
+				onClose={closeModals}/>
     </div>
   )
 }
