@@ -5,8 +5,14 @@ import {
   PlayerSymbol,
   CellValue,
   GameStatus,
+  BoardPosition,
 } from './game.types';
-import { checkWinner, initGameState } from './game.logic';
+import {
+  checkDraw,
+  checkWinner,
+  initGameState,
+  isCellEmpty,
+} from './game.logic';
 
 @Injectable()
 export class GameService {
@@ -14,5 +20,33 @@ export class GameService {
   getGameState(): GameState {
     return { ...this.gameState };
   }
-  //const winner = checkWinner(this.gameState.board);
+  // maybe more for 6x6 , 7x7 or 9x9
+
+  playMove(r: number, c: number): void {
+    if (this.gameState.status === 'finished') return;
+    if (isCellEmpty(this.gameState, { r, c })) return;
+
+    const symbol = this.gameState.currentPlayer;
+    this.gameState.board[r][c] = symbol;
+    this.gameState.moveCount++;
+
+    const winner = checkWinner(this.gameState.board);
+    if (winner) {
+      console.log('winner is : ' + winner);
+      this.gameState.status = 'finished';
+      this.gameState.winner = winner;
+      return;
+    }
+
+    const isDraw = checkDraw(
+      this.gameState.moveCount,
+      this.gameState.startTime,
+    );
+    if (isDraw) {
+      console.log('Its a Draw ');
+      this.gameState.status = 'finished';
+      return;
+    }
+    this.gameState.currentPlayer = symbol === 'X' ? 'O' : 'X';
+  }
 }
