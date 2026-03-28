@@ -12,6 +12,6 @@ import { initGameState } from './game.logic';
 export class GameService {
   private gameState: GameState = initGameState();
   getGameState(): GameState {
-    return; //...
+    return { ...this.gameState };
   }
 }
