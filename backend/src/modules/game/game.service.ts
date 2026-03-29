@@ -1,20 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import {
-  GameState,
-  Move,
-  PlayerSymbol,
-  CellValue,
-  GameStatus,
-  BoardPosition,
-} from './game.types';
-import {
-  checkDraw,
-  checkWinner,
-  initGameState,
-  isCellEmpty,
-  validateToMove,
-  applyMove,
-} from './game.logic';
+import { randomUUID } from 'crypto'; //generer des IDs uniques pour les matchs
+import { GameState } from './game.types';
+import { initGameState, validateToMove, applyMove } from './game.logic';
 @Injectable()
 export class GameService {
   private gameState: GameState = initGameState();
