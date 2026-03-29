@@ -13,6 +13,7 @@ import {
   initGameState,
   isCellEmpty,
   validateToMove,
+  applyMove,
 } from './game.logic';
 @Injectable()
 export class GameService {
@@ -28,55 +29,17 @@ export class GameService {
 
     const now = Date.now();
     const timeOnClick = now - this.gameState.lastMove;
-    const symbol = this.gameState.currentPlayer;
+
     // 30 SEC
     if (timeOnClick > 30000) {
       this.gameState.status = 'finished';
-      this.gameState.winner = symbol === 'X' ? 'O' : 'X';
+      this.gameState.winner = this.gameState.currentPlayer === 'X' ? 'O' : 'X';
       return;
     }
 
     validateToMove(this.gameState, r, c);
     this.gameState.lastMove = now;
 
-    this.gameState.board[r][c] = symbol;
-    this.gameState.moveCount++;
-    this.gameState.queuIdx.push({ r, c });
-    // DEBUG : state before add
-    console.log('--- QUEUE APRES AJOUT ---');
-    console.table(this.gameState.queuIdx);
-
-    if (this.gameState.queuIdx.length > 6) {
-      const oldMove = this.gameState.queuIdx.shift();
-      if (oldMove) {
-        this.gameState.board[oldMove.r][oldMove.c] = null;
-        // DEBUG : state after delete
-        console.log(`[SHIFT] Supprimé du board : [${oldMove.r},${oldMove.c}]`);
-        console.log('--- QUEUE APRES SHIFT ---');
-        console.table(this.gameState.queuIdx);
-      }
-    }
-    if (this.gameState.queuIdx.length >= 6) {
-      const nextToDie = this.gameState.queuIdx[0];
-      console.log(
-        'for frontend => next to die ' + nextToDie.r + ' ' + nextToDie.c,
-      );
-    }
-
-    const winner = checkWinner(this.gameState.board);
-    if (winner) {
-      console.log('winner is : ' + winner);
-      this.gameState.status = 'finished';
-      this.gameState.winner = winner;
-      return;
-    }
-
-    const isDraw = checkDraw(this.gameState.moveCount);
-    if (isDraw) {
-      console.log('Its a Draw ');
-      this.gameState.status = 'finished';
-      return;
-    }
-    this.gameState.currentPlayer = symbol === 'X' ? 'O' : 'X';
+    this.gameState = applyMove(this.gameState, r, c);
   }
 }

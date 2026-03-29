@@ -79,3 +79,51 @@ export function validateToMove(gameState: GameState, r: number, c: number) {
     throw new Error(`This cell ${r},${c} is already occupied`);
   }
 }
+
+export function applyMove(
+  gameState: GameState,
+  r: number,
+  c: number,
+): GameState {
+  const symbol = gameState.currentPlayer;
+
+  gameState.board[r][c] = symbol;
+  gameState.moveCount++;
+  gameState.queuIdx.push({ r, c });
+  // DEBUG : state before add
+  console.log('--- QUEUE APRES AJOUT ---');
+  console.table(gameState.queuIdx);
+
+  if (gameState.queuIdx.length > 6) {
+    const oldMove = gameState.queuIdx.shift();
+    if (oldMove) {
+      gameState.board[oldMove.r][oldMove.c] = null;
+      // DEBUG : state after delete
+      console.log(`[SHIFT] Supprimé du board : [${oldMove.r},${oldMove.c}]`);
+      console.log('--- QUEUE APRES SHIFT ---');
+      console.table(gameState.queuIdx);
+    }
+  }
+  if (gameState.queuIdx.length >= 6) {
+    const nextToDie = gameState.queuIdx[0];
+    console.log(
+      'for frontend => next to die ' + nextToDie.r + ' ' + nextToDie.c,
+    );
+  }
+
+  const winner = checkWinner(gameState.board);
+  if (winner) {
+    console.log('winner is : ' + winner);
+    gameState.status = 'finished';
+    gameState.winner = winner;
+    return gameState;
+  }
+
+  if (checkDraw(gameState.moveCount)) {
+    console.log('Its a Draw ');
+    gameState.status = 'finished';
+    return gameState;
+  }
+  gameState.currentPlayer = symbol === 'X' ? 'O' : 'X';
+  return gameState;
+}
