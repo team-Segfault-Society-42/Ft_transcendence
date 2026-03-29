@@ -23,6 +23,9 @@ export class AuthController {
 
 		res.cookie('access_token', access_token, {
 			httpOnly: true,
+			secure: false,
+			sameSite: 'lax',
+			maxAge: 60 * 60 * 1000,
 		});
 
 		return { message: 'Login successful' };
@@ -30,7 +33,11 @@ export class AuthController {
 
 	@Post('logout')
 	logout(@Res({ passthrough: true }) res: Response) {
-		res.clearCookie('access_token');
+		res.clearCookie('access_token', {
+			httpOnly: true,
+			secure: false,
+			sameSite: 'lax',
+		});
 
 		return { message: 'Logout successful' };
 	}
