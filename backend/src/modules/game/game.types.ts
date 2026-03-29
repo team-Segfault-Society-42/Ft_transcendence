@@ -20,4 +20,16 @@ export interface GameState {
   winner: PlayerSymbol | null;
   moveCount: number;
   startTime: number;
+  idx: number;
+  queuIdx: BoardPosition[];
+  toDisapear: number;
 }
+
+// 	queue,
+// 	idx,
+// 	history,
+// 	scores,
+// 	resetSession,
+// 	replayGame,
+
+// const toDisapear = idx > 5 ? queue[idx % 6] : -1

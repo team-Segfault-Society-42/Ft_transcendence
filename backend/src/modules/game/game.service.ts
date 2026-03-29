@@ -13,7 +13,6 @@ import {
   initGameState,
   isCellEmpty,
 } from './game.logic';
-
 @Injectable()
 export class GameService {
   private gameState: GameState = initGameState();
@@ -24,11 +23,23 @@ export class GameService {
 
   playMove(r: number, c: number): void {
     if (this.gameState.status === 'finished') return;
-    if (isCellEmpty(this.gameState, { r, c })) return;
+    if (!isCellEmpty(this.gameState, { r, c })) return;
 
     const symbol = this.gameState.currentPlayer;
     this.gameState.board[r][c] = symbol;
     this.gameState.moveCount++;
+    this.gameState.queuIdx.push({ r, c });
+
+    if (this.gameState.queuIdx.length > 6) {
+      const oldMove = this.gameState.queuIdx.shift();
+      if (oldMove) this.gameState.board[oldMove.r][oldMove.c] = null;
+    }
+    if (this.gameState.queuIdx.length >= 6) {
+      const nextToDie = this.gameState.queuIdx[0];
+      console.log(
+        'for frontend => next to die ' + nextToDie.r + ' ' + nextToDie.c,
+      );
+    }
 
     const winner = checkWinner(this.gameState.board);
     if (winner) {

@@ -1,4 +1,3 @@
-import { count } from 'console';
 import {
   GameState,
   Move,
@@ -26,8 +25,20 @@ export function initGameState(): GameState {
     winner: null,
     moveCount: 0,
     startTime: Date.now(),
+    idx: 0,
+    queuIdx: [],
+    toDisapear: -1,
   };
 }
+
+// 	queue,
+// 	idx,
+// 	history,
+// 	scores,
+// 	resetSession,
+// 	replayGame,
+
+// const toDisapear = idx > 5 ? queue[idx % 6] : -1
 
 export function checkWinner(board: CellValue[][]): PlayerSymbol | null {
   const size = 3;
