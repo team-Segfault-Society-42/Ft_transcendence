@@ -1,45 +1,67 @@
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from "react-i18next"
+import LanguageSwitcher from "../ui/languageSwitcher"
+import { Button } from '../ui/button';
 
-export default function Header() {
+interface LoginClick {
+    onLoginClick: () => void
+    
+}
+
+export default function Header({ onLoginClick }: LoginClick) {
+    const { t } = useTranslation()
+
     return (
-        <header className="w-full text-center py-6 text-white/20 border-t border-white/10 bg-black/20 backdrop-blur">
+        <header className="relative w-full py-6 text-white/20 border-t border-white/10 bg-black/20 backdrop-blur">
 
-            <nav className="flex justify-center gap-12 font-black uppercase text-xl z-50">
+            <div className="absolute left-6 top-1/2 -translate-y-1/2">
+                <LanguageSwitcher />
+            </div>
 
-                <NavLink
-                    to="/"
-                    className={({ isActive }) =>
-                        isActive
-                            ? "text-white"
-                            : "text-white/40 hover:text-white transition-colors"
-                    }
-                >
-                    Home
-                </NavLink>
+            <div className="absolute right-6 top-1/2 -translate-y-1/2 ">
+                <Button 
+                    onClick={onLoginClick} 
+                    className="px-4 rounded-full bg-transparent border border-border transition-all duration-200 hover:scale-105 hover:bg-white/5"
+                    > {t("home.buttons.login")} 
+                </Button>
+            </div>
 
-                <NavLink
-                    to="/game"
-                    className={({ isActive }) =>
-                        isActive
-                            ? "text-white"
-                            : "text-white/40 hover:text-white transition-colors"
-                    }
-                >
-                    Game
-                </NavLink>
+                <nav className="flex justify-center gap-12 font-black uppercase text-xl">
 
-                <NavLink
-                    to="/profile"
-                    className={({ isActive }) =>
-                        isActive
-                            ? "text-white"
-                            : "text-white/40 hover:text-white transition-colors"
-                    }
-                >
-                    Profile
-                </NavLink>
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) =>
+                            isActive
+                                ? "text-white"
+                                : "text-white/40 hover:text-white transition-colors"
+                        }
+                    >
+                        {t("header.home")}
+                    </NavLink>
 
-            </nav>
+                    <NavLink
+                        to="/game"
+                        className={({ isActive }) =>
+                            isActive
+                                ? "text-white"
+                                : "text-white/40 hover:text-white transition-colors"
+                        }
+                    >
+                        {t("header.game")}
+                    </NavLink>
+
+                    <NavLink
+                        to="/profile"
+                        className={({ isActive }) =>
+                            isActive
+                                ? "text-white"
+                                : "text-white/40 hover:text-white transition-colors"
+                        }
+                    >
+                        {t("header.profile")}
+                    </NavLink>
+
+                </nav>
 
         </header>
     )

@@ -1,7 +1,11 @@
-FROM nginx:1.28-alpine
+# ── Development ──────────────────────────────────────────────────────────────
+FROM nginx:1.28-alpine AS dev
+COPY nginx.dev.conf /etc/nginx/nginx.conf
 
+EXPOSE 1024
+
+# ── Production ───────────────────────────────────────────────────────────────
+FROM nginx:1.28-alpine AS prod
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Exposing HTTP for now, need to change to HTTPS later
-# Once we handle SSL Certificate, etc.
-EXPOSE 80
+EXPOSE 443
