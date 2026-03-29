@@ -25,14 +25,32 @@ export class GameService {
     if (this.gameState.status === 'finished') return;
     if (!isCellEmpty(this.gameState, { r, c })) return;
 
+    const now = Date.now();
+    const timeOnClick = now - this.gameState.lastMove;
     const symbol = this.gameState.currentPlayer;
+    // 30 SEC
+    if (timeOnClick > 30000) {
+      this.gameState.status = 'finished';
+      this.gameState.winner = symbol === 'X' ? 'O' : 'X';
+      return;
+    }
+
     this.gameState.board[r][c] = symbol;
     this.gameState.moveCount++;
     this.gameState.queuIdx.push({ r, c });
+    // DEBUG : state before add
+    console.log('--- QUEUE APRES AJOUT ---');
+    console.table(this.gameState.queuIdx);
 
     if (this.gameState.queuIdx.length > 6) {
       const oldMove = this.gameState.queuIdx.shift();
-      if (oldMove) this.gameState.board[oldMove.r][oldMove.c] = null;
+      if (oldMove) {
+        this.gameState.board[oldMove.r][oldMove.c] = null;
+        // DEBUG : state after delete
+        console.log(`[SHIFT] Supprimé du board : [${oldMove.r},${oldMove.c}]`);
+        console.log('--- QUEUE APRES SHIFT ---');
+        console.table(this.gameState.queuIdx);
+      }
     }
     if (this.gameState.queuIdx.length >= 6) {
       const nextToDie = this.gameState.queuIdx[0];
@@ -49,10 +67,7 @@ export class GameService {
       return;
     }
 
-    const isDraw = checkDraw(
-      this.gameState.moveCount,
-      this.gameState.startTime,
-    );
+    const isDraw = checkDraw(this.gameState.moveCount);
     if (isDraw) {
       console.log('Its a Draw ');
       this.gameState.status = 'finished';

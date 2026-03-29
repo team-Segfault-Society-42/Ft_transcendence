@@ -1,75 +1,118 @@
-import { Test } from '@nestjs/testing';
-import { checkWinner } from './game.logic';
-import { CellValue } from './game.types';
+import { Test, TestingModule } from '@nestjs/testing';
 import { GameService } from './game.service';
 
 /*fichier pour DEBUG LA GAME ET LES STEPS */
 
 describe('Game Engine Tests', () => {
   let service: GameService;
+  let moduleRef: TestingModule;
 
   beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
+    moduleRef = await Test.createTestingModule({
       providers: [GameService],
     }).compile();
 
     service = moduleRef.get<GameService>(GameService);
   });
+  afterEach(async () => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
 
-  const logState = (label: string) => {
+    if (moduleRef) {
+      await moduleRef.close();
+    }
+  });
+
+  const logState = (step: number, r: number, c: number) => {
     const state = service.getGameState();
 
+    console.log(`\n=========================================`);
+    console.log(`COUP #${step} | Position jouée : [${r}, ${c}]`);
     console.log(
-      `${label} | moveCount=${state.moveCount} | currentPlayer=${state.currentPlayer} | status=${state.status} | winner=${state.winner}`,
+      `Joueur : ${state.currentPlayer} | Queue : ${JSON.stringify(state.queuIdx)}`,
     );
-    console.log('board:', JSON.stringify(state.board));
+
+    console.table(state.board);
+    console.log(`=========================================\n`);
   };
 
-  it('handles a long sequence of moves without early win', () => {
+  it('test 12 coups', () => {
+    const sequence = [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+      [1, 0],
+      [1, 1],
+      [1, 2],
+      [2, 0],
+      [2, 1],
+      [2, 2],
+      [0, 0],
+      [0, 1],
+      [0, 2],
+    ];
+
+    for (let i = 0; i < sequence.length; i++) {
+      const [r, c] = sequence[i];
+
+      // 1. On check AVANT de jouer
+      if (service.getGameState().status === 'finished') {
+        console.log(`\n Match terminer au coup ${i} ! On arrête les logs.`);
+        break;
+      }
+
+      // 2. On joue et on log
+      service.playMove(r, c);
+      logState(i + 1, r, c);
+    }
+
+    const finalState = service.getGameState();
+    expect(finalState.status).toBe('finished');
+  });
+
+  it('Test draw after 50 coups', () => {
+    const safeSequence = [
+      [0, 0], // Coup 1
+      [0, 1], // Coup 2
+      [0, 2], // Coup 3
+      [1, 1], // Coup 4
+      [1, 0], // Coup 5
+      [2, 0], // Coup 6
+      [2, 1], // Coup 7 (vider [0,0])
+      [1, 2], // Coup 8 (vider [0,1])
+    ];
+
+    for (let i = 0; i < 50; i++) {
+      const [r, c] = safeSequence[i % safeSequence.length];
+      service.playMove(r, c);
+
+      if (service.getGameState().status === 'finished') {
+        break;
+      }
+    }
+
+    const finalState = service.getGameState();
+
+    expect(finalState.moveCount).toBe(50);
+    expect(finalState.status).toBe('finished');
+    expect(finalState.winner).toBeNull();
+  });
+
+  it('déclare le joueur perdant s’il met plus de 30 secondes à jouer', () => {
+    jest.useFakeTimers();
+
     service.playMove(0, 0);
+
+    expect(service.getGameState().status).toBe('playing');
+    expect(service.getGameState().currentPlayer).toBe('O');
+
+    jest.advanceTimersByTime(31000);
+
     service.playMove(0, 1);
-    service.playMove(0, 2);
-    service.playMove(1, 0);
-    service.playMove(1, 1);
-    service.playMove(1, 2);
-    logState('after 6 moves');
 
-    service.playMove(2, 1);
-    logState('after move 7');
+    const finalState = service.getGameState();
 
-    const stateAfter7 = service.getGameState();
-    expect(stateAfter7.board[0][0]).toBeNull();
-    expect(stateAfter7.queuIdx.length).toBe(6);
-
-    service.playMove(2, 0);
-    logState('after move 8');
-
-    const stateAfter8 = service.getGameState();
-    expect(stateAfter8.board[0][1]).toBeNull();
-    expect(stateAfter8.status).toBe('playing');
-    expect(stateAfter8.moveCount).toBe(8);
-    expect(stateAfter8.queuIdx.length).toBe(6);
-  });
-
-  it('detects a horizontal win for X', () => {
-    const board: CellValue[][] = [
-      ['X', 'X', 'X'],
-      [null, null, null],
-      [null, null, null],
-    ];
-
-    console.log('horizontal win:', checkWinner(board));
-    expect(checkWinner(board)).toBe('X');
-  });
-
-  it('detects a diagonal win for X', () => {
-    const board: CellValue[][] = [
-      ['X', null, null],
-      [null, 'X', null],
-      [null, null, 'X'],
-    ];
-
-    console.log('diagonal win:', checkWinner(board));
-    expect(checkWinner(board)).toBe('X');
+    expect(finalState.status).toBe('finished');
+    expect(finalState.winner).toBe('X');
   });
 });

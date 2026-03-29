@@ -25,9 +25,9 @@ export function initGameState(): GameState {
     winner: null,
     moveCount: 0,
     startTime: Date.now(),
-    idx: 0,
     queuIdx: [],
     toDisapear: -1,
+    lastMove: Date.now(),
   };
 }
 
@@ -65,10 +65,12 @@ export function checkWinner(board: CellValue[][]): PlayerSymbol | null {
   return null;
 }
 
-const maxTime = 5 * 60 * 1000; // 5 min
-const maxMoves = 100;
+const maxMoves = 50;
 
-export function checkDraw(countMoves: number, startTime: number): boolean {
-  if (countMoves >= maxMoves || Date.now() - startTime > maxTime) return true;
+export function checkDraw(countMoves: number): boolean {
+  if (countMoves >= maxMoves) return true;
   return false;
 }
+
+// , startTime: number
+// || Date.now() - startTime > maxTime

@@ -20,9 +20,9 @@ export interface GameState {
   winner: PlayerSymbol | null;
   moveCount: number;
   startTime: number;
-  idx: number;
   queuIdx: BoardPosition[];
   toDisapear: number;
+  lastMove: number;
 }
 
 // 	queue,
