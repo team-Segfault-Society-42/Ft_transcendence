@@ -28,6 +28,13 @@ export class AuthController {
 		return { message: 'Login successful' };
 	}
 
+	@Post('logout')
+	logout(@Res({ passthrough: true }) res: Response) {
+		res.clearCookie('access_token');
+
+		return { message: 'Logout successful' };
+	}
+
 	@UseGuards(JwtAuthGuard)
 	@Get('me')
 	me(@Req() req) {
