@@ -1,17 +1,17 @@
-import { IsNotEmpty, IsString, Max, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Max, Min } from 'class-validator';
 
 export class PlayMoveDto {
   @IsString()
   @IsNotEmpty()
   gameId: string;
 
-  @IsString()
+  @IsNumber()
   @Min(0)
   @Max(2)
-  r: string;
+  r: number;
 
-  @IsString()
+  @IsNumber()
   @Min(0)
   @Max(2)
-  c: string;
+  c: number;
 }
