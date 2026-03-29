@@ -24,7 +24,6 @@ export function initGameState(): GameState {
     status: 'playing',
     winner: null,
     moveCount: 0,
-    startTime: Date.now(),
     queuIdx: [],
     toDisapear: -1,
     lastMove: Date.now(),
@@ -72,5 +71,13 @@ export function checkDraw(countMoves: number): boolean {
   return false;
 }
 
-// , startTime: number
-// || Date.now() - startTime > maxTime
+export function validateToMove(gameState: GameState, r: number, c: number) {
+  const size = gameState.board.length;
+  if (r < 0 || r >= size || c < 0 || c >= size)
+    throw new Error("move out of range: cell ${r},${c} dosen't existe");
+  if (gameState.status === 'finished')
+    throw new Error("you Can't Play, Party is finished");
+  if (!isCellEmpty(gameState, { r, c })) {
+    throw new Error(`This cell ${r},${c} is already occupied`);
+  }
+}

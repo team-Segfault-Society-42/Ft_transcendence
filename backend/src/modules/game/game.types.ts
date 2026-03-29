@@ -19,7 +19,6 @@ export interface GameState {
   status: GameStatus;
   winner: PlayerSymbol | null;
   moveCount: number;
-  startTime: number;
   queuIdx: BoardPosition[];
   toDisapear: number;
   lastMove: number;
