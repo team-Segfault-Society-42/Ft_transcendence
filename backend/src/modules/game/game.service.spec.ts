@@ -6,6 +6,7 @@ import { GameService } from './game.service';
 describe('Game Engine Tests', () => {
   let service: GameService;
   let moduleRef: TestingModule;
+  let gameId: string;
 
   beforeEach(async () => {
     moduleRef = await Test.createTestingModule({
@@ -13,6 +14,7 @@ describe('Game Engine Tests', () => {
     }).compile();
 
     service = moduleRef.get<GameService>(GameService);
+    gameId = service.creatGame();
   });
   afterEach(async () => {
     jest.clearAllTimers();
@@ -24,7 +26,7 @@ describe('Game Engine Tests', () => {
   });
 
   const logState = (step: number, r: number, c: number) => {
-    const state = service.getGameState();
+    const state = service.getGameById(gameId);
 
     console.log(`\n=========================================`);
     console.log(`COUP #${step} | Position jouée : [${r}, ${c}]`);
@@ -56,17 +58,17 @@ describe('Game Engine Tests', () => {
       const [r, c] = sequence[i];
 
       // 1. On check AVANT de jouer
-      if (service.getGameState().status === 'finished') {
+      if (service.getGameById(gameId).status === 'finished') {
         console.log(`\n Match terminer au coup ${i} ! On arrête les logs.`);
         break;
       }
 
       // 2. On joue et on log
-      service.playMove(r, c);
+      service.playMove(gameId, r, c);
       logState(i + 1, r, c);
     }
 
-    const finalState = service.getGameState();
+    const finalState = service.getGameById(gameId);
     expect(finalState.status).toBe('finished');
   });
 
@@ -84,14 +86,14 @@ describe('Game Engine Tests', () => {
 
     for (let i = 0; i < 50; i++) {
       const [r, c] = safeSequence[i % safeSequence.length];
-      service.playMove(r, c);
+      service.playMove(gameId, r, c);
 
-      if (service.getGameState().status === 'finished') {
+      if (service.getGameById(gameId).status === 'finished') {
         break;
       }
     }
 
-    const finalState = service.getGameState();
+    const finalState = service.getGameById(gameId);
 
     expect(finalState.moveCount).toBe(50);
     expect(finalState.status).toBe('finished');
@@ -101,16 +103,16 @@ describe('Game Engine Tests', () => {
   it('déclare le joueur perdant s’il met plus de 30 secondes à jouer', () => {
     jest.useFakeTimers();
 
-    service.playMove(0, 0);
+    service.playMove(gameId, 0, 0);
 
-    expect(service.getGameState().status).toBe('playing');
-    expect(service.getGameState().currentPlayer).toBe('O');
+    expect(service.getGameById(gameId).status).toBe('playing');
+    expect(service.getGameById(gameId).currentPlayer).toBe('O');
 
     jest.advanceTimersByTime(31000);
 
-    service.playMove(0, 1);
+    service.playMove(gameId, 0, 1);
 
-    const finalState = service.getGameState();
+    const finalState = service.getGameById(gameId);
 
     expect(finalState.status).toBe('finished');
     expect(finalState.winner).toBe('X');
