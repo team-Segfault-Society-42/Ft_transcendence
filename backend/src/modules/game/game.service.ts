@@ -5,12 +5,25 @@ import { initGameState, validateToMove, applyMove } from './game.logic';
 @Injectable()
 export class GameService {
   private gameState: GameState = initGameState();
+  private activeGame = new Map<string, GameState>();
+
+  creatGame(): string {
+    const gameId = randomUUID();
+    const newGame = initGameState();
+    this.activeGame.set(gameId, newGame);
+    return gameId;
+  }
   getGameState(): GameState {
     return { ...this.gameState };
   }
+  getGameById(gameId: string): GameState {
+    const game = this.activeGame.get(gameId);
+    if (!game) throw new Error(`Game with ID ${gameId} not found`);
+    return { ...game };
+  }
   // maybe prepare more for 6x6 , 7x7 or 9x9
 
-  playMove(r: number, c: number): void {
+  playMove(gameId: string, r: number, c: number): void {
     if (this.gameState.status === 'finished')
       throw new Error("you Can't Play, Party is finished");
 
