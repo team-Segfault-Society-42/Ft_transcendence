@@ -54,7 +54,7 @@ export default function MainLayout() {
         const response = await userService.userLogout()
         setUser(null)
         toast.success(response.message, {position: "top-left" })
-        setTimeout(() => {navigate("/");}, 1000 )
+        navigate("/")
 
       } catch {
         setUser(null)
