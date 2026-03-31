@@ -8,6 +8,11 @@ const api = axios.create({
     withCredentials: true,
 })
 
+export async function userLogout() {
+    const response = await api.post('auth/logout')
+    return response.data
+}
+
 export async function getMe() {
     const response = await api.get('auth/me')
     return response.data
@@ -39,4 +44,5 @@ export const userService = {
     createUser,
     userLogin,
     getMe,
+    userLogout,
 }

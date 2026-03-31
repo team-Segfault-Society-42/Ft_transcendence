@@ -76,7 +76,8 @@
             "change_method": "Change method",
             "login": "Login",
             "no_account": "Don't have an account ? Sign up",
-            "already_account": "Already have an account ? Log in"
+            "already_account": "Already have an account ? Log in",
+            "logout": "Logout"
           },   
         "success": "User successfully created!",
         "error": "An error occurred: ",

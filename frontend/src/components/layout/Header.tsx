@@ -3,12 +3,14 @@ import { useTranslation } from "react-i18next"
 import LanguageSwitcher from "../ui/languageSwitcher"
 import { Button } from '../ui/button';
 
-interface LoginClick {
+interface HeaderProps {
     onLoginClick: () => void
-    
+    user: {
+        username: any
+    } | null
 }
 
-export default function Header({ onLoginClick }: LoginClick) {
+export default function Header({ onLoginClick, user }: HeaderProps) {
     const { t } = useTranslation()
 
     return (
@@ -19,11 +21,18 @@ export default function Header({ onLoginClick }: LoginClick) {
             </div>
 
             <div className="absolute right-6 top-1/2 -translate-y-1/2 ">
+            {user ? ( 
+                
+                <Button>
+                    {/* add Hi, username   */}
+                    {t("auth.buttons.logout")}
+                </Button>  ) : ( 
                 <Button 
                     onClick={onLoginClick} 
                     className="px-4 rounded-full bg-transparent border border-border transition-all duration-200 hover:scale-105 hover:bg-white/5"
                     > {t("home.buttons.login")} 
-                </Button>
+                </Button> 
+                )}
             </div>
 
                 <nav className="flex justify-center gap-12 font-black uppercase text-xl">

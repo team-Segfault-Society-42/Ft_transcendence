@@ -76,7 +76,8 @@
             "change_method": "Changer de méthode",
             "login": "Se connecter",
             "no_account": "Pas encore de compte ? S'inscrire",
-            "already_account": "Déjà un compte ? Se connecter"
+            "already_account": "Déjà un compte ? Se connecter",
+            "logout": "Déconnexion"
           },   
           "success": "Utilisateur créé avec succès !",
           "error": "Une erreur est survenue : ",
