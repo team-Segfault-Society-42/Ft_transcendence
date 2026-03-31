@@ -14,7 +14,8 @@
         "buttons":{
             "register": "S'enregistrer",
             "login": "Se connecter",
-            "start": "LANCER LA PARTIE"
+            "start": "LANCER LA PARTIE",
+            "hi": "Salut, "
         },
         "cards":{
             "home":{

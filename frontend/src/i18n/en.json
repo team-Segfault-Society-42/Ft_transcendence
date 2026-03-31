@@ -14,7 +14,8 @@
         "buttons":{
             "register": "Register",
             "login": "Login",
-            "start": "START GAME"
+            "start": "START GAME",
+            "hi": "Hi, "
         },
         "cards":{
             "home":{

@@ -6,36 +6,67 @@ import LoginModal from "./LoginModal"
 import { useEffect, useState } from 'react'
 import { userService } from "@/services/userService"
 import { Spinner } from "@/components/ui/spinner"
+import { useNavigate } from 'react-router-dom';
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next"
 
 
 export default function MainLayout() {
 
-  	const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(null)
+  const { t } = useTranslation()
+  const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(null)
 
-	  const openLogin = () => setActiveModal("login")
-	  const openSignup = () => setActiveModal("signup")
-	  const closeModals = () => setActiveModal(null)
+	const openLogin = () => setActiveModal("login")
+	const openSignup = () => setActiveModal("signup")
+	const closeModals = () => setActiveModal(null)
 
-    const [user, setUser] = useState(null)
-    const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
 
-    useEffect(() => {
-      async function getCurrentUser() {
-        try {
-          const result = await userService.getMe()
-          setUser(result)
-          setIsLoading(false)
+  useEffect(() => {
+    async function getCurrentUser() {
+      try {
+        const result = await userService.getMe()
+        setUser(result)
+        setIsLoading(false)
 
-        } catch (error: any) {
+      } catch (error: any) {
 
+        if (error.response?.status != 401) {
           setUser(null)
+          const serverMessage = error.response?.data?.message || error.message
+			    const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
+          toast.error(t("auth.error") + finalMessage, { position: "bottom-right" })
+         }
+         setUser(null)
+
+        } finally {
           setIsLoading(false)
         }
+      }
+    getCurrentUser()
+    }, [])
+
+    async function handleLogout()
+    {
+      try {
+        const response = await userService.userLogout()
+        setUser(null)
+        toast.success(response.message, {position: "top-left" })
+        setTimeout(() => {navigate("/");}, 1000 )
+
+      } catch {
+        setUser(null)
 
       }
-      getCurrentUser()
-        }, [])
+    }  
 
+    async function handleLoginSuccess() {
+      const result = await userService.getMe()
+      setUser(result)
+      closeModals()
+    }
 
     if (isLoading) {
       return ( 
@@ -47,7 +78,11 @@ export default function MainLayout() {
     return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-900 via-slate-800 to-black text-white">
 
-      <Header onLoginClick={openLogin} user={user} />
+      <Header
+      onLoginClick={openLogin} 
+      onLogoutClick={() => handleLogout()} 
+      user={user} 
+      />
 
       <main className="flex flex-1 justify-center items-start pt-14 pb-14 px-4">
 
@@ -62,12 +97,13 @@ export default function MainLayout() {
       <SignupModal
         isOpen={activeModal === "signup"}
         onClose={closeModals}
-        onSwitchToSignin={openLogin}/>
+        onSwitchToSignin={openLogin} />
 
       <LoginModal 
 				isOpen={activeModal === "login"}
 				onClose={closeModals}
-        onSwitchToSignup={openSignup} />
+        onSwitchToSignup={openSignup}
+        onLoginSuccess={handleLoginSuccess} />
     </div>
   )
 }

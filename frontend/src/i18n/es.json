@@ -15,7 +15,8 @@
       "buttons": {
         "register": "Registrarse",
         "login": "Se conectar",
-        "start": "INICIAR PARTIDA"
+        "start": "INICIAR PARTIDA",
+        "hi": "Hola, "
       },
       "cards": {
         "home": {

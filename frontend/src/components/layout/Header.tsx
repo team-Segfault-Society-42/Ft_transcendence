@@ -6,11 +6,12 @@ import { Button } from '../ui/button';
 interface HeaderProps {
     onLoginClick: () => void
     user: {
-        username: any
+        username: string
     } | null
+    onLogoutClick: () => void
 }
 
-export default function Header({ onLoginClick, user }: HeaderProps) {
+export default function Header({ onLogoutClick, onLoginClick, user }: HeaderProps) {
     const { t } = useTranslation()
 
     return (
@@ -23,9 +24,11 @@ export default function Header({ onLoginClick, user }: HeaderProps) {
             <div className="absolute right-6 top-1/2 -translate-y-1/2 ">
             {user ? ( 
                 
-                <Button>
-                    {/* add Hi, username   */}
-                    {t("auth.buttons.logout")}
+                <Button onClick={onLogoutClick} >
+
+                <span> {t("home.buttons.hi") + user.username} </span>
+                {t("auth.buttons.logout")}
+
                 </Button>  ) : ( 
                 <Button 
                     onClick={onLoginClick} 
