@@ -41,9 +41,15 @@ export default function Profile() {
     
     async function handleSave() {
         if (isEdit) {
+          try {
             await userService.updateUser(user.id, { username: userName, bio: bio })
             setUser({... user, username: userName, bio: bio})
             toast.info( t("auth.buttons.edit"), { position: "top-left"})
+          } catch (error: any) {
+              const serverMessage = error.response?.data?.message || error.message
+			        const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
+              toast.error(t("auth.error") + finalMessage, { position: "bottom-left" })
+          }
         }
         isInEdit(!isEdit)
     }
