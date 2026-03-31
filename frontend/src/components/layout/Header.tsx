@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from "react-i18next"
 import LanguageSwitcher from "../ui/languageSwitcher"
-import { Button } from '../ui/Button';
+import { Button } from "@/components/ui/Button"
 
 interface LoginClick {
     onLoginClick: () => void

@@ -1,7 +1,7 @@
 import Square from "./Square"
 import { useGameStore } from "../Store/gameStore";
 import { useTranslation } from "react-i18next"
-import { Button } from "./ui/Button"
+import { Button } from "@/components/ui/Button"
 
 type Player = {
 	id: number;
