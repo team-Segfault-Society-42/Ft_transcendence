@@ -8,8 +8,8 @@ const api = axios.create({
     withCredentials: true,
 })
 
-export async function getMe(data) {
-    const response = await api.get('auth/me', data)
+export async function getMe() {
+    const response = await api.get('auth/me')
     return response.data
 }
 

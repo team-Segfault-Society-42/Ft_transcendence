@@ -4,6 +4,8 @@ import Footer from "./Footer"
 import SignupModal from "./SignupModal"
 import LoginModal from "./LoginModal"
 import { useEffect, useState } from 'react'
+import { userService } from "@/services/userService"
+import { Spinner } from "@/components/ui/spinner"
 
 
 export default function MainLayout() {
@@ -15,12 +17,33 @@ export default function MainLayout() {
 	  const closeModals = () => setActiveModal(null)
 
     const [user, setUser] = useState(null)
-    const [loading, isLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-      
+      async function getCurrentUser() {
+        try {
+          const result = await userService.getMe()
+          setUser(result)
+          setIsLoading(false)
+
+        } catch (error: any) {
+
+          setUser(null)
+          setIsLoading(false)
+        }
+
+      }
+      getCurrentUser()
         }, [])
 
+
+    if (isLoading) {
+      return ( 
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-black text-white">
+        <Spinner className="size-16 text-cyan-600" />
+      </div>
+      )
+    }
     return (
     <div className="min-h-screen flex flex-col bg-linear-to-br from-slate-900 via-slate-800 to-black text-white">
 
