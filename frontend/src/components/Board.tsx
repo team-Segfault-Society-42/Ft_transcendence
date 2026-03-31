@@ -1,6 +1,7 @@
 import Square from "./Square"
 import { useGameStore } from "../Store/gameStore";
 import { useTranslation } from "react-i18next"
+import { Button } from "./ui/Button"
 
 type Player = {
 	id: number;
@@ -111,11 +112,12 @@ export default function Board({ players }: BoardProps) {
 				{t("game.mode")}
 			</p>
 
-			<button
-				className="mt-12 bg-white/10 hover:bg-white/20 text-white border border-white/30 px-10 py-2 rounded-lg font-bold transition-all"
+			<Button
+				variant="secondary"
+				className="mt-6"
 				onClick={resetSession}>
 				{t("game.reset")}
-			</button>
+			</Button>
 		</div >
 	)
 }

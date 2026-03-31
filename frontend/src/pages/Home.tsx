@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from "react-i18next"
+import { Button } from "../components/ui/Button"
 
 export default function Home() {
 
@@ -21,7 +22,9 @@ export default function Home() {
 			</div>
 			{/* START GAME */}
 			<Link to="/game">
-				<Button className="px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95">
+				<Button 
+					variant="primary"
+					size="xl">
 					{t("home.buttons.start")}
 				</Button>
 			</Link>
