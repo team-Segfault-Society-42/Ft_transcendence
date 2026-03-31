@@ -11,8 +11,14 @@ import { useTranslation } from "react-i18next"
 import { userService } from '../../services/userService';
 import { useNavigate } from 'react-router-dom';
 
+interface LoginModalProps {
+	isOpen: boolean
+	onClose: () => void
+	onSwitchToSignup: () => void
+}
 
-export default function LoginModal(props) {
+
+export default function LoginModal({ isOpen, onClose, onSwitchToSignup }: LoginModalProps) {
 
     const { t } = useTranslation() 
     const navigate = useNavigate()
@@ -35,10 +41,10 @@ export default function LoginModal(props) {
         try {
             setIsLoading(true)
             await userService.userLogin(data)
-            navigate("/profile")
+            navigate("/")
             toast.success(t("auth.success"), { position: "top-left" })
             form.reset()
-            setTimeout(() => {props.onClose();}, 500 )
+            setTimeout(() => {onClose();}, 500 )
         } catch (error: any) {
             const serverMessage = error.response?.data?.message || error.message
 			const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
@@ -49,14 +55,14 @@ export default function LoginModal(props) {
     }
 
     return (
-        <Dialog open={props.isOpen} onOpenChange={props.onClose}>
+        <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-106.25 bg-slate-800 border-slate-800 text-white">
 			    <DialogHeader>
 				    <DialogTitle className="text-2xl font-bold text-cyan-600">
 					    {t("auth.title")}
 				    </DialogTitle>
 				    <DialogDescription className="text-slate-300">
-					    {t("auth.description")}
+					    {t("auth.description_login")}
 				    </DialogDescription>
 			    </DialogHeader>
 				    <Form {...form}>
@@ -94,6 +100,10 @@ export default function LoginModal(props) {
         				    <Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
             			    {isLoading ? t("auth.buttons.loading") : t("auth.buttons.login")}
         				    </Button>
+							<Button variant="ghost" type='button' onClick={onSwitchToSignup} className="hover:bg-blue-400/20 hover:text-blue-200" >
+								<p> { t("auth.buttons.no_account") } </p>
+							</Button>
+							
     				    </form>
 			        </Form>
 	        </DialogContent>

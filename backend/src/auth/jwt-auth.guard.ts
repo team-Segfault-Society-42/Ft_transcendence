@@ -3,8 +3,8 @@ import {
 	ExecutionContext,
 	Injectable,
 	UnauthorizedException,
-} from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt' ;
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -13,10 +13,10 @@ export class JwtAuthGuard implements CanActivate {
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 
-		const token = this.extractTokenFromHeader(request);
+		const token = this.extractTokenFromRequest(request);
 
 		if (!token) {
-			throw new UnauthorizedException('Missing or invalid Authorization header');
+			throw new UnauthorizedException('Missing authentication token');
 		}
 
 		try {
@@ -28,6 +28,16 @@ export class JwtAuthGuard implements CanActivate {
 		} catch {
 			throw new UnauthorizedException('Invalid or expired token');
 		}
+	}
+
+	private extractTokenFromRequest(request: any): string | undefined {
+		const cookieToken = request.cookies?.access_token;
+
+		if (cookieToken) {
+			return cookieToken;
+		}
+
+		return this.extractTokenFromHeader(request);
 	}
 
 	private extractTokenFromHeader(request: any): string | undefined {

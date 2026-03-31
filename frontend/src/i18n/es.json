@@ -60,6 +60,7 @@
     "auth": {
         "title": "Segfault Society",
         "description": "Crea tu cuenta",
+        "description_login": "Acceso",
 
         "username": "Nombre de usuario",
         "email": "Correo electrónico",
@@ -75,7 +76,9 @@
             "register": "Registrarse",
             "loading": "Conectando al servidor...",
             "change_method": "Cambiar método",
-            "login": "Se conectar"
+            "login": "Se conectar",
+            "no_account": "¿ No tienes cuenta ? Regístrate",
+            "already_account": "¿ Ya tienes una cuenta ? Iniciar sesión"
         },
 
         "success": "¡Usuario creado con éxito!",
