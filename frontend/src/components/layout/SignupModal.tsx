@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription,} from "@/components/ui/dialog";
 import { useTranslation } from "react-i18next"
 
@@ -105,7 +105,7 @@ return (
     					</FormItem>
   						)}
 					/>
-        				<Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
+        				<Button type="submit" className="w-full text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
             			{isLoading ? t("auth.buttons.loading") : t("auth.buttons.register")}
         				</Button>
 						<Button type="button" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
