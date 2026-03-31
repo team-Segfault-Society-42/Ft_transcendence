@@ -2,16 +2,14 @@ import avatarImg from "/avatar.png"
 import { useEffect, useState } from 'react'
 import { userService } from '../services/userService'
 import { useTranslation } from "react-i18next"
+import { useOutletContext } from "react-router";
+import { Spinner } from "@/components/ui/spinner"
+import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from 'react-router-dom';
 
-const MOCK_USER: infoUsers = {
-    username: "SimSim",
-    wins: 42,
-    losses: 21,
-    bio: "The Best !",
-    avatar: avatarImg
-}
-
-interface infoUsers {
+interface User {
+    id: number
     username: string,
     wins: number,
     losses: number,
@@ -21,39 +19,43 @@ interface infoUsers {
 
 export default function Profile() {
 
-    const [data, setData] = useState<infoUsers>(MOCK_USER)
-    const totalGames = data.wins + data.losses
-    const [isEdit, isInEdit] = useState(false)
-    const [userName, setUserName] = useState(data.username)
-    const [bio, setBio] = useState(data.bio)
-    const [isLoading, setIsLoading] = useState(true)
 
-    const winrate = totalGames > 0 ? ((data.wins / totalGames) * 100).toFixed(1) : "0"
+  const { t } = useTranslation()
+  const [user, setUser] = useOutletContext<[User | null, React.Dispatch<React.SetStateAction<User | null>>]>();
+
+  const [isEdit, isInEdit] = useState(false)
+  const [userName, setUserName] = useState(user?.username || "")
+  const [bio, setBio] = useState(user?.bio || "")
+  const navigate = useNavigate()
+
+  if (!user) {
+    return ( 
+    <div>
+      <Spinner className="size-16 text-cyan-600" />
+    </div>
+    )
+  }
+
+  const totalGames = user.wins + user.losses
+  const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
     
     async function handleSave() {
         if (isEdit) {
-            setData({ ...data, username: userName, bio: bio })
-            await userService.updateUser(1, { username: userName, bio: bio })
+            await userService.updateUser(user.id, { username: userName, bio: bio })
+            setUser({... user, username: userName, bio: bio})
+            toast.info( t("auth.buttons.edit"), { position: "top-left"})
         }
         isInEdit(!isEdit)
     }
 
     useEffect(() => {
-        async function fetchUser() {
-            const result = await userService.getUser(1)
-            setData(result)
-            setUserName(result.username)
-            setBio(result.bio)
-            setIsLoading(false)
-        }
-        fetchUser()
-    }, [])
-
-    const { t } = useTranslation()
-
-    if (isLoading) {
-        return <div>{t("profile.loading")}</div>
+      if (user) {
+      setUserName(user.username)
+      setBio(user.bio)
     }
+  }, [user])
+
+      
     return (
         <section className="w-full max-w-lg">
       
@@ -69,7 +71,7 @@ export default function Profile() {
               {/* AVATAR */}
               <div className="relative group">
                 <img
-                  src={data.avatar}
+                  src={user.avatar}
                   alt="avatar"
                   className="w-24 h-24 rounded-full border border-white/20 object-cover z-10 relative"/>
                 <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
@@ -83,7 +85,7 @@ export default function Profile() {
                   className="bg-transparent border border-white/20 rounded px-3 py-1 text-center focus:outline-none focus:border-cyan-400 transition"/>
               ) : (
                 <h1 className="text-2xl font-bold tracking-wide">
-                  {data.username}
+                  {user.username}
                 </h1>
               )}
       
@@ -92,8 +94,8 @@ export default function Profile() {
             {/* STATS */}
             <div className="mt-8 grid grid-cols-2 gap-4 text-center">
               {[
-                { label: t("profile.stats.wins"), value: data.wins },
-                { label: t("profile.stats.losses"), value: data.losses },
+                { label: t("profile.stats.wins"), value: user.wins },
+                { label: t("profile.stats.losses"), value: user.losses },
               ].map((stat, i) => (
                 <div
                   key={i}
@@ -155,7 +157,7 @@ export default function Profile() {
                 />
               ) : (
                 <p className="text-sm leading-relaxed text-white/80">
-                  {data.bio}
+                  {user.bio}
                 </p>
               )}
       

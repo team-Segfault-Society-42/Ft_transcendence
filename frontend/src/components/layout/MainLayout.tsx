@@ -87,7 +87,7 @@ export default function MainLayout() {
       <main className="flex flex-1 justify-center items-start pt-14 pb-14 px-4">
 
         <div className="w-full max-w-4xl flex flex-col items-center">
-          <Outlet />
+          <Outlet context={[user, setUser]} />
         </div>
         
       </main>

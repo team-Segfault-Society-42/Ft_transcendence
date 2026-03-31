@@ -78,14 +78,16 @@
             "login": "Login",
             "no_account": "Don't have an account ? Sign up",
             "already_account": "Already have an account ? Log in",
-            "logout": "Logout"
+            "logout": "Logout",
+            "edit": "Modification successfully completed"
           },   
         "success": "User successfully created!",
         "error": "An error occurred: ",
         "errors": {
             "username": "The username must be at least 3 characters long.",
             "email": "Invalid email address.",
-            "password": "The password must be at least 8 characters long."
+            "password": "The password must be at least 8 characters long.",
+            "bio": "The bio does contain more than 180 characters"
           }
       },
 
