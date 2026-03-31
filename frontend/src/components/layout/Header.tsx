@@ -24,8 +24,8 @@ export default function Header({ onLogoutClick, onLoginClick, user }: HeaderProp
             <div className="absolute right-6 top-1/2 -translate-y-1/2 ">
             {user ? ( 
                 
-                <Button onClick={onLogoutClick} >
-
+                <Button className="px-4 rounded-full bg-transparent border border-border transition-all duration-200 hover:scale-105 hover:bg-white/5" onClick={onLogoutClick} >
+                
                 <span> {t("home.buttons.hi") + user.username} </span>
                 {t("auth.buttons.logout")}
 
