@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/Button"
+import { Card, CardTitle, CardDescription } from "@/components/ui/Card"
 
 export default function Home() {
 
@@ -30,23 +31,40 @@ export default function Home() {
 			</Link>
 
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
-
-				<Link to="/" className="bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur hover:scale-105 transition group">
-					<h3 className="font-bold text-lg mb-2 group-hover:text-cyan-300 transition">{t("home.cards.home.title")}</h3>
-					<p className="text-white/70 text-sm">{t("home.cards.home.description")}</p>
+				<Link to="/">
+  					<Card>
+    					<CardTitle>
+      						{t("home.cards.home.title")}
+    					</CardTitle>
+    					<CardDescription>
+      						{t("home.cards.home.description")}
+    					</CardDescription>
+					</Card>
 				</Link>
 
-				<Link to="/game" className="bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur hover:scale-105 transition group">
-					<h3 className="font-bold text-lg mb-2 group-hover:text-cyan-300 transition">{t("home.cards.game.title")}</h3>
-					<p className="text-white/70 text-sm">{t("home.cards.game.description")}</p>
+				<Link to="/game">
+  					<Card>
+    					<CardTitle>
+      						{t("home.cards.game.title")}
+    					</CardTitle>
+    					<CardDescription>
+      						{t("home.cards.game.description")}
+    					</CardDescription>
+					</Card>
 				</Link>
 
-				<Link to="/profile" className="bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur hover:scale-105 transition group">
-					<h3 className="font-bold text-lg mb-2 group-hover:text-cyan-300 transition">{t("home.cards.profile.title")}</h3>
-					<p className="text-white/70 text-sm">{t("home.cards.profile.description")}</p>
+				<Link to="/profile">
+  					<Card>
+    					<CardTitle>
+      						{t("home.cards.profile.title")}
+    					</CardTitle>
+    					<CardDescription>
+      						{t("home.cards.profile.description")}
+    					</CardDescription>
+					</Card>
 				</Link>
-
 			</div>
+			
 		</section>
 	)
 }
