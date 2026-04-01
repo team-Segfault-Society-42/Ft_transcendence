@@ -2,6 +2,8 @@ import avatarImg from "/avatar.png"
 import { useEffect, useState } from 'react'
 import { userService } from '../services/userService'
 import { useTranslation } from "react-i18next"
+import { Input } from "@/components/ui/Input"
+import { Button } from "@/components/ui/Button"
 
 const MOCK_USER: infoUsers = {
     username: "SimSim",
@@ -77,10 +79,10 @@ export default function Profile() {
       
               {/* USERNAME */}
               {isEdit ? (
-                <input
+                <Input
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
-                  className="bg-transparent border border-white/20 rounded px-3 py-1 text-center focus:outline-none focus:border-cyan-400 transition"/>
+                  className="text-center"/>
               ) : (
                 <h1 className="text-2xl font-bold tracking-wide">
                   {data.username}
@@ -162,11 +164,10 @@ export default function Profile() {
             </div>
       
             {/* BUTTON */}
-            <button
-              onClick={handleSave}
-              className="mt-8 w-full bg-linear-to-r from-cyan-500 to-purple-500 text-white font-semibold py-3 rounded-lg hover:opacity-90 transition hover:scale-[1.02] active:scale-95">
+            <Button
+              onClick={handleSave}>
               {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
-            </button>
+            </Button>
       
           </div>
       

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button"
 import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription,} from "@/components/ui/dialog";
 import { useTranslation } from "react-i18next"
@@ -75,7 +75,9 @@ return (
 							{t("auth.username")}
 						</FormLabel>
       					<FormControl>
-        				<Input placeholder={t("auth.placeholders.username")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+        				<Input 
+							placeholder={t("auth.placeholders.username")}
+							{...field} />
       					</FormControl>
      					 <FormMessage />
     					</FormItem>
@@ -90,7 +92,10 @@ return (
 							{t("auth.email")}
 						</FormLabel>
       					<FormControl>
-        				<Input type='email' placeholder={t("auth.placeholders.email")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+        				<Input
+							type='email'
+							placeholder={t("auth.placeholders.email")}
+							{...field} />
       					</FormControl>
      					 <FormMessage />
     					</FormItem>
@@ -105,7 +110,10 @@ return (
 							{t("auth.password")}
 						</FormLabel>
       					<FormControl>
-						<Input type='password' placeholder={t("auth.placeholders.password")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+						<Input
+							type='password'
+							placeholder={t("auth.placeholders.password")}
+							{...field} />
       					</FormControl>
      					 <FormMessage />
     					</FormItem>
@@ -117,13 +125,11 @@ return (
 							disabled={isLoading}>
             				{isLoading ? t("auth.buttons.loading") : t("auth.buttons.register")}
 						</Button>
-						<Button 
+						<Button
+							type="button"
 							variant="secondary"
 							onClick={onSwitchToSignin}>
-
-							<p> 
-								{ t("auth.buttons.already_account") } 
-							</p>
+							{ t("auth.buttons.already_account") } 
 						</Button>
     				</form>
 			</Form>
