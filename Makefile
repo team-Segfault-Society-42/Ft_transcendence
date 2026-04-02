@@ -22,7 +22,7 @@ SHOW_LOGS			= docker compose logs
 # ══════════════════════════════════════════════════════
 ##@ START STACK
 
-up: ##  Build and run all containers [DEV]
+up: setup ##  Build and run all containers [DEV]
 	@echo "$(GOLD)Building in Dev Mode$(RES)"
 	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d
 
