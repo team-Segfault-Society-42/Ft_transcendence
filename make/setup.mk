@@ -36,15 +36,26 @@ REQUIRED_FILES = \
 
 ##@ FAST SETUP
 
-setup: ## Prompt to initialise .env and secrets — run automatically by 'make up'
-	@printf "$(CYAN)Build default setup?$(RES) [y/N]\n"
-	@printf "$(ORANGE)[Warning] This will overwrite your current '.env' and secrets$(RES)\n"
-	@printf "> "; read ans; \
+setup: ## Check required files; prompt for default setup only if any are missing
+	@missing=0; \
+	for f in $(REQUIRED_FILES); do \
+		if [ ! -f "$$f" ]; then \
+			echo "$(RED)✗ Missing required file: $$f$(RES)"; \
+			missing=1; \
+		fi; \
+	done; \
+	if [ "$$missing" -eq 0 ]; then \
+		echo "$(GREEN)✓ All required files present$(RES)"; \
+		exit 0; \
+	fi; \
+	echo "$(ORANGE)[Warning] Missing files detected.$(RES)"; \
+	printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
 	case "$$ans" in \
 		y|Y|yes|Yes|YES) \
 			$(MAKE) --no-print-directory _setup-apply ;; \
 		*) \
-			$(MAKE) --no-print-directory _check-missing ;; \
+			echo "$(RED)Aborted. Fix missing files manually before running \`make up\`.$(RES)"; \
+			exit 1 ;; \
 	esac
 
 _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
@@ -68,18 +79,4 @@ _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
 		echo "$(GREEN)✓ $(SECRETS_DIR)$$file created$(RES)"; \
 	done
 
-_check-missing: # Verify all required files exist; abort with warnings if any are missing
-	@missing=0; \
-	for f in $(REQUIRED_FILES); do \
-		if [ ! -f "$$f" ]; then \
-			echo "$(RED)✗ Missing required file: $$f$(RES)"; \
-			missing=1; \
-		fi; \
-	done; \
-	if [ "$$missing" -eq 1 ]; then \
-		echo "$(ORANGE)Run \`make setup\` to initialise missing files.$(RES)"; \
-		exit 1; \
-	fi; \
-	echo "$(GREEN)✓ All required files present$(RES)"
-
-.PHONY: setup _setup-apply _check-missing
+.PHONY: setup _setup-apply
