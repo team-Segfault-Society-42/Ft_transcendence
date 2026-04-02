@@ -48,13 +48,12 @@ setup: ## Check required files; prompt for default setup only if any are missing
 		echo "$(GREEN)✓ All required files present$(RES)"; \
 		exit 0; \
 	fi; \
-	echo "$(ORANGE)[Warning] Missing files detected.$(RES)"; \
 	printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
 	case "$$ans" in \
 		y|Y|yes|Yes|YES) \
 			$(MAKE) --no-print-directory _setup-apply ;; \
 		*) \
-			echo "$(RED)Aborted. Fix missing files manually before running \`make up\`.$(RES)"; \
+			echo "$(RED)Aborted. Fix missing files manually by running $(GOLD)\`make setup\`$(RES)"; \
 			exit 1 ;; \
 	esac
 
