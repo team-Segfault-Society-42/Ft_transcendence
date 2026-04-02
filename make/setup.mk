@@ -54,6 +54,10 @@ _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
 		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env; \
 	done
 	@echo "$(GREEN)✓ Default values applied to .env$(RES)"
+	@for pair in $(DEV_ONLY_ENV_VARS); do \
+		echo "$$pair" >> .env; \
+	done
+	@echo "$(GREEN)✓ Dev-only vars appended to .env$(RES)"
 	@mkdir -p $(SECRETS_DIR)
 	@for pair in $(DEFAULT_SECRETS); do \
 		file=$$(echo "$$pair" | cut -d= -f1); \
