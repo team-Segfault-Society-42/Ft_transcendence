@@ -11,24 +11,26 @@ DEFAULT_ENV_VARS = \
 	POSTGRES_DB=transcendence \
 	POSTGRES_USER=postgres_superuser \
 	BACKEND_USER=backend_user \
-	JWT_SECRET=dev-jwt-secret-changeme
 
 # ── Dev-only vars not present in .env.example (appended to .env) ──────────────
 # TODO: remove BACKEND_PW once backend reads password from /run/secrets/backend_pw
 DEV_ONLY_ENV_VARS = \
-	BACKEND_PW=changeme
+	BACKEND_PW=changeme \
+	JWT_SECRET=jwt-changeme
 
 # ── Add new secrets here ───────────────────────────────────────────────────────
 # Format: filename=content   (file created at $(SECRETS_DIR)filename)
 DEFAULT_SECRETS = \
 	backend_pw.txt=changeme \
-	postgres_root_pw.txt=changeme
+	postgres_root_pw.txt=changeme \
+	jwt_secret.txt=jwt-changeme
 
 # ── Files that must exist before the stack can start ──────────────────────────
 REQUIRED_FILES = \
 	.env \
 	$(SECRETS_DIR)backend_pw.txt \
-	$(SECRETS_DIR)postgres_root_pw.txt
+	$(SECRETS_DIR)postgres_root_pw.txt \
+	$(SECRETS_DIR)jwt_secret.txt
 
 # ══════════════════════════════════════════════════════
 
@@ -46,8 +48,8 @@ setup: ## Prompt to initialise .env and secrets — run automatically by 'make u
 	esac
 
 _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
-	@cp .env.example .env
-	@echo "$(GREEN)✓ .env created from .env.example$(RES)"
+	@grep -v '^\s*#' .env.example > .env
+	@echo "$(GREEN)✓ .env created from .env.example (comments stripped)$(RES)"
 	@for pair in $(DEFAULT_ENV_VARS); do \
 		key=$$(echo "$$pair" | cut -d= -f1); \
 		val=$$(echo "$$pair" | cut -d= -f2-); \
