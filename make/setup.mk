@@ -13,6 +13,11 @@ DEFAULT_ENV_VARS = \
 	BACKEND_USER=backend_user \
 	JWT_SECRET=dev-jwt-secret-changeme
 
+# ── Dev-only vars not present in .env.example (appended to .env) ──────────────
+# TODO: remove BACKEND_PW once backend reads password from /run/secrets/backend_pw
+DEV_ONLY_ENV_VARS = \
+	BACKEND_PW=changeme
+
 # ── Add new secrets here ───────────────────────────────────────────────────────
 # Format: filename=content   (file created at $(SECRETS_DIR)filename)
 DEFAULT_SECRETS = \
@@ -30,7 +35,7 @@ REQUIRED_FILES = \
 ##@ FAST SETUP
 
 setup: ## Prompt to initialise .env and secrets — run automatically by 'make up'
-	@printf "$(GOLD)Run with defaults?$(RES) [y/N]\n"
+	@printf "$(CYAN)Build default setup?$(RES) [y/N]\n"
 	@printf "$(ORANGE)[Warning] This will overwrite your current '.env' and secrets$(RES)\n"
 	@printf "> "; read ans; \
 	case "$$ans" in \
