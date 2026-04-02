@@ -59,18 +59,19 @@ setup: ## Check required files; prompt for default setup only if any are missing
 	esac
 
 _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
-	@grep -v '^\s*#' .env.example > .env
-	@echo "$(GREEN)✓ .env created from .env.example (comments stripped)$(RES)"
+	@{ \
+		for pair in $(DEV_ONLY_ENV_VARS); do \
+			echo "$$pair"; \
+		done; \
+		grep -v '^\s*#' .env.example; \
+	} > .env
+	@echo "$(GREEN)✓ .env created (dev-only vars prepended, comments stripped)$(RES)"
 	@for pair in $(DEFAULT_ENV_VARS); do \
 		key=$$(echo "$$pair" | cut -d= -f1); \
 		val=$$(echo "$$pair" | cut -d= -f2-); \
 		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env; \
 	done
 	@echo "$(GREEN)✓ Default values applied to .env$(RES)"
-	@for pair in $(DEV_ONLY_ENV_VARS); do \
-		echo "$$pair" >> .env; \
-	done
-	@echo "$(GREEN)✓ Dev-only vars appended to .env$(RES)"
 	@mkdir -p $(SECRETS_DIR)
 	@for pair in $(DEFAULT_SECRETS); do \
 		file=$$(echo "$$pair" | cut -d= -f1); \
