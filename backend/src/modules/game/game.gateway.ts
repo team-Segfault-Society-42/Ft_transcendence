@@ -10,7 +10,6 @@ import {
 import { GameService } from './game.service';
 import { PlayMoveDto } from './dto/play-move.dto';
 import { Server, Socket } from 'socket.io';
-import { error } from 'node:console';
 
 @WebSocketGateway({
   cors: {
@@ -32,35 +31,40 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('join_game')
+  @SubscribeMessage('join_game')
   async handleJoinGame(
     @MessageBody() body: { gameId: string },
     @ConnectedSocket() client: Socket,
   ) {
     try {
+      const gameState = this.gameService.getGameById(body.gameId);
+
       await client.join(body.gameId);
+
       console.log(`Client ${client.id} joined room ${body.gameId}`);
+      client.emit('game_updated', gameState);
     } catch (error) {
-      client.emit('Game_error', {
+      client.emit('game_error', {
         message: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }
 
-  @SubscribeMessage('play move')
+  @SubscribeMessage('play_move')
   handlePlayMove(
     @MessageBody() body: PlayMoveDto,
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      const updatStateGame = this.gameService.playMove(
+      const updatedStateGame = this.gameService.playMove(
         body.gameId,
         body.r,
         body.c,
       );
-      this.server.to(body.gameId).emit('updatStateGame', updatStateGame);
-      return updatStateGame;
+      this.server.to(body.gameId).emit('game_updated', updatedStateGame);
+      return updatedStateGame;
     } catch (error) {
-      client.emit('Game_error', {
+      client.emit('game_error', {
         message: error instanceof Error ? error.message : 'Unknown error',
       });
     }
