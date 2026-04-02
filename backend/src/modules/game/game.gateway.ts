@@ -31,7 +31,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('join_game')
-  @SubscribeMessage('join_game')
   async handleJoinGame(
     @MessageBody() body: { gameId: string },
     @ConnectedSocket() client: Socket,
