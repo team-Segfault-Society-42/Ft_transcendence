@@ -15,10 +15,10 @@ interface LoginModalProps {
 	isOpen: boolean
 	onClose: () => void
 	onSwitchToSignup: () => void
+	onLoginSuccess: () => void
 }
 
-
-export default function LoginModal({ isOpen, onClose, onSwitchToSignup }: LoginModalProps) {
+export default function LoginModal({ isOpen, onClose, onSwitchToSignup, onLoginSuccess }: LoginModalProps) {
 
     const { t } = useTranslation() 
     const navigate = useNavigate()
@@ -44,7 +44,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }: LoginM
             navigate("/")
             toast.success(t("auth.success"), { position: "top-left" })
             form.reset()
-            setTimeout(() => {onClose();}, 500 )
+            setTimeout(() => {onLoginSuccess();}, 500 )
         } catch (error: any) {
             const serverMessage = error.response?.data?.message || error.message
 			const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage

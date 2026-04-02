@@ -5,7 +5,18 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    withCredentials: true,
 })
+
+export async function userLogout() {
+    const response = await api.post('auth/logout')
+    return response.data
+}
+
+export async function getMe() {
+    const response = await api.get('auth/me')
+    return response.data
+}
 
 export async function userLogin(data) {
     const response = await api.post('auth/login', data)
@@ -32,4 +43,6 @@ export const userService = {
     updateUser,
     createUser,
     userLogin,
+    getMe,
+    userLogout,
 }
