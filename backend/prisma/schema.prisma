@@ -23,5 +23,22 @@ model User {
   draws        Int     @default(0)
   xp           Int     @default(0)
   level        Int     @default(0)
+  matchesP1    Match[] @relation("player1")
+  matchesP2    Match[] @relation("player2")
+  wonMatches   Match[] @relation("asWinner")
+
+}
+
+model Match {
+  id           Int      @id @default(autoincrement())
+  player1      User     @relation("player1", fields: [player1Id], references: [id])
+  player1Id    Int
+  player2      User     @relation("player2", fields: [player2Id], references: [id])
+  player2Id    Int
+  winner       User?    @relation("asWinner", fields: [winnerId], references: [id])
+  winnerId     Int?
+  scoresP1     Int      @default(0)
+  scoresP2     Int      @default(0)
+  date         DateTime @default(now())
 
 }
