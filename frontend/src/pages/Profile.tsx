@@ -2,16 +2,13 @@ import avatarImg from "/avatar.png"
 import { useEffect, useState } from 'react'
 import { userService } from '../services/userService'
 import { useTranslation } from "react-i18next"
-<<<<<<< HEAD
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
-=======
 import { useOutletContext } from "react-router";
 import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from 'react-router-dom';
->>>>>>> dev
 
 interface User {
     id: number

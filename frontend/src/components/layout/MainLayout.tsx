@@ -1,8 +1,7 @@
 import { Outlet } from "react-router-dom"
 import Header from "./Header"
 import Footer from "./Footer"
-import SignupModal from "./SignupModal"
-import LoginModal from "./LoginModal"
+import { AuthModal } from "@/components/auth/AuthModal"
 import { useEffect, useState } from 'react'
 import { userService } from "@/services/userService"
 import { Spinner } from "@/components/ui/spinner"
@@ -17,7 +16,6 @@ export default function MainLayout() {
   const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(null)
 
 	const openLogin = () => setActiveModal("login")
-	const openSignup = () => setActiveModal("signup")
 	const closeModals = () => setActiveModal(null)
 
   const [user, setUser] = useState(null)
@@ -34,7 +32,6 @@ export default function MainLayout() {
       } catch (error: any) {
 
         if (error.response?.status != 401) {
-          setUser(null)
           const serverMessage = error.response?.data?.message || error.message
 			    const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
           toast.error(t("auth.error") + finalMessage, { position: "bottom-right" })
@@ -94,16 +91,15 @@ export default function MainLayout() {
 
       <Footer />
 
-      <SignupModal
-        isOpen={activeModal === "signup"}
+      <AuthModal
+        mode={activeModal === "login" ? "login" : "signup"}
+        isOpen={activeModal !== null}
         onClose={closeModals}
-        onSwitchToSignin={openLogin} />
+        onSwitchMode={() =>
+        setActiveModal(activeModal === "login" ? "signup" : "login")
+      }
+      onSuccess={handleLoginSuccess}/>
 
-      <LoginModal 
-				isOpen={activeModal === "login"}
-				onClose={closeModals}
-        onSwitchToSignup={openSignup}
-        onLoginSuccess={handleLoginSuccess} />
     </div>
   )
 }

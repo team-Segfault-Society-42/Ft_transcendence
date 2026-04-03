@@ -15,7 +15,7 @@
             "register": "Register",
             "login": "Login",
             "start": "START GAME",
-            "hi": "Hi, "
+            "hi": "Hi,"
         },
         "cards":{
             "home":{
@@ -78,7 +78,7 @@
             "login": "Login",
             "no_account": "Don't have an account ? Sign up",
             "already_account": "Already have an account ? Log in",
-            "logout": "Logout",
+            "logout": ": Logout",
             "edit": "Modification successfully completed"
           },   
         "success": "User successfully created!",
