@@ -35,6 +35,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() body: { gameId: string },
     @ConnectedSocket() client: Socket,
   ) {
+    console.log('==========>>>>>>Nest enter to join game');
     try {
       const gameState = this.gameService.getGameById(body.gameId);
 

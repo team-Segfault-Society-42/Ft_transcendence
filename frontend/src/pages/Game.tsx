@@ -17,21 +17,34 @@ export default function Game() {
   };
 
   useEffect(() => {
-    const client = io("http://localhost:1024/socket.io", {
-      // transports: ["websocket"], // Désactivé temporairement pour laisser Socket.io faire du polling en cas d'échec
+    console.log("useEffect de Game s'exécute");
+
+    const client = io("http://localhost:1024", {
+      path: "/socket.io/",
+      transports: ["websocket"],
       withCredentials: true,
     });
 
-    client.on("connect", () => console.log("✅ Socket connecté:", client.id));
+    client.on("connect", () => {
+      console.log("client connected:", client.id);
+      client.emit("join_game", "game42");
+    });
     client.on("connect_error", (error) =>
-      console.error("❌ Erreur de connexion:", error.message, error),
+      console.error("connexion error:", error.message, error),
     );
     client.on("disconnect", (reason) =>
-      console.log("🔌 Socket déconnecté:", client.id, "Raison:", reason),
+      console.log("client déconnecte:", client.id, "Raison:", reason),
+    );
+
+    client.on("game_error", (reason) =>
+      console.log("game_error:", client.id, "Raison:", reason),
+    );
+    client.on("game_update", (reason) =>
+      console.log("game_update:", client.id, "Raison:", reason),
     );
 
     return () => {
-      console.log("🧹 Démontage du composant : déconnexion du socket");
+      console.log("deconexion du socket");
       client.disconnect();
     };
   }, []);
