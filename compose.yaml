@@ -46,6 +46,8 @@ services:
     build:
       context: ./proxy
       dockerfile: Dockerfile
+      args:
+        - DOMAIN=${DOMAIN}
     networks:
       - client-side
     ports:

@@ -7,6 +7,7 @@ SECRETS_DIR = secrets/
 # ── Add new .env defaults here ────────────────────────────────────────────────
 # Format: KEY=value   (replaces the KEY=... line after copying .env.example)
 DEFAULT_ENV_VARS = \
+	DOMAIN=localhost \
 	POSTGRES_VERSION=18-alpine \
 	POSTGRES_DB=transcendence \
 	POSTGRES_USER=postgres_superuser \
@@ -16,7 +17,8 @@ DEFAULT_ENV_VARS = \
 # TODO: remove BACKEND_PW once backend reads password from /run/secrets/backend_pw
 DEV_ONLY_ENV_VARS = \
 	BACKEND_PW=changeme \
-	JWT_SECRET=jwt-changeme
+	JWT_SECRET=jwt-changeme \
+	DATABASE_URL=postgresql://backend_user:changeme@db:5432/transcendence?schema=public
 
 # ── Add new secrets here ───────────────────────────────────────────────────────
 # Format: filename=content   (file created at $(SECRETS_DIR)filename)
