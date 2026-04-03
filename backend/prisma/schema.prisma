@@ -21,5 +21,7 @@ model User {
   wins         Int     @default(0)
   losses       Int     @default(0)
   draws        Int     @default(0)
+  xp           Int     @default(0)
+  level        Int     @default(0)
 
 }
