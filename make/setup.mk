@@ -14,7 +14,6 @@ DEFAULT_ENV_VARS = \
 	BACKEND_USER=backend_user \
 
 # ── Dev-only vars not present in .env.example (appended to .env) ──────────────
-# TODO: remove BACKEND_PW once backend reads password from /run/secrets/backend_pw
 DEV_ONLY_ENV_VARS = \
 	BACKEND_PW=changeme \
 	JWT_SECRET=jwt-changeme \
@@ -36,9 +35,7 @@ REQUIRED_FILES = \
 
 # ══════════════════════════════════════════════════════
 
-##@ FAST SETUP
-
-setup: ## Check required files; prompt for default setup only if any are missing
+setup: # Checks required files; prompt for default setup if any are missing
 	@missing=0; \
 	for f in $(REQUIRED_FILES); do \
 		if [ ! -f "$$f" ]; then \
