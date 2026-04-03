@@ -1,9 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SignupModal from "../components/layout/SignupModal";
 
 export default function Home() {
   const [showSignup, setShowSignup] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleFindOpponent = async () => {
+    try {
+      const response = await fetch("http://localhost:1024/api/game/create", {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+      const data: { gameId: string } = await response.json();
+
+      console.log("created gameId:", data.gameId);
+      navigate(`/game/${data.gameId}`);
+    } catch (error) {
+      console.log("created game error:", error);
+    }
+  };
 
   return (
     <section className="flex flex-col items-center text-center gap-12">
@@ -34,12 +53,12 @@ export default function Home() {
       </Link>
 
       {/* FIND AN OPPENENT */}
-      <Link
-        to="/game"
+      <button
+        onClick={handleFindOpponent}
         className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95"
       >
         FIND AN OPPENENT
-      </Link>
+      </button>
 
       {/* MODAL */}
       <SignupModal isOpen={showSignup} onClose={() => setShowSignup(false)} />

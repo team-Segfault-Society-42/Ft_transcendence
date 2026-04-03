@@ -35,7 +35,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() body: { gameId: string },
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('==========>>>>>>Nest enter to join game');
     try {
       const gameState = this.gameService.getGameById(body.gameId);
 
@@ -44,6 +43,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log(`Client ${client.id} joined room ${body.gameId}`);
       client.emit('game_updated', gameState);
     } catch (error) {
+      console.log('join_game error:', error);
       client.emit('game_error', {
         message: error instanceof Error ? error.message : 'Unknown error',
       });
