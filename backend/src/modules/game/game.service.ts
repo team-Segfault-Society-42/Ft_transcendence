@@ -20,7 +20,7 @@ export class GameService {
   }
   // maybe prepare more for 6x6 , 7x7 or 9x9
 
-  playMove(gameId: string, r: number, c: number): void {
+  playMove(gameId: string, r: number, c: number): GameState {
     const gameState = this.activeGame.get(gameId);
     if (!gameState) throw new Error(`Game with ID ${gameId} not found`);
     if (gameState.status === 'finished')
@@ -33,7 +33,7 @@ export class GameService {
     if (timeOnClick > 30000) {
       gameState.status = 'finished';
       gameState.winner = gameState.currentPlayer === 'X' ? 'O' : 'X';
-      return;
+      return gameState;
     }
 
     validateToMove(gameState, r, c);
@@ -41,5 +41,6 @@ export class GameService {
 
     const updatState = applyMove(gameState, r, c);
     this.activeGame.set(gameId, updatState);
+    return updatState;
   }
 }

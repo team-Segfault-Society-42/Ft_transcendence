@@ -1,102 +1,59 @@
-import {create} from 'zustand'
+import { create } from "zustand";
+import type { Socket } from "socket.io-client";
+import type { GameState } from "../../../backend/src/modules/game/game.types";
 
+type GameStore = {
+  gameId: string | null;
+  client: Socket | null;
+  game: GameState | null;
+  error: string | null;
 
-const COMBIN = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8],
-    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    [0, 4, 8], [2, 4, 6]
-]
+  setGameId: (gameId: string | null) => void;
+  setClient: (client: Socket | null) => void;
+  syncFromServer: (game: GameState) => void;
+  setError: (message: string) => void;
+  resetGameState: () => void;
+  playMove: (index: number) => void;
+};
 
+export const useGameStore = create<GameStore>((set, get) => ({
+  gameId: null,
+  client: null,
+  game: null,
+  error: null,
 
-interface GameState {
-	isXturn: boolean
-	grid: string[]
-	queue: number[]
-	idx: number
-	history: number[]
-	showPopup: boolean
-	winner: string | null
-	scores: {x: number, o: number, d:number}
+  setGameId: (gameId) => set({ gameId }),
+  setClient: (client) => set({ client }),
 
-	
+  syncFromServer: (game) =>
+    set({
+      game,
+      error: null,
+    }),
 
+  setError: (message) => set({ error: message }),
 
-	// functions
-	resetSession: () => void
-	replayGame: () => void
-	playMove: (moveIdx: number) => void
-}
+  resetGameState: () =>
+    set({
+      game: null,
+      error: null,
+    }),
 
-export const useGameStore = create<GameState>((set) => ({
-	isXturn: false,
-	grid: Array(9).fill(""),
-	queue: [-1, -1, -1, -1, -1, -1],
-	idx: 0,
-	history: [],
-	showPopup: false,
-	winner: null,
-	scores: { x: 0, o: 0, d: 0 },
+  playMove: (index) => {
+    const { client, gameId, game } = get();
 
-	resetSession: () => set({
-		isXturn: false,
-		grid: Array(9).fill(""),
-		queue: [-1, -1, -1, -1, -1, -1],
-		idx: 0,
-		history: [],
-		showPopup: false,
-		winner: null,
-		scores: { x: 0, o: 0, d: 0 },
-	}),
+    if (!client || !gameId || !game) {
+      console.warn("Missing socket, gameId or game");
+      return;
+    }
 
-	replayGame: () => set({
-		grid: Array(9).fill(""),
-		showPopup: false,
-		isXturn: false,
-		winner: null,
-		queue: [-1, -1, -1, -1, -1, -1],
-		idx: 0,
-		history: []
-	}),
+    if (game.status === "finished") {
+      return;
+    }
 
-	playMove: (moveIdx) => set((state) => {
-		if(state.showPopup || state.grid[moveIdx] !== "") return {}
+    const r = Math.floor(index / 3);
+    const c = index % 3;
 
-		const nextGrid = [...state.grid]
-		const nextQueue = [...state.queue]
-		const nextScores = {...state.scores}
-		let nextWinner = null
-		let shouldShowPopup = false
-
-		if (state.idx >= 6) {
-			const oldMoveIdx = nextQueue[state.idx % 6]
-			nextGrid[oldMoveIdx] = ""
-			console.log(oldMoveIdx)
-		}
-		const symbol = state.isXturn ? 'O': 'X'
-		nextGrid[moveIdx] = symbol;
-    	nextQueue[state.idx % 6] = moveIdx;
-
-		for (let i = 0; i < COMBIN.length; i++) {
-			const [a, b, c] = COMBIN[i]
-			if (nextGrid[a] && nextGrid[a] === nextGrid[b] && nextGrid[a] === nextGrid[c]) {
-				nextWinner = symbol
-				shouldShowPopup = true
-
-				if (symbol === "X") nextScores.x += 1
-				else nextScores.o += 1
-				break
-			}
-		}
-
-		return {
-			isXturn: !state.isXturn,
-			grid: nextGrid,
-			queue: nextQueue,
-			idx: state.idx + 1,
-			history: [...state.history, moveIdx],
-			showPopup: shouldShowPopup,
-			winner: nextWinner,
-			scores: nextScores
-		}
-	})
-}))
+    client.emit("play_move", { gameId, r, c });
+  },
+}));

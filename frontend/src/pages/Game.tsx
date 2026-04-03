@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Board from "../components/Board";
 import { io, Socket } from "socket.io-client";
 import { useParams } from "react-router-dom";
+import { useGameStore } from "../Store/gameStore";
 
 export default function Game() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -34,6 +35,8 @@ export default function Game() {
 
     client.on("connect", () => {
       console.log("client connected:", client.id);
+      useGameStore.getState().setGameId(gameId);
+      useGameStore.getState().setClient(client);
       client.emit("join_game", { gameId });
       console.log("join_game sent with:", gameId);
     });
@@ -44,12 +47,13 @@ export default function Game() {
       console.log("client déconnecte:", client.id, "Raison:", reason),
     );
 
-    client.on("game_error", (reason) =>
-      console.log("game_error:", client.id, "Raison:", reason),
-    );
-    client.on("game_updated", (reason) =>
-      console.log("game_update:", client.id, "Raison:", reason),
-    );
+    client.on("game_updated", (payload) => {
+      useGameStore.getState().syncFromServer(payload);
+    });
+
+    client.on("game_error", (payload) => {
+      useGameStore.getState().setError(payload.message);
+    });
 
     return () => {
       console.log("deconexion du socket");
