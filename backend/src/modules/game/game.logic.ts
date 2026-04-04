@@ -15,18 +15,32 @@ export function isCellEmpty(
 
 export function initGameState(): GameState {
   return {
-    board: [
-      [null, null, null],
-      [null, null, null],
-      [null, null, null],
-    ],
-    currentPlayer: 'X',
-    status: 'playing',
+    board: Array.from({ length: 3 }, () => Array(3).fill(null)),
+    currentPlayer: 'X', // 1st to log take X
+    status: 'waiting',
     winner: null,
+    endReason: null,
+
     moveCount: 0,
     queuIdx: [],
     toDisapear: -1,
     lastMove: Date.now(),
+
+    players: {
+      X: null,
+      O: null,
+    },
+
+    scores: {
+      X: 0,
+      O: 0,
+      D: 0,
+    },
+
+    replayVotes: {
+      X: false,
+      O: false,
+    },
   };
 }
 
