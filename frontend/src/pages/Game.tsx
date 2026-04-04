@@ -42,17 +42,15 @@ export default function Game() {
     });
 
     client.on("joined_as", (payload) => {
-      console.log("joined as raw:", payload.role);
-      console.log("joined as json:", JSON.stringify(payload.role));
-      console.log("joined as type:", typeof payload.role);
       useGameStore.getState().setPlayerRole(payload.role);
+      console.log("joined as:", payload.role);
     });
 
     client.on("connect_error", (error) =>
       console.error("connexion error:", error.message, error),
     );
     client.on("disconnect", (reason) =>
-      console.log("client déconnecte:", client.id, "Raison:", reason),
+      console.log("client disconnect. Raison:", reason),
     );
 
     client.on("game_updated", (payload) => {

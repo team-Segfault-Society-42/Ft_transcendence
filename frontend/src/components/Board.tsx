@@ -23,10 +23,12 @@ export default function Board({ players }: BoardProps) {
 
   const flatBoard: CellValue[] = board.flat();
   const showPopup = status === "finished" && winner !== null;
+
   const canPlay =
     status === "playing" &&
     (playerRole === "X" || playerRole === "O") &&
     playerRole === currentPlayer;
+
   return (
     <div className="relative inline-block text-center p-4">
       <div
@@ -90,6 +92,24 @@ export default function Board({ players }: BoardProps) {
         {playerRole === null && "Joining game..."}
       </div>
 
+      {status === "waiting" && (
+        <div className="mb-4 rounded-lg border border-yellow-400 bg-yellow-500/20 px-4 py-3 text-yellow-100">
+          Waiting for opponent...
+        </div>
+      )}
+
+      {status === "finished" && game.endReason === "draw" && (
+        <div className="mb-4 rounded-lg border border-slate-400 bg-slate-500/20 px-4 py-3 text-slate-100">
+          Draw game
+        </div>
+      )}
+
+      {status === "finished" && game.endReason === "timeout" && (
+        <div className="mb-4 rounded-lg border border-orange-400 bg-orange-500/20 px-4 py-3 text-orange-100">
+          Win by timeout
+        </div>
+      )}
+
       {showPopup && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
           <div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center">
@@ -101,6 +121,11 @@ export default function Board({ players }: BoardProps) {
               🎉 {players[winner].nickname} WINS!
             </h2>
           </div>
+          <button
+            className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md`}
+          >
+            Replay
+          </button>
         </div>
       )}
 
@@ -116,6 +141,10 @@ export default function Board({ players }: BoardProps) {
             }}
           />
         ))}
+      </div>
+
+      <div className="mt-4 text-white/80 font-medium">
+        Score — X: {game.scores.X} | O: {game.scores.O} | D: {game.scores.D}
       </div>
 
       <p className="mt-6 text-white/60 font-medium italic">2 players mode</p>
