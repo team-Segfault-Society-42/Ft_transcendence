@@ -74,7 +74,7 @@ describe('Game Engine Tests', () => {
     expect(finalState.status).toBe('finished');
   });
 
-  it('Test draw after 50 coups', () => {
+  it('Test draw after 20 coups', () => {
     const safeSequence = [
       [0, 0], // Coup 1
       [0, 1], // Coup 2

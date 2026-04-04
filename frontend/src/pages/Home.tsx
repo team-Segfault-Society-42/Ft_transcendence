@@ -45,12 +45,12 @@ export default function Home() {
       </button>
 
       {/* START GAME */}
-      <Link
-        to="/game"
+      <button
+        onClick={() => console.log("play local later")}
         className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95"
       >
-        START GAME
-      </Link>
+        PLAY LOCAL
+      </button>
 
       {/* FIND AN OPPENENT */}
       <button

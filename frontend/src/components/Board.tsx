@@ -22,12 +22,21 @@ export default function Board({ players }: BoardProps) {
   const { board, currentPlayer, status, winner, toDisapear } = game;
 
   const flatBoard: CellValue[] = board.flat();
-  const showPopup = status === "finished" && winner !== null;
+  const showPopup =
+    status === "finished" && winner !== null && game.endReason === "win";
 
   const canPlay =
     status === "playing" &&
     (playerRole === "X" || playerRole === "O") &&
     playerRole === currentPlayer;
+
+  const hasReplayRole = playerRole === "X" || playerRole === "O";
+
+  const waitingReplayOtherPlayer =
+    status === "finished" &&
+    hasReplayRole &&
+    ((playerRole === "X" && game.replayVotes.X && !game.replayVotes.O) ||
+      (playerRole === "O" && game.replayVotes.O && !game.replayVotes.X));
 
   return (
     <div className="relative inline-block text-center p-4">
@@ -98,6 +107,12 @@ export default function Board({ players }: BoardProps) {
         </div>
       )}
 
+      {status === "playing" && hasReplayRole && !canPlay && (
+        <div className="mb-4 rounded-lg border border-blue-400 bg-blue-500/20 px-4 py-3 text-blue-100">
+          Waiting for opponent move...
+        </div>
+      )}
+
       {status === "finished" && game.endReason === "draw" && (
         <div className="mb-4 rounded-lg border border-slate-400 bg-slate-500/20 px-4 py-3 text-slate-100">
           Draw game
@@ -110,20 +125,43 @@ export default function Board({ players }: BoardProps) {
         </div>
       )}
 
+      {status === "finished" && game.endReason === "forfeit" && (
+        <div className="mb-4 rounded-lg border border-red-400 bg-red-500/20 px-4 py-3 text-red-100">
+          Win by opponent leaving the match
+        </div>
+      )}
+
+      {waitingReplayOtherPlayer && (
+        <div className="mb-4 rounded-lg border border-fuchsia-400 bg-fuchsia-500/20 px-4 py-3 text-fuchsia-100">
+          Replay requested. Waiting for the other player...
+        </div>
+      )}
+
       {showPopup && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
-          <div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center">
+          <div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center gap-4 min-w-[320px]">
             <h2
-              className={`text-2xl font-bold mb-4 ${
+              className={`text-2xl font-bold ${
                 winner === "X" ? "text-cyan-500" : "text-fuchsia-500"
               }`}
             >
               🎉 {players[winner].nickname} WINS!
             </h2>
-          </div>
-          {status === "finished" &&
-            (playerRole === "X" || playerRole === "O") && (
-              <div className="mt-4 flex flex-col items-center gap-3">
+
+            {status === "finished" && game.endReason === "timeout" && (
+              <p className="text-sm text-orange-500 font-medium">
+                Win by timeout
+              </p>
+            )}
+
+            {status === "finished" && game.endReason === "forfeit" && (
+              <p className="text-sm text-red-500 font-medium">
+                Win by opponent leaving the match
+              </p>
+            )}
+
+            {(playerRole === "X" || playerRole === "O") && (
+              <>
                 <button
                   className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
                   onClick={requestReplay}
@@ -131,12 +169,24 @@ export default function Board({ players }: BoardProps) {
                   REPLAY
                 </button>
 
-                <p className="text-sm text-white/70">
+                <p className="text-sm text-gray-600">
                   Replay votes — X: {game.replayVotes.X ? "✓" : "…"} | O:{" "}
                   {game.replayVotes.O ? "✓" : "…"}
                 </p>
-              </div>
+
+                {((playerRole === "X" &&
+                  game.replayVotes.X &&
+                  !game.replayVotes.O) ||
+                  (playerRole === "O" &&
+                    game.replayVotes.O &&
+                    !game.replayVotes.X)) && (
+                  <p className="text-sm text-fuchsia-500 font-medium">
+                    Waiting for the other player...
+                  </p>
+                )}
+              </>
             )}
+          </div>
         </div>
       )}
 

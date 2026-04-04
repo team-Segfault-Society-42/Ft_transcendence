@@ -4,7 +4,7 @@ export type CellValue = PlayerSymbol | null;
 
 export type GameStatus = "waiting" | "playing" | "finished";
 
-export type EndReason = "win" | "draw" | "timeout" | null;
+export type EndReason = "win" | "draw" | "timeout" | "forfeit" | null;
 
 export type PlayerRole = PlayerSymbol | "spectator";
 
@@ -43,7 +43,7 @@ export interface GameState {
 
   moveCount: number;
   queuIdx: BoardPosition[];
-  toDisapear: number; // TODO: check if i can convert r,c to number
+  toDisapear: number;
   lastMove: number;
 
   players: PlayersInGame;

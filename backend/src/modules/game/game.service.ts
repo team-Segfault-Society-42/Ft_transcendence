@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto'; //generer des IDs uniques pour les matchs
-import { CellValue, GameState, PlayerRole } from './game.types';
+import { GameState, PlayerRole } from './game.types';
 import {
   initGameState,
   validateToMove,
   applyMove,
   getPlayerRole,
   assignPlayerRole,
-  createEmptyBoard,
   resetBoardForReplay,
 } from './game.logic';
 @Injectable()
@@ -33,7 +32,7 @@ export class GameService {
   getGameById(gameId: string): GameState {
     const game = this.activeGame.get(gameId);
     if (!game) throw new Error(`Game with ID ${gameId} not found`);
-    return { ...game };
+    return structuredClone(game);
   }
   // maybe prepare more for 6x6 , 7x7 or 9x9
 
@@ -103,5 +102,40 @@ export class GameService {
     const updatState = applyMove(game, r, c);
     this.activeGame.set(gameId, updatState);
     return updatState;
+  }
+
+  processPlayerDisconnection(
+    clientId: string,
+  ): { gameId: string; game: GameState } | null {
+    for (const [gameId, game] of this.activeGame.entries()) {
+      const wasX = game.players.X === clientId;
+      const wasO = game.players.O === clientId;
+
+      if (!wasX && !wasO) continue;
+
+      const role = wasX ? 'X' : 'O';
+      const other = role === 'X' ? 'O' : 'X';
+
+      game.players[role] = null;
+
+      if (game.status === 'playing' && game.players[other]) {
+        game.status = 'finished';
+        game.winner = other;
+        game.endReason = 'forfeit';
+        game.scores[other] += 1;
+        game.toDisapear = -1;
+        game.replayVotes = { X: false, O: false };
+      }
+
+      if (game.status === 'waiting') {
+        game.winner = null;
+        game.endReason = null;
+      }
+
+      this.activeGame.set(gameId, game);
+      return { gameId, game };
+    }
+
+    return null;
   }
 }

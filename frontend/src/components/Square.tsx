@@ -1,4 +1,4 @@
-import type { CellValue } from "../../../backend/src/modules/game/game.types";
+import type { CellValue } from "../type/game.types";
 
 type SquareProps = {
   value: CellValue;
