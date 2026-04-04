@@ -111,52 +111,53 @@ export function validateToMove(gameState: GameState, r: number, c: number) {
   }
 }
 
-export function applyMove(
-  gameState: GameState,
-  r: number,
-  c: number,
-): GameState {
-  const symbol = gameState.currentPlayer;
+export function applyMove(game: GameState, r: number, c: number): GameState {
+  const symbol = game.currentPlayer;
 
-  gameState.board[r][c] = symbol;
-  gameState.moveCount++;
-  gameState.queuIdx.push({ r, c });
+  game.board[r][c] = symbol;
+  game.moveCount++;
+  game.queuIdx.push({ r, c });
   // DEBUG : state before add
   console.log('--- QUEUE APRES AJOUT ---');
-  console.table(gameState.queuIdx);
+  console.table(game.queuIdx);
 
-  if (gameState.queuIdx.length > 6) {
-    const oldMove = gameState.queuIdx.shift();
+  if (game.queuIdx.length > 6) {
+    const oldMove = game.queuIdx.shift();
     if (oldMove) {
-      gameState.board[oldMove.r][oldMove.c] = null;
+      game.board[oldMove.r][oldMove.c] = null;
       // DEBUG : state after delete
       console.log(`[SHIFT] Supprimé du board : [${oldMove.r},${oldMove.c}]`);
       console.log('--- QUEUE APRES SHIFT ---');
-      console.table(gameState.queuIdx);
+      console.table(game.queuIdx);
     }
   }
-  if (gameState.queuIdx.length >= 6) {
-    const nextToDie = gameState.queuIdx[0];
+  if (game.queuIdx.length >= 6) {
+    const nextToDie = game.queuIdx[0];
     console.log(
       'for frontend => next to die ' + nextToDie.r + ' ' + nextToDie.c,
     );
+    game.toDisapear = posToIdx(game.queuIdx[0]);
   }
 
-  const winner = checkWinner(gameState.board);
+  const winner = checkWinner(game.board);
   if (winner) {
     console.log('winner is : ' + winner);
-    gameState.status = 'finished';
-    gameState.winner = winner;
-    return gameState;
+    game.status = 'finished';
+    game.winner = winner;
+    return game;
   }
 
-  if (checkDraw(gameState.moveCount)) {
+  if (checkDraw(game.moveCount)) {
     console.log('Its a Draw ');
-    gameState.status = 'finished';
-    return gameState;
+    game.status = 'finished';
+    game.endReason = 'draw';
+    game.scores.D += 1;
+    game.toDisapear = -1;
+    game.replayVotes = { X: false, O: false };
+    return game;
   }
-  gameState.currentPlayer = symbol === 'X' ? 'O' : 'X';
-  return gameState;
+  game.currentPlayer = symbol === 'X' ? 'O' : 'X';
+  return game;
 }
 
 /**
@@ -173,6 +174,9 @@ export function assignPlayerRole(
   game: GameState,
   clientId: string,
 ): PlayerRole {
+  if (game.players.X === clientId) return 'X';
+  if (game.players.O === clientId) return 'O';
+
   if (!game.players.X) {
     game.players.X = clientId;
     return 'X';
@@ -198,4 +202,8 @@ export function getPlayerRole(game: GameState, clientId: string): PlayerRole {
   if (game.players.X == clientId) return 'X';
   if (game.players.O == clientId) return 'O';
   return 'spectator';
+}
+
+export function posToIdx(pos: BoardPosition): number {
+  return pos.r * 3 + pos.c;
 }

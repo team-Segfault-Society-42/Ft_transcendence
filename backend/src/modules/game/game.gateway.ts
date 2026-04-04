@@ -10,6 +10,7 @@ import {
 import { GameService } from './game.service';
 import { PlayMoveDto } from './dto/play-move.dto';
 import { Server, Socket } from 'socket.io';
+import { assignPlayerRole } from './game.logic';
 
 @WebSocketGateway({
   cors: {
@@ -36,12 +37,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      const gameState = this.gameService.getGameById(body.gameId);
-
+      const game = this.gameService.getGameById(body.gameId);
+      const role = assignPlayerRole(game, client.id);
       await client.join(body.gameId);
 
       console.log(`Client ${client.id} joined room ${body.gameId}`);
-      client.emit('game_updated', gameState);
+      this.server.to(body.gameId).emit('game_updated', game);
+      client.emit('joined_as', { role });
     } catch (error) {
       console.log('join_game error:', error);
       client.emit('game_error', {
@@ -58,6 +60,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       const updatedStateGame = this.gameService.playMove(
         body.gameId,
+        client.id,
         body.r,
         body.c,
       );

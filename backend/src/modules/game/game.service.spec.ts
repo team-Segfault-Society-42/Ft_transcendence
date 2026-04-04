@@ -16,6 +16,8 @@ describe('Game Engine Tests', () => {
     service = moduleRef.get<GameService>(GameService);
     gameId = service.creatGame();
   });
+
+  const mockClientId = 'test-client-id';
   afterEach(async () => {
     jest.clearAllTimers();
     jest.useRealTimers();
@@ -64,7 +66,7 @@ describe('Game Engine Tests', () => {
       }
 
       // 2. On joue et on log
-      service.playMove(gameId, r, c);
+      service.playMove(gameId, mockClientId, r, c);
       logState(i + 1, r, c);
     }
 
@@ -86,7 +88,7 @@ describe('Game Engine Tests', () => {
 
     for (let i = 0; i < 50; i++) {
       const [r, c] = safeSequence[i % safeSequence.length];
-      service.playMove(gameId, r, c);
+      service.playMove(gameId, mockClientId, r, c);
 
       if (service.getGameById(gameId).status === 'finished') {
         break;
