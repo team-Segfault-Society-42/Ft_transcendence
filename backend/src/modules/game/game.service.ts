@@ -6,6 +6,12 @@ import { initGameState, validateToMove, applyMove } from './game.logic';
 export class GameService {
   private activeGame = new Map<string, GameState>();
 
+  private getMutableGameById(gameId: string): GameState {
+    const game = this.activeGame.get(gameId);
+    if (!game) throw new Error(`Game with ID ${gameId} not found`);
+    return game;
+  }
+
   creatGame(): string {
     const gameId = randomUUID();
     const newGame = initGameState();
@@ -13,6 +19,9 @@ export class GameService {
     return gameId;
   }
 
+  /*
+   * - !!!return a copy of game
+   */
   getGameById(gameId: string): GameState {
     const game = this.activeGame.get(gameId);
     if (!game) throw new Error(`Game with ID ${gameId} not found`);
@@ -20,9 +29,8 @@ export class GameService {
   }
   // maybe prepare more for 6x6 , 7x7 or 9x9
 
-  playMove(gameId: string, r: number, c: number): GameState {
-    const gameState = this.activeGame.get(gameId);
-    if (!gameState) throw new Error(`Game with ID ${gameId} not found`);
+  playMove(gameId: string, clientId: string, r: number, c: number): GameState {
+    const gameState = this.getMutableGameById(gameId);
     if (gameState.status === 'finished')
       throw new Error("you Can't Play, Party is finished");
 
