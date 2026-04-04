@@ -40,6 +40,11 @@ export default function Game() {
       client.emit("join_game", { gameId });
       console.log("join_game sent with:", gameId);
     });
+
+    client.on("joined_as", (payload) => {
+      console.log("joined as:", payload.role);
+    });
+
     client.on("connect_error", (error) =>
       console.error("connexion error:", error.message, error),
     );

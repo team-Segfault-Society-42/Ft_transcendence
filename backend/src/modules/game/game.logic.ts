@@ -95,7 +95,7 @@ export function checkWinner(board: CellValue[][]): PlayerSymbol | null {
   return null;
 }
 
-const maxMoves = 50;
+const maxMoves = 20;
 
 export function checkDraw(countMoves: number): boolean {
   if (countMoves >= maxMoves) return true;
@@ -131,19 +131,18 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
       console.table(game.queuIdx);
     }
   }
-  if (game.queuIdx.length >= 6) {
-    const nextToDie = game.queuIdx[0];
-    console.log(
-      'for frontend => next to die ' + nextToDie.r + ' ' + nextToDie.c,
-    );
-    game.toDisapear = posToIdx(game.queuIdx[0]);
-  }
+  if (game.queuIdx.length >= 6) game.toDisapear = posToIdx(game.queuIdx[0]);
+  else game.toDisapear = -1;
 
   const winner = checkWinner(game.board);
   if (winner) {
     console.log('winner is : ' + winner);
     game.status = 'finished';
     game.winner = winner;
+    game.endReason = 'win';
+    game.scores[winner] += 1;
+    game.toDisapear = -1;
+    game.replayVotes = { X: false, O: false };
     return game;
   }
 
@@ -165,7 +164,7 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
  * Assign a role to the client
  * - 1st client: X
  * - 2nd client: O (starts the game)
- * - 3rd+: spectator
+ * - others: spectator
  * @param game - The game state
  * @param clientId - The client identifier
  * @return PlayerRole The assigned player role
