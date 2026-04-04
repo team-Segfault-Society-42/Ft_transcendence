@@ -37,11 +37,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      const game = this.gameService.getGameById(body.gameId);
-      const role = assignPlayerRole(game, client.id);
+      const { game, role } = this.gameService.joinGame(body.gameId, client.id);
+
       await client.join(body.gameId);
 
-      console.log(`Client ${client.id} joined room ${body.gameId}`);
+      console.log(`Client ${client.id} joined room ${body.gameId} as ${role}`);
       this.server.to(body.gameId).emit('game_updated', game);
       client.emit('joined_as', { role });
     } catch (error) {
