@@ -159,6 +159,16 @@ export function applyMove(
   return gameState;
 }
 
+/**
+ * (SETTER)
+ * Assign a role to the client
+ * - 1st client: X
+ * - 2nd client: O (starts the game)
+ * - 3rd+: spectator
+ * @param game - The game state
+ * @param clientId - The client identifier
+ * @return PlayerRole The assigned player role
+ */
 export function assignPlayerRole(
   game: GameState,
   clientId: string,
@@ -174,5 +184,18 @@ export function assignPlayerRole(
     game.lastMove = Date.now();
     return 'O';
   }
+  return 'spectator';
+}
+
+/**
+ * (GETTER)
+ * Get the player role for a client
+ * @param game - The game state
+ * @param clientId - The client identifier
+ * @return PlayerRole The player role
+ */
+export function getPlayerRole(game: GameState, clientId: string): PlayerRole {
+  if (game.players.X == clientId) return 'X';
+  if (game.players.O == clientId) return 'O';
   return 'spectator';
 }
