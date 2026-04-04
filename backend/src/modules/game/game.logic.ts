@@ -4,6 +4,7 @@ import {
   PlayerSymbol,
   CellValue,
   BoardPosition,
+  PlayerRole,
 } from './game.types';
 
 export function isCellEmpty(
@@ -156,4 +157,22 @@ export function applyMove(
   }
   gameState.currentPlayer = symbol === 'X' ? 'O' : 'X';
   return gameState;
+}
+
+export function assignPlayerRole(
+  game: GameState,
+  clientId: string,
+): PlayerRole {
+  if (!game.players.X) {
+    game.players.X = clientId;
+    return 'X';
+  }
+  if (!game.players.O) {
+    game.players.O = clientId;
+    game.status = 'playing';
+    game.currentPlayer = 'X';
+    game.lastMove = Date.now();
+    return 'O';
+  }
+  return 'spectator';
 }
