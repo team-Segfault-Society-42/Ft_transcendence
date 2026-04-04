@@ -14,8 +14,24 @@ export function isCellEmpty(
 }
 
 export function initGameState(): GameState {
+  const BOARD_SIZE = 3;
+
+  function createBoard(size: number = BOARD_SIZE): CellValue[][] {
+    const board: CellValue[][] = [];
+
+    for (let i = 0; i < size; i++) {
+      const row: CellValue[] = [];
+
+      for (let j = 0; j < size; j++) {
+        row[j] = null as CellValue;
+      }
+      board[i] = row;
+    }
+
+    return board;
+  }
   return {
-    board: Array.from({ length: 3 }, () => Array(3).fill(null)),
+    board: createBoard(),
     currentPlayer: 'X', // 1st to log take X
     status: 'waiting',
     winner: null,
