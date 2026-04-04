@@ -43,7 +43,7 @@ export interface GameState {
 
   moveCount: number;
   queuIdx: BoardPosition[];
-  toDisapear: number; // TODO: check if i can convert r,c to number
+  toDisapear: number;
   lastMove: number;
 
   players: PlayersInGame;

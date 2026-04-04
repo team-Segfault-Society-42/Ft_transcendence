@@ -1,6 +1,6 @@
 import Square from "./Square";
 import { useGameStore } from "../Store/gameStore";
-import type { CellValue } from "../../../backend/src/modules/game/game.types";
+import type { CellValue } from "../type/game.types";
 
 type Player = {
   id: number;
@@ -13,7 +13,7 @@ type BoardProps = {
 };
 
 export default function Board({ players }: BoardProps) {
-  const { game, error, playMove } = useGameStore();
+  const { game, error, playMove, playerRole } = useGameStore();
 
   if (!game) {
     return <div className="text-white text-center p-8">Loading game...</div>;
@@ -23,7 +23,10 @@ export default function Board({ players }: BoardProps) {
 
   const flatBoard: CellValue[] = board.flat();
   const showPopup = status === "finished" && winner !== null;
-
+  const canPlay =
+    status === "playing" &&
+    (playerRole === "X" || playerRole === "O") &&
+    playerRole === currentPlayer;
   return (
     <div className="relative inline-block text-center p-4">
       <div
@@ -80,6 +83,13 @@ export default function Board({ players }: BoardProps) {
         </div>
       )}
 
+      <div className="mb-4 text-sm text-white/70">
+        {playerRole === "X" && "You are player X"}
+        {playerRole === "O" && "You are player O"}
+        {playerRole === "spectator" && "You are spectating"}
+        {playerRole === null && "Joining game..."}
+      </div>
+
       {showPopup && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
           <div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center">
@@ -100,7 +110,10 @@ export default function Board({ players }: BoardProps) {
             key={i}
             value={value}
             isWarning={i === toDisapear}
-            onSquareClick={() => playMove(i)}
+            onSquareClick={() => {
+              if (!canPlay) return;
+              playMove(i);
+            }}
           />
         ))}
       </div>

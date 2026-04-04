@@ -1,15 +1,17 @@
 import { create } from "zustand";
 import type { Socket } from "socket.io-client";
-import type { GameState } from "../../../backend/src/modules/game/game.types";
+import type { GameState, PlayerRole } from "../type/game.types";
 
 type GameStore = {
   gameId: string | null;
   client: Socket | null;
   game: GameState | null;
   error: string | null;
+  playerRole: PlayerRole | null;
 
   setGameId: (gameId: string | null) => void;
   setClient: (client: Socket | null) => void;
+  setPlayerRole: (role: PlayerRole | null) => void;
   syncFromServer: (game: GameState) => void;
   setError: (message: string) => void;
   resetGameState: () => void;
@@ -21,9 +23,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
   client: null,
   game: null,
   error: null,
+  playerRole: null,
 
   setGameId: (gameId) => set({ gameId }),
   setClient: (client) => set({ client }),
+  setPlayerRole: (role) => set({ playerRole: role }),
 
   syncFromServer: (game) =>
     set({
@@ -37,6 +41,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({
       game: null,
       error: null,
+      playerRole: null,
     }),
 
   playMove: (index) => {
