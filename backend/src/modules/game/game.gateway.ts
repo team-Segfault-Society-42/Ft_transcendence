@@ -58,14 +58,30 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      const updatedStateGame = this.gameService.playMove(
+      const newGameState = this.gameService.playMove(
         body.gameId,
         client.id,
         body.r,
         body.c,
       );
-      this.server.to(body.gameId).emit('game_updated', updatedStateGame);
-      return updatedStateGame;
+      this.server.to(body.gameId).emit('game_updated', newGameState);
+      return newGameState;
+    } catch (error) {
+      client.emit('game_error', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+  }
+
+  @SubscribeMessage('request_replay')
+  handleRequestReplay(
+    @MessageBody() body: { gameId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    try {
+      const updateGame = this.gameService.requestReplay(body.gameId, client.id);
+      this.server.to(body.gameId).emit('game_updated', updateGame);
+      return updateGame;
     } catch (error) {
       client.emit('game_error', {
         message: error instanceof Error ? error.message : 'Unknown error',

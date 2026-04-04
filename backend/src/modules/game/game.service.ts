@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto'; //generer des IDs uniques pour les matchs
-import { GameState, PlayerRole } from './game.types';
+import { CellValue, GameState, PlayerRole } from './game.types';
 import {
   initGameState,
   validateToMove,
   applyMove,
   getPlayerRole,
   assignPlayerRole,
+  createEmptyBoard,
+  resetBoardForReplay,
 } from './game.logic';
 @Injectable()
 export class GameService {
@@ -43,6 +45,25 @@ export class GameService {
     const role = assignPlayerRole(game, clientId);
     this.activeGame.set(gameId, game);
     return { game, role };
+  }
+
+  requestReplay(gameId: string, clientId: string): GameState {
+    const game = this.getMutableGameById(gameId);
+
+    if (game.status !== 'finished')
+      throw new Error('Replay is only available after game end');
+
+    const role = getPlayerRole(game, clientId);
+
+    if (role !== 'X' && role !== 'O')
+      throw new Error('Spectators cannot request replay');
+
+    game.replayVotes[role] = true;
+
+    if (game.replayVotes.X && game.replayVotes.O) resetBoardForReplay(game);
+
+    this.activeGame.set(gameId, game);
+    return game;
   }
 
   playMove(gameId: string, clientId: string, r: number, c: number): GameState {

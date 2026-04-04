@@ -15,24 +15,8 @@ export function isCellEmpty(
 }
 
 export function initGameState(): GameState {
-  const BOARD_SIZE = 3;
-
-  function createBoard(size: number = BOARD_SIZE): CellValue[][] {
-    const board: CellValue[][] = [];
-
-    for (let i = 0; i < size; i++) {
-      const row: CellValue[] = [];
-
-      for (let j = 0; j < size; j++) {
-        row[j] = null as CellValue;
-      }
-      board[i] = row;
-    }
-
-    return board;
-  }
   return {
-    board: createBoard(),
+    board: createEmptyBoard(BOARD_SIZE),
     currentPlayer: 'X', // 1st to log take X
     status: 'waiting',
     winner: null,
@@ -109,6 +93,23 @@ export function validateToMove(gameState: GameState, r: number, c: number) {
   if (!isCellEmpty(gameState, { r, c })) {
     throw new Error(`This cell ${r},${c} is already occupied`);
   }
+}
+
+export const BOARD_SIZE = 3;
+
+export function createEmptyBoard(size: number = BOARD_SIZE): CellValue[][] {
+  const board: CellValue[][] = [];
+
+  for (let i = 0; i < size; i++) {
+    const row: CellValue[] = [];
+
+    for (let j = 0; j < size; j++) {
+      row[j] = null as CellValue;
+    }
+    board[i] = row;
+  }
+
+  return board;
 }
 
 export function applyMove(game: GameState, r: number, c: number): GameState {
@@ -205,4 +206,24 @@ export function getPlayerRole(game: GameState, clientId: string): PlayerRole {
 
 export function posToIdx(pos: BoardPosition): number {
   return pos.r * 3 + pos.c;
+}
+
+export function resetBoardForReplay(game: GameState): GameState {
+  game.board = createEmptyBoard(BOARD_SIZE);
+  game.currentPlayer = 'X';
+  game.status = 'playing';
+  game.winner = null;
+  game.endReason = null;
+
+  game.moveCount = 0;
+  game.queuIdx = [];
+  game.toDisapear = -1;
+  game.lastMove = Date.now();
+
+  game.replayVotes = {
+    X: false,
+    O: false,
+  };
+
+  return game;
 }

@@ -13,7 +13,7 @@ type BoardProps = {
 };
 
 export default function Board({ players }: BoardProps) {
-  const { game, error, playMove, playerRole } = useGameStore();
+  const { game, error, playMove, playerRole, requestReplay } = useGameStore();
 
   if (!game) {
     return <div className="text-white text-center p-8">Loading game...</div>;
@@ -121,11 +121,22 @@ export default function Board({ players }: BoardProps) {
               🎉 {players[winner].nickname} WINS!
             </h2>
           </div>
-          <button
-            className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md`}
-          >
-            Replay
-          </button>
+          {status === "finished" &&
+            (playerRole === "X" || playerRole === "O") && (
+              <div className="mt-4 flex flex-col items-center gap-3">
+                <button
+                  className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+                  onClick={requestReplay}
+                >
+                  REPLAY
+                </button>
+
+                <p className="text-sm text-white/70">
+                  Replay votes — X: {game.replayVotes.X ? "✓" : "…"} | O:{" "}
+                  {game.replayVotes.O ? "✓" : "…"}
+                </p>
+              </div>
+            )}
         </div>
       )}
 
