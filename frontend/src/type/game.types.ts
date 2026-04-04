@@ -1,8 +1,12 @@
-export type PlayerSymbol = 'X' | 'O';
+export type PlayerSymbol = "X" | "O";
 
 export type CellValue = PlayerSymbol | null;
 
-export type GameStatus = 'waiting' | 'playing' | 'finished';
+export type GameStatus = "waiting" | "playing" | "finished";
+
+export type EndReason = "win" | "draw" | "timeout" | null;
+
+export type PlayerRole = PlayerSymbol | "spectator";
 
 export interface BoardPosition {
   r: number;
@@ -13,22 +17,36 @@ export interface Move extends BoardPosition {
   player: PlayerSymbol;
 }
 
+// to stock socketId of client x and client o
+export interface PlayersInGame {
+  X: string | null;
+  O: string | null;
+}
+
+export interface ReplayState {
+  X: boolean;
+  O: boolean;
+}
+
+export interface ScoreBoard {
+  X: number;
+  O: number;
+  D: number;
+}
+
 export interface GameState {
   board: CellValue[][];
   currentPlayer: PlayerSymbol;
   status: GameStatus;
   winner: PlayerSymbol | null;
+  endReason: EndReason;
+
   moveCount: number;
   queuIdx: BoardPosition[];
-  toDisapear: number;
+  toDisapear: number; // TODO: check if i can convert r,c to number
   lastMove: number;
+
+  players: PlayersInGame;
+  scores: ScoreBoard;
+  replayVotes: ReplayState;
 }
-
-// 	queue,
-// 	idx,
-// 	history,
-// 	scores,
-// 	resetSession,
-// 	replayGame,
-
-// const toDisapear = idx > 5 ? queue[idx % 6] : -1
