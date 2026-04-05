@@ -43,6 +43,11 @@ export class GameService {
   ): { game: GameState; role: PlayerRole } {
     const game = this.getMutableGameById(gameId);
     const role = assignPlayerRole(game, clientId);
+
+    if (user && (role === 'X' || role === 'O')) {
+      game.playerProfiles[role] = user;
+    }
+
     this.activeGame.set(gameId, game);
     return { game, role };
   }
@@ -118,6 +123,7 @@ export class GameService {
       const other = role === 'X' ? 'O' : 'X';
 
       game.players[role] = null;
+      game.playerProfiles[role] = null;
 
       if (game.status === 'playing' && game.players[other]) {
         game.status = 'finished';
