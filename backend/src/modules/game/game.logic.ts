@@ -226,6 +226,7 @@ export function resetBoardForReplay(game: GameState): GameState {
   game.queuIdx = [];
   game.toDisapear = -1;
   game.lastMove = Date.now();
+  game.movesGameHistory = [];
 
   game.replayVotes = {
     X: false,
