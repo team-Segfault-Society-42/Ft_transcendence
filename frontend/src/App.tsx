@@ -5,6 +5,7 @@ import Game from "./pages/Game";
 import Profile from "./pages/Profile";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import { Toaster } from "sonner";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/terms" element={<Terms />} />
         </Route>
       </Routes>
+      <Toaster richColors theme="dark" />
     </div>
   );
 }

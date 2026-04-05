@@ -1,16 +1,15 @@
 import avatarImg from "/avatar.png"
 import { useEffect, useState } from 'react'
 import { userService } from '../services/userService'
+import { useTranslation } from "react-i18next"
+import { useOutletContext } from "react-router";
+import { Spinner } from "@/components/ui/spinner"
+import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from 'react-router-dom';
 
-const MOCK_USER: infoUsers = {
-    username: "SimSim",
-    wins: 42,
-    losses: 21,
-    bio: "The Best !",
-    avatar: avatarImg
-}
-
-interface infoUsers {
+interface User {
+    id: number
     username: string,
     wins: number,
     losses: number,
@@ -20,37 +19,49 @@ interface infoUsers {
 
 export default function Profile() {
 
-    const [data, setData] = useState<infoUsers>(MOCK_USER)
-    const totalGames = data.wins + data.losses
-    const [isEdit, isInEdit] = useState(false)
-    const [userName, setUserName] = useState(data.username)
-    const [bio, setBio] = useState(data.bio)
-    const [isLoading, setIsLoading] = useState(true)
 
-    const winrate = totalGames > 0 ? ((data.wins / totalGames) * 100).toFixed(1) : "0"
+  const { t } = useTranslation()
+  const [user, setUser] = useOutletContext<[User | null, React.Dispatch<React.SetStateAction<User | null>>]>();
+
+  const [isEdit, isInEdit] = useState(false)
+  const [userName, setUserName] = useState(user?.username || "")
+  const [bio, setBio] = useState(user?.bio || "")
+  const navigate = useNavigate()
+
+  if (!user) {
+    return ( 
+    <div>
+      <Spinner className="size-16 text-cyan-600" />
+    </div>
+    )
+  }
+
+  const totalGames = user.wins + user.losses
+  const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
     
     async function handleSave() {
         if (isEdit) {
-            setData({ ...data, username: userName, bio: bio })
-            await userService.updateUser(1, { username: userName, bio: bio })
+          try {
+            await userService.updateUser(user.id, { username: userName, bio: bio })
+            setUser({... user, username: userName, bio: bio})
+            toast.info( t("auth.buttons.edit"), { position: "top-left"})
+          } catch (error: any) {
+              const serverMessage = error.response?.data?.message || error.message
+			        const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
+              toast.error(t("auth.error") + finalMessage, { position: "bottom-left" })
+          }
         }
         isInEdit(!isEdit)
     }
 
     useEffect(() => {
-        async function fetchUser() {
-            const result = await userService.getUser(1)
-            setData(result)
-            setUserName(result.username)
-            setBio(result.bio)
-            setIsLoading(false)
-        }
-        fetchUser()
-    }, [])
-
-    if (isLoading) {
-        return <div>Loading...</div>
+      if (user) {
+      setUserName(user.username)
+      setBio(user.bio)
     }
+  }, [user])
+
+      
     return (
         <section className="w-full max-w-lg">
       
@@ -66,10 +77,9 @@ export default function Profile() {
               {/* AVATAR */}
               <div className="relative group">
                 <img
-                  src={data.avatar}
+                  src={user.avatar}
                   alt="avatar"
-                  className="w-24 h-24 rounded-full border border-white/20 object-cover z-10 relative"
-                />
+                  className="w-24 h-24 rounded-full border border-white/20 object-cover z-10 relative"/>
                 <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
               </div>
       
@@ -78,11 +88,10 @@ export default function Profile() {
                 <input
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
-                  className="bg-transparent border border-white/20 rounded px-3 py-1 text-center focus:outline-none focus:border-cyan-400 transition"
-                />
+                  className="bg-transparent border border-white/20 rounded px-3 py-1 text-center focus:outline-none focus:border-cyan-400 transition"/>
               ) : (
                 <h1 className="text-2xl font-bold tracking-wide">
-                  {data.username}
+                  {user.username}
                 </h1>
               )}
       
@@ -90,28 +99,39 @@ export default function Profile() {
       
             {/* STATS */}
             <div className="mt-8 grid grid-cols-2 gap-4 text-center">
-      
               {[
-                { label: "Wins", value: data.wins },
-                { label: "Losses", value: data.losses },
+                { label: t("profile.stats.wins"), value: user.wins },
+                { label: t("profile.stats.losses"), value: user.losses },
               ].map((stat, i) => (
                 <div
                   key={i}
-                  className="bg-white/5 rounded-lg py-4 border border-white/10 hover:scale-105 transition"
-                >
-                  <p className="text-xs text-white/50">{stat.label}</p>
-                  <p className="font-bold text-lg">{stat.value}</p>
+                  className="bg-white/5 rounded-lg py-4 border border-white/10 hover:scale-105 transition">
+
+                  <p className="text-xs text-white/50">
+                    {stat.label}
+                  </p>
+
+                  <p className="font-bold text-lg">
+                    {stat.value}
+                  </p>
+
                 </div>
               ))}
-      
             </div>
       
             {/* WINRATE */}
             <div className="mt-8">
       
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-white/50">Winrate</span>
-                <span className="font-semibold text-cyan-400">{winrate}%</span>
+
+                <span className="text-white/50">
+                  {t("profile.stats.winrate")}
+                </span>
+
+                <span className="font-semibold text-cyan-400">
+                  {winrate}%
+                </span>
+
               </div>
       
               <div className="w-full bg-white/10 h-3 rounded-full overflow-hidden">
@@ -122,7 +142,7 @@ export default function Profile() {
               </div>
       
               <p className="text-xs text-white/50 mt-2">
-                {totalGames} games played
+                {t("profile.stats.games", { count: totalGames })}
               </p>
       
             </div>
@@ -130,7 +150,9 @@ export default function Profile() {
             {/* BIO */}
             <div className="mt-8">
       
-              <p className="text-white/50 text-sm mb-2">Bio</p>
+              <p className="text-white/50 text-sm mb-2">
+                {t("profile.bio")}
+              </p>
       
               {isEdit ? (
                 <textarea
@@ -141,7 +163,7 @@ export default function Profile() {
                 />
               ) : (
                 <p className="text-sm leading-relaxed text-white/80">
-                  {data.bio}
+                  {user.bio}
                 </p>
               )}
       
@@ -150,9 +172,8 @@ export default function Profile() {
             {/* BUTTON */}
             <button
               onClick={handleSave}
-              className="mt-8 w-full bg-linear-to-r from-cyan-500 to-purple-500 text-white font-semibold py-3 rounded-lg hover:opacity-90 transition hover:scale-[1.02] active:scale-95"
-            >
-              {isEdit ? "Save changes" : "Edit profile"}
+              className="mt-8 w-full bg-linear-to-r from-cyan-500 to-purple-500 text-white font-semibold py-3 rounded-lg hover:opacity-90 transition hover:scale-[1.02] active:scale-95">
+              {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
             </button>
       
           </div>

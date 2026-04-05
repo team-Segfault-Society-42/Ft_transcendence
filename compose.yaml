@@ -32,6 +32,10 @@ services:
       - server-side
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+    secrets:
+      - backend_pw
+      - jwt_secret
     depends_on:
       db:
         condition: service_healthy
@@ -87,3 +91,5 @@ secrets:
     file: ./secrets/backend_pw.txt
   postgres_root_pw:
     file: ./secrets/postgres_root_pw.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt

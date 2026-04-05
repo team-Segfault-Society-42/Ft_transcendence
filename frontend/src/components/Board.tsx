@@ -1,12 +1,18 @@
 import Square from "./Square";
 import { useGameStore } from "../Store/gameStore";
 import type { CellValue } from "../type/game.types";
+import { useTranslation } from "react-i18next";
 
 export default function Board() {
   const { game, error, playMove, playerRole, requestReplay } = useGameStore();
+  const { t } = useTranslation();
 
   if (!game) {
-    return <div className="text-white text-center p-8">Loading game...</div>;
+    return (
+      <div className="text-white text-center p-8">
+        {t("game.loading", { defaultValue: "Loading game..." })}
+      </div>
+    );
   }
 
   const { board, currentPlayer, status, winner, toDisapear } = game;
@@ -43,8 +49,16 @@ export default function Board() {
         }`}
       >
         {currentPlayer === "X"
-          ? `${playerXName}'s Turn X`
-          : `${playerOName}'s Turn O`}
+          ? t("game.turn", {
+              defaultValue: "{{player}}'s turn {{symbol}}",
+              player: playerXName,
+              symbol: "X",
+            })
+          : t("game.turn", {
+              defaultValue: "{{player}}'s turn {{symbol}}",
+              player: playerOName,
+              symbol: "O",
+            })}
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-8 text-white">
@@ -64,7 +78,7 @@ export default function Board() {
         </div>
 
         <div className="bg-gray-700 p-4 rounded flex flex-col items-center justify-center">
-          <p className="text-sm">VS</p>
+          <p className="text-sm">{t("game.vs", { defaultValue: "VS" })}</p>
         </div>
 
         <div className="bg-gray-800 p-4 rounded flex flex-col items-center">
@@ -90,45 +104,57 @@ export default function Board() {
       )}
 
       <div className="mb-4 text-sm text-white/70">
-        {playerRole === "X" && "You are player X"}
-        {playerRole === "O" && "You are player O"}
-        {playerRole === "spectator" && "You are spectating"}
-        {playerRole === null && "Joining game..."}
+        {playerRole === "X" &&
+          t("game.roleX", { defaultValue: "You are player X" })}
+        {playerRole === "O" &&
+          t("game.roleO", { defaultValue: "You are player O" })}
+        {playerRole === "spectator" &&
+          t("game.spectating", { defaultValue: "You are spectating" })}
+        {playerRole === null &&
+          t("game.joining", { defaultValue: "Joining game..." })}
       </div>
 
       {status === "waiting" && (
         <div className="mb-4 rounded-lg border border-yellow-400 bg-yellow-500/20 px-4 py-3 text-yellow-100">
-          Waiting for opponent...
+          {t("game.waitingOpponent", {
+            defaultValue: "Waiting for opponent...",
+          })}
         </div>
       )}
 
       {status === "playing" && hasReplayRole && !canPlay && (
         <div className="mb-4 rounded-lg border border-blue-400 bg-blue-500/20 px-4 py-3 text-blue-100">
-          Waiting for opponent move...
+          {t("game.waitingMove", {
+            defaultValue: "Waiting for opponent move...",
+          })}
         </div>
       )}
 
       {status === "finished" && game.endReason === "draw" && (
         <div className="mb-4 rounded-lg border border-slate-400 bg-slate-500/20 px-4 py-3 text-slate-100">
-          Draw game
+          {t("game.draw", { defaultValue: "Draw game" })}
         </div>
       )}
 
       {status === "finished" && game.endReason === "timeout" && (
         <div className="mb-4 rounded-lg border border-orange-400 bg-orange-500/20 px-4 py-3 text-orange-100">
-          Win by timeout
+          {t("game.timeoutWin", { defaultValue: "Win by timeout" })}
         </div>
       )}
 
       {status === "finished" && game.endReason === "forfeit" && (
         <div className="mb-4 rounded-lg border border-red-400 bg-red-500/20 px-4 py-3 text-red-100">
-          Win by opponent leaving the match
+          {t("game.forfeitWin", {
+            defaultValue: "Win by opponent leaving the match",
+          })}
         </div>
       )}
 
       {waitingReplayOtherPlayer && (
         <div className="mb-4 rounded-lg border border-fuchsia-400 bg-fuchsia-500/20 px-4 py-3 text-fuchsia-100">
-          Replay requested. Waiting for the other player...
+          {t("game.waitingReplayOther", {
+            defaultValue: "Replay requested. Waiting for the other player...",
+          })}
         </div>
       )}
 
@@ -140,18 +166,24 @@ export default function Board() {
                 winner === "X" ? "text-cyan-500" : "text-fuchsia-500"
               }`}
             >
-              🎉 {winner === "X" ? playerXName : playerOName} WINS!
+              🎉{" "}
+              {t("game.wins", {
+                defaultValue: "{{player}} wins!",
+                player: winner === "X" ? playerXName : playerOName,
+              })}
             </h2>
 
             {status === "finished" && game.endReason === "timeout" && (
               <p className="text-sm text-orange-500 font-medium">
-                Win by timeout
+                {t("game.timeoutWin", { defaultValue: "Win by timeout" })}
               </p>
             )}
 
             {status === "finished" && game.endReason === "forfeit" && (
               <p className="text-sm text-red-500 font-medium">
-                Win by opponent leaving the match
+                {t("game.forfeitWin", {
+                  defaultValue: "Win by opponent leaving the match",
+                })}
               </p>
             )}
 
@@ -161,11 +193,14 @@ export default function Board() {
                   className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
                   onClick={requestReplay}
                 >
-                  REPLAY
+                  {t("game.replay", { defaultValue: "REPLAY" })}
                 </button>
 
                 <p className="text-sm text-gray-600">
-                  Replay votes — X: {game.replayVotes.X ? "✓" : "…"} | O:{" "}
+                  {t("game.replayVotes", {
+                    defaultValue: "Replay votes",
+                  })}{" "}
+                  — X: {game.replayVotes.X ? "✓" : "…"} | O:{" "}
                   {game.replayVotes.O ? "✓" : "…"}
                 </p>
 
@@ -176,7 +211,9 @@ export default function Board() {
                     game.replayVotes.O &&
                     !game.replayVotes.X)) && (
                   <p className="text-sm text-fuchsia-500 font-medium">
-                    Waiting for the other player...
+                    {t("game.waitingReplayOther", {
+                      defaultValue: "Waiting for the other player...",
+                    })}
                   </p>
                 )}
               </>
@@ -200,10 +237,13 @@ export default function Board() {
       </div>
 
       <div className="mt-4 text-white/80 font-medium">
-        Score — X: {game.scores.X} | O: {game.scores.O} | D: {game.scores.D}
+        {t("game.score", { defaultValue: "Score" })} — X: {game.scores.X} | O:{" "}
+        {game.scores.O} | D: {game.scores.D}
       </div>
 
-      <p className="mt-6 text-white/60 font-medium italic">2 players mode</p>
+      <p className="mt-6 text-white/60 font-medium italic">
+        {t("game.mode", { defaultValue: "2 players mode" })}
+      </p>
     </div>
   );
 }

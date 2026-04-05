@@ -1,7 +1,7 @@
-import { Controller, Param, ParseIntPipe, Body, Get, Patch, Post } from '@nestjs/common';
+import { Controller, Param, ParseIntPipe, Body, Get, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto} from './dto/update-user.dto';
-import { CreateUserDto } from './dto/create-user.dto';
+// import { CreateUserDto } from './dto/create-user.dto';
 
 // @UseGuards(AuthGuard) // TODO later with AUTH
 @Controller('users')
@@ -16,7 +16,7 @@ export class UsersController {
 
 	@Get(':id')
 	getUser(@Param('id', ParseIntPipe) id: number) {
-		return this.usersService.getUser(Number(id));
+		return this.usersService.getUser(id);
 	}
 
 	@Patch(':id')
@@ -27,10 +27,10 @@ export class UsersController {
 		return this.usersService.updateUser(id, updateUserDto);
 	}
 
-	@Post()
-	createUser(@Body() createUserDto: CreateUserDto) {
-		return this.usersService.createUser(createUserDto);
-	}
+	// @Post()
+	// createUser(@Body() createUserDto: CreateUserDto) {
+	// 	return this.usersService.createUser(createUserDto);
+	// }
 }
 
 

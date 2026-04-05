@@ -1,67 +1,125 @@
 import { useState } from 'react'
+import { userService } from '../../services/userService'
+import * as z from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription,} from "@/components/ui/dialog";
+import { useTranslation } from "react-i18next"
 
-type Props = {
+interface SignupModalProps {
 	isOpen: boolean
 	onClose: () => void
+	onSwitchToSignin: () => void
 }
 
-export default function SignupModal({ isOpen, onClose }: Props) {
+export default function SignupModal({ isOpen, onClose, onSwitchToSignin }: SignupModalProps) {
 
-	const [userName, setUserName] = useState("")
-	const [bio, setBio] = useState("")
+	const { t } = useTranslation()
 
-	if (!isOpen) return null
+	const formSchema = z.object({
+		username: z.string().min(3, { message: t("auth.errors.username") }),
+		email: z.string().email({ message: t("auth.errors.email") }),
+		password: z.string().min(6, { message: t("auth.errors.password") }),
+	})	
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            username: "",
+            email: "",
+            password: "",
+        },
+    })
 
-	return (
-		<div
-			className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
-			onClick={onClose}>
-          
+    const [isLoading, setIsLoading] = useState(false)
 
-			<div
-				className="bg-linear-to-br from-slate-900 to-slate-800 border border-white/10 rounded-2xl p-8 w-87.5 shadow-2xl"
-				onClick={(e) => e.stopPropagation()}>
+    async function onSubmit(data: z.infer<typeof formSchema>) {
+        try {
+			setIsLoading(true)
+            await userService.createUser(data)
+            toast.success(t("auth.success"), {position: "top-left" })
+			form.reset()
+            setTimeout(() => {onClose();}, 2000 )
 
-				<h2 className="text-2xl font-bold mb-6 text-white text-center">
-					Create Account
-				</h2>
+        } catch(error: any){
+			const serverMessage = error.response?.data?.message || error.message
+			const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
+            toast.error(t("auth.error") + finalMessage, { position: "bottom-right" })
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
-				<input
-					className="w-full mb-4 p-3 rounded-lg bg-white/10 text-white placeholder-white/40 border border-white/10 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-					placeholder="Username"
-					value={userName}
-					onChange={(e) => setUserName(e.target.value)}
-                />
-
-				<input
-					className="w-full mb-6 p-3 rounded-lg bg-white/10 text-white placeholder-white/40 border border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-400"
-					placeholder="Bio"
-					value={bio}
-					onChange={(e) => setBio(e.target.value)}
-				/>
-
-				<div className="flex justify-between gap-4">
-
-					<button
-						className="w-full py-3 rounded-lg border border-white/20 text-white/70 hover:bg-white/10 transition"
-						onClick={onClose}
-					>
-						Cancel
-					</button>
-
-					<button
-						className="w-full py-3 rounded-lg bg-linear-to-r from-cyan-500 to-purple-500 font-bold text-white hover:scale-105 transition"
-						onClick={() => {
-							alert("Welcome " + userName)
-							onClose()
-						}}
-					>
-						Register
-					</button>
-
-				</div>
-
-			</div>
-		</div>
-	)
+return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+       <DialogContent className="sm:max-w-106.25 bg-slate-800 border-slate-800 text-white">
+			<DialogHeader>
+				<DialogTitle className="text-2xl font-bold text-cyan-600">
+					{t("auth.title")}
+				</DialogTitle>
+				<DialogDescription className="text-slate-300">
+					{t("auth.description")}
+				</DialogDescription>
+			</DialogHeader>
+				<Form {...form}>
+    				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+						<FormField
+  						control={form.control}
+  						name="username"
+  						render={({ field }) => (
+    					<FormItem>
+      					<FormLabel>
+							{t("auth.username")}
+						</FormLabel>
+      					<FormControl>
+        				<Input placeholder={t("auth.placeholders.username")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+      					</FormControl>
+     					 <FormMessage />
+    					</FormItem>
+  						)}
+					/>
+					<FormField
+  						control={form.control}
+  						name="email"
+  						render={({ field }) => (
+    					<FormItem>
+      					<FormLabel>
+							{t("auth.email")}
+						</FormLabel>
+      					<FormControl>
+        				<Input type='email' placeholder={t("auth.placeholders.email")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+      					</FormControl>
+     					 <FormMessage />
+    					</FormItem>
+  						)}
+					/>
+						<FormField
+  						control={form.control}
+  						name="password"
+  						render={({ field }) => (
+    					<FormItem>
+      					<FormLabel>
+							{t("auth.password")}
+						</FormLabel>
+      					<FormControl>
+						<Input type='password' placeholder={t("auth.placeholders.password")} className="bg-slate-800 border-slate-700 focus:border-cyan-500" {...field} />
+      					</FormControl>
+     					 <FormMessage />
+    					</FormItem>
+  						)}
+					/>
+        				<Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-6 rounded-xl transition-all" disabled={isLoading}>
+            			{isLoading ? t("auth.buttons.loading") : t("auth.buttons.register")}
+						</Button>
+						<Button variant='ghost' type='button' onClick={onSwitchToSignin} className="hover:bg-blue-400/20 hover:text-blue-200" >
+							<p> { t("auth.buttons.already_account") } </p>
+						</Button>
+    				</form>
+			</Form>
+	   </DialogContent>
+    </Dialog>
+	);
 }

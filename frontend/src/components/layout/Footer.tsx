@@ -1,13 +1,16 @@
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from "react-i18next"
 
 export default function Footer() {
+    const { t } = useTranslation()
+
     return (
         <footer className="w-full border-t border-white/10 bg-black/20 backdrop-blur text-white/40">
 
             <div className="relative max-w-6xl mx-auto px-6 py-4 flex items-center">
 
                 <div className="text-white/60 font-semibold">
-                    ft_transcendence
+                    {t("footer.projectname")}
                 </div>
 
                 <nav className="absolute left-1/2 -translate-x-1/2 flex gap-6 uppercase tracking-wide text-sm">
@@ -19,7 +22,7 @@ export default function Footer() {
                                 ? "text-white"
                                 : "hover:text-white transition-colors"
                         }>
-                        Privacy
+                        {t("footer.privacy")}
                     </NavLink>
 
                     <NavLink
@@ -29,7 +32,7 @@ export default function Footer() {
                                 ? "text-white"
                                 : "hover:text-white transition-colors"
                         }>
-                        Terms
+                        {t("footer.terms")}
                     </NavLink>
 
                 </nav>

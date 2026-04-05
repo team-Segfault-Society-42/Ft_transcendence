@@ -1,0 +1,19 @@
+# ── Docker Services ──────────────────────────────────────────────────────────
+services:
+  # ── Frontend (React) ─────────────────────────────────────────────
+  frontend:
+    build:
+      target: prod    # targets the prod stage in a multi-stage Dockerfile
+ 
+  # ── Backend (Nest.js) ────────────────────────────────────────────
+  backend:
+    build:
+      target: prod    # targets the prod stage in a multi-stage Dockerfile
+ 
+  # ── Reverse Proxy (Nginx) ────────────────────────────────────────
+  proxy:
+    build:
+      target: prod
+    ports:
+      - "8080:80"
+      - "8443:443"

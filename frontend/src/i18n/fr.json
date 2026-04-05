@@ -1,0 +1,134 @@
+{
+    "title": "ft_transcendence",
+
+    "header": {
+        "home": "Accueil",
+        "game": "Jeu",
+        "profile": "Profil"
+    },
+
+    "home": {
+        "hero":{
+            "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
+        },
+        "buttons":{
+            "register": "S'enregistrer",
+            "login": "Se connecter",
+            "start": "LANCER LA PARTIE",
+            "hi": "Salut, "
+        },
+        "cards":{
+            "home":{
+                "title": "🏠 Accueil",
+                "description": "Bienvenue sur la page principal ! Explore l'application."
+            },
+            "game":{
+                "title": "🎮 Jeu",
+                "description": "Lance une partie et dépasse toi !"
+            },
+            "profile":{
+                "title": "👤 Profil",
+                "description": "Consulte tes statistiques et personnalise ton profil."
+            }
+        }
+    },
+
+    "game": {
+        "turn": "Au tour de {{player}} : {{symbol}}",
+        "vs": "VS",
+        "wins": "GAGNE !",
+        "replay": "RECOMMENCER",
+        "mode": "Mode 2 joueurs",
+        "reset": "REDEMARRER SESSION"
+    },
+
+    "profile": {
+        "loading": "Chargement...",
+        "stats": {
+            "wins": "Victoires",
+            "losses": "Défaites",
+            "winrate": "Taux de victoires",
+            "games": "{{count}} parties jouées"
+        },
+        "bio": "Bio",
+        "buttons": {
+            "edit": "Modifier le profil",
+            "save": "Sauvegarder les changements"
+        }
+    },
+    
+    "auth": {        
+        "title": "Segfault Society",
+        "description": "Crée ton compte",
+        "description_login": "Connectez-vous",
+        "username": "Nom d'utilisateur",
+        "email": "Email",
+        "password": "Mot de passe",
+      
+        "placeholders": {
+            "username": "Entre ton nom d'utilisateur",
+            "email": "example@42.ch",
+            "password": "Ton mot de passe sécurisé"
+          },
+      
+        "buttons": {
+            "register": "S'inscrire",
+            "loading": "Connection au serveur...",
+            "change_method": "Changer de méthode",
+            "login": "Se connecter",
+            "no_account": "Pas encore de compte ? S'inscrire",
+            "already_account": "Déjà un compte ? Se connecter",
+            "logout": "Déconnexion",
+            "edit": "Modification effectuée avec succès"
+          },   
+          "success": "Utilisateur créé avec succès !",
+          "error": "Une erreur est survenue : ",
+          "errors": {
+            "username": "Le nom d'utilisateur doit contenir au moins 3 caractères.",
+            "email": "Adresse email invalide",
+            "password": "Le mot de passe doit contenir au moins 8 caractères.",
+            "bio": "La bio doit contenir moins de 180 caractères"
+
+      }
+    },
+
+    "footer": {
+        "projectname": "ft_transcendence",
+        "privacy": "Confidentialité",
+        "terms": "Conditions d'utilisation"
+    },
+
+    "privacy": {
+        "title": "Politique de confidentialité",
+        "intro": "Cette application collecte et traite des données utilisateur afin de fournir ses services.",
+        "data":{
+            "title": "Données collectées",
+            "items": ["Nom d'utilisateur", "Statistiques de jeu", "Informations du profil"]
+        },
+        "usage":{
+            "title": "Utilisation",
+            "content": "Les données sont utilisées uniquement pour le fonctionnement de l'application et ne sont pas partagées avec des tiers."
+        },
+        "security":{
+            "title": "Sécurité",
+            "content": "Nous mettons en place des mesures appropriées pour protéger les données des utilisateurs."
+        }
+    },
+
+    "terms": {
+        "title": "Conditions d'utilisation",
+        "intro": "En utilisant cette application, vous acceptez les conditions suivantes.",
+        "usage":{
+            "title": "Utilisation",
+            "content": "Les utilisateurs doivent utiliser l'application de manière respectueuse et ne pas tenter de l'exploiter."
+        },
+        "account": {
+            "title": "Comptes",
+            "content": "Les utilisateurs sont responsables de leurs comptes et de leur activité."
+        },
+        "limitation": {
+            "title": "Limitation",
+            "content": "L'application est fournie \"telle quelle\" sans garantie."
+        }
+    }
+}

@@ -1,0 +1,25 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - dev  # update when PR is merged into the dev branch 
+
+jobs:
+  deploy:
+    name: Remote Deployment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH Connection and Deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /app/Ft_transcendence
+            git checkout dev
+            git pull origin dev
+            make build
+            make up

@@ -12,11 +12,14 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  wins     Int    @default(0)
-  losses   Int    @default(0)
-  draws    Int    @default(0)
-  bio      String?
-  avatar   String
+  id           Int     @id @default(autoincrement())
+  email        String  @unique
+  passwordHash String
+  username     String  @unique
+  bio          String?
+  avatar       String
+  wins         Int     @default(0)
+  losses       Int     @default(0)
+  draws        Int     @default(0)
+
 }
