@@ -26,6 +26,7 @@ export function initGameState(): GameState {
     queuIdx: [],
     toDisapear: -1,
     lastMove: Date.now(),
+    movesGameHistory: [],
 
     players: {
       X: null,
@@ -123,6 +124,7 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
   game.board[r][c] = symbol;
   game.moveCount++;
   game.queuIdx.push({ r, c });
+  game.movesGameHistory.push(r * 3 + c);
   // DEBUG : state before add
   console.log('--- QUEUE APRES AJOUT ---');
   console.table(game.queuIdx);
