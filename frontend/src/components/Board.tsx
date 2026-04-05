@@ -2,17 +2,7 @@ import Square from "./Square";
 import { useGameStore } from "../Store/gameStore";
 import type { CellValue } from "../type/game.types";
 
-type Player = {
-  id: number;
-  nickname: string;
-  avatar: string;
-};
-
-type BoardProps = {
-  players: { X: Player; O: Player };
-};
-
-export default function Board({ players }: BoardProps) {
+export default function Board() {
   const { game, error, playMove, playerRole, requestReplay } = useGameStore();
 
   if (!game) {
@@ -20,6 +10,11 @@ export default function Board({ players }: BoardProps) {
   }
 
   const { board, currentPlayer, status, winner, toDisapear } = game;
+
+  const playerXName = game.playerProfiles?.X?.username || "Player X";
+  const playerOName = game.playerProfiles?.O?.username || "Player O";
+  const playerXAvatar = game.playerProfiles?.X?.avatar;
+  const playerOAvatar = game.playerProfiles?.O?.avatar;
 
   const flatBoard: CellValue[] = board.flat();
   const showPopup =
@@ -48,24 +43,24 @@ export default function Board({ players }: BoardProps) {
         }`}
       >
         {currentPlayer === "X"
-          ? `${players.X.nickname}'s Turn X`
-          : `${players.O.nickname}'s Turn O`}
+          ? `${playerXName}'s Turn X`
+          : `${playerOName}'s Turn O`}
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-8 text-white">
         <div className="bg-gray-800 p-4 rounded flex flex-col items-center">
-          {players.X.avatar ? (
+          {playerXAvatar ? (
             <img
-              src={players.X.avatar}
+              src={playerXAvatar}
               className="w-12 h-12 rounded-full mb-2"
               alt="player X"
             />
           ) : (
             <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mb-2">
-              {players.X.nickname[0]}
+              {playerXName[0]}
             </div>
           )}
-          <p className="font-bold">{players.X.nickname}</p>
+          <p className="font-bold">{playerXName}</p>
         </div>
 
         <div className="bg-gray-700 p-4 rounded flex flex-col items-center justify-center">
@@ -73,18 +68,18 @@ export default function Board({ players }: BoardProps) {
         </div>
 
         <div className="bg-gray-800 p-4 rounded flex flex-col items-center">
-          {players.O.avatar ? (
+          {playerOAvatar ? (
             <img
-              src={players.O.avatar}
+              src={playerOAvatar}
               className="w-12 h-12 rounded-full mb-2"
               alt="player O"
             />
           ) : (
             <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mb-2">
-              {players.O.nickname[0]}
+              {playerOName[0]}
             </div>
           )}
-          <p className="font-bold">{players.O.nickname}</p>
+          <p className="font-bold">{playerOName}</p>
         </div>
       </div>
 
@@ -145,7 +140,7 @@ export default function Board({ players }: BoardProps) {
                 winner === "X" ? "text-cyan-500" : "text-fuchsia-500"
               }`}
             >
-              🎉 {players[winner].nickname} WINS!
+              🎉 {winner === "X" ? playerXName : playerOName} WINS!
             </h2>
 
             {status === "finished" && game.endReason === "timeout" && (

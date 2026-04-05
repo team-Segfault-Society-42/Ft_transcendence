@@ -42,6 +42,11 @@ export function initGameState(): GameState {
       X: false,
       O: false,
     },
+
+    playerProfiles: {
+      X: null,
+      O: null,
+    },
   };
 }
 

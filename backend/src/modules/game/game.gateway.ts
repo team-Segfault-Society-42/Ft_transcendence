@@ -10,7 +10,7 @@ import {
 import { GameService } from './game.service';
 import { PlayMoveDto } from './dto/play-move.dto';
 import { Server, Socket } from 'socket.io';
-import { assignPlayerRole } from './game.logic';
+import { PublicPlayerProfile } from './game.types';
 
 @WebSocketGateway({
   cors: {
@@ -38,11 +38,15 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('join_game')
   async handleJoinGame(
-    @MessageBody() body: { gameId: string },
+    @MessageBody() body: { gameId: string; user?: PublicPlayerProfile },
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      const { game, role } = this.gameService.joinGame(body.gameId, client.id);
+      const { game, role } = this.gameService.joinGame(
+        body.gameId,
+        client.id,
+        body.user,
+      );
 
       await client.join(body.gameId);
 

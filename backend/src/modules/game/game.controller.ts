@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { GameService } from './game.service';
 
 @Controller('game')
@@ -9,5 +9,9 @@ export class GameController {
   createGame() {
     const gameId = this.gameService.creatGame();
     return { gameId };
+  }
+  @Get(':id')
+  getGame(@Param('id') gameId: string) {
+    return this.gameService.getGameById(gameId);
   }
 }

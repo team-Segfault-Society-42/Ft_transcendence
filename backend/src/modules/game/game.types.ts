@@ -8,6 +8,17 @@ export type EndReason = 'win' | 'draw' | 'timeout' | 'forfeit' | null;
 
 export type PlayerRole = PlayerSymbol | 'spectator';
 
+export interface PublicPlayerProfile {
+  id: number;
+  username: string;
+  avatar: string | null;
+}
+
+export interface PlayerProfilesInGame {
+  X: PublicPlayerProfile | null;
+  O: PublicPlayerProfile | null;
+}
+
 export interface BoardPosition {
   r: number;
   c: number;
@@ -49,4 +60,5 @@ export interface GameState {
   players: PlayersInGame;
   scores: ScoreBoard;
   replayVotes: ReplayState;
+  playerProfiles: PlayerProfilesInGame;
 }
