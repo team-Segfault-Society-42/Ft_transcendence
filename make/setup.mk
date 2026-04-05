@@ -2,37 +2,82 @@
 #               DEFAULT SETUP FOR DEV USE
 # ══════════════════════════════════════════════════════
 
-SECRETS_DIR				= secrets/
-BACKEND_PW_FILE			= backend_pw.txt
-POSTGRES_ROOT_PW_FILE	= postgres_root_pw.txt
+SECRETS_DIR = secrets/
+
+# ── Add new .env defaults here ────────────────────────────────────────────────
+# Format: KEY=value   (replaces the KEY=... line after copying .env.example)
+DEFAULT_ENV_VARS = \
+	POSTGRES_VERSION=18-alpine \
+	POSTGRES_DB=transcendence \
+	POSTGRES_USER=postgres_superuser \
+	BACKEND_USER=backend_user \
+
+# ── Dev-only vars not present in .env.example (appended to .env) ──────────────
+# TODO: remove BACKEND_PW once backend reads password from /run/secrets/backend_pw
+DEV_ONLY_ENV_VARS = \
+	BACKEND_PW=changeme \
+	JWT_SECRET=jwt-changeme \
+	DATABASE_URL=postgresql://backend_user:changeme@db:5432/transcendence?schema=public
+
+# ── Add new secrets here ───────────────────────────────────────────────────────
+# Format: filename=content   (file created at $(SECRETS_DIR)filename)
+DEFAULT_SECRETS = \
+	backend_pw.txt=changeme \
+	postgres_root_pw.txt=changeme \
+	jwt_secret.txt=jwt-changeme
+
+# ── Files that must exist before the stack can start ──────────────────────────
+REQUIRED_FILES = \
+	.env \
+	$(SECRETS_DIR)backend_pw.txt \
+	$(SECRETS_DIR)postgres_root_pw.txt \
+	$(SECRETS_DIR)jwt_secret.txt
+
+# ══════════════════════════════════════════════════════
 
 ##@ FAST SETUP
-setup: check-env create-secrets set-defaults-env ## Initialise all files needed to run the project (uses default values)
-	@echo "$(GREEN)✓ Setup complete. Run \`make up\` to start the stack.$(RES)"
 
-# ── .env ─────────────────────────────────────────────────────
-check-env: # Create .env from .env.example if it doesn't already exist
-	@if [ -f .env ]; then \
-		echo "$(CYAN)<.env already exists, skipping>$(RES)"; \
-	else \
-		cp .env.example .env; \
-		echo "$(GREEN)✓ .env created from .env.example$(RES)"; \
-	fi
+setup: ## Check required files; prompt for default setup only if any are missing
+	@missing=0; \
+	for f in $(REQUIRED_FILES); do \
+		if [ ! -f "$$f" ]; then \
+			echo "$(RED)✗ Missing required file: $$f$(RES)"; \
+			missing=1; \
+		fi; \
+	done; \
+	if [ "$$missing" -eq 0 ]; then \
+		echo "$(GREEN)✓ All required files present$(RES)"; \
+		exit 0; \
+	fi; \
+	printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
+	case "$$ans" in \
+		y|Y|yes|Yes|YES) \
+			$(MAKE) --no-print-directory _setup-apply ;; \
+		*) \
+			echo "$(RED)Aborted. Fix missing files manually by running $(GOLD)\`make setup\`$(RES)"; \
+			exit 1 ;; \
+	esac
 
-set-defaults-env: # Replaces placeholders for Key-Value pairs that need a valid value
-	@sed -i -e 's/postgres_image_tag #ex: 18-alpine/18-alpine/' .env
+_setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
+	@{ \
+		for pair in $(DEV_ONLY_ENV_VARS); do \
+			echo "$$pair"; \
+		done; \
+		grep -v '^\s*#' .env.example; \
+	} > .env
+	@echo "$(GREEN)✓ .env created (dev-only vars prepended, comments stripped)$(RES)"
+	@for pair in $(DEFAULT_ENV_VARS); do \
+		key=$$(echo "$$pair" | cut -d= -f1); \
+		val=$$(echo "$$pair" | cut -d= -f2-); \
+		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env; \
+	done
+	@echo "$(GREEN)✓ Default values applied to .env$(RES)"
+	@mkdir -p $(SECRETS_DIR)
+	@for pair in $(DEFAULT_SECRETS); do \
+		file=$$(echo "$$pair" | cut -d= -f1); \
+		content=$$(echo "$$pair" | cut -d= -f2-); \
+		echo "$$content" > $(SECRETS_DIR)$$file; \
+		echo "$(GREEN)✓ $(SECRETS_DIR)$$file created$(RES)"; \
+	done
 
-# ── Secrets ──────────────────────────────────────────────────
-create-secrets: backend-pw postgres-root-pw # Create default secret files if missing
-
-backend-pw:
-	@mkdir -p secrets
-	@echo "changeme" > $(SECRETS_DIR)$(BACKEND_PW_FILE)
-	@echo "$(GREEN)✓ $(SECRETS_DIR)$(BACKEND_PW_FILE) created$(RES)"
-
-postgres-root-pw:
-	@mkdir -p secrets
-	@echo "changeme" > $(SECRETS_DIR)$(POSTGRES_ROOT_PW_FILE)
-	@echo "$(GREEN)✓ $(SECRETS_DIR)$(POSTGRES_ROOT_PW_FILE) created$(RES)"
-
-.PHONY: setup check-env set-defaults-env create-secrets backend-pw postgres-root-pw
+.PHONY: setup _setup-apply

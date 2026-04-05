@@ -20,10 +20,13 @@ clean: ## Remove dangling images, stopped containers, unused networks + build ca
 	@docker system df
 
 
-nuke: ## Full wipe — stops stack, removes volumes + images.
-	@echo "$(ORANGE)⚠️  This will destroy all containers, images, and volumes for this stack."
-	@echo "   Postgres data will be wiped.$(RES)"
-	@printf "   Continue? [y/N] " && read ans && [ "$$ans" = "y" ] || (echo "$(RED)   Aborted$(RES)" && exit 1)
+nuke: ## Full wipe — stops stack, removes volumes + images, deletes .env + secrets.
+	@echo "$(ORANGE)⚠️  This will destroy all containers, images, and volumes for this stack,"
+	@echo "$(RED)   AND:$(RES)"
+	@echo "   - The .env file"
+	@echo "   - All secret files"
+	@echo "   - All Postgres data"
+	@printf "$(CYAN)Continue? [y/N] $(RES)" && read ans && [ "$$ans" = "y" ] || (echo "$(RED)   Aborted$(RES)" && exit 1)
  
 	@echo ""
 	@echo "$(CYAN)<Stopping stack and removing containers + volumes>$(RES)"
@@ -40,6 +43,8 @@ nuke: ## Full wipe — stops stack, removes volumes + images.
 	@echo "$(CYAN)<Clearing all build cache>$(RES)"
 	@docker buildx prune -f
  
+	@echo "$(CYAN)<Removing .env and secret files>$(RES)"
+	@rm -f $(REQUIRED_FILES)
 	@echo ""
 	@echo "$(GREEN)Task completed. Everything is gone.$(RES)"
 	@echo "   Run \`make up\` to rebuild from scratch."
