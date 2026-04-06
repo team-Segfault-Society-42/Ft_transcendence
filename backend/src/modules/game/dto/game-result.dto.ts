@@ -1,6 +1,6 @@
 import { IsOptional, IsNotEmpty, IsNumber, IsPositive, Min } from 'class-validator';
 
-export class MatchResultDto {
+export class GameResultDto {
     @IsNotEmpty()
     @IsNumber()
     @IsPositive()
