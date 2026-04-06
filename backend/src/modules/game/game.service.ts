@@ -34,7 +34,19 @@ export class GameService {
     if (!game) throw new NotFoundException(`Game with ID ${gameId} not found`);
     return structuredClone(game);
   }
-  // maybe prepare more for 6x6 , 7x7 or 9x9
+
+  getFinishedGamesHistory(gameId: string) {
+    const game = this.getMutableGameById(gameId);
+
+    if (game.status !== 'finished') throw new Error('Game not finished yet');
+
+    return {
+      gameId,
+      movesGameHistory: [...game.movesGameHistory],
+      winner: game.winner,
+      endReason: game.endReason,
+    };
+  }
 
   joinGame(
     gameId: string,

@@ -14,4 +14,8 @@ export class GameController {
   getGame(@Param('id') gameId: string) {
     return this.gameService.getGameById(gameId);
   }
+  @Get(':id/history')
+  getFinishedGameHistory(@Param('id') gameId: string) {
+    return this.gameService.getFinishedGamesHistory(gameId);
+  }
 }

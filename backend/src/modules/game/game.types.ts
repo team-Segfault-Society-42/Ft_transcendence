@@ -8,6 +8,8 @@ export type EndReason = 'win' | 'draw' | 'timeout' | 'forfeit' | null;
 
 export type PlayerRole = PlayerSymbol | 'spectator';
 
+export type MovesGameHistory = number[];
+
 export interface PublicPlayerProfile {
   id: number;
   username: string;
@@ -61,4 +63,5 @@ export interface GameState {
   scores: ScoreBoard;
   replayVotes: ReplayState;
   playerProfiles: PlayerProfilesInGame;
+  movesGameHistory: MovesGameHistory;
 }
