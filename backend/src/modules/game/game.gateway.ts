@@ -28,9 +28,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`Client connected : ${client.id}`);
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     console.log(`Client disconnected : ${client.id}`);
-    const result = this.gameService.processPlayerDisconnection(client.id);
+    const result = await this.gameService.processPlayerDisconnection(client.id);
     if (result) {
       this.server.to(result.gameId).emit('game_updated', result.game);
     }
@@ -62,12 +62,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('play_move')
-  handlePlayMove(
+  async handlePlayMove(
     @MessageBody() body: PlayMoveDto,
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      const newGameState = this.gameService.playMove(
+      const newGameState = await this.gameService.playMove(
         body.gameId,
         client.id,
         body.r,
