@@ -60,6 +60,8 @@ services:
     image: postgres:${POSTGRES_VERSION:-18-alpine} #fallback to 18-alpine if var not set
     networks:
       - server-side
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}

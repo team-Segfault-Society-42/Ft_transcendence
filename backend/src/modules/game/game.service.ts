@@ -168,7 +168,6 @@ export class GameService {
   }
 
 private async saveGameToDB(game: GameState) {
-  
   if (!game.playerProfiles.X || !game.playerProfiles.O) return
 
   const data = {
@@ -180,7 +179,6 @@ private async saveGameToDB(game: GameState) {
   }
 
   await this.matchService.recordMatch(data, game.movesGameHistory)
-
 }
 
 }
