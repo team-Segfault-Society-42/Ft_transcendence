@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
+import { Card, CardTitle, CardDescription} from "@/components/ui/Card"
+import { Button } from "@/components/ui/Button"
 
 export default function Home() {
   const { t } = useTranslation();
@@ -40,24 +42,23 @@ export default function Home() {
 
       {/* BUTTONS */}
       <Link to="/signup">
-        <button className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95">
+        <Button
+          size="xl">
           {t("home.buttons.register")}
-        </button>
+        </Button>
       </Link>
 
-      <button
+      <Button
         onClick={() => console.log("play local later")}
-        className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95"
-      >
-        {t("home.buttons.playLocal", { defaultValue: "PLAY LOCAL" })}
-      </button>
+        size="xl">
+        {t("home.buttons.local")}
+      </Button>
 
-      <button
+      <Button
         onClick={handleFindOpponent}
-        className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95"
-      >
-        {t("home.buttons.findOpponent", { defaultValue: "FIND AN OPPONENT" })}
-      </button>
+        size="xl">
+        {t("home.buttons.findOpp")}
+      </Button>
 
       
 
@@ -65,18 +66,36 @@ export default function Home() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
 
         <Link to="/" className="card">
-          <h3 className="font-bold text-lg mb-2">🏠 {t("home.cards.home.title")}</h3>
-          <p className="text-white/70 text-sm">{t("home.cards.home.description")}</p>
+          <Card>
+    					<CardTitle>
+      						{t("home.cards.home.title")}
+    					</CardTitle>
+    					<CardDescription>
+      						{t("home.cards.home.description")}
+    					</CardDescription>
+					</Card>
         </Link>
 
-        <Link to="/game" className="card">
-          <h3 className="font-bold text-lg mb-2">🎮 {t("home.cards.game.title")}</h3>
-          <p className="text-white/70 text-sm">{t("home.cards.game.description")}</p>
+        <Link to="/game">
+          <Card>
+    					<CardTitle>
+      						{t("home.cards.game.title")}
+    					</CardTitle>
+    					<CardDescription>
+      						{t("home.cards.game.description")}
+    					</CardDescription>
+					</Card>
         </Link>
 
         <Link to="/profile" className="card">
-          <h3 className="font-bold text-lg mb-2">👤 {t("home.cards.profile.title")}</h3>
-          <p className="text-white/70 text-sm">{t("home.cards.profile.description")}</p>
+          <Card>
+    					<CardTitle>
+      						{t("home.cards.profile.title")}
+    					</CardTitle>
+    					<CardDescription>
+      						{t("home.cards.profile.description")}
+    					</CardDescription>
+					</Card>
         </Link>
 
       </div>

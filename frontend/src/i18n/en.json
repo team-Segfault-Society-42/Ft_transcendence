@@ -15,7 +15,9 @@
             "register": "Register",
             "login": "Login",
             "start": "START GAME",
-            "hi": "Hi,"
+            "hi": "Hi,",
+            "local": "Play local",
+            "findOpp": "Find an opponent"
         },
         "cards":{
             "home":{

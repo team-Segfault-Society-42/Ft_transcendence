@@ -16,7 +16,9 @@
         "register": "Registrarse",
         "login": "Se conectar",
         "start": "INICIAR PARTIDA",
-        "hi": "Hola, "
+        "hi": "Hola, ",
+        "local": "Jugar en local",
+        "findOpp": "Buscar un oponente"
       },
       "cards": {
         "home": {
