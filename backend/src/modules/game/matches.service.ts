@@ -31,6 +31,65 @@ export class MatchesService {
                 data : movesToCreate 
             })
 
+            if (result.winnerId === result.player1Id) {
+                const updateWinnerAsP1 = await tx.user.update({
+                    where: { id: result.player1Id },
+                        data : {
+                        wins: {increment: 1},
+                        xp: {increment: 20},
+                        }  
+                }) 
+
+                const updateWinnerAsP2 = await tx.user.update({
+                    where: { id: result.player2Id },
+                        data : {
+                        losses: {increment: 1},
+                        xp: {increment: 5},
+                        }  
+                }) 
+
+            } 
+            else if (result.winnerId === result.player2Id) {
+                const updateWinnerAsP2 = await tx.user.update({
+                    where: { id: result.player2Id },
+                        data : {
+                        wins: {increment: 1},
+                        xp: {increment: 20},
+                        }   
+                }) 
+
+                const updateWinnerAsP1 = await tx.user.update({
+                    where: { id: result.player1Id },
+                        data : {
+                        losses: {increment: 1},
+                        xp: {increment: 5},
+                        }  
+                }) 
+
+            }
+            else {
+
+                const updateWinnerAsP1 = await tx.user.update({
+                    where: { id: result.player1Id },
+                        data : {
+                        draws: {increment: 1},
+                        xp: {increment: 10},
+                        }   
+                }) 
+
+                const updateWinnerAsP2 = await tx.user.update({
+                    where: { id: result.player2Id },
+                        data : {
+                        draws: {increment: 1},
+                        xp: {increment: 10},
+                        
+                    }   
+                }) 
+
+            }
+
+    
+
         })
 
     }
