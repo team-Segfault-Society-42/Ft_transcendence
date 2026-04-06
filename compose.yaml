@@ -30,9 +30,6 @@ services:
     networks:
       - client-side
       - server-side
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - JWT_SECRET=${JWT_SECRET}
     secrets:
       - backend_pw
       - jwt_secret
