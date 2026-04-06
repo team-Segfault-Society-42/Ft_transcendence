@@ -41,13 +41,6 @@ export default function Home() {
       </div>
 
       {/* BUTTONS */}
-      <Link to="/signup">
-        <Button
-          size="xl">
-          {t("home.buttons.register")}
-        </Button>
-      </Link>
-
       <Button
         onClick={() => console.log("play local later")}
         size="xl">
