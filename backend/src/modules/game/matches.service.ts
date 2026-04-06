@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService, $transaction } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { GameResultDto } from './dto/game-result.dto';
 import { MovesGameHistory } from './game.types';
 
