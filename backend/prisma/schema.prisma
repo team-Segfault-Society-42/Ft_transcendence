@@ -22,7 +22,6 @@ model User {
   losses       Int     @default(0)
   draws        Int     @default(0)
   xp           Int     @default(0)
-  // level        Int     @default(0)
   gameAsP1     Game[] @relation("player1")
   gameAsP2     Game[] @relation("player2")
   wonGamees    Game[] @relation("asWinner")
