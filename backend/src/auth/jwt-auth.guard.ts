@@ -8,6 +8,20 @@ import { JwtService } from '@nestjs/jwt';
 import { Socket } from 'socket.io';
 import { Request } from 'express'
 
+interface JwtPayload {
+	sub: number
+	email: string
+}
+
+interface AuthRequest extends Request {
+	user:JwtPayload
+}
+
+interface AuthSocket extends Socket {
+	data: {
+		user:JwtPayload
+	}
+}
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -37,11 +51,11 @@ export class JwtAuthGuard implements CanActivate {
 
 			if (context.getType() === "http") {
 
-				(dataContainer as Request).user = payload;
+				(dataContainer as AuthRequest).user = payload;
 			}
 			else if (context.getType() === 'ws') {
 
-				(dataContainer as Socket).data.user = payload;
+				(dataContainer as AuthSocket).data.user = payload;
 
 			}
 			return true;
