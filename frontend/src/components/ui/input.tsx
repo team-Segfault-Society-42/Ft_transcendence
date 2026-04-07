@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { Label } from "@/components/ui/Label"
 
 type InputProps = React.ComponentProps<"input"> & {
   label?: string
@@ -11,9 +12,9 @@ function Input({ className, type, label, error, ...props }: InputProps){
     <div className="flex flex-col gap-1 w-full">
 
       {label && (
-        <label className="text-sm text-white/70">
+        <Label>
           {label}
-        </label>
+        </Label>
       )}
 
       <input

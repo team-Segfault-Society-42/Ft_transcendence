@@ -1,4 +1,5 @@
 import type { FieldError } from "react-hook-form"
+import { Label } from "@/components/ui/Label"
 
 type FormFieldProps = {
     label: string
@@ -10,9 +11,9 @@ export function FormField({ label, error, children }: FormFieldProps) {
     return (
         <div className="flex flex-col gap-1">
 
-        <label className="text-sm text-white/70">
+        <Label>
             {label}
-        </label>
+        </Label>
 
       {children}
 

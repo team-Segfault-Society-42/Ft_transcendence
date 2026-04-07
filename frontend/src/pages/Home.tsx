@@ -29,14 +29,11 @@ export default function Home() {
 
       <div className="space-y-6">
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {t("title", { defaultValue: "ft_transcendence" })}
+          {t("title")}
         </h1>
 
         <p className="text-white/60 max-w-md mx-auto text-lg">
-          {t("home.hero.texte", {
-            defaultValue:
-              "Play. Compete. Improve. Challenge players and become the best.",
-          })}
+          {t("home.hero.texte")}
         </p>
       </div>
 
@@ -58,7 +55,7 @@ export default function Home() {
       {/* CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
 
-        <Link to="/" className="card">
+        <Link to="/">
           <Card>
     					<CardTitle>
       						{t("home.cards.home.title")}

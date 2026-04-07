@@ -9,8 +9,7 @@
   
     "home": {
         "hero": {
-            "title": "Juega. Compite. Mejora.",
-            "subtitle": "Desafía a otros jugadores y conviértete en el mejor."
+            "texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
       },
       "buttons": {
         "register": "Registrarse",
