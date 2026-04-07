@@ -8,16 +8,16 @@ import { JwtService } from '@nestjs/jwt';
 import { Socket } from 'socket.io';
 import { Request } from 'express'
 
-interface JwtPayload {
+export interface JwtPayload {
 	sub: number
 	email: string
 }
 
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
 	user:JwtPayload
 }
 
-interface AuthSocket extends Socket {
+export type AuthSocket = Socket & {
 	data: {
 		user:JwtPayload
 	}
@@ -29,17 +29,16 @@ export class JwtAuthGuard implements CanActivate {
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		let token: string | undefined
-		let dataContainer: Request | Socket
 
 		if (context.getType() === "http") {
 
-			dataContainer = context.switchToHttp().getRequest();
-			token = this.extractTokenFromRequest(dataContainer);
+			const request = context.switchToHttp().getRequest();
+			token = this.extractTokenFromRequest(request);
 		} 
 		else if (context.getType() === "ws") {
 
-			dataContainer = context.switchToWs().getClient()
-			token = this.extractTokenFromWs(dataContainer);
+			const client = context.switchToWs().getClient()
+			token = this.extractTokenFromWs(client);
 		}
 
 		if (!token) {
@@ -51,11 +50,11 @@ export class JwtAuthGuard implements CanActivate {
 
 			if (context.getType() === "http") {
 
-				(dataContainer as AuthRequest).user = payload;
+				context.switchToHttp().getRequest().user = payload;
 			}
 			else if (context.getType() === 'ws') {
 
-				(dataContainer as AuthSocket).data.user = payload;
+				context.switchToWs().getClient().data.user = payload;
 
 			}
 			return true;
@@ -96,7 +95,7 @@ export class JwtAuthGuard implements CanActivate {
 			return undefined
 
 		const cookies = rawCookies.split(';')
-		
+		console.log('Cookies reçus du client:', client.handshake.headers.cookie);
 		for (const cookie of cookies) {
 			const [key, value] = cookie.trim().split('=')
 
