@@ -9,6 +9,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from 'react-router-dom';
+import { Avatar } from "@/components/ui/Avatar"
 
 interface User {
     id: number
@@ -76,14 +77,15 @@ export default function Profile() {
             {/* HEADER */}
             <div className="relative flex flex-col items-center gap-4">
       
-              {/* AVATAR */}
-              <div className="relative group">
-                <img
-                  src={user.avatar}
-                  alt="avatar"
-                  className="w-24 h-24 rounded-full border border-white/20 object-cover z-10 relative"/>
-                <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
-              </div>
+            {/* AVATAR */}
+            <div className="relative group">
+              <Avatar
+                src={user.avatar}
+                alt={user.username}
+                size="lg"
+                className="border border-white/20 z-10 relative"/>
+              <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
+            </div>
       
               {/* USERNAME */}
               {isEdit ? (
