@@ -104,7 +104,6 @@ export class JwtAuthGuard implements CanActivate {
 				return value
 			}
 		}
-			
 		return undefined
 	}
 }

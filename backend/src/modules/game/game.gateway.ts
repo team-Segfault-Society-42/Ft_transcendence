@@ -11,6 +11,8 @@ import { GameService } from './game.service';
 import { PlayMoveDto } from './dto/play-move.dto';
 import { Server, Socket } from 'socket.io';
 import { PublicPlayerProfile } from './game.types';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
@@ -18,6 +20,7 @@ import { PublicPlayerProfile } from './game.types';
     credentials: true,
   },
 })
+@UseGuards(JwtAuthGuard)
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
