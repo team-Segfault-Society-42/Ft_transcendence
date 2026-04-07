@@ -1,4 +1,4 @@
-import { IsOptional, IsNotEmpty, IsNumber, IsPositive, Min } from 'class-validator';
+import { IsOptional, IsNotEmpty, IsNumber, IsPositive, Min, IsString } from 'class-validator';
 
 export class GameResultDto {
     @IsNotEmpty()
@@ -24,5 +24,9 @@ export class GameResultDto {
     @IsOptional()
     @IsNumber()
     winnerId?: number;
+
+    @IsString()
+    @IsNotEmpty()
+    endReason?: string | null;
 
 }

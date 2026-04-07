@@ -175,7 +175,8 @@ private async saveGameToDB(game: GameState) {
   player2Id: game.playerProfiles.O.id,
   scoresP1: game.scores.X,
   scoresP2: game.scores.O,
-  winnerId: (game.winner === 'X') ? game.playerProfiles.X?.id : (game.winner === 'O') ? game.playerProfiles.O?.id : undefined
+  winnerId: (game.winner === 'X') ? game.playerProfiles.X?.id : (game.winner === 'O') ? game.playerProfiles.O?.id : undefined,
+  endReason: game.endReason
   }
 
   await this.matchService.recordMatch(data, game.movesGameHistory)

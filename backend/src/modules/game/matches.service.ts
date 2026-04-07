@@ -17,6 +17,7 @@ export class MatchesService {
                     scoresP1: result.scoresP1,
                     scoresP2: result.scoresP2,
                     winnerId: result.winnerId, 
+                    endReason: result.endReason,
                 } 
             })
 

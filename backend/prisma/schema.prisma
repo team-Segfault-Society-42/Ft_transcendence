@@ -40,6 +40,7 @@ model Game {
   scoresP1     Int      @default(0)
   scoresP2     Int      @default(0)
   date         DateTime @default(now())
+  endReason    String?
   moves        Move[]
 
 }
