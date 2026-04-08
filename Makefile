@@ -26,10 +26,10 @@ up: setup ##  Build and run all containers [DEV]
 	@echo "$(GOLD)Building in Dev Mode$(RES)"
 	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d
 
-build: ##  Build all containers [DEV]
+build: setup ##  Build all containers [DEV]
 	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build
 
-no-cache: ##  Rebuild all containers in no-cache mode [DEV]
+no-cache: setup ##  Rebuild all containers in no-cache mode [DEV]
 	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build --no-cache
 
 re: down build up ##  Stop, rebuild, and restart the full stack [DEV]
