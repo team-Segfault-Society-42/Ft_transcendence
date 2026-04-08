@@ -180,7 +180,7 @@ private async saveGameToDB(game: GameState) {
   }
 
   await this.matchService.recordMatch(data, game.movesGameHistory)
-  console.log("Save en DB effectué")
+  console.log("Save to DB successful")
 }
 
 }
