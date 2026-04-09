@@ -1,4 +1,4 @@
-import { Injectable, logger, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GameResultDto } from './dto/game-result.dto';
 import { MovesGameHistory } from './game.types';
