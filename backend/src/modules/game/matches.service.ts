@@ -31,6 +31,10 @@ export class MatchesService {
                     } 
                 })
 
+                // DEBUG TEST
+                // throw new Error("SABOTAGE_TEST_ROLLBACK"); 
+                //
+
                 const movesToCreate = history.map((n, i) => ({ 
                     gameId: newGame.id,
                     position: n,
