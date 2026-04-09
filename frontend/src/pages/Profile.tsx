@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
 import { useOutletContext } from "react-router";
-import { Spinner } from "@/components/ui/spinner"
+import { Spinner } from "@/components/ui/Spinner"
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +34,10 @@ export default function Profile() {
   if (!user) {
     return ( 
     <div>
-      <Spinner className="size-16 text-cyan-600" />
+      <Spinner 
+        variant="cyan" 
+        size="lg"
+      />
     </div>
     )
   }

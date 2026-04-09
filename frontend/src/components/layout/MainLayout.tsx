@@ -4,7 +4,7 @@ import Footer from "./Footer"
 import { AuthModal } from "@/components/auth/AuthModal"
 import { useEffect, useState } from 'react'
 import { userService } from "@/services/userService"
-import { Spinner } from "@/components/ui/spinner"
+import { Spinner } from "@/components/ui/Spinner"
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next"
