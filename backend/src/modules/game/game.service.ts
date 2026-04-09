@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'crypto'; //generer des IDs uniques pour les matchs
 import { GameState, PlayerRole, PublicPlayerProfile } from './game.types';
+import { MatchesService } from './matches.service';
 import {
   initGameState,
   validateToMove,
@@ -11,6 +12,8 @@ import {
 } from './game.logic';
 @Injectable()
 export class GameService {
+  constructor(private readonly matchService: MatchesService) {}
+
   private activeGame = new Map<string, GameState>();
 
   private getMutableGameById(gameId: string): GameState {
@@ -83,7 +86,7 @@ export class GameService {
     return game;
   }
 
-  playMove(gameId: string, clientId: string, r: number, c: number): GameState {
+  async playMove(gameId: string, clientId: string, r: number, c: number): Promise<GameState> {
     const game = this.getMutableGameById(gameId);
     // debug
     console.log('status =', game.status);
@@ -109,6 +112,7 @@ export class GameService {
       game.endReason = 'timeout';
       game.scores[timeOutWinner] += 1;
       game.toDisapear = -1;
+      await this.saveGameToDB(game)
       game.replayVotes = { X: false, O: false };
       this.activeGame.set(gameId, game);
       return game;
@@ -118,13 +122,18 @@ export class GameService {
     game.lastMove = now;
 
     const updatState = applyMove(game, r, c);
+
+    if (updatState.status === 'finished'){
+      await this.saveGameToDB(updatState)
+    }
+
     this.activeGame.set(gameId, updatState);
     return updatState;
   }
 
-  processPlayerDisconnection(
+  async processPlayerDisconnection(
     clientId: string,
-  ): { gameId: string; game: GameState } | null {
+  ): Promise<{ gameId: string; game: GameState } | null> {
     for (const [gameId, game] of this.activeGame.entries()) {
       const wasX = game.players.X === clientId;
       const wasO = game.players.O === clientId;
@@ -143,6 +152,7 @@ export class GameService {
         game.endReason = 'forfeit';
         game.scores[other] += 1;
         game.toDisapear = -1;
+        await this.saveGameToDB(game)
         game.replayVotes = { X: false, O: false };
       }
 
@@ -150,11 +160,27 @@ export class GameService {
         game.winner = null;
         game.endReason = null;
       }
-
       this.activeGame.set(gameId, game);
       return { gameId, game };
     }
 
     return null;
   }
+
+private async saveGameToDB(game: GameState) {
+  if (!game.playerProfiles.X || !game.playerProfiles.O) return
+
+  const data = {
+  player1Id: game.playerProfiles.X.id,
+  player2Id: game.playerProfiles.O.id,
+  scoresP1: game.scores.X,
+  scoresP2: game.scores.O,
+  winnerId: (game.winner === 'X') ? game.playerProfiles.X?.id : (game.winner === 'O') ? game.playerProfiles.O?.id : undefined,
+  endReason: game.endReason
+  }
+
+  await this.matchService.recordMatch(data, game.movesGameHistory)
+  console.log("Save to DB successful")
+}
+
 }
