@@ -22,7 +22,7 @@ RUN apk add --no-cache openssl && \
       -keyout /etc/nginx/ssl/key.pem \
       -out /etc/nginx/ssl/cert.pem \
       -subj "/C=CH/ST=Vaud/L=Lausanne/O=42Lausanne/CN=${DOMAIN}" \
-      -addext "subjectAltName=DNS:${DOMAIN}"
+      -addext "subjectAltName=DNS:localhost,IP:${DOMAIN}"
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
