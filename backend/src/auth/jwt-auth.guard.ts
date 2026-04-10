@@ -5,39 +5,55 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Socket } from 'socket.io';
-import { Request } from 'express'
+import { Reflector } from '@nestjs/core';
+import type { Request } from 'express';
+import type { Socket } from 'socket.io';
+import { IS_PUBLIC_KEY } from './public.decorator';
 
 export interface JwtPayload {
-	sub: number
-	email: string
+	sub: number;
+	email: string;
 }
 
 export interface AuthRequest extends Request {
-	user:JwtPayload
+	user: JwtPayload;
+	cookies?: {
+		access_token?: string;
+		[key: string]: string | undefined;
+	};
 }
 
 export type AuthSocket = Socket & {
 	data: {
-		user:JwtPayload
-	}
-}
+		user: JwtPayload;
+	};
+};
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-	constructor(private jwtService: JwtService) {}
+	constructor(
+		private readonly jwtService: JwtService,
+		private readonly reflector: Reflector,
+	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
-		let token: string | undefined
+		const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+			context.getHandler(),
+			context.getClass(),
+		]);
 
-		if (context.getType() === "http") {
+		if (isPublic) {
+			return true;
+		}
 
-			const request = context.switchToHttp().getRequest();
-			token = this.extractTokenFromRequest(request);
-		} 
-		else if (context.getType() === "ws") {
+		const contextType = context.getType<'http' | 'ws'>();
+		let token: string | undefined;
 
-			const client = context.switchToWs().getClient()
+		if (contextType === 'http') {
+			const request = context.switchToHttp().getRequest<AuthRequest>();
+			token = this.extractTokenFromHttpRequest(request);
+		} else if (contextType === 'ws') {
+			const client = context.switchToWs().getClient<AuthSocket>();
 			token = this.extractTokenFromWs(client);
 		}
 
@@ -46,63 +62,42 @@ export class JwtAuthGuard implements CanActivate {
 		}
 
 		try {
-			const payload = await this.jwtService.verifyAsync(token);
+			const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
 
-			if (context.getType() === "http") {
-
-				context.switchToHttp().getRequest().user = payload;
+			if (contextType === 'http') {
+				const request = context.switchToHttp().getRequest<AuthRequest>();
+				request.user = payload;
+			} else if (contextType === 'ws') {
+				const client = context.switchToWs().getClient<AuthSocket>();
+				client.data.user = payload;
 			}
-			else if (context.getType() === 'ws') {
 
-				context.switchToWs().getClient().data.user = payload;
-
-			}
 			return true;
 		} catch {
 			throw new UnauthorizedException('Invalid or expired token');
 		}
 	}
 
-	private extractTokenFromRequest(request: any): string | undefined {
-		const cookieToken = request.cookies?.access_token;
+	private extractTokenFromHttpRequest(request: AuthRequest): string | undefined {
+		return request.cookies?.access_token;
+	}
 
-		if (cookieToken) {
-			return cookieToken;
+	private extractTokenFromWs(client: AuthSocket): string | undefined {
+		const rawCookies = client.handshake.headers.cookie;
+
+		if (!rawCookies) {
+			return undefined;
 		}
 
-		return this.extractTokenFromHeader(request);
-	}
-
-	private extractTokenFromHeader(request: any): string | undefined {
-		const authHeader = request.headers['authorization'];
-
-		if (!authHeader) return undefined;
-
-		const [type, token] = authHeader.split(' ');
-
-		if (type !== 'Bearer') return undefined;
-
-		return token;
-	}
-
-	private extractTokenFromWs(client: any): string | undefined {
-		const headerToken = this.extractTokenFromHeader(client.handshake)
-		if (headerToken)
-			return headerToken
-
-		const rawCookies = client.handshake.headers.cookie
-		if (!rawCookies)
-			return undefined
-
-		const cookies = rawCookies.split(';')
-		console.log('Cookies reçus du client:', client.handshake.headers.cookie);
-		for (const cookie of cookies) {
-			const [key, value] = cookie.trim().split('=')
+		for (const cookie of rawCookies.split(';')) {
+			const [key, ...valueParts] = cookie.trim().split('=');
+			const value = valueParts.join('=');
 
 			if (key === 'access_token' && value) {
-				return value
+				return decodeURIComponent(value);
 			}
 		}
-		return undefined
+
+		return undefined;
 	}
 }
