@@ -15,7 +15,7 @@ services:
     build:
       target: prod
       args:
-        - DOMAIN: ${DOMAIN}
+        - DOMAIN=${DOMAIN}
     ports:
       - "8080:80"
       - "8443:443"
