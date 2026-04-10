@@ -33,6 +33,7 @@ services:
     secrets:
       - backend_pw
       - jwt_secret
+      - database_url
     depends_on:
       db:
         condition: service_healthy
@@ -90,3 +91,5 @@ secrets:
     file: ./secrets/postgres_root_pw.txt
   jwt_secret:
     file: ./secrets/jwt_secret.txt
+  database_url:
+    file: ./secrets/database_url.txt

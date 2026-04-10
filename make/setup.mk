@@ -17,21 +17,22 @@ DEFAULT_ENV_VARS = \
 DEV_ONLY_ENV_VARS = \
 	BACKEND_PW=changeme \
 	JWT_SECRET=jwt-changeme \
-	DATABASE_URL=postgresql://backend_user:changeme@db:5432/transcendence?schema=public
 
 # ── Add new secrets here ───────────────────────────────────────────────────────
 # Format: filename=content   (file created at $(SECRETS_DIR)filename)
 DEFAULT_SECRETS = \
 	backend_pw.txt=changeme \
 	postgres_root_pw.txt=changeme \
-	jwt_secret.txt=jwt-changeme
+	jwt_secret.txt=jwt-changeme \
+	database_url.txt=postgresql://backend_user:changeme@db:5432/transcendence?schema=public
 
 # ── Files that must exist before the stack can start ──────────────────────────
 REQUIRED_FILES = \
 	.env \
 	$(SECRETS_DIR)backend_pw.txt \
 	$(SECRETS_DIR)postgres_root_pw.txt \
-	$(SECRETS_DIR)jwt_secret.txt
+	$(SECRETS_DIR)jwt_secret.txt \
+	$(SECRETS_DIR)database_url.txt
 
 # ══════════════════════════════════════════════════════
 
