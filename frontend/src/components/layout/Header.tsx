@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from "react-i18next"
-import LanguageSwitcher from "../ui/languageSwitcher"
-import { Button } from '../ui/button';
+import LanguageSwitcher from "../ui/LanguageSwitcher"
+import { Button } from "@/components/ui/Button"
 
 interface HeaderProps {
     onLoginClick: () => void
@@ -21,19 +21,20 @@ export default function Header({ onLogoutClick, onLoginClick, user }: HeaderProp
                 <LanguageSwitcher />
             </div>
 
-            <div className="absolute right-6 top-1/2 -translate-y-1/2 ">
+            <div className="absolute right-6 top-1/2 -translate-y-1/2">
             {user ? ( 
                 
-                <Button className="px-4 rounded-full bg-transparent border border-border transition-all duration-200 hover:scale-105 hover:bg-white/5" onClick={onLogoutClick} >
-                
-                <span> {t("home.buttons.hi") + user.username} </span>
-                {t("auth.buttons.logout")}
-
-                </Button>  ) : ( 
                 <Button 
-                    onClick={onLoginClick} 
-                    className="px-4 rounded-full bg-transparent border border-border transition-all duration-200 hover:scale-105 hover:bg-white/5"
-                    > {t("home.buttons.login")} 
+                    onClick={onLogoutClick}>
+                    <span>
+                        {t("home.buttons.hi")} {user.username} {t("auth.buttons.logout")}
+                    </span>
+                </Button>  ) : ( 
+                
+                <Button
+                    variant="secondary"
+                    onClick={onLoginClick}>
+                    {t("home.buttons.login")} 
                 </Button> 
                 )}
             </div>
