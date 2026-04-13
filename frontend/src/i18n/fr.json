@@ -15,7 +15,9 @@
             "register": "S'enregistrer",
             "login": "Se connecter",
             "start": "LANCER LA PARTIE",
-            "hi": "Salut, "
+            "hi": "Salut, ",
+            "local": "Jeu local",
+            "findOpp": "Trouver un adversaire"
         },
         "cards":{
             "home":{
@@ -24,7 +26,7 @@
             },
             "game":{
                 "title": "🎮 Jeu",
-                "description": "Lance une partie et dépasse toi !"
+                "description": "Lance une partie et dépasse toi pour obtenir la victoire !"
             },
             "profile":{
                 "title": "👤 Profil",
@@ -78,7 +80,7 @@
             "login": "Se connecter",
             "no_account": "Pas encore de compte ? S'inscrire",
             "already_account": "Déjà un compte ? Se connecter",
-            "logout": "Déconnexion",
+            "logout": ": Déconnexion",
             "edit": "Modification effectuée avec succès"
           },   
           "success": "Utilisateur créé avec succès !",

@@ -2,11 +2,14 @@ import avatarImg from "/avatar.png"
 import { useEffect, useState } from 'react'
 import { userService } from '../services/userService'
 import { useTranslation } from "react-i18next"
+import { Input } from "@/components/ui/Input"
+import { Button } from "@/components/ui/Button"
 import { useOutletContext } from "react-router";
-import { Spinner } from "@/components/ui/spinner"
+import { Spinner } from "@/components/ui/Spinner"
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from 'react-router-dom';
+import { Avatar } from "@/components/ui/Avatar"
 
 interface User {
     id: number
@@ -31,7 +34,10 @@ export default function Profile() {
   if (!user) {
     return ( 
     <div>
-      <Spinner className="size-16 text-cyan-600" />
+      <Spinner 
+        variant="cyan" 
+        size="lg"
+      />
     </div>
     )
   }
@@ -74,21 +80,22 @@ export default function Profile() {
             {/* HEADER */}
             <div className="relative flex flex-col items-center gap-4">
       
-              {/* AVATAR */}
-              <div className="relative group">
-                <img
-                  src={user.avatar}
-                  alt="avatar"
-                  className="w-24 h-24 rounded-full border border-white/20 object-cover z-10 relative"/>
-                <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
-              </div>
+            {/* AVATAR */}
+            <div className="relative group">
+              <Avatar
+                src={user.avatar}
+                alt={user.username}
+                size="lg"
+                className="border border-white/20 z-10 relative"/>
+              <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
+            </div>
       
               {/* USERNAME */}
               {isEdit ? (
-                <input
+                <Input
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
-                  className="bg-transparent border border-white/20 rounded px-3 py-1 text-center focus:outline-none focus:border-cyan-400 transition"/>
+                  className="text-center"/>
               ) : (
                 <h1 className="text-2xl font-bold tracking-wide">
                   {user.username}
@@ -170,11 +177,10 @@ export default function Profile() {
             </div>
       
             {/* BUTTON */}
-            <button
-              onClick={handleSave}
-              className="mt-8 w-full bg-linear-to-r from-cyan-500 to-purple-500 text-white font-semibold py-3 rounded-lg hover:opacity-90 transition hover:scale-[1.02] active:scale-95">
+            <Button
+              onClick={handleSave}>
               {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
-            </button>
+            </Button>
       
           </div>
       
