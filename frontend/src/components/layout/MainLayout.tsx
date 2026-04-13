@@ -68,7 +68,10 @@ export default function MainLayout() {
     if (isLoading) {
       return ( 
       <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-black text-white">
-        <Spinner className="size-16 text-cyan-600" />
+        <Spinner 
+        variant="cyan" 
+        size="lg"
+      />
       </div>
       )
     }
