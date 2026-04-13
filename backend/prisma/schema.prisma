@@ -21,5 +21,37 @@ model User {
   wins         Int     @default(0)
   losses       Int     @default(0)
   draws        Int     @default(0)
+  xp           Int     @default(0)
+  gameAsP1     Game[] @relation("player1")
+  gameAsP2     Game[] @relation("player2")
+  wonGamees    Game[] @relation("asWinner")
+  moves        Move[]
+
+}
+
+model Game {
+  id           Int      @id @default(autoincrement())
+  player1      User     @relation("player1", fields: [player1Id], references: [id])
+  player1Id    Int
+  player2      User     @relation("player2", fields: [player2Id], references: [id])
+  player2Id    Int
+  winner       User?    @relation("asWinner", fields: [winnerId], references: [id])
+  winnerId     Int?
+  scoresP1     Int      @default(0)
+  scoresP2     Int      @default(0)
+  date         DateTime @default(now())
+  endReason    String?
+  moves        Move[]
+
+}
+
+model Move {
+  id           Int     @id @default(autoincrement())
+  position     Int
+  moveOrder    Int
+  game         Game    @relation(fields: [gameId], references: [id])
+  gameId       Int     
+  player       User    @relation(fields: [playerId], references: [id])
+  playerId     Int
 
 }
