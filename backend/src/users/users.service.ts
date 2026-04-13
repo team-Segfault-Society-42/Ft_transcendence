@@ -70,28 +70,4 @@ export class UsersService {
 			throw new BadRequestException('Failed to update user');
 		}
 	}
-
-	// async createUser(createUserDto: CreateUserDto) {
-	// 	try {
-	// 		return await this.prisma.user.create({
-	// 			data: {
-	// 				username: createUserDto.username,
-	// 				bio: createUserDto.bio ?? '',
-	// 				avatar: createUserDto.avatar ?? 'default.png',
-	// 				wins: 0,
-	// 				losses: 0,
-	// 				draws: 0,
-	// 			},
-	// 		});
-	// 	} catch (error) {
-	// 		if (
-	// 			error instanceof Prisma.PrismaClientKnownRequestError &&
-	// 			error.code === 'P2002'
-	// 		) {
-	// 			throw new ConflictException('Username already exists');
-	// 		}
-
-	// 		throw new BadRequestException('Failed to create user');
-	// 	}
-	// }
 }
