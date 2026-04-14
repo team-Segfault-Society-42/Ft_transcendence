@@ -45,7 +45,10 @@ export function AuthModal({
 
         <AuthForm
           mode={mode}
-          onSuccess={onSuccess}/>
+          onSuccess={() => 
+          { onClose()
+            onSuccess?.()
+          }}/>
 
         <Button
           type="button"
