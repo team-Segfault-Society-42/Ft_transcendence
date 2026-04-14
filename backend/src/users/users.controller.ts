@@ -4,6 +4,7 @@ import { UpdateUserDto} from './dto/update-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('Users')
+
 @Controller('users')
 export class UsersController {
 
