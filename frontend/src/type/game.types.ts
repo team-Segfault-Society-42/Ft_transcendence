@@ -1,12 +1,12 @@
-export type PlayerSymbol = 'X' | 'O';
+export type PlayerSymbol = "X" | "O";
 
 export type CellValue = PlayerSymbol | null;
 
-export type GameStatus = 'waiting' | 'playing' | 'finished';
+export type GameStatus = "waiting" | "playing" | "finished";
 
-export type EndReason = 'win' | 'draw' | 'timeout' | 'forfeit' | null;
+export type EndReason = "win" | "draw" | "timeout" | "forfeit" | null;
 
-export type PlayerRole = PlayerSymbol | 'spectator';
+export type PlayerRole = PlayerSymbol | "spectator";
 
 export type MovesGameHistory = number[];
 

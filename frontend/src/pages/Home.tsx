@@ -1,49 +1,94 @@
-import { Link } from 'react-router-dom'
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "react-i18next";
+import { Link, useNavigate } from "react-router-dom";
+import { Card, CardTitle, CardDescription} from "@/components/ui/Card"
+import { Button } from "@/components/ui/Button"
 
 export default function Home() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
 
-	const { t } = useTranslation()
+  const handleFindOpponent = async () => {
+    try {
+      const response = await fetch("http://localhost:1024/api/game/create", {
+        method: "POST",
+      });
 
-	return (
-		<section className="flex flex-col items-center text-center gap-12">
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
 
-			<div className="space-y-6">
+      const data: { gameId: string } = await response.json();
+      navigate(`/game/${data.gameId}`);
+    } catch (error) {
+      console.log("created game error:", error);
+    }
+  };
 
-				<h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-					{t("title")}
-				</h1>
+  return (
+    <section className="flex flex-col items-center text-center gap-12">
 
-				<p className="text-white/60 max-w-md mx-auto text-lg">
-					{t("home.hero.texte")}
-				</p>
+      <div className="space-y-6">
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+          {t("title")}
+        </h1>
 
-			</div>
-			{/* START GAME */}
-			<Link
-				to="/game"
-				className="bg-linear-to-r from-cyan-500 to-purple-500 px-12 py-4 rounded-2xl font-black text-2xl shadow-xl transition-all hover:scale-110 active:scale-95">
-				{t("home.buttons.start")}
-			</Link>
+        <p className="text-white/60 max-w-md mx-auto text-lg">
+          {t("home.hero.texte")}
+        </p>
+      </div>
 
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
+      {/* BUTTONS */}
+      <Button
+        onClick={() => console.log("play local later")}
+        size="xl">
+        {t("home.buttons.local")}
+      </Button>
 
-				<Link to="/" className="bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur hover:scale-105 transition group">
-					<h3 className="font-bold text-lg mb-2 group-hover:text-cyan-300 transition">{t("home.cards.home.title")}</h3>
-					<p className="text-white/70 text-sm">{t("home.cards.home.description")}</p>
-				</Link>
+      <Button
+        onClick={handleFindOpponent}
+        size="xl">
+        {t("home.buttons.findOpp")}
+      </Button>
 
-				<Link to="/game" className="bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur hover:scale-105 transition group">
-					<h3 className="font-bold text-lg mb-2 group-hover:text-cyan-300 transition">{t("home.cards.game.title")}</h3>
-					<p className="text-white/70 text-sm">{t("home.cards.game.description")}</p>
-				</Link>
+      
 
-				<Link to="/profile" className="bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur hover:scale-105 transition group">
-					<h3 className="font-bold text-lg mb-2 group-hover:text-cyan-300 transition">{t("home.cards.profile.title")}</h3>
-					<p className="text-white/70 text-sm">{t("home.cards.profile.description")}</p>
-				</Link>
+      {/* CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
 
-			</div>
-		</section>
-	)
+        <Link to="/">
+          <Card>
+    					<CardTitle>
+      						{t("home.cards.home.title")}
+    					</CardTitle>
+    					<CardDescription>
+      						{t("home.cards.home.description")}
+    					</CardDescription>
+					</Card>
+        </Link>
+
+        <Link to="/game">
+          <Card>
+    					<CardTitle>
+      						{t("home.cards.game.title")}
+    					</CardTitle>
+    					<CardDescription>
+      						{t("home.cards.game.description")}
+    					</CardDescription>
+					</Card>
+        </Link>
+
+        <Link to="/profile" className="card">
+          <Card>
+    					<CardTitle>
+      						{t("home.cards.profile.title")}
+    					</CardTitle>
+    					<CardDescription>
+      						{t("home.cards.profile.description")}
+    					</CardDescription>
+					</Card>
+        </Link>
+
+      </div>
+    </section>
+  );
 }

@@ -9,13 +9,15 @@
   
     "home": {
         "hero": {
-            "title": "Juega. Compite. Mejora.",
-            "subtitle": "Desafía a otros jugadores y conviértete en el mejor."
+            "texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
       },
       "buttons": {
         "register": "Registrarse",
         "login": "Se conectar",
-        "start": "INICIAR PARTIDA"
+        "start": "INICIAR PARTIDA",
+        "hi": "Hola, ",
+        "local": "Jugar en local",
+        "findOpp": "Buscar un oponente"
       },
       "cards": {
         "home": {
@@ -78,7 +80,9 @@
             "change_method": "Cambiar método",
             "login": "Se conectar",
             "no_account": "¿ No tienes cuenta ? Regístrate",
-            "already_account": "¿ Ya tienes una cuenta ? Iniciar sesión"
+            "already_account": "¿ Ya tienes una cuenta ? Iniciar sesión",
+            "logout": ": Cerrar sesión",
+            "edit": "Modificación completada con éxito"
         },
 
         "success": "¡Usuario creado con éxito!",
@@ -87,7 +91,9 @@
         "errors": {
             "username": "El nombre de usuario debe tener al menos 3 caracteres.",
             "email": "Dirección de correo inválida.",
-            "password": "La contraseña debe tener al menos 8 caracteres."
+            "password": "La contraseña debe tener al menos 8 caracteres.",
+            "bio": "La bio debe contener menos de 180 caracteres"
+
         }
     },
   

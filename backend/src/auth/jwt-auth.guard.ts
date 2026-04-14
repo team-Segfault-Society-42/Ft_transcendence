@@ -5,15 +5,41 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Socket } from 'socket.io';
+import { Request } from 'express'
+
+export interface JwtPayload {
+	sub: number
+	email: string
+}
+
+export interface AuthRequest extends Request {
+	user:JwtPayload
+}
+
+export type AuthSocket = Socket & {
+	data: {
+		user:JwtPayload
+	}
+}
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
 	constructor(private jwtService: JwtService) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
-		const request = context.switchToHttp().getRequest();
+		let token: string | undefined
 
-		const token = this.extractTokenFromRequest(request);
+		if (context.getType() === "http") {
+
+			const request = context.switchToHttp().getRequest();
+			token = this.extractTokenFromRequest(request);
+		} 
+		else if (context.getType() === "ws") {
+
+			const client = context.switchToWs().getClient()
+			token = this.extractTokenFromWs(client);
+		}
 
 		if (!token) {
 			throw new UnauthorizedException('Missing authentication token');
@@ -22,8 +48,15 @@ export class JwtAuthGuard implements CanActivate {
 		try {
 			const payload = await this.jwtService.verifyAsync(token);
 
-			request.user = payload;
+			if (context.getType() === "http") {
 
+				context.switchToHttp().getRequest().user = payload;
+			}
+			else if (context.getType() === 'ws') {
+
+				context.switchToWs().getClient().data.user = payload;
+
+			}
 			return true;
 		} catch {
 			throw new UnauthorizedException('Invalid or expired token');
@@ -50,5 +83,26 @@ export class JwtAuthGuard implements CanActivate {
 		if (type !== 'Bearer') return undefined;
 
 		return token;
+	}
+
+	private extractTokenFromWs(client: any): string | undefined {
+		const headerToken = this.extractTokenFromHeader(client.handshake)
+		if (headerToken)
+			return headerToken
+
+		const rawCookies = client.handshake.headers.cookie
+		if (!rawCookies)
+			return undefined
+
+		const cookies = rawCookies.split(';')
+		console.log('Cookies reçus du client:', client.handshake.headers.cookie);
+		for (const cookie of cookies) {
+			const [key, value] = cookie.trim().split('=')
+
+			if (key === 'access_token' && value) {
+				return value
+			}
+		}
+		return undefined
 	}
 }
