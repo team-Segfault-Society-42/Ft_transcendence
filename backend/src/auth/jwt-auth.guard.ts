@@ -17,10 +17,6 @@ export interface JwtPayload {
 
 export interface AuthRequest extends Request {
 	user: JwtPayload;
-	cookies?: {
-		access_token?: string;
-		[key: string]: string | undefined;
-	};
 }
 
 export type AuthSocket = Socket & {
@@ -78,7 +74,7 @@ export class JwtAuthGuard implements CanActivate {
 		}
 	}
 
-	private extractTokenFromHttpRequest(request: AuthRequest): string | undefined {
+	private extractTokenFromHttpRequest(request: Request): string | undefined {
 		return request.cookies?.access_token;
 	}
 
