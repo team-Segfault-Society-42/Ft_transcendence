@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 export interface OAuthProfile {
 	provider: 'google';
@@ -10,13 +11,56 @@ export interface OAuthProfile {
 
 @Injectable()
 export class OAuthService {
-	async handleGoogleCallback(code: string): Promise<OAuthProfile> {
-		return {
+	constructor(private readonly prisma: PrismaService) {}
+
+	async handleGoogleCallback(code: string) {
+		const profile: OAuthProfile = {
 			provider: 'google',
 			providerUserId: `google-${code}`,
 			email: 'google-user@example.com',
 			displayName: 'Google Test User',
 			avatarUrl: 'https://example.com/avatar.png',
 		};
+
+		const existingOAuthAccount = await this.prisma.oAuthAccount.findUnique({
+			where: {
+				provider_providerUserId: {
+					provider: profile.provider,
+					providerUserId: profile.providerUserId,
+				},
+			},
+			include: {
+				user: true,
+			},
+		});
+
+		if (existingOAuthAccount) {
+			return existingOAuthAccount.user;
+		}
+
+		const baseUsername = profile.displayName.toLowerCase().replace(/\s+/g, '_');
+		const username = `${baseUsername}_${Date.now()}`;
+
+		const user = await this.prisma.user.create({
+			data: {
+				email: profile.email,
+				passwordHash: null,
+				username,
+				bio: '',
+				avatar: profile.avatarUrl,
+				wins: 0,
+				losses: 0,
+				draws: 0,
+				xp: 0,
+				oauthAccounts: {
+					create: {
+						provider: profile.provider,
+						providerUserId: profile.providerUserId,
+					},
+				},
+			},
+		});
+
+		return user;
 	}
 }
