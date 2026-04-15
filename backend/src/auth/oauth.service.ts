@@ -35,7 +35,19 @@ export class OAuthService {
 		});
 
 		if (existingOAuthAccount) {
-			return existingOAuthAccount.user;
+			const user = existingOAuthAccount.user;
+
+			return {
+				id: user.id,
+				email: user.email,
+				username: user.username,
+				bio: user.bio,
+				avatar: user.avatar,
+				wins: user.wins,
+				losses: user.losses,
+				draws: user.draws,
+				xp: user.xp,
+			};
 		}
 
 		const baseUsername = profile.displayName.toLowerCase().replace(/\s+/g, '_');
@@ -61,6 +73,16 @@ export class OAuthService {
 			},
 		});
 
-		return user;
+		return {
+			id: user.id,
+			email: user.email,
+			username: user.username,
+			bio: user.bio,
+			avatar: user.avatar,
+			wins: user.wins,
+			losses: user.losses,
+			draws: user.draws,
+			xp: user.xp,
+		};
 	}
 }
