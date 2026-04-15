@@ -49,8 +49,6 @@ services:
       dockerfile: Dockerfile
     networks:
       - client-side
-    ports:
-      - "1024:80"
     depends_on:
       - frontend
       - backend

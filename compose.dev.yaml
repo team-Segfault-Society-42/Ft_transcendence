@@ -23,6 +23,8 @@ services:
   proxy:
     build:
       target: dev
+    ports:
+      - "1024:80"
 
 # ── Docker Volumes ──────────────────────────────────────────────────────────
 volumes:
