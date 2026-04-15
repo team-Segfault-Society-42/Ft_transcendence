@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 export interface OAuthProfile {
 	provider: 'google';
@@ -11,9 +13,40 @@ export interface OAuthProfile {
 
 @Injectable()
 export class OAuthService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly httpService: HttpService,
+	) {}
 
 	async handleGoogleCallback(code: string) {
+		const clientId = process.env.GOOGLE_CLIENT_ID;
+		const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+		if (!clientId || !clientSecret) {
+			throw new InternalServerErrorException(
+				'Google OAuth is not configured on the backend',
+			);
+		}
+		const tokenResponse = await firstValueFrom(
+			this.httpService.post(
+				'https://oauth2.googleapis.com/token',
+				new URLSearchParams({
+					code,
+					client_id: clientId,
+					client_secret: clientSecret,
+					redirect_uri: 'http://localhost:1024/api/auth/google/callback',
+					grant_type: 'authorization_code',
+				}),
+				{
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+				},
+			),
+		);
+
+		console.log('GOOGLE TOKEN RESPONSE:', tokenResponse.data);
+
 		const profile: OAuthProfile = {
 			provider: 'google',
 			providerUserId: `google-${code}`,

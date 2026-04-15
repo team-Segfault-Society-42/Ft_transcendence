@@ -7,6 +7,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { OAuthController } from './oauth.controller';
 import { OAuthService } from './oauth.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
 	imports: [
@@ -15,6 +16,7 @@ import { OAuthService } from './oauth.service';
 			signOptions: { expiresIn: '1h' },
 		}),
 		PrismaModule,
+		HttpModule,
 	],
 	controllers: [AuthController, OAuthController],
 	providers: [
