@@ -8,10 +8,14 @@ import {
 import type { Response } from 'express';
 import { Public } from './public.decorator';
 import { OAuthService } from './oauth.service';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class OAuthController {
-	constructor(private readonly oauthService: OAuthService) {}
+	constructor(
+		private readonly oauthService: OAuthService,
+		private readonly authService: AuthService,
+	) {}
 
 	@Public()
 	@Get('google')
@@ -30,11 +34,27 @@ export class OAuthController {
 
 	@Public()
 	@Get('google/callback')
-	async handleGoogleCallback(@Query('code') code?: string) {
+	async handleGoogleCallback(
+		@Query('code') code?: string,
+		@Res({ passthrough: true }) res?: Response,
+	) {
 		if (!code) {
 			throw new BadRequestException('Missing OAuth authorization code');
 		}
 
-		return this.oauthService.handleGoogleCallback(code);
+		const user = await this.oauthService.handleGoogleCallback(code);
+		const accessToken = await this.authService.signTokenForUser(user);
+
+		res?.cookie('access_token', accessToken, {
+			httpOnly: true,
+			secure: false,
+			sameSite: 'lax',
+			maxAge: 60 * 60 * 1000,
+		});
+
+		return {
+			message: 'OAuth login successful',
+			user,
+		};
 	}
 }
