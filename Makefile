@@ -24,13 +24,13 @@ SHOW_LOGS			= docker compose logs
 
 up: setup ##  Build and run all containers [DEV]
 	@echo "$(GOLD)Building in Dev Mode$(RES)"
-	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d
 
 build: setup ##  Build all containers [DEV]
-	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build
 
 no-cache: setup ##  Rebuild all containers in no-cache mode [DEV]
-	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build --no-cache
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build --no-cache
 
 re: down build up ##  Stop, rebuild, and restart the full stack [DEV]
 
@@ -38,7 +38,7 @@ reset: down-v no-cache up ##  Stop (remove volumes), full rebuild (no cache), re
 
 prod: ## Build and run all containers [PRODUCTION]
 	@echo "$(GREEN)Building in Production Mode$(RES)"
-	@docker compose -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) up -d
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) up -d
 
 .PHONY: up build no-cache re reset prod
 
