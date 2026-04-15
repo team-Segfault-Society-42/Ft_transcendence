@@ -54,6 +54,7 @@ export class JwtAuthGuard implements CanActivate {
 		}
 
 		if (!token) {
+			if (contextType === 'ws') return false;
 			throw new UnauthorizedException('Missing authentication token');
 		}
 
@@ -70,6 +71,7 @@ export class JwtAuthGuard implements CanActivate {
 
 			return true;
 		} catch {
+			if (contextType === 'ws') return false;
 			throw new UnauthorizedException('Invalid or expired token');
 		}
 	}
