@@ -1,4 +1,4 @@
-import avatarImg from "/avatar.png"
+// import avatarImg from "/avatar.png"
 import { useEffect, useState } from 'react'
 import { userService } from '../services/userService'
 import { useTranslation } from "react-i18next"
@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/Button"
 import { useOutletContext } from "react-router";
 import { Spinner } from "@/components/ui/Spinner"
 import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from 'react-router-dom';
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar"
 
 interface User {
@@ -29,13 +29,20 @@ export default function Profile() {
   const [isEdit, isInEdit] = useState(false)
   const [userName, setUserName] = useState(user?.username || "")
   const [bio, setBio] = useState(user?.bio || "")
-  const navigate = useNavigate()
+//   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user) {
+      setUserName(user.username)
+      setBio(user.bio)
+    }
+  }, [user])
 
   if (!user) {
-    return ( 
+    return (
     <div>
-      <Spinner 
-        variant="cyan" 
+      <Spinner
+        variant="cyan"
         size="lg"
       />
     </div>
@@ -44,8 +51,9 @@ export default function Profile() {
 
   const totalGames = user.wins + user.losses
   const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
-    
+
     async function handleSave() {
+        if (!user) return;
         if (isEdit) {
           try {
             await userService.updateUser(user.id, { username: userName, bio: bio })
@@ -60,14 +68,7 @@ export default function Profile() {
         isInEdit(!isEdit)
     }
 
-    useEffect(() => {
-      if (user) {
-      setUserName(user.username)
-      setBio(user.bio)
-    }
-  }, [user])
 
-      
     return (
         <section className="w-full max-w-lg">
       
