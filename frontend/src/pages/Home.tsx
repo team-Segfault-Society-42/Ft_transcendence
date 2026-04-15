@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardTitle, CardDescription} from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
+import { Motion } from "@/components/ui/Motion";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ export default function Home() {
   return (
     <section className="flex flex-col items-center text-center gap-12">
 
+    <Motion>
       <div className="space-y-6">
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
           {t("title")}
@@ -36,6 +38,7 @@ export default function Home() {
           {t("home.hero.texte")}
         </p>
       </div>
+    </Motion>
 
       {/* BUTTONS */}
       <Button

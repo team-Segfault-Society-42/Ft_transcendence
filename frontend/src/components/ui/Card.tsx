@@ -10,7 +10,7 @@ export function Card({ children, className }: CardProps) {
     return (
         <div
             className={cn(
-            "bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur transition hover:scale-105 group",
+            "bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur transition hover:scale-105 hover:-translate-y-2 active:scale-95 group",
             className
             )}>
             {children}
