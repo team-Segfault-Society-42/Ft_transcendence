@@ -7,9 +7,12 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { Public } from './public.decorator';
+import { OAuthService } from './oauth.service';
 
 @Controller('auth')
 export class OAuthController {
+	constructor(private readonly oauthService: OAuthService) {}
+
 	@Public()
 	@Get('google')
 	startGoogleOAuth(@Res() res: Response) {
@@ -27,14 +30,11 @@ export class OAuthController {
 
 	@Public()
 	@Get('google/callback')
-	handleGoogleCallback(@Query('code') code?: string) {
+	async handleGoogleCallback(@Query('code') code?: string) {
 		if (!code) {
 			throw new BadRequestException('Missing OAuth authorization code');
 		}
 
-		return {
-			message: 'OAuth Google callback reached',
-			code,
-		};
+		return this.oauthService.handleGoogleCallback(code);
 	}
 }
