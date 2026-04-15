@@ -26,6 +26,7 @@ model User {
   gameAsP2     Game[] @relation("player2")
   wonGamees    Game[] @relation("asWinner")
   moves        Move[]
+  oauthAccounts OAuthAccount[]
 
 }
 
@@ -50,8 +51,20 @@ model Move {
   position     Int
   moveOrder    Int
   game         Game    @relation(fields: [gameId], references: [id])
-  gameId       Int     
+  gameId       Int
   player       User    @relation(fields: [playerId], references: [id])
   playerId     Int
 
+}
+
+model OAuthAccount {
+	id              Int      @id @default(autoincrement())
+	provider        String
+	providerUserId  String
+	userId          Int
+	createdAt       DateTime @default(now())
+
+	user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@unique([provider, providerUserId])
 }
