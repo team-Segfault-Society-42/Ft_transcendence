@@ -1,14 +1,28 @@
-import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
+import {
+	BadRequestException,
+	Controller,
+	Get,
+	Query,
+	Res,
+} from '@nestjs/common';
+import type { Response } from 'express';
 import { Public } from './public.decorator';
 
 @Controller('auth')
 export class OAuthController {
 	@Public()
 	@Get('google')
-	startGoogleOAuth() {
-		return {
-			message: 'OAuth Google login start route',
-		};
+	startGoogleOAuth(@Res() res: Response) {
+		const params = new URLSearchParams({
+			client_id: process.env.GOOGLE_CLIENT_ID ?? '',
+			redirect_uri: 'http://localhost:1024/api/auth/google/callback',
+			response_type: 'code',
+			scope: 'openid email profile',
+		});
+
+		const authorizationUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+
+		return res.redirect(authorizationUrl);
 	}
 
 	@Public()
