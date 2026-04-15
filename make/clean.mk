@@ -4,7 +4,7 @@
 
 ##@ CLEAN
 
-clean: ## Remove dangling images, stopped containers, unused networks + build cache
+clean: ## Remove dangling images, stopped containers, unused networks + build cache [BOTH]
 # ── Remove stopped containers ───────
 	@echo "$(CYAN)<Removing Stopped Containers>$(RES)"
 	@docker container prune -f
@@ -20,7 +20,7 @@ clean: ## Remove dangling images, stopped containers, unused networks + build ca
 	@docker system df
 
 
-nuke: ## Full wipe — stops stack, removes volumes + images, deletes .env + secrets.
+nuke: ## Full wipe — stops stack, removes volumes + images, deletes .env + secrets. [BOTH]
 	@echo "$(ORANGE)⚠️  This will destroy all containers, images, and volumes for this stack,"
 	@echo "$(RED)   AND:$(RES)"
 	@echo "   - The .env file"
