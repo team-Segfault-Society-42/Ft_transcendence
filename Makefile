@@ -14,8 +14,6 @@ SERVICE_DATABASE	= db
 COMPOSE_FILE		= compose.yaml
 COMPOSE_DEV			= compose.dev.yaml
 COMPOSE_PROD		= compose.prod.yaml
-COMPOSE_ALL 		= $(COMPOSE_FILE) -f $(COMPOSE_DEV) -f $(COMPOSE_PROD)
-SHOW_LOGS			= docker compose logs
 
 # ══════════════════════════════════════════════════════
 #                 STARTING THE STACK
@@ -36,7 +34,7 @@ re: down build up ##  Stop, rebuild, and restart the full stack [DEV]
 
 reset: down-v no-cache up ##  Stop (remove volumes), full rebuild (no cache), restart containers [DEV]
 
-prod: ## Build and run all containers [PRODUCTION]
+prod: ## Build and run all containers [PROD]
 	@echo "$(GREEN)Building in Production Mode$(RES)"
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) up -d
 
@@ -48,21 +46,28 @@ prod: ## Build and run all containers [PRODUCTION]
 
 ##@ STOP STACK
 
-down: ## Stop all running containers
-	@docker compose -f $(COMPOSE_ALL) down
+down: ## Stop all running containers [DEV]
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down
 
-down-v: ## Remove volumes and stop running containers
-	@ docker compose -f $(COMPOSE_ALL) down -v
+down-v: ## Remove volumes and stop running containers [DEV]
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down -v
+	
+down-prod: ## Stop all running containers [PROD]
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
+	
 
-.PHONY: down down-v
+.PHONY: down down-v down-prod
 
 # ══════════════════════════════════════════════════════
 #               		UTILITY
 # ══════════════════════════════════════════════════════
 ##@ UTILITY
 
-ps: ## Display all running containers
-	@docker compose -f $(COMPOSE_ALL) ps
+ps: ## Display all running containers [DEV]
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) ps
+
+ps-prod: ## Display all running containers [PROD]
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) ps
 	
 ls: ## Display all images
 	@docker image ls -a
@@ -76,21 +81,23 @@ info: ## Display Docker system information, build cache, etc.
 #               	 	 LOGS
 # ══════════════════════════════════════════════════════
 
+SHOW_DEV_LOGS = docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) logs
+
 ##@ LOGS
 
 logs: ## Display logs for all containers
-	@$(SHOW_LOGS)
+	@$(SHOW_DEV_LOGS)
 
 logs-proxy: ## Display logs for the proxy container
-	@$(SHOW_LOGS) $(SERVICE_PROXY)
+	@$(SHOW_DEV_LOGS) -f $(SERVICE_PROXY)
 	
 logs-front: ## Display logs for the frontend container
-	@$(SHOW_LOGS) $(SERVICE_FRONTEND)
+	@$(SHOW_DEV_LOGS) -f $(SERVICE_FRONTEND)
 
 logs-back: ## Display logs for the backend container
-	@$(SHOW_LOGS) $(SERVICE_BACKEND)
+	@$(SHOW_DEV_LOGS) -f $(SERVICE_BACKEND)
 
 logs-db: ## Display logs for the database container
-	@$(SHOW_LOGS) $(SERVICE_DATABASE)
+	@$(SHOW_DEV_LOGS) -f $(SERVICE_DATABASE)
 
 .PHONY: logs logs-proxy logs-front logs-back logs-db
