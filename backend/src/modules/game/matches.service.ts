@@ -119,8 +119,6 @@ export class MatchesService {
             orderBy: {
                 date: "desc"
             }
-
-            
         })
 
 

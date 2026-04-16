@@ -28,8 +28,10 @@ interface User {
     username: string,
     wins: number,
     losses: number,
+    draws: number
     bio: string,
     avatar: string
+    xp : number
 }
 
 export default function Profile() {
@@ -44,13 +46,6 @@ export default function Profile() {
   const [bio, setBio] = useState(user?.bio || "")
 //   const navigate = useNavigate()
 
-  // useEffect(() => {
-  //   if (user) {
-  //     setUserName(user.username)
-  //     setBio(user.bio)
-  //   }
-  // }, [user])
-
   if (!user) {
     return (
     <div>
@@ -62,8 +57,10 @@ export default function Profile() {
     )
   }
 
-  const totalGames = user.wins + user.losses
+  const totalGames = user.wins + user.losses + user.draws
   const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
+  const level = Math.floor(user.xp / 100)
+  const xpProgress = user.xp % 100
 
     async function handleSave() {
         if (!user) return;
@@ -80,6 +77,9 @@ export default function Profile() {
         }
         isInEdit(!isEdit)
     }
+
+    const p = 1
+    
 
     useEffect(() => {
       if (user) {
@@ -187,6 +187,23 @@ export default function Profile() {
               </p>
       
             </div>
+
+            <div className="mt-8">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-white/50 font-medium">Level {level}</span>
+                <span className="text-white/30 text-[10px] uppercase tracking-tighter">
+                  {xpProgress} / 100 XP
+                </span>
+            </div>
+
+            {/* XP progression  */}
+              <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                <div 
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-full transition-all duration-700"
+                  style={{ width: `${xpProgress}%` }}
+                />
+              </div>
+            </div>
       
             {/* BIO */}
             <div className="mt-8">
@@ -235,7 +252,7 @@ export default function Profile() {
                  {matches.map((match) => (
 
                     <div key={match.id} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px' }}>
-                      {/* Données brutes pour le front */}
+                      {/* Data for front*/}
                       <p>Date: { new Date(match.date).toLocaleDateString() } </p>
                       <p>Result: <strong> { match.result } </strong> </p>
                       <p>Score: { match.myScore } - { match.oppScore } </p>
