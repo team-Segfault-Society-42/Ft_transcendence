@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { gameApi } from "@/services/gameApi";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -10,11 +9,22 @@ export default function Home() {
 
   const handleFindOpponent = async () => {
     try {
-      const data = await gameApi.createGame();
+      const response = await fetch("/api/game/create", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      const data: { gameId: string } = await response.json();
       navigate(`/game/${data.gameId}`);
     } catch (error) {
       console.log("created game error:", error);
     }
+  };
+  const handleLogin42 = () => {
+    window.location.href = "http://localhost:1024/api/auth/42";
   };
 
   return (
@@ -37,6 +47,14 @@ export default function Home() {
       <Button onClick={handleFindOpponent} size="xl">
         {t("home.buttons.findOpp")}
       </Button>
+
+      <Button
+        onClick={handleLogin42}
+        size="xl">
+        Login with 42
+      </Button>
+
+
 
       {/* CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
