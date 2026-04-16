@@ -65,6 +65,7 @@ export class OAuthController {
 		@Query('code') code?: string,
 		@Query('state') state?: string,
 		@Req() req?: Request,
+		@Res({ passthrough: true }) res?: Response,
 	) {
 		if (!code) {
 			throw new BadRequestException('Missing OAuth authorization code');
@@ -84,9 +85,28 @@ export class OAuthController {
 			throw new UnauthorizedException('Invalid OAuth state');
 		}
 
-		return this.oauthService.handleFortyTwoCallback(code);
+		const user = await this.oauthService.handleFortyTwoCallback(code);
+		const accessToken = await this.authService.signTokenForUser(user);
+
+		res?.cookie('access_token', accessToken, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+			maxAge: 60 * 60 * 1000,
+		});
+
+		res?.clearCookie('oauth_state', {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+		});
+
+		return {
+			message: '42 OAuth login successful',
+			user,
+		};
 	}
-	
+
 ////////////////////Google OAuth//////////////////
 	@Public()
 	@Get('google')
