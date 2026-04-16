@@ -101,10 +101,10 @@ export class OAuthController {
 			sameSite: 'lax',
 		});
 
-		return {
-			message: '42 OAuth login successful',
-			user,
-		};
+		const successRedirectUrl =
+			process.env.FRONTEND_OAUTH_SUCCESS_URL ?? 'http://localhost:1024/';
+
+		return res?.redirect(successRedirectUrl);
 	}
 
 ////////////////////Google OAuth//////////////////
