@@ -11,6 +11,18 @@ import { toast } from "sonner";
 // import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar"
 
+interface Match {
+  id: number,
+  date: string,
+  result: "DRAW" | "WIN" | "LOSS",
+  myScore: number,
+  opponentScore: {
+    username: string,
+    avatar: string,
+  }
+
+}
+
 interface User {
     id: number
     username: string,
