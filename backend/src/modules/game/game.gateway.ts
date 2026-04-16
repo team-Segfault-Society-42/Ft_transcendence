@@ -87,7 +87,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('play_move')
   async handlePlayMove(
     @MessageBody() body: PlayMoveDto,
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: AuthSocket,
   ) {
     try {
       const newGameState = await this.gameService.playMove(
@@ -108,7 +108,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('request_replay')
   handleRequestReplay(
     @MessageBody() body: { gameId: string },
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: AuthSocket,
   ) {
     try {
       const updateGame = this.gameService.requestReplay(body.gameId, client.id);

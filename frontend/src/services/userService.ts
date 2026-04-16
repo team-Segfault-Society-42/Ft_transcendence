@@ -1,12 +1,4 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "/api/",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true,
-});
+import { api } from "@/services/api";
 
 export async function userLogout() {
   const response = await api.post("auth/logout");
