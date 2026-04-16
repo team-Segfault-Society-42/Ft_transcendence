@@ -11,6 +11,21 @@ export interface OAuthProfile {
 	avatarUrl: string;
 }
 
+interface GoogleTokenResponse {
+	access_token: string;
+	token_type: string;
+	expires_in: number;
+	scope?: string;
+	id_token?: string;
+}
+
+interface GoogleUserInfoResponse {
+	sub: string;
+	email: string;
+	name: string;
+	picture?: string;
+}
+
 @Injectable()
 export class OAuthService {
 	constructor(
@@ -28,7 +43,7 @@ export class OAuthService {
 			);
 		}
 		const tokenResponse = await firstValueFrom(
-			this.httpService.post(
+			this.httpService.post<GoogleTokenResponse>(
 				'https://oauth2.googleapis.com/token',
 				new URLSearchParams({
 					code,
@@ -45,14 +60,27 @@ export class OAuthService {
 			),
 		);
 
-		console.log('GOOGLE TOKEN RESPONSE:', tokenResponse.data);
+		const googleAccessToken = tokenResponse.data.access_token;
+
+		const userInfoResponse = await firstValueFrom(
+			this.httpService.get<GoogleUserInfoResponse>(
+				'https://openidconnect.googleapis.com/v1/userinfo',
+				{
+					headers: {
+						Authorization: `Bearer ${googleAccessToken}`,
+					},
+				},
+			),
+		);
+
+		const googleUser = userInfoResponse.data;
 
 		const profile: OAuthProfile = {
 			provider: 'google',
-			providerUserId: `google-${code}`,
-			email: 'google-user@example.com',
-			displayName: 'Google Test User',
-			avatarUrl: 'https://example.com/avatar.png',
+			providerUserId: googleUser.sub,
+			email: googleUser.email,
+			displayName: googleUser.name,
+			avatarUrl: googleUser.picture ?? 'default.png',
 		};
 
 		const existingOAuthAccount = await this.prisma.oAuthAccount.findUnique({
