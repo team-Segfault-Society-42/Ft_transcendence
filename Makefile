@@ -118,4 +118,4 @@ p-logs-back: ## Display logs for the backend container [PROD]
 p-logs-db: ## Display logs for the database container [PROD]
 	@$(SHOW_PROD_LOGS) -f $(SERVICE_DATABASE)
 
-.PHONY: logs logs-proxy logs-front logs-back logs-db p-logs p-logs-proxy p-logs-front p-logs-back
+.PHONY: logs logs-proxy logs-front logs-back logs-db p-logs p-logs-proxy p-logs-front p-logs-back p-logs-db
