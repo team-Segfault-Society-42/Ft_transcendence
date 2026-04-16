@@ -19,6 +19,35 @@ export class OAuthController {
 	) {}
 
 	@Public()
+	@Get('42')
+	startFortyTwoOAuth() {
+		return {
+			message: 'OAuth 42 login start route',
+		};
+	}
+
+	@Public()
+	@Get('42/callback')
+	handleFortyTwoCallback(
+		@Query('code') code?: string,
+		@Query('state') state?: string,
+	) {
+		if (!code) {
+			throw new BadRequestException('Missing OAuth authorization code');
+		}
+
+		if (!state) {
+			throw new BadRequestException('Missing OAuth state');
+		}
+
+		return {
+			message: 'OAuth 42 callback reached',
+			code,
+			state,
+		};
+	}
+
+	@Public()
 	@Get('google')
 	startGoogleOAuth(@Res() res: Response) {
 		const clientId = process.env.GOOGLE_CLIENT_ID;
