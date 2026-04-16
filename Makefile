@@ -52,11 +52,11 @@ down: ## Stop all running containers [DEV]
 down-v: ## Remove volumes and stop running containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down -v
 	
-down-prod: ## Stop all running containers [PROD]
+prod-down: ## Stop all running containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
 	
 
-.PHONY: down down-v down-prod
+.PHONY: down down-v prod-down
 
 # ══════════════════════════════════════════════════════
 #               		UTILITY
@@ -66,7 +66,7 @@ down-prod: ## Stop all running containers [PROD]
 ps: ## Display all running containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) ps
 
-ps-prod: ## Display all running containers [PROD]
+prod-ps: ## Display all running containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) ps
 	
 ls: ## Display all images [UTIL]
@@ -75,7 +75,7 @@ ls: ## Display all images [UTIL]
 info: ## Display Docker system information, build cache, etc. [UTIL]
 	@docker system df
 
-.PHONY: ps ls info
+.PHONY: ps ls info prod-ps
 
 # ══════════════════════════════════════════════════════
 #               	 	 LOGS
