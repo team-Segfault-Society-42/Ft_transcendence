@@ -9,6 +9,8 @@ services:
   backend:
     build:
       target: prod    # targets the prod stage in a multi-stage Dockerfile
+    environment:
+      - NODE_ENV=production
  
   # ── Reverse Proxy (Nginx) ────────────────────────────────────────
   proxy:
