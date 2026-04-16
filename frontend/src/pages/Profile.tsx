@@ -81,7 +81,7 @@ export default function Profile() {
         isInEdit(!isEdit)
     }
 
-useEffect(() => {
+    useEffect(() => {
       if (user) {
         setUserName(user.username)
         setBio(user.bio)

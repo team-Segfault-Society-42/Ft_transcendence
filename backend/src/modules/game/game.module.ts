@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { GameService } from './game.service';
 import { GameController } from './game.controller';
 import { GameGateway } from './game.gateway';
@@ -8,10 +8,11 @@ import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [PrismaModule, UsersModule, JwtModule.register({
+  imports: [PrismaModule, forwardRef(() => UsersModule), JwtModule.register({
     secret: process.env.JWT_SECRET
   })],
   providers: [GameService, GameGateway, MatchesService],
   controllers: [GameController],
+  exports: [MatchesService],
 })
 export class GameModule {}
