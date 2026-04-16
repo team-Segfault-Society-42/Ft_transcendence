@@ -2,6 +2,7 @@ import {
 	BadRequestException,
 	Controller,
 	Get,
+	InternalServerErrorException,
 	Query,
 	Res,
 } from '@nestjs/common';
@@ -20,9 +21,18 @@ export class OAuthController {
 	@Public()
 	@Get('google')
 	startGoogleOAuth(@Res() res: Response) {
+		const clientId = process.env.GOOGLE_CLIENT_ID;
+		const redirectUri = process.env.GOOGLE_REDIRECT_URI;
+
+		if (!clientId || !redirectUri) {
+			throw new InternalServerErrorException(
+				'Google OAuth is not configured on the backend',
+			);
+		}
+
 		const params = new URLSearchParams({
-			client_id: process.env.GOOGLE_CLIENT_ID ?? '',
-			redirect_uri: 'http://localhost:1024/api/auth/google/callback',
+			client_id: clientId,
+			redirect_uri: redirectUri,
 			response_type: 'code',
 			scope: 'openid email profile',
 		});

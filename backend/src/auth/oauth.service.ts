@@ -36,8 +36,9 @@ export class OAuthService {
 	async handleGoogleCallback(code: string) {
 		const clientId = process.env.GOOGLE_CLIENT_ID;
 		const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+		const redirectUri = process.env.GOOGLE_REDIRECT_URI;
 
-		if (!clientId || !clientSecret) {
+		if (!clientId || !clientSecret || !redirectUri) {
 			throw new InternalServerErrorException(
 				'Google OAuth is not configured on the backend',
 			);
@@ -49,7 +50,7 @@ export class OAuthService {
 					code,
 					client_id: clientId,
 					client_secret: clientSecret,
-					redirect_uri: 'http://localhost:1024/api/auth/google/callback',
+					redirect_uri: redirectUri,
 					grant_type: 'authorization_code',
 				}),
 				{
