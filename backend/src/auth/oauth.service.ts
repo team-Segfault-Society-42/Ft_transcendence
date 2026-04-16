@@ -4,7 +4,7 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 
 export interface OAuthProfile {
-	provider: 'google';
+	provider: 'google' | '42';
 	providerUserId: string;
 	email: string;
 	displayName: string;
@@ -55,114 +55,7 @@ export class OAuthService {
 		private readonly httpService: HttpService,
 	) {}
 
-	async handleFortyTwoCallback(code: string) {
-		const clientId = process.env.FORTYTWO_CLIENT_ID;
-		const clientSecret = process.env.FORTYTWO_CLIENT_SECRET;
-		const redirectUri = process.env.FORTYTWO_REDIRECT_URI;
-
-		if (!clientId || !clientSecret || !redirectUri) {
-			throw new InternalServerErrorException(
-				'42 OAuth is not configured on the backend',
-			);
-		}
-
-		const tokenResponse = await firstValueFrom(
-			this.httpService.post<FortyTwoTokenResponse>(
-				'https://api.intra.42.fr/oauth/token',
-				new URLSearchParams({
-					grant_type: 'authorization_code',
-					client_id: clientId,
-					client_secret: clientSecret,
-					code,
-					redirect_uri: redirectUri,
-				}),
-				{
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-				},
-			),
-		);
-
-		const accessToken = tokenResponse.data.access_token;
-
-		const userInfoResponse = await firstValueFrom(
-			this.httpService.get<FortyTwoUserInfoResponse>(
-				'https://api.intra.42.fr/v2/me',
-				{
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				},
-			),
-		);
-
-		const fortyTwoUser = userInfoResponse.data;
-
-		return {
-			message: '42 OAuth user info fetched',
-			providerUserId: String(fortyTwoUser.id),
-			email: fortyTwoUser.email,
-			login: fortyTwoUser.login,
-			displayName: fortyTwoUser.displayname,
-			avatarUrl:
-				fortyTwoUser.image?.versions?.medium ??
-				fortyTwoUser.image?.link ??
-				'default.png',
-		};
-	}
-
-	async handleGoogleCallback(code: string) {
-		const clientId = process.env.GOOGLE_CLIENT_ID;
-		const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-		const redirectUri = process.env.GOOGLE_REDIRECT_URI;
-
-		if (!clientId || !clientSecret || !redirectUri) {
-			throw new InternalServerErrorException(
-				'Google OAuth is not configured on the backend',
-			);
-		}
-		const tokenResponse = await firstValueFrom(
-			this.httpService.post<GoogleTokenResponse>(
-				'https://oauth2.googleapis.com/token',
-				new URLSearchParams({
-					code,
-					client_id: clientId,
-					client_secret: clientSecret,
-					redirect_uri: redirectUri,
-					grant_type: 'authorization_code',
-				}),
-				{
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-				},
-			),
-		);
-
-		const googleAccessToken = tokenResponse.data.access_token;
-
-		const userInfoResponse = await firstValueFrom(
-			this.httpService.get<GoogleUserInfoResponse>(
-				'https://openidconnect.googleapis.com/v1/userinfo',
-				{
-					headers: {
-						Authorization: `Bearer ${googleAccessToken}`,
-					},
-				},
-			),
-		);
-
-		const googleUser = userInfoResponse.data;
-
-		const profile: OAuthProfile = {
-			provider: 'google',
-			providerUserId: googleUser.sub,
-			email: googleUser.email,
-			displayName: googleUser.name,
-			avatarUrl: googleUser.picture ?? 'default.png',
-		};
-
+	private async findOrCreateUserFromOAuthProfile(profile: OAuthProfile) {
 		const existingOAuthAccount = await this.prisma.oAuthAccount.findUnique({
 			where: {
 				provider_providerUserId: {
@@ -225,5 +118,118 @@ export class OAuthService {
 			draws: user.draws,
 			xp: user.xp,
 		};
+	}
+
+	async handleFortyTwoCallback(code: string) {
+		const clientId = process.env.FORTYTWO_CLIENT_ID;
+		const clientSecret = process.env.FORTYTWO_CLIENT_SECRET;
+		const redirectUri = process.env.FORTYTWO_REDIRECT_URI;
+
+		if (!clientId || !clientSecret || !redirectUri) {
+			throw new InternalServerErrorException(
+				'42 OAuth is not configured on the backend',
+			);
+		}
+
+		const tokenResponse = await firstValueFrom(
+			this.httpService.post<FortyTwoTokenResponse>(
+				'https://api.intra.42.fr/oauth/token',
+				new URLSearchParams({
+					grant_type: 'authorization_code',
+					client_id: clientId,
+					client_secret: clientSecret,
+					code,
+					redirect_uri: redirectUri,
+				}),
+				{
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+				},
+			),
+		);
+
+		const accessToken = tokenResponse.data.access_token;
+
+		const userInfoResponse = await firstValueFrom(
+			this.httpService.get<FortyTwoUserInfoResponse>(
+				'https://api.intra.42.fr/v2/me',
+				{
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				},
+			),
+		);
+
+		const fortyTwoUser = userInfoResponse.data;
+
+		const profile: OAuthProfile = {
+			provider: '42',
+			providerUserId: String(fortyTwoUser.id),
+			email: fortyTwoUser.email,
+			displayName: fortyTwoUser.displayname,
+			avatarUrl:
+				fortyTwoUser.image?.versions?.medium ??
+				fortyTwoUser.image?.link ??
+				'default.png',
+		};
+
+		return this.findOrCreateUserFromOAuthProfile(profile);
+	}
+
+	//////////// Google Callback /////////////////////
+	async handleGoogleCallback(code: string) {
+		const clientId = process.env.GOOGLE_CLIENT_ID;
+		const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+		const redirectUri = process.env.GOOGLE_REDIRECT_URI;
+
+		if (!clientId || !clientSecret || !redirectUri) {
+			throw new InternalServerErrorException(
+				'Google OAuth is not configured on the backend',
+			);
+		}
+		const tokenResponse = await firstValueFrom(
+			this.httpService.post<GoogleTokenResponse>(
+				'https://oauth2.googleapis.com/token',
+				new URLSearchParams({
+					code,
+					client_id: clientId,
+					client_secret: clientSecret,
+					redirect_uri: redirectUri,
+					grant_type: 'authorization_code',
+				}),
+				{
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+				},
+			),
+		);
+
+		const googleAccessToken = tokenResponse.data.access_token;
+
+		const userInfoResponse = await firstValueFrom(
+			this.httpService.get<GoogleUserInfoResponse>(
+				'https://openidconnect.googleapis.com/v1/userinfo',
+				{
+					headers: {
+						Authorization: `Bearer ${googleAccessToken}`,
+					},
+				},
+			),
+		);
+
+		const googleUser = userInfoResponse.data;
+
+		const profile: OAuthProfile = {
+			provider: 'google',
+			providerUserId: googleUser.sub,
+			email: googleUser.email,
+			displayName: googleUser.name,
+			avatarUrl: googleUser.picture ?? 'default.png',
+		};
+
+		return this.findOrCreateUserFromOAuthProfile(profile);
 	}
 }
