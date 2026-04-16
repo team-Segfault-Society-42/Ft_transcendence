@@ -33,6 +33,7 @@ services:
     secrets:
       - backend_pw
       - jwt_secret
+      - database_url
     depends_on:
       db:
         condition: service_healthy
@@ -48,8 +49,6 @@ services:
       dockerfile: Dockerfile
     networks:
       - client-side
-    ports:
-      - "1024:80"
     depends_on:
       - frontend
       - backend
@@ -90,3 +89,5 @@ secrets:
     file: ./secrets/postgres_root_pw.txt
   jwt_secret:
     file: ./secrets/jwt_secret.txt
+  database_url:
+    file: ./secrets/database_url.txt

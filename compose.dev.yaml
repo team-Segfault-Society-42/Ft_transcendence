@@ -14,7 +14,6 @@ services:
     build:
       target: dev
     environment:
-      - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
     volumes:
       - ./backend:/app                          # reflect host changes instantly
@@ -24,6 +23,8 @@ services:
   proxy:
     build:
       target: dev
+    ports:
+      - "1024:80"
 
 # ── Docker Volumes ──────────────────────────────────────────────────────────
 volumes:

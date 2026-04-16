@@ -18,22 +18,22 @@ export async function getMe() {
     return response.data
 }
 
-export async function userLogin(data) {
+export async function userLogin(data: unknown) {
     const response = await api.post('auth/login', data)
     return response.data
 }
 
-export async function createUser(data) {
+export async function createUser(data: unknown) {
     const response = await api.post('auth/register', data)
     return response.data;
 }
 
-export async function getUser(id) {
+export async function getUser(id: unknown) {
     const response = await api.get('users/' + id)
     return response.data
 }
 
-export async function updateUser(id, data) {
+export async function updateUser(id: unknown, data: unknown) {
     const response = await api.patch('users/' + id, data)
     return response.data
 }
