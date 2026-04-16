@@ -49,12 +49,14 @@ prod: ## Build and run all containers [PROD]
 down: ## Stop all running containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down
 
-down-v: ## Remove volumes and stop running containers [DEV]
+downv: ## Remove volumes and stop running containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down -v
 	
 prod-down: ## Stop all running containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
 	
+prod-downv: ## Remove volumes and stop running containers [PROD]
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down -v
 
 .PHONY: down down-v prod-down
 
