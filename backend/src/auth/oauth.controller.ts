@@ -39,7 +39,7 @@ export class OAuthController {
 		// 2.store in cookie
 		res.cookie('oauth_state', state, {
 			httpOnly: true,
-			secure: false,
+			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
 			maxAge: 5 * 60 * 1000, // 5 minutes
 		});
@@ -130,7 +130,7 @@ export class OAuthController {
 
 		res?.cookie('access_token', accessToken, {
 			httpOnly: true,
-			secure: false,
+			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
 			maxAge: 60 * 60 * 1000,
 		});
