@@ -29,12 +29,12 @@ export default function Home() {
     <section className="flex flex-col items-center text-center gap-12">
 
     <Motion>
-      <div className="space-y-6">
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+      <div className="space-y-6 ">
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           {t("title")}
         </h1>
 
-        <p className="text-white/60 max-w-md mx-auto text-lg">
+        <p className="bg-linear-to-r from-cyan-400 to-pink-500  bg-clip-text text-transparent max-w-md mx-auto text-lg">
           {t("home.hero.texte")}
         </p>
       </div>

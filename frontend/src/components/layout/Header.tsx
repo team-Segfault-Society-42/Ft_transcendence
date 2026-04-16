@@ -32,7 +32,6 @@ export default function Header({ onLogoutClick, onLoginClick, user }: HeaderProp
                 </Button>  ) : ( 
                 
                 <Button
-                    variant="secondary"
                     onClick={onLoginClick}>
                     {t("home.buttons.login")} 
                 </Button> 
