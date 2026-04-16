@@ -217,7 +217,36 @@ export default function Profile() {
             </Button>
       
           </div>
-      
+        
+          <div className="mt-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6" >
+
+              <h3 className="text-lg font-semibold mb-6 flex items-center justify-center gap-2">
+
+                <span className="w-2 h-2 bg-purple-400 rounded-full shadow-[0_0_8px_rgba(192,132,252,0.8)]"></span>
+                Match History
+
+              </h3>
+
+              {matches.length === 0 ? (
+                <p> No matches played yet </p>
+              ) : (
+
+                <div>
+                 {matches.map((match) => (
+
+                    <div key={match.id} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px' }}>
+                      {/* Données brutes pour le front */}
+                      <p>Date: { new Date(match.date).toLocaleDateString() } </p>
+                      <p>Result: <strong> { match.result } </strong> </p>
+                      <p>Score: { match.myScore } - { match.oppScore } </p>
+                      <p>Opponent: { match.opponent.username } </p>
+                      </div>
+
+                 ))} 
+                 </div>
+              )}
+          </div>
+        
         </section>
       )
 }
