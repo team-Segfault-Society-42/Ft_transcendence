@@ -4,9 +4,11 @@ import {
 	Get,
 	InternalServerErrorException,
 	Query,
+	Req,
 	Res,
+	UnauthorizedException,
 } from '@nestjs/common';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { Public } from './public.decorator';
 import { OAuthService } from './oauth.service';
 import { AuthService } from './auth.service';
@@ -62,6 +64,7 @@ export class OAuthController {
 	handleFortyTwoCallback(
 		@Query('code') code?: string,
 		@Query('state') state?: string,
+		@Req() req?: Request,
 	) {
 		if (!code) {
 			throw new BadRequestException('Missing OAuth authorization code');
@@ -71,13 +74,23 @@ export class OAuthController {
 			throw new BadRequestException('Missing OAuth state');
 		}
 
+		const storedState = req?.cookies?.oauth_state;
+
+		if(!storedState) {
+			throw new UnauthorizedException('Missing stored OAuth state');
+		}
+
+		if(state !== storedState) {
+			throw new UnauthorizedException('Invalid OAuth state');
+		}
+
 		return {
-			message: 'OAuth 42 callback reached',
+			message: 'OAuth 42 callback state validated',
 			code,
 			state,
 		};
 	}
-
+////////////////////Google OAuth//////////////////
 	@Public()
 	@Get('google')
 	startGoogleOAuth(@Res() res: Response) {
