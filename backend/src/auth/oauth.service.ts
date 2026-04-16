@@ -11,6 +11,28 @@ export interface OAuthProfile {
 	avatarUrl: string;
 }
 
+interface FortyTwoTokenResponse {
+	access_token: string;
+	token_type: string;
+	expires_in: number;
+	scope?: string;
+	created_at?: number;
+}
+
+interface FortyTwoUserInfoResponse {
+	id: number;
+	email: string;
+	login: string;
+	displayname: string;
+	image?: {
+		link?: string;
+		versions?: {
+			medium?: string;
+			small?: string;
+			micro?: string;
+		};
+	};
+}
 interface GoogleTokenResponse {
 	access_token: string;
 	token_type: string;
@@ -32,6 +54,63 @@ export class OAuthService {
 		private readonly prisma: PrismaService,
 		private readonly httpService: HttpService,
 	) {}
+
+	async handleFortyTwoCallback(code: string) {
+		const clientId = process.env.FORTYTWO_CLIENT_ID;
+		const clientSecret = process.env.FORTYTWO_CLIENT_SECRET;
+		const redirectUri = process.env.FORTYTWO_REDIRECT_URI;
+
+		if (!clientId || !clientSecret || !redirectUri) {
+			throw new InternalServerErrorException(
+				'42 OAuth is not configured on the backend',
+			);
+		}
+
+		const tokenResponse = await firstValueFrom(
+			this.httpService.post<FortyTwoTokenResponse>(
+				'https://api.intra.42.fr/oauth/token',
+				new URLSearchParams({
+					grant_type: 'authorization_code',
+					client_id: clientId,
+					client_secret: clientSecret,
+					code,
+					redirect_uri: redirectUri,
+				}),
+				{
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+				},
+			),
+		);
+
+		const accessToken = tokenResponse.data.access_token;
+
+		const userInfoResponse = await firstValueFrom(
+			this.httpService.get<FortyTwoUserInfoResponse>(
+				'https://api.intra.42.fr/v2/me',
+				{
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				},
+			),
+		);
+
+		const fortyTwoUser = userInfoResponse.data;
+
+		return {
+			message: '42 OAuth user info fetched',
+			providerUserId: String(fortyTwoUser.id),
+			email: fortyTwoUser.email,
+			login: fortyTwoUser.login,
+			displayName: fortyTwoUser.displayname,
+			avatarUrl:
+				fortyTwoUser.image?.versions?.medium ??
+				fortyTwoUser.image?.link ??
+				'default.png',
+		};
+	}
 
 	async handleGoogleCallback(code: string) {
 		const clientId = process.env.GOOGLE_CLIENT_ID;

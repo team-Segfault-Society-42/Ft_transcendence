@@ -61,7 +61,7 @@ export class OAuthController {
 
 	@Public()
 	@Get('42/callback')
-	handleFortyTwoCallback(
+	async handleFortyTwoCallback(
 		@Query('code') code?: string,
 		@Query('state') state?: string,
 		@Req() req?: Request,
@@ -76,20 +76,17 @@ export class OAuthController {
 
 		const storedState = req?.cookies?.oauth_state;
 
-		if(!storedState) {
+		if (!storedState) {
 			throw new UnauthorizedException('Missing stored OAuth state');
 		}
 
-		if(state !== storedState) {
+		if (state !== storedState) {
 			throw new UnauthorizedException('Invalid OAuth state');
 		}
 
-		return {
-			message: 'OAuth 42 callback state validated',
-			code,
-			state,
-		};
+		return this.oauthService.handleFortyTwoCallback(code);
 	}
+	
 ////////////////////Google OAuth//////////////////
 	@Public()
 	@Get('google')
