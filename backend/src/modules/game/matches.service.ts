@@ -2,6 +2,7 @@ import { Injectable, BadRequestException, InternalServerErrorException } from '@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GameResultDto } from './dto/game-result.dto';
 import { MovesGameHistory } from './game.types';
+import { Prisma } from '@prisma/client'
 
 
 @Injectable()
@@ -121,7 +122,45 @@ export class MatchesService {
 
             
         })
-    }
 
+
+        const getUserInfoFromGame = game.map((m) => {
+
+            const isPLayer1 = (m.player1Id === userId)
+            const opponent = isPLayer1 ? m.player2 : m.player1
+
+            
+            const hasWinner = (m.winnerId === userId)
+            let resultStatus: string
+
+            if (m.winnerId === null) {
+                resultStatus = "DRAW"
+            }
+            else if (m.winnerId === userId) {
+                resultStatus = "WIN"
+            }
+            else {
+                resultStatus = "LOSS"
+            }
+
+            const myScore = isPLayer1 ? m.scoresP1 : m.scoresP2
+            const oppScore = isPLayer1 ? m.scoresP2 : m.scoresP1
+
+            return {
+                id: m.id,
+                date: m.date,
+                result: resultStatus,
+                myScore: myScore,
+                oppScore: oppScore,
+                opponent : {
+                    username: opponent.username,
+                    avatar: opponent.avatar
+                }
+            }
+        })
+
+    return (getUserInfoFromGame)
+    }
+    
 }
 
