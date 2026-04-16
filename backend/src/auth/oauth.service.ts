@@ -84,6 +84,34 @@ export class OAuthService {
 			};
 		}
 
+		const existingUserByEmail = await this.prisma.user.findUnique({
+			where: {
+				email: profile.email,
+			},
+		});
+
+		if (existingUserByEmail) {
+			await this.prisma.oAuthAccount.create({
+				data: {
+					provider: profile.provider,
+					providerUserId: profile.providerUserId,
+					userId: existingUserByEmail.id,
+				},
+			});
+
+			return {
+				id: existingUserByEmail.id,
+				email: existingUserByEmail.email,
+				username: existingUserByEmail.username,
+				bio: existingUserByEmail.bio,
+				avatar: existingUserByEmail.avatar,
+				wins: existingUserByEmail.wins,
+				losses: existingUserByEmail.losses,
+				draws: existingUserByEmail.draws,
+				xp: existingUserByEmail.xp,
+			};
+		}
+
 		const baseUsername = profile.displayName.toLowerCase().replace(/\s+/g, '_');
 		const username = `${baseUsername}_${Date.now()}`;
 
