@@ -15,6 +15,7 @@ services:
       target: dev
     environment:
       - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGINS=http://localhost:1024
     volumes:
       - ./backend:/app                          # reflect host changes instantly
       - backend_node_modules:/app/node_modules  # prevent node_module overwrite in container

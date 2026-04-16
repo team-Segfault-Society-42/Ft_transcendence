@@ -9,6 +9,8 @@ services:
   backend:
     build:
       target: prod    # targets the prod stage in a multi-stage Dockerfile
+    environment:
+      - CORS_ORIGINS=https://127.0.0.1:8443,https://${DOMAIN}:8443
  
   # ── Reverse Proxy (Nginx) ────────────────────────────────────────
   proxy:

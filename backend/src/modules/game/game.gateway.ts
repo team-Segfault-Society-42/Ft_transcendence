@@ -16,9 +16,20 @@ import { UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
 
+const rawOrigins = process.env.CORS_ORIGINS ?? '';
+const parts = rawOrigins.split(',');
+
+const trimmedOrigins = parts.map(function (origin) {
+  return origin.trim();
+});
+
+const allowedOrigins = trimmedOrigins.filter(function (origin) {
+  return origin !== '';
+});
+
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:1024',
+    origin: allowedOrigins,
     credentials: true,
   },
 })
@@ -27,7 +38,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
-  constructor(private readonly gameService: GameService, private readonly usersService: UsersService) {}
+  constructor(
+    private readonly gameService: GameService,
+    private readonly usersService: UsersService,
+  ) {}
 
   handleConnection(client: Socket) {
     console.log(`Client connected : ${client.id}`);
@@ -47,11 +61,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: AuthSocket,
   ) {
     try {
+      const userId = client.data.user.sub;
 
-      const userId = client.data.user.sub
+      const userProfile = await this.usersService.getUser(userId);
 
-      const userProfile = await this.usersService.getUser(userId)
-      
       const { game, role } = this.gameService.joinGame(
         body.gameId,
         client.id,
