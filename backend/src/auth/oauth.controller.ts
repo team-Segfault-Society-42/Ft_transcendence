@@ -10,6 +10,7 @@ import type { Response } from 'express';
 import { Public } from './public.decorator';
 import { OAuthService } from './oauth.service';
 import { AuthService } from './auth.service';
+import { URLSearchParams } from 'node:url';
 
 @Controller('auth')
 export class OAuthController {
@@ -20,10 +21,40 @@ export class OAuthController {
 
 	@Public()
 	@Get('42')
-	startFortyTwoOAuth() {
-		return {
-			message: 'OAuth 42 login start route',
-		};
+	startFortyTwoOAuth(@Res() res: Response) {
+		const clientId = process.env.FORTYTWO_CLIENT_ID;
+		const redirectUri = process.env.FORTYTWO_REDIRECT_URI;
+
+		if (!clientId || !redirectUri) {
+			throw new InternalServerErrorException(
+				'42 OAuth is not configured on the backend',
+			);
+		}
+
+		// 1. generate state
+		const state = Math.random().toString(36).substring(2);
+
+		// 2.store in cookie
+		res.cookie('oauth_state', state, {
+			httpOnly: true,
+			secure: false,
+			sameSite: 'lax',
+			maxAge: 5 * 60 * 1000, // 5 minutes
+		});
+
+		// 3. build authorization URL
+		const params = new URLSearchParams({
+			client_id: clientId,
+			redirect_uri: redirectUri,
+			response_type: 'code',
+			scope: 'public',
+			state,
+		});
+
+		const authorizationUrl = `https://api.intra.42.fr/oauth/authorize?${params.toString()}`;
+
+		// 4. redirect
+		return res.redirect(authorizationUrl);
 	}
 
 	@Public()
