@@ -48,7 +48,7 @@ export class AuthController {
 
 		res.cookie('access_token', access_token, {
 			httpOnly: true,
-			secure: false,
+			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
 			maxAge: 60 * 60 * 1000,
 		});
@@ -66,7 +66,7 @@ export class AuthController {
 	logout(@Res({ passthrough: true }) res: Response) {
 		res.clearCookie('access_token', {
 			httpOnly: true,
-			secure: false,
+			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
 		});
 
