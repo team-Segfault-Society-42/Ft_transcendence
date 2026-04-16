@@ -16,11 +16,11 @@ interface Match {
   date: string,
   result: "DRAW" | "WIN" | "LOSS",
   myScore: number,
-  opponentScore: {
+  oppScore: number,
+  opponent: {
     username: string,
     avatar: string,
   }
-
 }
 
 interface User {
@@ -37,18 +37,19 @@ export default function Profile() {
 
   const { t } = useTranslation()
   const [user, setUser] = useOutletContext<[User | null, React.Dispatch<React.SetStateAction<User | null>>]>();
+  const [matches, setMatches] = useState<Match[]>([])
 
   const [isEdit, isInEdit] = useState(false)
   const [userName, setUserName] = useState(user?.username || "")
   const [bio, setBio] = useState(user?.bio || "")
 //   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (user) {
-      setUserName(user.username)
-      setBio(user.bio)
-    }
-  }, [user])
+  // useEffect(() => {
+  //   if (user) {
+  //     setUserName(user.username)
+  //     setBio(user.bio)
+  //   }
+  // }, [user])
 
   if (!user) {
     return (
@@ -79,6 +80,26 @@ export default function Profile() {
         }
         isInEdit(!isEdit)
     }
+
+useEffect(() => {
+      if (user) {
+        setUserName(user.username)
+        setBio(user.bio)
+
+        async function fetchhistory() {
+          try {
+            const data = await userService.getUserHistory(user.id)
+            setMatches(data)
+          } catch (error) {
+            console.error("Failed to fetch history:", error)
+          }
+        }
+        fetchhistory()
+      }
+    }, [user, user.id])
+
+    // DEBUG
+    console.log(matches)
 
 
     return (
