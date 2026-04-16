@@ -38,6 +38,11 @@ export async function updateUser(id: unknown, data: unknown) {
     return response.data
 }
 
+export async function getUserHistory(id: number) {
+    const response = await api.get('users/' + id + '/history')
+    return response.data
+}
+
 export const userService = {
     getUser,
     updateUser,
@@ -45,4 +50,5 @@ export const userService = {
     userLogin,
     getMe,
     userLogout,
+    getUserHistory,
 }
