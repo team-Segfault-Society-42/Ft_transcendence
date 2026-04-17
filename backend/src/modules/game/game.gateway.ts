@@ -40,6 +40,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private timersForfeit = new Map<string, NodeJS.Timeout>();
 
+  private getTimerKey(gameId: string, role: 'X' | 'O') {
+    return `${gameId}:${role}`;
+  }
+
+  private startReconnectTime(gameId: string, role: 'X' | 'O') {}
+
   constructor(
     private readonly gameService: GameService,
     private readonly usersService: UsersService,
@@ -53,9 +59,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`Client disconnected : ${client.id}`);
     const result = this.gameService.processPlayerDisconnection(client.id);
     if (!result) return;
-    this.server.to(result.gameId).emit('game_updated', result.game);
     if (result.game.status === 'playing')
       this.startReconnectTime(result.gameId, result.role);
+    this.server.to(result.gameId).emit('game_updated', result.game);
   }
 
   @SubscribeMessage('join_game')
