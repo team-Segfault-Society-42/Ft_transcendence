@@ -36,7 +36,16 @@ REQUIRED_FILES = \
 
 # ══════════════════════════════════════════════════════
 
-setup: # Checks required files; prompt for default setup if any are missing
+setup: # Prompts user to run default setup
+	@printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
+	case "$$ans" in \
+		y|Y|yes|Yes|YES) \
+			$(MAKE) --no-print-directory _setup-apply ;; \
+		*) \
+			exit 0 ;; \
+	esac
+
+_check-required-files: # Checks required files exist
 	@missing=0; \
 	for f in $(REQUIRED_FILES); do \
 		if [ ! -f "$$f" ]; then \
@@ -46,14 +55,10 @@ setup: # Checks required files; prompt for default setup if any are missing
 	done; \
 	if [ "$$missing" -eq 0 ]; then \
 		echo "$(GREEN)✓ All required files present$(RES)"; \
+	else \
+		$(MAKE) --no-print-directory _setup-apply ; \
 	fi; \
-	printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
-	case "$$ans" in \
-		y|Y|yes|Yes|YES) \
-			$(MAKE) --no-print-directory _setup-apply ;; \
-		*) \
-			exit 0 ;; \
-	esac
+	
 
 _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
   	# ── Overwrite .env File ─────────────────────────────────────────────────────
@@ -91,4 +96,4 @@ _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
 	esac
 	
 
-.PHONY: setup _setup-apply
+.PHONY: setup _setup-apply _check-required-files

@@ -20,14 +20,14 @@ COMPOSE_PROD		= compose.prod.yaml
 # ══════════════════════════════════════════════════════
 ##@ START STACK
 
-up: setup ## Build and run all containers [DEV]
+up: _check-required-files ## Build and run all containers [DEV]
 	@echo "$(GREEN)Running in Dev Mode$(RES)"
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d
 
-build: setup ## Build all containers [DEV]
+build: _check-required-files ## Build all containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build
 
-no-cache: setup ## Rebuild all containers in no-cache mode [DEV]
+no-cache: _check-required-files ## Rebuild all containers in no-cache mode [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build --no-cache
 
 re: down build up ## Stop, rebuild, and restart the full stack [DEV]
