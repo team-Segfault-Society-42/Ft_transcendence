@@ -69,13 +69,13 @@ export class GameService {
     return { game, role };
   }
 
-  requestReplay(gameId: string, socketId: string): GameState {
+  requestReplay(gameId: string, userId: number): GameState {
     const game = this.getMutableGameById(gameId);
 
     if (game.status !== 'finished')
       throw new Error('Replay is only available after game end');
 
-    const role = getPlayerRoleByUserId(game, socketId);
+    const role = getPlayerRoleByUserId(game, userId);
 
     if (role !== 'X' && role !== 'O')
       throw new Error('Spectators cannot request replay');
@@ -138,37 +138,16 @@ export class GameService {
     return updatState;
   }
 
-  async processPlayerDisconnection(
+  processPlayerDisconnection(
     socketId: string,
-  ): Promise<{ gameId: string; game: GameState } | null> {
+  ): { gameId: string; role: 'X' | 'O'; game: GameState } | null {
     for (const [gameId, game] of this.activeGame.entries()) {
-      const wasX = game.players.X === socketId;
-      const wasO = game.players.O === socketId;
+      const role = getPlayerRoleBySocketId(game, socketId);
+      if (role === 'spectator') continue;
 
-      if (!wasX && !wasO) continue;
-
-      const role = wasX ? 'X' : 'O';
-      const other = role === 'X' ? 'O' : 'X';
-
-      game.players[role] = null;
-      game.playerProfiles[role] = null;
-
-      if (game.status === 'playing' && game.players[other]) {
-        game.status = 'finished';
-        game.winner = other;
-        game.endReason = 'forfeit';
-        game.scores[other] += 1;
-        game.toDisapear = -1;
-        await this.saveGameToDB(game);
-        game.replayVotes = { X: false, O: false };
-      }
-
-      if (game.status === 'waiting') {
-        game.winner = null;
-        game.endReason = null;
-      }
+      game.players[role].socketId = null;
       this.activeGame.set(gameId, game);
-      return { gameId, game };
+      return { gameId, role, game };
     }
 
     return null;

@@ -38,6 +38,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
+  private timersForfeit = new Map<string, NodeJS.Timeout>();
+
   constructor(
     private readonly gameService: GameService,
     private readonly usersService: UsersService,
@@ -47,12 +49,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`Client connected : ${client.id}`);
   }
 
-  async handleDisconnect(client: Socket) {
+  handleDisconnect(client: Socket) {
     console.log(`Client disconnected : ${client.id}`);
-    const result = await this.gameService.processPlayerDisconnection(client.id);
-    if (result) {
-      this.server.to(result.gameId).emit('game_updated', result.game);
-    }
+    const result = this.gameService.processPlayerDisconnection(client.id);
+    if (!result) return;
+    this.server.to(result.gameId).emit('game_updated', result.game);
+    if (result.game.status === 'playing')
+      this.startReconnectTime(result.gameId, result.role);
   }
 
   @SubscribeMessage('join_game')
@@ -67,8 +70,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       const { game, role } = this.gameService.joinGame(
         body.gameId,
-        userId,
         client.id,
+        userId,
         userProfile,
       );
 
@@ -114,7 +117,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     try {
       const userId = client.data.user.sub;
-      const updateGame = this.gameService.requestReplay(body.gameId, client.id);
+      const updateGame = this.gameService.requestReplay(body.gameId, userId);
       this.server.to(body.gameId).emit('game_updated', updateGame);
       return updateGame;
     } catch (error) {
