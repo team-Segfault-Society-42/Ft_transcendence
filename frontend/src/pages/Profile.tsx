@@ -185,6 +185,7 @@ export default function Profile() {
       
             </div>
 
+            {/* Level */}
             <div className="mt-8">
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-white/50 font-medium">Level {level}</span>
@@ -250,9 +251,8 @@ export default function Profile() {
 
                     <div key={match.id} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px' }}>
                       {/* Data for front*/}
-                      <p>Date: { new Date(match.date).toLocaleDateString() } </p>
+                      <p>Date: { new Date(match.date).toLocaleString() } </p>
                       <p>Result: <strong> { match.result } </strong> </p>
-                      <p>Score: { match.myScore } - { match.oppScore } </p>
                       <p>Opponent: { match.opponent.username } </p>
                       </div>
 
