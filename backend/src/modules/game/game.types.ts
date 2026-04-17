@@ -37,8 +37,8 @@ export interface PlayerSeat {
 
 // to stock socketId of client x and client o
 export interface PlayersInGame {
-  X: string | null;
-  O: string | null;
+  X: PlayerSeat;
+  O: PlayerSeat;
 }
 
 export interface ReplayState {

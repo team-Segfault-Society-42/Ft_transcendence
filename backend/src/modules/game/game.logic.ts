@@ -29,8 +29,8 @@ export function initGameState(): GameState {
     movesGameHistory: [],
 
     players: {
-      X: null,
-      O: null,
+      X: { ownerUserId: null, socketId: null },
+      O: { ownerUserId: null, socketId: null },
     },
 
     scores: {
