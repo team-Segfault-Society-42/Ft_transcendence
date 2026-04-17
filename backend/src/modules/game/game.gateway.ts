@@ -39,7 +39,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server!: Server;
 
   private timersForfeit = new Map<string, NodeJS.Timeout>();
-
+  private readonly RECONNECT_GRACE_MS = 20000;
   constructor(
     private readonly gameService: GameService,
     private readonly usersService: UsersService,
@@ -80,7 +80,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         .finally(() => {
           this.timersForfeit.delete(timerKey);
         });
-    }, 45000);
+    }, this.RECONNECT_GRACE_MS);
 
     this.timersForfeit.set(timerKey, timer);
   }
