@@ -32,7 +32,7 @@ no-cache: setup ## Rebuild all containers in no-cache mode [DEV]
 
 re: down build up ## Stop, rebuild, and restart the full stack [DEV]
 
-reset: down-v no-cache up ## Stop (remove volumes), full rebuild (no cache), restart containers [DEV]
+reset: downv no-cache up ## Stop (remove volumes), full rebuild (no cache), restart containers [DEV]
 
 prod: ## Build and run all containers [PROD]
 	@echo "$(RED)Running in Production Mode$(RES)"
