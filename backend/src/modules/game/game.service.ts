@@ -6,7 +6,8 @@ import {
   initGameState,
   validateToMove,
   applyMove,
-  getPlayerRole,
+  getPlayerRoleByUserId,
+  getPlayerRoleBySocketId,
   assignPlayerRole,
   resetBoardForReplay,
 } from './game.logic';
@@ -74,7 +75,7 @@ export class GameService {
     if (game.status !== 'finished')
       throw new Error('Replay is only available after game end');
 
-    const role = getPlayerRole(game, socketId);
+    const role = getPlayerRoleByUserId(game, socketId);
 
     if (role !== 'X' && role !== 'O')
       throw new Error('Spectators cannot request replay');
@@ -89,7 +90,7 @@ export class GameService {
 
   async playMove(
     gameId: string,
-    socketId: string,
+    userId: number,
     r: number,
     c: number,
   ): Promise<GameState> {
@@ -97,13 +98,13 @@ export class GameService {
     // debug
     console.log('status =', game.status);
     console.log('players =', game.players);
-    console.log('socketId =', socketId);
-    console.log('role =', getPlayerRole(game, socketId));
+    console.log('socketId =', userId);
+    console.log('role =', getPlayerRoleByUserId(game, userId));
     console.log('currentPlayer =', game.currentPlayer);
     //
     if (game.status !== 'playing') throw new Error('Waiting for both players');
 
-    const role = getPlayerRole(game, socketId);
+    const role = getPlayerRoleByUserId(game, userId);
     if (role == 'spectator') throw new Error('Spectators cannot play');
     if (role !== game.currentPlayer) throw new Error('It is not your turn');
 

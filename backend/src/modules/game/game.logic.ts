@@ -208,14 +208,33 @@ export function assignPlayerRole(
 
 /**
  * (GETTER)
- * Get the player role for a client
+ * Get the player role for a user
  * @param game - The game state
- * @param socketId - The client identifier
+ * @param userId - The user identifier
  * @return PlayerRole The player role
  */
-export function getPlayerRole(game: GameState, socketId: string): PlayerRole {
-  if (game.players.X == socketId) return 'X';
-  if (game.players.O == socketId) return 'O';
+export function getPlayerRoleByUserId(
+  game: GameState,
+  userId: number,
+): PlayerRole {
+  if (game.players.X.ownerUserId == userId) return 'X';
+  if (game.players.O.ownerUserId == userId) return 'O';
+  return 'spectator';
+}
+
+/**
+ * (GETTER)
+ * Get the player role for a connected/disconnected socket
+ * @param game - The game state
+ * @param socketId - The socket identifier
+ * @return PlayerRole The player role
+ */
+export function getPlayerRoleBySocketId(
+  game: GameState,
+  socketId: string,
+): PlayerRole {
+  if (game.players.X.socketId === socketId) return 'X';
+  if (game.players.O.socketId === socketId) return 'O';
   return 'spectator';
 }
 
