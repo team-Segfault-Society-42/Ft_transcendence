@@ -174,22 +174,22 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
  * - 2nd client: O (starts the game)
  * - others: spectator
  * @param game - The game state
- * @param clientId - The client identifier
+ * @param socketId - The client identifier
  * @return PlayerRole The assigned player role
  */
 export function assignPlayerRole(
   game: GameState,
-  clientId: string,
+  socketId: string,
 ): PlayerRole {
-  if (game.players.X === clientId) return 'X';
-  if (game.players.O === clientId) return 'O';
+  if (game.players.X === socketId) return 'X';
+  if (game.players.O === socketId) return 'O';
 
   if (!game.players.X) {
-    game.players.X = clientId;
+    game.players.X = socketId;
     return 'X';
   }
   if (!game.players.O) {
-    game.players.O = clientId;
+    game.players.O = socketId;
     game.status = 'playing';
     game.currentPlayer = 'X';
     game.lastMove = Date.now();
@@ -202,12 +202,12 @@ export function assignPlayerRole(
  * (GETTER)
  * Get the player role for a client
  * @param game - The game state
- * @param clientId - The client identifier
+ * @param socketId - The client identifier
  * @return PlayerRole The player role
  */
-export function getPlayerRole(game: GameState, clientId: string): PlayerRole {
-  if (game.players.X == clientId) return 'X';
-  if (game.players.O == clientId) return 'O';
+export function getPlayerRole(game: GameState, socketId: string): PlayerRole {
+  if (game.players.X == socketId) return 'X';
+  if (game.players.O == socketId) return 'O';
   return 'spectator';
 }
 

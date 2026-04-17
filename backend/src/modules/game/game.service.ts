@@ -53,11 +53,11 @@ export class GameService {
 
   joinGame(
     gameId: string,
-    clientId: string,
+    socketId: string,
     user?: PublicPlayerProfile,
   ): { game: GameState; role: PlayerRole } {
     const game = this.getMutableGameById(gameId);
-    const role = assignPlayerRole(game, clientId);
+    const role = assignPlayerRole(game, socketId);
 
     if (user && (role === 'X' || role === 'O')) {
       game.playerProfiles[role] = user;
@@ -67,13 +67,13 @@ export class GameService {
     return { game, role };
   }
 
-  requestReplay(gameId: string, clientId: string): GameState {
+  requestReplay(gameId: string, socketId: string): GameState {
     const game = this.getMutableGameById(gameId);
 
     if (game.status !== 'finished')
       throw new Error('Replay is only available after game end');
 
-    const role = getPlayerRole(game, clientId);
+    const role = getPlayerRole(game, socketId);
 
     if (role !== 'X' && role !== 'O')
       throw new Error('Spectators cannot request replay');
@@ -86,18 +86,23 @@ export class GameService {
     return game;
   }
 
-  async playMove(gameId: string, clientId: string, r: number, c: number): Promise<GameState> {
+  async playMove(
+    gameId: string,
+    socketId: string,
+    r: number,
+    c: number,
+  ): Promise<GameState> {
     const game = this.getMutableGameById(gameId);
     // debug
     console.log('status =', game.status);
     console.log('players =', game.players);
-    console.log('clientId =', clientId);
-    console.log('role =', getPlayerRole(game, clientId));
+    console.log('socketId =', socketId);
+    console.log('role =', getPlayerRole(game, socketId));
     console.log('currentPlayer =', game.currentPlayer);
     //
     if (game.status !== 'playing') throw new Error('Waiting for both players');
 
-    const role = getPlayerRole(game, clientId);
+    const role = getPlayerRole(game, socketId);
     if (role == 'spectator') throw new Error('Spectators cannot play');
     if (role !== game.currentPlayer) throw new Error('It is not your turn');
 
@@ -112,7 +117,7 @@ export class GameService {
       game.endReason = 'timeout';
       game.scores[timeOutWinner] += 1;
       game.toDisapear = -1;
-      await this.saveGameToDB(game)
+      await this.saveGameToDB(game);
       game.replayVotes = { X: false, O: false };
       this.activeGame.set(gameId, game);
       return game;
@@ -123,8 +128,8 @@ export class GameService {
 
     const updatState = applyMove(game, r, c);
 
-    if (updatState.status === 'finished'){
-      await this.saveGameToDB(updatState)
+    if (updatState.status === 'finished') {
+      await this.saveGameToDB(updatState);
     }
 
     this.activeGame.set(gameId, updatState);
@@ -132,11 +137,11 @@ export class GameService {
   }
 
   async processPlayerDisconnection(
-    clientId: string,
+    socketId: string,
   ): Promise<{ gameId: string; game: GameState } | null> {
     for (const [gameId, game] of this.activeGame.entries()) {
-      const wasX = game.players.X === clientId;
-      const wasO = game.players.O === clientId;
+      const wasX = game.players.X === socketId;
+      const wasO = game.players.O === socketId;
 
       if (!wasX && !wasO) continue;
 
@@ -152,7 +157,7 @@ export class GameService {
         game.endReason = 'forfeit';
         game.scores[other] += 1;
         game.toDisapear = -1;
-        await this.saveGameToDB(game)
+        await this.saveGameToDB(game);
         game.replayVotes = { X: false, O: false };
       }
 
@@ -167,20 +172,24 @@ export class GameService {
     return null;
   }
 
-private async saveGameToDB(game: GameState) {
-  if (!game.playerProfiles.X || !game.playerProfiles.O) return
+  private async saveGameToDB(game: GameState) {
+    if (!game.playerProfiles.X || !game.playerProfiles.O) return;
 
-  const data = {
-  player1Id: game.playerProfiles.X.id,
-  player2Id: game.playerProfiles.O.id,
-  scoresP1: game.scores.X,
-  scoresP2: game.scores.O,
-  winnerId: (game.winner === 'X') ? game.playerProfiles.X?.id : (game.winner === 'O') ? game.playerProfiles.O?.id : undefined,
-  endReason: game.endReason
+    const data = {
+      player1Id: game.playerProfiles.X.id,
+      player2Id: game.playerProfiles.O.id,
+      scoresP1: game.scores.X,
+      scoresP2: game.scores.O,
+      winnerId:
+        game.winner === 'X'
+          ? game.playerProfiles.X?.id
+          : game.winner === 'O'
+            ? game.playerProfiles.O?.id
+            : undefined,
+      endReason: game.endReason,
+    };
+
+    await this.matchService.recordMatch(data, game.movesGameHistory);
+    console.log('Save to DB successful');
   }
-
-  await this.matchService.recordMatch(data, game.movesGameHistory)
-  console.log("Save to DB successful")
-}
-
 }
