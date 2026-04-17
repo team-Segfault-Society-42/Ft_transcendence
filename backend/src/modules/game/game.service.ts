@@ -59,7 +59,6 @@ export class GameService {
     user?: PublicPlayerProfile,
   ): { game: GameState; role: PlayerRole } {
     const game = this.getMutableGameById(gameId);
-    const role = assignPlayerRole(game, userId, socketId);
 
     const isReconnectX =
       game.players.X.ownerUserId === userId && game.players.X.socketId === null;
@@ -114,7 +113,7 @@ export class GameService {
     // debug
     console.log('status =', game.status);
     console.log('players =', game.players);
-    console.log('socketId =', userId);
+    console.log('userId =', userId);
     console.log('role =', getPlayerRoleByUserId(game, userId));
     console.log('currentPlayer =', game.currentPlayer);
     //
@@ -204,6 +203,9 @@ export class GameService {
     if (game.players[other].ownerUserId === null) return null;
     if (game.players[other].socketId == null) return null;
     // if other player is not online maybe return state cancelled in the future
+
+    console.log(`[RECONNECT] finalize forfeit for ${role} in game ${gameId}`);
+
     game.status = 'finished';
     game.winner = other;
     game.endReason = 'forfeit';

@@ -55,6 +55,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (timer) {
       clearTimeout(timer);
+      console.log(`[RECONNECT] cleared timer for ${role} in game ${gameId}`);
       this.timersForfeit.delete(timerKey);
     }
   }
@@ -62,6 +63,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private startReconnectTimer(gameId: string, role: 'X' | 'O') {
     const timerKey = this.getTimerKey(gameId, role);
     this.clearTimerForfeit(gameId, role);
+
+    console.log(`[RECONNECT] start grace period for ${role} in game ${gameId}`);
 
     const timer = setTimeout(() => {
       this.gameService
