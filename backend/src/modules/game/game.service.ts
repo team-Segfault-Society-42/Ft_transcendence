@@ -173,4 +173,30 @@ export class GameService {
     await this.matchService.recordMatch(data, game.movesGameHistory);
     console.log('Save to DB successful');
   }
+
+  async finalizeReconnectTimeout(
+    gameId: string,
+    role: 'X' | 'O',
+  ): Promise<{ gameId: string; game: GameState } | null> {
+    const game = this.getMutableGameById(gameId);
+
+    const seat = game.players[role];
+    if (seat.socketId != null) return null;
+    if (game.status !== 'playing') return null;
+
+    const other = role === 'X' ? 'O' : 'X';
+    if (game.players[other].ownerUserId === null) return null;
+    if (game.players[other].socketId == null) return null;
+    // if other player is not online maybe return state cancelled in the future
+    game.status = 'finished';
+    game.winner = other;
+    game.endReason = 'forfeit';
+    game.scores[other] += 1;
+    game.toDisapear = -1;
+    game.replayVotes = { X: false, O: false };
+
+    await this.saveGameToDB(game);
+    this.activeGame.set(gameId, game);
+    return { gameId, game };
+  }
 }

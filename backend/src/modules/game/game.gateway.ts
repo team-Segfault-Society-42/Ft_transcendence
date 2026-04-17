@@ -40,28 +40,47 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private timersForfeit = new Map<string, NodeJS.Timeout>();
 
+  constructor(
+    private readonly gameService: GameService,
+    private readonly usersService: UsersService,
+  ) {}
+
   private getTimerKey(gameId: string, role: 'X' | 'O') {
     return `${gameId}:${role}`;
   }
 
   private clearTimerForfeit(gameId: string, role: 'X' | 'O') {
-    const timeKey = this.getTimerKey(gameId, role);
-    const timer = this.timersForfeit.get(timeKey);
+    const timerKey = this.getTimerKey(gameId, role);
+    const timer = this.timersForfeit.get(timerKey);
 
     if (timer) {
       clearTimeout(timer);
-      this.timersForfeit.delete(timeKey);
+      this.timersForfeit.delete(timerKey);
     }
   }
-  private startReconnectTime(gameId: string, role: 'X' | 'O') {
-    const timeKey = this.getTimerKey(gameId, role);
-    this.clearTimerForfeit(gameId, role); // clear the last one
-  }
 
-  constructor(
-    private readonly gameService: GameService,
-    private readonly usersService: UsersService,
-  ) {}
+  private startReconnectTimer(gameId: string, role: 'X' | 'O') {
+    const timerKey = this.getTimerKey(gameId, role);
+    this.clearTimerForfeit(gameId, role);
+
+    const timer = setTimeout(() => {
+      this.gameService
+        .finalizeReconnectTimeout(gameId, role)
+        .then((result) => {
+          if (result) {
+            this.server.to(gameId).emit('game_updated', result.game);
+          }
+        })
+        .catch((error) => {
+          console.error('Reconnect timeout error:', error);
+        })
+        .finally(() => {
+          this.timersForfeit.delete(timerKey);
+        });
+    }, 45000);
+
+    this.timersForfeit.set(timerKey, timer);
+  }
 
   handleConnection(client: Socket) {
     console.log(`Client connected : ${client.id}`);
@@ -72,7 +91,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const result = this.gameService.processPlayerDisconnection(client.id);
     if (!result) return;
     if (result.game.status === 'playing')
-      this.startReconnectTime(result.gameId, result.role);
+      this.startReconnectTimer(result.gameId, result.role);
     this.server.to(result.gameId).emit('game_updated', result.game);
   }
 
