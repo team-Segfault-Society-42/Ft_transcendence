@@ -19,7 +19,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /app/Ft_transcendence
+            git fetch origin
             git checkout dev
-            git pull origin dev
-            make build
-            make up
+            git reset --hard origin/dev
+            make prod

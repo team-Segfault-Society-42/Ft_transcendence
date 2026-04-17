@@ -7,7 +7,7 @@ SECRETS_DIR = secrets/
 # ── Add new .env defaults here ────────────────────────────────────────────────
 # Format: KEY=value   (replaces the KEY=... line after copying .env.example)
 DEFAULT_ENV_VARS = \
-	DOMAIN=localhost \
+	DOMAIN=127.0.0.1 \
 	POSTGRES_VERSION=18-alpine \
 	POSTGRES_DB=transcendence \
 	POSTGRES_USER=postgres_superuser \

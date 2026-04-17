@@ -15,7 +15,7 @@ export default function Game() {
     console.log("useEffect de Game s'execute");
     console.log("game page contruit avec gameId:", gameId);
 
-    const client = io("http://localhost:1024", {
+    const client = io(window.location.origin, {
       path: "/socket.io/",
       transports: ["websocket"],
       withCredentials: true,
