@@ -44,7 +44,19 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return `${gameId}:${role}`;
   }
 
-  private startReconnectTime(gameId: string, role: 'X' | 'O') {}
+  private clearTimerForfeit(gameId: string, role: 'X' | 'O') {
+    const timeKey = this.getTimerKey(gameId, role);
+    const timer = this.timersForfeit.get(timeKey);
+
+    if (timer) {
+      clearTimeout(timer);
+      this.timersForfeit.delete(timeKey);
+    }
+  }
+  private startReconnectTime(gameId: string, role: 'X' | 'O') {
+    const timeKey = this.getTimerKey(gameId, role);
+    this.clearTimerForfeit(gameId, role); // clear the last one
+  }
 
   constructor(
     private readonly gameService: GameService,
