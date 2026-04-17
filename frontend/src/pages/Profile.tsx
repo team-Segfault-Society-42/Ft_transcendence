@@ -78,25 +78,22 @@ export default function Profile() {
         isInEdit(!isEdit)
     }
 
-    const p = 1
-    
-
     useEffect(() => {
       if (user) {
-        setUserName(user.username)
-        setBio(user.bio)
+        setUserName(user.username);
+        setBio(user.bio);
 
         async function fetchhistory() {
           try {
-            const data = await userService.getUserHistory(user.id)
-            setMatches(data)
+            const data = await userService.getUserHistory(user.id);
+            setMatches(data);
           } catch (error) {
-            console.error("Failed to fetch history:", error)
+            console.error("Failed to fetch history:", error);
           }
         }
-        fetchhistory()
+        fetchhistory();
       }
-    }, [user, user.id])
+    }, [user, user.id]);
 
     // DEBUG
     console.log(matches)
@@ -199,7 +196,7 @@ export default function Profile() {
             {/* XP progression  */}
               <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
                 <div 
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-full transition-all duration-700"
+                  className="bg-linear-to-r from-purple-500 to-pink-500 h-full transition-all duration-700"
                   style={{ width: `${xpProgress}%` }}
                 />
               </div>
