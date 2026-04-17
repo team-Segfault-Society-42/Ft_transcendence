@@ -112,6 +112,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         userProfile,
       );
 
+      if (role === 'X' || role === 'O')
+        this.clearTimerForfeit(body.gameId, role);
+
       await client.join(body.gameId);
 
       console.log(`Client ${client.id} joined room ${body.gameId} as ${role}`);
