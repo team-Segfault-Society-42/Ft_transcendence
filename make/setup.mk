@@ -46,18 +46,17 @@ setup: # Checks required files; prompt for default setup if any are missing
 	done; \
 	if [ "$$missing" -eq 0 ]; then \
 		echo "$(GREEN)✓ All required files present$(RES)"; \
-		exit 0; \
 	fi; \
 	printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
 	case "$$ans" in \
 		y|Y|yes|Yes|YES) \
 			$(MAKE) --no-print-directory _setup-apply ;; \
 		*) \
-			echo "$(RED)Aborted. Fix missing files manually by running $(GOLD)\`make setup\`$(RES)"; \
-			exit 1 ;; \
+			exit 0 ;; \
 	esac
 
 _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
+  	# ── Overwrite .env File ─────────────────────────────────────────────────────
 	@{ \
 		for pair in $(DEV_ONLY_ENV_VARS); do \
 			echo "$$pair"; \
@@ -65,12 +64,14 @@ _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
 		grep -v '^\s*#' .env.example; \
 	} > .env
 	@echo "$(GREEN)✓ .env created (dev-only vars prepended, comments stripped)$(RES)"
+  	# ── Replace values with Defaults ─────────────────────────────────────────
 	@for pair in $(DEFAULT_ENV_VARS); do \
 		key=$$(echo "$$pair" | cut -d= -f1); \
 		val=$$(echo "$$pair" | cut -d= -f2-); \
 		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env; \
 	done
 	@echo "$(GREEN)✓ Default values applied to .env$(RES)"
+  	# ── Create Secret Files ──────────────────────────────────────────────────
 	@mkdir -p $(SECRETS_DIR)
 	@for pair in $(DEFAULT_SECRETS); do \
 		file=$$(echo "$$pair" | cut -d= -f1); \
@@ -78,5 +79,16 @@ _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
 		echo "$$content" > $(SECRETS_DIR)$$file; \
 		echo "$(GREEN)✓ $(SECRETS_DIR)$$file created$(RES)"; \
 	done
+  	# ── Prompt for auto LAN setup ────────────────────────────────────────────
+	@printf "$(CYAN)Setup with local LAN?$(RES) [y/N] "; read ans; \
+	case "$$ans" in \
+		y|Y|yes|Yes|YES) \
+			ip=$$(ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($$i=="src") print $$(i+1)}'); \
+			sed -i "s|^DOMAIN=.*|DOMAIN=$$ip|" .env; \
+			echo "Using custom DOMAIN: '$(GOLD)$$ip$(RES)'";; \
+		*) \
+			echo "Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'";; \
+	esac
+	
 
 .PHONY: setup _setup-apply
