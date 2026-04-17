@@ -2,6 +2,7 @@
 services:
   # ── Frontend (React) ─────────────────────────────────────────────
   frontend:
+    container_name: dev-frontend
     build:
       target: dev
     volumes:
@@ -11,6 +12,7 @@ services:
  
   # ── Backend (Nest.js) ────────────────────────────────────────────
   backend:
+    container_name: dev-backend
     build:
       target: dev
     environment:
@@ -22,10 +24,15 @@ services:
 
   # ── Reverse Proxy (Nginx) ────────────────────────────────────────
   proxy:
+    container_name: dev-proxy
     build:
       target: dev
     ports:
       - "1024:80"
+
+  # ── Database (Postgres) ──────────────────────────────────────────
+  db:
+    container_name: dev-db
 
 # ── Docker Volumes ──────────────────────────────────────────────────────────
 volumes:
