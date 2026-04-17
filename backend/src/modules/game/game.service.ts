@@ -54,10 +54,11 @@ export class GameService {
   joinGame(
     gameId: string,
     socketId: string,
+    userId: number,
     user?: PublicPlayerProfile,
   ): { game: GameState; role: PlayerRole } {
     const game = this.getMutableGameById(gameId);
-    const role = assignPlayerRole(game, socketId);
+    const role = assignPlayerRole(game, userId, socketId);
 
     if (user && (role === 'X' || role === 'O')) {
       game.playerProfiles[role] = user;

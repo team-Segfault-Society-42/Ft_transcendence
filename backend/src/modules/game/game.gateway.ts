@@ -67,6 +67,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       const { game, role } = this.gameService.joinGame(
         body.gameId,
+        userId,
         client.id,
         userProfile,
       );

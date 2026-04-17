@@ -179,17 +179,25 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
  */
 export function assignPlayerRole(
   game: GameState,
+  userId: number,
   socketId: string,
 ): PlayerRole {
-  if (game.players.X === socketId) return 'X';
-  if (game.players.O === socketId) return 'O';
-
-  if (!game.players.X) {
-    game.players.X = socketId;
+  if (game.players.X.ownerUserId === userId) {
+    game.players.X.socketId = socketId;
     return 'X';
   }
-  if (!game.players.O) {
-    game.players.O = socketId;
+  if (game.players.O.ownerUserId === userId) {
+    game.players.O.socketId = socketId;
+    return 'O';
+  }
+  if (!game.players.X.ownerUserId) {
+    game.players.X.ownerUserId = userId;
+    game.players.X.socketId = socketId;
+    return 'X';
+  }
+  if (!game.players.O.ownerUserId) {
+    game.players.O.ownerUserId = userId;
+    game.players.O.socketId = socketId;
     game.status = 'playing';
     game.currentPlayer = 'X';
     game.lastMove = Date.now();
