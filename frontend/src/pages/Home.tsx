@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { gameApi } from "@/services/gameApi";
+import { gameApi } from "@/services/gameApi"; 
 
 export default function Home() {
   const { t } = useTranslation();
