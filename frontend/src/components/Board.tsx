@@ -28,7 +28,7 @@ function getEndGameMessage(
 
   if (endReason === "timeout") {
     return {
-      title: `${winnerName} wins`,
+      title: `🎉 ${winnerName} wins`,
       subtitle: `${loserName} ran out of time`,
       color: "text-orange-500",
     };
@@ -36,7 +36,7 @@ function getEndGameMessage(
 
   if (endReason === "forfeit") {
     return {
-      title: `${winnerName} wins`,
+      title: `🎉 ${winnerName} wins`,
       subtitle: `${loserName} left the match`,
       color: "text-red-500",
     };
@@ -44,7 +44,7 @@ function getEndGameMessage(
 
   if (endReason === "win") {
     return {
-      title: `${winnerName} wins`,
+      title: `🎉 ${winnerName} wins`,
       subtitle: "Game finished normally",
       color: winner === "X" ? "text-cyan-500" : "text-fuchsia-500",
     };
@@ -95,6 +95,12 @@ export default function Board() {
 
   const playerXNameTrunc = truncateUserName(playerXName);
   const playerONameTrunc = truncateUserName(playerOName);
+  const endGameMessage = getEndGameMessage(
+    game.endReason,
+    winner,
+    playerXName,
+    playerOName,
+  );
 
   return (
     <div className="relative inline-block text-center p-4">
@@ -218,16 +224,14 @@ export default function Board() {
       {showPopup && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
           <div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center gap-4 min-w-[320px]">
-            <h2
-              className={`text-2xl font-bold ${
-                winner === "X" ? "text-cyan-500" : "text-fuchsia-500"
-              }`}
-            >
-              🎉{" "}
+            <h2 className={`text-2xl font-bold ${endGameMessage.color}`}>
+              {" "}
+              {endGameMessage.title}
+              {/* 🎉{" "}
               {t("game.wins", {
                 defaultValue: "{{player}} wins!",
                 player: winner === "X" ? playerXName : playerOName,
-              })}
+              })} */}
             </h2>
 
             {status === "finished" && game.endReason === "timeout" && (
