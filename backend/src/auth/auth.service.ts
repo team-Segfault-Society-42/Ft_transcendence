@@ -43,6 +43,7 @@ export class AuthService {
 				wins: user.wins,
 				losses: user.losses,
 				draws: user.draws,
+				xp: user.xp,
 			};
 		} catch (error: unknown) {
 			if (
@@ -104,6 +105,7 @@ export class AuthService {
 			wins: user.wins,
 			losses: user.losses,
 			draws: user.draws,
+			xp: user.xp,
 		};
 	}
 }

@@ -160,8 +160,8 @@ export class GameService {
     const data = {
       player1Id: game.playerProfiles.X.id,
       player2Id: game.playerProfiles.O.id,
-      scoresP1: game.scores.X,
-      scoresP2: game.scores.O,
+      scoresP1: game.winner === 'X' ? 1 : 0,
+      scoresP2: game.winner === 'O' ? 1 : 0,
       winnerId:
         game.winner === 'X'
           ? game.playerProfiles.X?.id
