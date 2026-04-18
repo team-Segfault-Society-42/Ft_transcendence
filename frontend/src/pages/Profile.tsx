@@ -46,22 +46,6 @@ export default function Profile() {
   const [bio, setBio] = useState(user?.bio || "")
 //   const navigate = useNavigate()
 
-  if (!user) {
-    return (
-    <div>
-      <Spinner
-        variant="cyan"
-        size="lg"
-      />
-    </div>
-    )
-  }
-
-  const totalGames = user.wins + user.losses + user.draws
-  const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
-  const level = Math.floor(user.xp / 100)
-  const xpProgress = user.xp % 100
-
     async function handleSave() {
         if (!user) return;
         if (isEdit) {
@@ -85,7 +69,7 @@ export default function Profile() {
 
         async function fetchhistory() {
           try {
-            const data = await userService.getUserHistory(user.id);
+            const data = await userService.getUserHistory(user!.id);
             setMatches(data);
           } catch (error) {
             console.error("Failed to fetch history:", error);
@@ -93,10 +77,23 @@ export default function Profile() {
         }
         fetchhistory();
       }
-    }, [user, user.id]);
+    }, [user]);
 
     // DEBUG
     console.log(matches)
+
+      if (!user) {
+        return (
+          <div>
+            <Spinner variant="cyan" size="lg" />
+          </div>
+        );
+      }
+
+      const totalGames = user.wins + user.losses + user.draws
+      const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
+      const level = Math.floor(user.xp / 100)
+      const xpProgress = user.xp % 100
 
 
     return (
