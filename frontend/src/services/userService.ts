@@ -1,40 +1,37 @@
-import axios from 'axios'
-
-const api = axios.create({
-    baseURL: "http://localhost:1024/api/",
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true,
-})
+import { api } from "@/services/api";
 
 export async function userLogout() {
-    const response = await api.post('auth/logout')
-    return response.data
+  const response = await api.post("auth/logout");
+  return response.data;
 }
 
 export async function getMe() {
-    const response = await api.get('auth/me')
-    return response.data
+  const response = await api.get("auth/me");
+  return response.data;
 }
 
-export async function userLogin(data) {
-    const response = await api.post('auth/login', data)
-    return response.data
+export async function userLogin(data: unknown) {
+  const response = await api.post("auth/login", data);
+  return response.data;
 }
 
-export async function createUser(data) {
-    const response = await api.post('auth/register', data)
-    return response.data;
+export async function createUser(data: unknown) {
+  const response = await api.post("auth/register", data);
+  return response.data;
 }
 
-export async function getUser(id) {
-    const response = await api.get('users/' + id)
-    return response.data
+export async function getUser(id: unknown) {
+  const response = await api.get("users/" + id);
+  return response.data;
 }
 
-export async function updateUser(id, data) {
-    const response = await api.patch('users/' + id, data)
+export async function updateUser(id: unknown, data: unknown) {
+  const response = await api.patch("users/" + id, data);
+  return response.data;
+}
+
+export async function getUserHistory(id: number) {
+    const response = await api.get('users/' + id + '/history')
     return response.data
 }
 
@@ -45,4 +42,5 @@ export const userService = {
     userLogin,
     getMe,
     userLogout,
+    getUserHistory,
 }

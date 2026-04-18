@@ -2,18 +2,31 @@
 services:
   # ── Frontend (React) ─────────────────────────────────────────────
   frontend:
+    container_name: prod-frontend
     build:
       target: prod    # targets the prod stage in a multi-stage Dockerfile
- 
+
   # ── Backend (Nest.js) ────────────────────────────────────────────
   backend:
+    container_name: prod-backend
     build:
       target: prod    # targets the prod stage in a multi-stage Dockerfile
+    environment:
+      - CORS_ORIGINS=https://127.0.0.1:8443,https://${DOMAIN}:8443
+      - NODE_ENV=production
  
+
   # ── Reverse Proxy (Nginx) ────────────────────────────────────────
   proxy:
+    container_name: prod-proxy
     build:
       target: prod
+      args:
+        - DOMAIN=${DOMAIN}
     ports:
       - "8080:80"
       - "8443:443"
+
+  # ── Database (Postgres) ──────────────────────────────────────────
+  db:
+    container_name: prod-db

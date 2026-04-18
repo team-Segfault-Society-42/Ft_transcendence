@@ -1,4 +1,4 @@
-import avatarImg from "/avatar.png"
+// import avatarImg from "/avatar.png"
 import { useEffect, useState } from 'react'
 import { userService } from '../services/userService'
 import { useTranslation } from "react-i18next"
@@ -7,17 +7,31 @@ import { Button } from "@/components/ui/Button"
 import { useOutletContext } from "react-router";
 import { Spinner } from "@/components/ui/Spinner"
 import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from 'react-router-dom';
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar"
+
+interface Match {
+  id: number,
+  date: string,
+  result: "DRAW" | "WIN" | "LOSS",
+  myScore: number,
+  oppScore: number,
+  opponent: {
+    username: string,
+    avatar: string,
+  }
+}
 
 interface User {
     id: number
     username: string,
     wins: number,
     losses: number,
+    draws: number
     bio: string,
     avatar: string
+    xp : number
 }
 
 export default function Profile() {
@@ -25,27 +39,15 @@ export default function Profile() {
 
   const { t } = useTranslation()
   const [user, setUser] = useOutletContext<[User | null, React.Dispatch<React.SetStateAction<User | null>>]>();
+  const [matches, setMatches] = useState<Match[]>([])
 
   const [isEdit, isInEdit] = useState(false)
   const [userName, setUserName] = useState(user?.username || "")
   const [bio, setBio] = useState(user?.bio || "")
-  const navigate = useNavigate()
+//   const navigate = useNavigate()
 
-  if (!user) {
-    return ( 
-    <div>
-      <Spinner 
-        variant="cyan" 
-        size="lg"
-      />
-    </div>
-    )
-  }
-
-  const totalGames = user.wins + user.losses
-  const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
-    
     async function handleSave() {
+        if (!user) return;
         if (isEdit) {
           try {
             await userService.updateUser(user.id, { username: userName, bio: bio })
@@ -62,12 +64,38 @@ export default function Profile() {
 
     useEffect(() => {
       if (user) {
-      setUserName(user.username)
-      setBio(user.bio)
-    }
-  }, [user])
+        setUserName(user.username);
+        setBio(user.bio);
 
-      
+        async function fetchhistory() {
+          try {
+            const data = await userService.getUserHistory(user!.id);
+            setMatches(data);
+          } catch (error) {
+            console.error("Failed to fetch history:", error);
+          }
+        }
+        fetchhistory();
+      }
+    }, [user]);
+
+    // DEBUG
+    console.log(matches)
+
+      if (!user) {
+        return (
+          <div>
+            <Spinner variant="cyan" size="lg" />
+          </div>
+        );
+      }
+
+      const totalGames = user.wins + user.losses + user.draws
+      const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
+      const level = Math.floor(user.xp / 100)
+      const xpProgress = user.xp % 100
+
+
     return (
         <section className="w-full max-w-lg">
       
@@ -153,6 +181,24 @@ export default function Profile() {
               </p>
       
             </div>
+
+            {/* Level */}
+            <div className="mt-8">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-white/50 font-medium">Level {level}</span>
+                <span className="text-white/30 text-[10px] uppercase tracking-tighter">
+                  {xpProgress} / 100 XP
+                </span>
+            </div>
+
+            {/* XP progression  */}
+              <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                <div 
+                  className="bg-linear-to-r from-purple-500 to-pink-500 h-full transition-all duration-700"
+                  style={{ width: `${xpProgress}%` }}
+                />
+              </div>
+            </div>
       
             {/* BIO */}
             <div className="mt-8">
@@ -183,7 +229,35 @@ export default function Profile() {
             </Button>
       
           </div>
-      
+        
+          <div className="mt-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6" >
+
+              <h3 className="text-lg font-semibold mb-6 flex items-center justify-center gap-2">
+
+                <span className="w-2 h-2 bg-purple-400 rounded-full shadow-[0_0_8px_rgba(192,132,252,0.8)]"></span>
+                Match History
+
+              </h3>
+
+              {matches.length === 0 ? (
+                <p> No matches played yet </p>
+              ) : (
+
+                <div>
+                 {matches.map((match) => (
+
+                    <div key={match.id} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px' }}>
+                      {/* Data for front*/}
+                      <p>Date: { new Date(match.date).toLocaleString() } </p>
+                      <p>Result: <strong> { match.result } </strong> </p>
+                      <p>Opponent: { match.opponent.username } </p>
+                      </div>
+
+                 ))} 
+                 </div>
+              )}
+          </div>
+        
         </section>
       )
 }

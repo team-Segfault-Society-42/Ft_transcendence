@@ -11,7 +11,6 @@ networks:
 services:
   # ── Frontend (React) ─────────────────────────────────────────────
   frontend:
-    container_name: react
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -23,7 +22,6 @@ services:
 
   # ── Backend (Nest.js) ────────────────────────────────────────────
   backend:
-    container_name: nestJS
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -33,6 +31,7 @@ services:
     secrets:
       - backend_pw
       - jwt_secret
+      - database_url
     depends_on:
       db:
         condition: service_healthy
@@ -42,21 +41,17 @@ services:
 
   # ── Reverse Proxy (Nginx) ────────────────────────────────────────
   proxy:
-    container_name: nginx
     build:
       context: ./proxy
       dockerfile: Dockerfile
     networks:
       - client-side
-    ports:
-      - "1024:80"
     depends_on:
       - frontend
       - backend
 
   # ── Database (Postgres) ──────────────────────────────────────────
   db:
-    container_name: postgres
     image: postgres:${POSTGRES_VERSION:-18-alpine} #fallback to 18-alpine if var not set
     networks:
       - server-side
@@ -90,3 +85,5 @@ secrets:
     file: ./secrets/postgres_root_pw.txt
   jwt_secret:
     file: ./secrets/jwt_secret.txt
+  database_url:
+    file: ./secrets/database_url.txt

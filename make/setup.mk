@@ -7,37 +7,36 @@ SECRETS_DIR = secrets/
 # ── Add new .env defaults here ────────────────────────────────────────────────
 # Format: KEY=value   (replaces the KEY=... line after copying .env.example)
 DEFAULT_ENV_VARS = \
+	DOMAIN=127.0.0.1 \
 	POSTGRES_VERSION=18-alpine \
 	POSTGRES_DB=transcendence \
 	POSTGRES_USER=postgres_superuser \
 	BACKEND_USER=backend_user \
 
 # ── Dev-only vars not present in .env.example (appended to .env) ──────────────
-# TODO: remove BACKEND_PW once backend reads password from /run/secrets/backend_pw
 DEV_ONLY_ENV_VARS = \
 	BACKEND_PW=changeme \
 	JWT_SECRET=jwt-changeme \
-	DATABASE_URL=postgresql://backend_user:changeme@db:5432/transcendence?schema=public
 
 # ── Add new secrets here ───────────────────────────────────────────────────────
 # Format: filename=content   (file created at $(SECRETS_DIR)filename)
 DEFAULT_SECRETS = \
 	backend_pw.txt=changeme \
 	postgres_root_pw.txt=changeme \
-	jwt_secret.txt=jwt-changeme
+	jwt_secret.txt=jwt-changeme \
+	database_url.txt=postgresql://backend_user:changeme@db:5432/transcendence?schema=public
 
 # ── Files that must exist before the stack can start ──────────────────────────
 REQUIRED_FILES = \
 	.env \
 	$(SECRETS_DIR)backend_pw.txt \
 	$(SECRETS_DIR)postgres_root_pw.txt \
-	$(SECRETS_DIR)jwt_secret.txt
+	$(SECRETS_DIR)jwt_secret.txt \
+	$(SECRETS_DIR)database_url.txt
 
 # ══════════════════════════════════════════════════════
 
-##@ FAST SETUP
-
-setup: ## Check required files; prompt for default setup only if any are missing
+setup: # Checks required files; prompt for default setup if any are missing
 	@missing=0; \
 	for f in $(REQUIRED_FILES); do \
 		if [ ! -f "$$f" ]; then \

@@ -16,9 +16,20 @@ import { UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
 
+const rawOrigins = process.env.CORS_ORIGINS ?? '';
+const parts = rawOrigins.split(',');
+
+const trimmedOrigins = parts.map(function (origin) {
+  return origin.trim();
+});
+
+const allowedOrigins = trimmedOrigins.filter(function (origin) {
+  return origin !== '';
+});
+
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:1024',
+    origin: allowedOrigins,
     credentials: true,
   },
 })
@@ -27,18 +38,64 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
-  constructor(private readonly gameService: GameService, private readonly usersService: UsersService) {}
+  private timersForfeit = new Map<string, NodeJS.Timeout>();
+  private readonly RECONNECT_GRACE_MS = 20000;
+  constructor(
+    private readonly gameService: GameService,
+    private readonly usersService: UsersService,
+  ) {}
+
+  private getTimerKey(gameId: string, role: 'X' | 'O') {
+    return `${gameId}:${role}`;
+  }
+
+  private clearTimerForfeit(gameId: string, role: 'X' | 'O') {
+    const timerKey = this.getTimerKey(gameId, role);
+    const timer = this.timersForfeit.get(timerKey);
+
+    if (timer) {
+      clearTimeout(timer);
+      console.log(`[RECONNECT] cleared timer for ${role} in game ${gameId}`);
+      this.timersForfeit.delete(timerKey);
+    }
+  }
+
+  private startReconnectTimer(gameId: string, role: 'X' | 'O') {
+    const timerKey = this.getTimerKey(gameId, role);
+    this.clearTimerForfeit(gameId, role);
+
+    console.log(`[RECONNECT] start grace period for ${role} in game ${gameId}`);
+
+    const timer = setTimeout(() => {
+      this.gameService
+        .finalizeReconnectTimeout(gameId, role)
+        .then((result) => {
+          if (result) {
+            this.server.to(gameId).emit('game_updated', result.game);
+          }
+        })
+        .catch((error) => {
+          console.error('Reconnect timeout error:', error);
+        })
+        .finally(() => {
+          this.timersForfeit.delete(timerKey);
+        });
+    }, this.RECONNECT_GRACE_MS);
+
+    this.timersForfeit.set(timerKey, timer);
+  }
 
   handleConnection(client: Socket) {
     console.log(`Client connected : ${client.id}`);
   }
 
-  async handleDisconnect(client: Socket) {
+  handleDisconnect(client: Socket) {
     console.log(`Client disconnected : ${client.id}`);
-    const result = await this.gameService.processPlayerDisconnection(client.id);
-    if (result) {
-      this.server.to(result.gameId).emit('game_updated', result.game);
-    }
+    const result = this.gameService.processPlayerDisconnection(client.id);
+    if (!result) return;
+    if (result.game.status === 'playing')
+      this.startReconnectTimer(result.gameId, result.role);
+    this.server.to(result.gameId).emit('game_updated', result.game);
   }
 
   @SubscribeMessage('join_game')
@@ -47,16 +104,19 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: AuthSocket,
   ) {
     try {
+      const userId = client.data.user.sub;
 
-      const userId = client.data.user.sub
+      const userProfile = await this.usersService.getUser(userId);
 
-      const userProfile = await this.usersService.getUser(userId)
-      
       const { game, role } = this.gameService.joinGame(
         body.gameId,
         client.id,
+        userId,
         userProfile,
       );
+
+      if (role === 'X' || role === 'O')
+        this.clearTimerForfeit(body.gameId, role);
 
       await client.join(body.gameId);
 
@@ -74,12 +134,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('play_move')
   async handlePlayMove(
     @MessageBody() body: PlayMoveDto,
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: AuthSocket,
   ) {
     try {
+      const userId = client.data.user.sub;
       const newGameState = await this.gameService.playMove(
         body.gameId,
-        client.id,
+        userId,
         body.r,
         body.c,
       );
@@ -95,10 +156,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('request_replay')
   handleRequestReplay(
     @MessageBody() body: { gameId: string },
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: AuthSocket,
   ) {
     try {
-      const updateGame = this.gameService.requestReplay(body.gameId, client.id);
+      const userId = client.data.user.sub;
+      const updateGame = this.gameService.requestReplay(body.gameId, userId);
       this.server.to(body.gameId).emit('game_updated', updateGame);
       return updateGame;
     } catch (error) {
