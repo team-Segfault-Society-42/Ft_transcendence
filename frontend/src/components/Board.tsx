@@ -3,6 +3,12 @@ import { useGameStore } from "../Store/gameStore";
 import type { CellValue } from "../type/game.types";
 import { useTranslation } from "react-i18next";
 
+function truncateUserName(username: string, maxLength = 12): string {
+  if (!username) return "";
+  if (username.length <= maxLength) return username;
+  return username.slice(0, maxLength) + "…";
+}
+
 export default function Board() {
   const { game, error, playMove, playerRole, requestReplay } = useGameStore();
   const { t } = useTranslation();
@@ -38,12 +44,6 @@ export default function Board() {
     hasReplayRole &&
     ((playerRole === "X" && game.replayVotes.X && !game.replayVotes.O) ||
       (playerRole === "O" && game.replayVotes.O && !game.replayVotes.X));
-
-  function truncateUserName(username: string, maxLength = 8): string {
-    if (!username) return "";
-    if (username.length <= maxLength) return username;
-    return username.slice(0, maxLength) + "...";
-  }
 
   const playerXNameTrunc = truncateUserName(playerXName);
   const playerONameTrunc = truncateUserName(playerOName);
