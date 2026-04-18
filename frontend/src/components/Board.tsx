@@ -250,9 +250,12 @@ export default function Board() {
         {game.scores.O} | D: {game.scores.D}
       </div>
 
-      <p className="mt-6 text-white/60 font-medium italic">
-        {t("game.mode", { defaultValue: "2 players mode" })}
-      </p>
+      <div className="mt-6 text-white/60 font-medium">
+        {t("game.timer", {
+          defaultValue: "Time left: {{seconds}}s",
+          seconds: 9, //timeLeft,
+        })}
+      </div>
     </div>
   );
 }
