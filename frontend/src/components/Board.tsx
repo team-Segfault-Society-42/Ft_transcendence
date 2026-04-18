@@ -9,6 +9,16 @@ function truncateUserName(username: string, maxLength = 12): string {
   return username.slice(0, maxLength) + "…";
 }
 
+function getEndGameMessage(
+  endReason: string | null,
+  winner: "X" | "O" | null,
+  playerXName: string,
+  playerOName: string,
+) {
+  const winnerName = winner === "X" ? playerXName : playerOName;
+  const loserName = winner === "X" ? playerOName : playerXName;
+}
+
 export default function Board() {
   const { game, error, playMove, playerRole, requestReplay } = useGameStore();
   const { t } = useTranslation();
