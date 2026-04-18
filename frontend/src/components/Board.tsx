@@ -39,6 +39,11 @@ export default function Board() {
     ((playerRole === "X" && game.replayVotes.X && !game.replayVotes.O) ||
       (playerRole === "O" && game.replayVotes.O && !game.replayVotes.X));
 
+  function truncateUserName(username: string, maxLength = 14): string {
+    if (!username) return "";
+    if (username.length <= maxLength) return username;
+    return username.slice(0, maxLength) + "...";
+  }
   return (
     <div className="relative inline-block text-center p-4">
       <div
