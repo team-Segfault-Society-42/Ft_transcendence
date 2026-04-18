@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import LanguageSwitcher from "../ui/LanguageSwitcher"
 
 export function Sidebar() {
 
@@ -17,7 +16,9 @@ export function Sidebar() {
   return (
     <aside className="w-64 bg-black/40 border-r border-white/10 flex flex-col p-4">
 
-      <h1 className="text-xl font-bold mb-6">ft_transcendence</h1>
+      <h1 className="text-xl font-bold mb-10">
+        {t("title")}
+      </h1>
 
       <nav className="flex flex-col gap-2">
         {links.map(link => (
@@ -36,11 +37,6 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
-
-      {/* LANGUAGE SWITCHER */}
-      <div className="mt-auto pt-6">
-        <LanguageSwitcher/>
-      </div>
 
     </aside>
   )
