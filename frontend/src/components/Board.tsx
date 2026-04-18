@@ -17,6 +17,44 @@ function getEndGameMessage(
 ) {
   const winnerName = winner === "X" ? playerXName : playerOName;
   const loserName = winner === "X" ? playerOName : playerXName;
+
+  if (endReason === "draw") {
+    return {
+      title: "Draw game",
+      subtitle: "No player won this round",
+      color: "text-slate-500",
+    };
+  }
+
+  if (endReason === "timeout") {
+    return {
+      title: `${winnerName} wins`,
+      subtitle: `${loserName} ran out of time`,
+      color: "text-orange-500",
+    };
+  }
+
+  if (endReason === "forfeit") {
+    return {
+      title: `${winnerName} wins`,
+      subtitle: `${loserName} left the match`,
+      color: "text-red-500",
+    };
+  }
+
+  if (endReason === "win") {
+    return {
+      title: `${winnerName} wins`,
+      subtitle: "Game finished normally",
+      color: winner === "X" ? "text-cyan-500" : "text-fuchsia-500",
+    };
+  }
+
+  return {
+    title: "Game finished",
+    subtitle: "This match has ended",
+    color: "text-white",
+  };
 }
 
 export default function Board() {
