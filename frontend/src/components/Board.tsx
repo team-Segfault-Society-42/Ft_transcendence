@@ -44,6 +44,10 @@ export default function Board() {
     if (username.length <= maxLength) return username;
     return username.slice(0, maxLength) + "...";
   }
+
+  const playerXNameTrunc = truncateUserName(playerXName);
+  const playerONameTrunc = truncateUserName(playerOName);
+
   return (
     <div className="relative inline-block text-center p-4">
       <div
