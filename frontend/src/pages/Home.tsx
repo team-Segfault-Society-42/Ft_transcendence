@@ -23,9 +23,12 @@ export default function Home() {
       console.log("created game error:", error);
     }
   };
-  const handleLogin42 = () => {
-    window.location.href = "http://localhost:1024/api/auth/42";
-  };
+	const handleLogin42 = () => {
+	const oauth42Url =
+		import.meta.env.VITE_OAUTH_42_START_URL ?? "https://127.0.0.1:8443/api/auth/42";
+
+	window.location.href = oauth42Url;
+	};
 
   return (
     <section className="flex flex-col items-center text-center gap-12">
