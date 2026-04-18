@@ -60,21 +60,7 @@ export class GameService {
   ): { game: GameState; role: PlayerRole } {
     const game = this.getMutableGameById(gameId);
 
-    const isReconnectX =
-      game.players.X.ownerUserId === userId && game.players.X.socketId === null;
-
-    const isReconnectO =
-      game.players.O.ownerUserId === userId && game.players.O.socketId === null;
-
     const role = assignPlayerRole(game, userId, socketId);
-
-    if (
-      (isReconnectX || isReconnectO) &&
-      game.status === 'playing' &&
-      role === game.currentPlayer
-    ) {
-      game.lastMove = Date.now();
-    }
 
     if (user && (role === 'X' || role === 'O')) {
       game.playerProfiles[role] = user;
