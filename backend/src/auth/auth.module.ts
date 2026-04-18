@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { HttpModule } from '@nestjs/axios';
+import { PrismaModule } from '../prisma/prisma.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { PrismaModule } from '../prisma/prisma.module';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { OAuthController } from './oauth.controller';
+import { OAuthService } from './oauth.service';
 
 @Module({
 	imports: [
@@ -13,15 +15,10 @@ import { APP_GUARD } from '@nestjs/core';
 			signOptions: { expiresIn: '1h' },
 		}),
 		PrismaModule,
+		HttpModule,
 	],
-	controllers: [AuthController],
-	providers: [
-		AuthService,
-		JwtAuthGuard,
-		{
-			provide: APP_GUARD,
-			useClass: JwtAuthGuard,
-		},
-	],
+	controllers: [AuthController, OAuthController],
+	providers: [AuthService, OAuthService, JwtAuthGuard],
+	exports: [JwtAuthGuard],
 })
 export class AuthModule {}
