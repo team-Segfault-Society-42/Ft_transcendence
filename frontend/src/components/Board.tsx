@@ -39,7 +39,7 @@ export default function Board() {
     ((playerRole === "X" && game.replayVotes.X && !game.replayVotes.O) ||
       (playerRole === "O" && game.replayVotes.O && !game.replayVotes.X));
 
-  function truncateUserName(username: string, maxLength = 14): string {
+  function truncateUserName(username: string, maxLength = 8): string {
     if (!username) return "";
     if (username.length <= maxLength) return username;
     return username.slice(0, maxLength) + "...";
@@ -60,12 +60,12 @@ export default function Board() {
         {currentPlayer === "X"
           ? t("game.turn", {
               defaultValue: "{{player}}'s turn {{symbol}}",
-              player: playerXName,
+              player: playerXNameTrunc,
               symbol: "X",
             })
           : t("game.turn", {
               defaultValue: "{{player}}'s turn {{symbol}}",
-              player: playerOName,
+              player: playerONameTrunc,
               symbol: "O",
             })}
       </div>
@@ -83,7 +83,7 @@ export default function Board() {
               {playerXName[0]}
             </div>
           )}
-          <p className="font-bold">{playerXName}</p>
+          <p className="font-bold">{playerXNameTrunc}</p>
         </div>
 
         <div className="bg-gray-700 p-4 rounded flex flex-col items-center justify-center">
@@ -102,7 +102,7 @@ export default function Board() {
               {playerOName[0]}
             </div>
           )}
-          <p className="font-bold">{playerOName}</p>
+          <p className="font-bold">{playerONameTrunc}</p>
         </div>
       </div>
 
