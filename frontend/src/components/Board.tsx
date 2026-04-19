@@ -211,11 +211,6 @@ export default function Board() {
             <h2 className={`text-2xl font-bold ${endGameMessage.color}`}>
               {" "}
               {endGameMessage.title}
-              {/* 🎉{" "}
-              {t("game.wins", {
-                defaultValue: "{{player}} wins!",
-                player: winner === "X" ? playerXName : playerOName,
-              })} */}
             </h2>
 
             <p className="text-sm text-gray-600 font-medium text-center">
@@ -226,20 +221,6 @@ export default function Board() {
               {t("game.score", { defaultValue: "Score" })} — X: {game.scores.X}{" "}
               | O: {game.scores.O} | D: {game.scores.D}
             </div>
-
-            {/* {status === "finished" && game.endReason === "timeout" && (
-              <p className="text-sm text-orange-500 font-medium">
-                {t("game.timeoutWin", { defaultValue: "Win by timeout" })}
-              </p>
-            )}
-
-            {status === "finished" && game.endReason === "forfeit" && (
-              <p className="text-sm text-red-500 font-medium">
-                {t("game.forfeitWin", {
-                  defaultValue: "Win by opponent leaving the match",
-                })}
-              </p>
-            )} */}
 
             {(playerRole === "X" || playerRole === "O") && (
               <>
