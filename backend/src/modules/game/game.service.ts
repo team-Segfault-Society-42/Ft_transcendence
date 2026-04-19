@@ -117,16 +117,8 @@ export class GameService {
 
     // 30 SEC
     if (timeOnClick > 30000) {
-      const timeOutWinner = game.currentPlayer === 'X' ? 'O' : 'X';
-      game.status = 'finished';
-      game.winner = timeOutWinner;
-      game.endReason = 'timeout';
-      game.scores[timeOutWinner] += 1;
-      game.toDisapear = -1;
-      await this.saveGameToDB(game);
-      game.replayVotes = { X: false, O: false };
-      this.activeGame.set(gameId, game);
-      return game;
+      const timeOutGame = await this.finalizeTurnTimeout(gameId);
+      if (timeOutGame) return timeOutGame;
     }
 
     validateToMove(game, r, c);
@@ -209,7 +201,22 @@ export class GameService {
 
   async finalizeTurnTimeout(gameId: string): Promise<GameState | null> {
     const game = this.getMutableGameById(gameId);
+    if (game.status !== 'playing') return null;
+
+    const elapsedTime = Date.now() - game.lastMove;
+    if (elapsedTime < TURN_TIMEOUT_MS) return null;
+
+    const timeOutWinner = game.currentPlayer === 'X' ? 'O' : 'X';
+
+    game.status = 'finished';
+    game.winner = timeOutWinner;
+    game.endReason = 'timeout';
+    game.scores[timeOutWinner] += 1;
+    game.toDisapear = -1;
+    game.replayVotes = { X: false, O: false };
+
     await this.saveGameToDB(game);
+    this.activeGame.set(gameId, game);
     return game;
   }
 }
