@@ -57,7 +57,9 @@ export function AboutCard({ user, className }: Props) {
       {/* STATS */}
       <div className="mt-6">
         <div className="flex justify-between text-xs text-white/60 mb-1">
-          <span>Winrate</span>
+          <span>
+            Winrate
+          </span>
           <span>{winrate.toFixed(1)}%</span>
         </div>
 
