@@ -87,6 +87,20 @@ export default function Board() {
     return () => clearInterval(interval);
   }, [game?.status, game?.lastMove]);
 
+  if (error && !game) {
+    return (
+      <div className="text-white text-center p-8">
+        <div className="mb-4">{error}</div>
+        <button
+          className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+          onClick={() => navigate("/")}
+        >
+          Back to home
+        </button>
+      </div>
+    );
+  }
+
   if (!game) {
     return (
       <div className="text-white text-center p-8">
