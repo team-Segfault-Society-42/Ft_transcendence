@@ -15,8 +15,11 @@ function getEndGameMessage(
   playerXName: string,
   playerOName: string,
 ) {
-  const winnerName = winner === "X" ? playerXName : playerOName;
-  const loserName = winner === "X" ? playerOName : playerXName;
+  const winnerName =
+    winner === "X" ? playerXName : winner === "O" ? playerOName : "Player";
+
+  const loserName =
+    winner === "X" ? playerOName : winner === "O" ? playerXName : "Opponent";
 
   if (endReason === "draw") {
     return {
@@ -53,7 +56,7 @@ function getEndGameMessage(
   return {
     title: "Game finished",
     subtitle: "This match has ended",
-    color: "text-white",
+    color: "text-gray-600",
   };
 }
 
@@ -77,8 +80,7 @@ export default function Board() {
   const playerOAvatar = game.playerProfiles?.O?.avatar;
 
   const flatBoard: CellValue[] = board.flat();
-  const showPopup =
-    status === "finished" && winner !== null && game.endReason === "win";
+  const showPopup = status === "finished" && game.endReason !== null;
 
   const canPlay =
     status === "playing" &&
@@ -104,25 +106,27 @@ export default function Board() {
 
   return (
     <div className="relative inline-block text-center p-4">
-      <div
-        className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${
-          currentPlayer === "X"
-            ? "bg-cyan-500 text-white"
-            : "bg-fuchsia-500 text-white"
-        }`}
-      >
-        {currentPlayer === "X"
-          ? t("game.turn", {
-              defaultValue: "{{player}}'s turn {{symbol}}",
-              player: playerXNameTrunc,
-              symbol: "X",
-            })
-          : t("game.turn", {
-              defaultValue: "{{player}}'s turn {{symbol}}",
-              player: playerONameTrunc,
-              symbol: "O",
-            })}
-      </div>
+      {status !== "finished" && (
+        <div
+          className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${
+            currentPlayer === "X"
+              ? "bg-cyan-500 text-white"
+              : "bg-fuchsia-500 text-white"
+          }`}
+        >
+          {currentPlayer === "X"
+            ? t("game.turn", {
+                defaultValue: "{{player}}'s turn {{symbol}}",
+                player: playerXNameTrunc,
+                symbol: "X",
+              })
+            : t("game.turn", {
+                defaultValue: "{{player}}'s turn {{symbol}}",
+                player: playerONameTrunc,
+                symbol: "O",
+              })}
+        </div>
+      )}
 
       <div className="grid grid-cols-3 gap-4 mb-8 text-white">
         <div className="bg-gray-800 p-4 rounded flex flex-col items-center">
@@ -193,26 +197,6 @@ export default function Board() {
         </div>
       )}
 
-      {status === "finished" && game.endReason === "draw" && (
-        <div className="mb-4 rounded-lg border border-slate-400 bg-slate-500/20 px-4 py-3 text-slate-100">
-          {t("game.draw", { defaultValue: "Draw game" })}
-        </div>
-      )}
-
-      {status === "finished" && game.endReason === "timeout" && (
-        <div className="mb-4 rounded-lg border border-orange-400 bg-orange-500/20 px-4 py-3 text-orange-100">
-          {t("game.timeoutWin", { defaultValue: "Win by timeout" })}
-        </div>
-      )}
-
-      {status === "finished" && game.endReason === "forfeit" && (
-        <div className="mb-4 rounded-lg border border-red-400 bg-red-500/20 px-4 py-3 text-red-100">
-          {t("game.forfeitWin", {
-            defaultValue: "Win by opponent leaving the match",
-          })}
-        </div>
-      )}
-
       {waitingReplayOtherPlayer && (
         <div className="mb-4 rounded-lg border border-fuchsia-400 bg-fuchsia-500/20 px-4 py-3 text-fuchsia-100">
           {t("game.waitingReplayOther", {
@@ -234,7 +218,16 @@ export default function Board() {
               })} */}
             </h2>
 
-            {status === "finished" && game.endReason === "timeout" && (
+            <p className="text-sm text-gray-600 font-medium text-center">
+              {endGameMessage.subtitle}
+            </p>
+
+            <div className="mt-4 text-gray-600 font-medium">
+              {t("game.score", { defaultValue: "Score" })} — X: {game.scores.X}{" "}
+              | O: {game.scores.O} | D: {game.scores.D}
+            </div>
+
+            {/* {status === "finished" && game.endReason === "timeout" && (
               <p className="text-sm text-orange-500 font-medium">
                 {t("game.timeoutWin", { defaultValue: "Win by timeout" })}
               </p>
@@ -246,7 +239,7 @@ export default function Board() {
                   defaultValue: "Win by opponent leaving the match",
                 })}
               </p>
-            )}
+            )} */}
 
             {(playerRole === "X" || playerRole === "O") && (
               <>
