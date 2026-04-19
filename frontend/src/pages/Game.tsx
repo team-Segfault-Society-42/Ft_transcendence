@@ -3,6 +3,7 @@ import Board from "../components/Board";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import { useGameStore } from "../Store/gameStore";
+import { gameErrorMsg } from "@/lib/gameErrorMsg";
 
 export default function Game() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -46,7 +47,7 @@ export default function Game() {
     });
 
     client.on("game_error", (payload) => {
-      useGameStore.getState().setError(payload.message);
+      useGameStore.getState().setError(gameErrorMsg(payload.message));
     });
 
     return () => {
