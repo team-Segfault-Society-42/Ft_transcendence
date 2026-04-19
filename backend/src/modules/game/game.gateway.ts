@@ -140,6 +140,29 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return Math.max(0, room.size - connectedPlayers);
   }
 
+  private cleanupFinishedGameIfEmpty(gameId: string) {
+    let game: GameState;
+
+    try {
+      game = this.gameService.getGameById(gameId);
+    } catch (error) {
+      console.log('Error getgamebyid:', error);
+      return;
+    }
+
+    if (game.status !== 'finished') return;
+
+    const room = this.server.sockets.adapter.rooms.get(gameId);
+    if (room && room.size > 0) return;
+
+    console.log('cleanup Finished Game Empty', gameId);
+
+    this.clearTurnTimer(gameId);
+    this.clearTimerForfeit(gameId, 'X');
+    this.clearTimerForfeit(gameId, 'O');
+    this.gameService.deleteGame(gameId);
+  }
+
   private emitGameUpdate(gameId: string, game: GameState) {
     this.startTurnTimer(gameId, game);
 
@@ -159,7 +182,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (result) {
       if (result.game.status === 'playing')
         this.startReconnectTimer(result.gameId, result.role);
+
       this.emitGameUpdate(result.gameId, result.game);
+      this.cleanupFinishedGameIfEmpty(result.gameId);
       return;
     }
     const gameId = client.data.currentGameId;
@@ -168,6 +193,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       const game = this.gameService.getGameById(gameId);
       this.emitGameUpdate(gameId, game);
+      this.cleanupFinishedGameIfEmpty(gameId);
     } catch (error) {
       console.log('disconnect refresh skipped:', error);
     }
