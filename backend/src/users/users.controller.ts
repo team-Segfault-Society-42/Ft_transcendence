@@ -40,6 +40,12 @@ export class UsersController {
 		return this.matchServices.getFinishedGamesHistory(id)
 	}
 
+	@ApiOperation({ summary: 'Get leaderboard of users' })
+	@Get('leaderboard')
+	getLeaderboard() {
+		return this.matchServices.getGameLeaderboard()
+	}
+
 }
 
 
