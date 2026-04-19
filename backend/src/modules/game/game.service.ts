@@ -149,6 +149,10 @@ export class GameService {
     return null;
   }
 
+  deleteGame(gameId: string): boolean {
+    return this.activeGame.delete(gameId);
+  }
+
   private async saveGameToDB(game: GameState) {
     if (!game.playerProfiles.X || !game.playerProfiles.O) return;
 
