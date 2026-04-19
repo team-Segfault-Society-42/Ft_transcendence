@@ -31,7 +31,7 @@ function getEndGameMessage(
 
   if (endReason === "timeout") {
     return {
-      title: `🎉 ${winnerName} wins`,
+      title: `🎉 ${winnerName} wins!`,
       subtitle: `${loserName} ran out of time`,
       color: "text-orange-500",
     };
@@ -39,7 +39,7 @@ function getEndGameMessage(
 
   if (endReason === "forfeit") {
     return {
-      title: `🎉 ${winnerName} wins`,
+      title: `🎉 ${winnerName} wins!`,
       subtitle: `${loserName} left the match`,
       color: "text-red-500",
     };
@@ -47,7 +47,7 @@ function getEndGameMessage(
 
   if (endReason === "win") {
     return {
-      title: `🎉 ${winnerName} wins`,
+      title: `🎉 ${winnerName} wins!`,
       subtitle: "Game finished normally",
       color: winner === "X" ? "text-cyan-500" : "text-fuchsia-500",
     };
@@ -100,8 +100,8 @@ export default function Board() {
   const endGameMessage = getEndGameMessage(
     game.endReason,
     winner,
-    playerXName,
-    playerOName,
+    playerXNameTrunc,
+    playerONameTrunc,
   );
 
   return (
@@ -197,18 +197,12 @@ export default function Board() {
         </div>
       )}
 
-      {waitingReplayOtherPlayer && (
-        <div className="mb-4 rounded-lg border border-fuchsia-400 bg-fuchsia-500/20 px-4 py-3 text-fuchsia-100">
-          {t("game.waitingReplayOther", {
-            defaultValue: "Replay requested. Waiting for the other player...",
-          })}
-        </div>
-      )}
-
       {showPopup && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
-          <div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center gap-4 min-w-[320px]">
-            <h2 className={`text-2xl font-bold ${endGameMessage.color}`}>
+          <div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center gap-4 min-w-[320px] max-w-[90vw]">
+            <h2
+              className={`text-2xl font-bold text-center wrap-break-word ${endGameMessage.color}`}
+            >
               {" "}
               {endGameMessage.title}
             </h2>
@@ -239,7 +233,7 @@ export default function Board() {
                   {game.replayVotes.O ? "✓" : "…"}
                 </p>
 
-                {((playerRole === "X" &&
+                {/* {((playerRole === "X" &&
                   game.replayVotes.X &&
                   !game.replayVotes.O) ||
                   (playerRole === "O" &&
@@ -250,6 +244,15 @@ export default function Board() {
                       defaultValue: "Waiting for the other player...",
                     })}
                   </p>
+                )} */}
+
+                {waitingReplayOtherPlayer && (
+                  <div className="mb-4 rounded-lg border border-fuchsia-400 bg-fuchsia-500/20 px-4 py-3 text-fuchsia-100">
+                    {t("game.waitingReplayOther", {
+                      defaultValue:
+                        "Replay requested. Waiting for the other player...",
+                    })}
+                  </div>
                 )}
               </>
             )}
