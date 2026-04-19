@@ -287,7 +287,14 @@ export default function Board() {
         })}
       </div>
 
-      <div> Spectating this game: {game.spectatCnt} </div>
+      <div>
+        {typeof game.spectatCnt === "number" && game.spectatCnt > 0 && (
+          <div className="mb-2 text-xs text-white/60">
+            {"Spectating this game: "}
+            {game.spectatCnt}{" "}
+          </div>
+        )}{" "}
+      </div>
     </div>
   );
 }
