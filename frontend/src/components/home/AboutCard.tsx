@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom"
 import { Card, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Avatar } from "@/components/ui/Avatar"
+import { cn } from "@/lib/utils"
 
 interface User {
   username: string
@@ -10,8 +10,12 @@ interface User {
   losses?: number
 }
 
-export function AboutCard({ user }: { user: User | null }) {
-  const navigate = useNavigate()
+type Props = {
+  user: User | null
+  className?: string
+}
+
+export function AboutCard({ user, className }: Props) {
 
   const wins = user?.wins ?? 0
   const losses = user?.losses ?? 0
@@ -20,8 +24,7 @@ export function AboutCard({ user }: { user: User | null }) {
 
   return (
     <Card
-      className="h-full cursor-pointer hover:scale-[1.02]"
-      onClick={() => navigate("/profile")}
+    className={cn("h-full cursor-pointer hover:scale-[1.02] flex flex-col", className)}
     >
       {/* TITLE */}
       <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">

@@ -1,13 +1,20 @@
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, CardTitle, CardDescription} from "@/components/ui/Card"
-import { Button } from "@/components/ui/Button"
 import { Motion } from "@/components/ui/Motion";
-import { gameApi } from "@/services/gameApi"; 
+import { gameApi } from "@/services/gameApi";
+import { AboutCard } from "@/components/home/AboutCard"
+import { PlayCard } from "@/components/home/PlayCard"
+import { GameHistoryCard } from "@/components/home/GameHistoryCard"
+import type { Match } from "@/lib/match"
+import { useEffect, useState } from "react"
+import { useOutletContext } from "react-router"
+import { userService } from "@/services/userService"
 
 export default function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [user] = useOutletContext<any>()
+  const [matches, setMatches] = useState<Match[]>([])
 
   const handleFindOpponent = async () => {
     try {
@@ -18,11 +25,18 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    if (!user) return
+  
+    userService.getUserHistory(user.id)
+      .then(setMatches)
+  }, [user])
+
   return (
-    <section className="flex flex-col items-center text-center gap-12">
+    <section className="w-full flex flex-col gap-10">
 
     <Motion>
-      <div className="space-y-6 ">
+      <div className="text-center space-y-4">
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           {t("title")}
         </h1>
@@ -33,43 +47,30 @@ export default function Home() {
       </div>
     </Motion>
 
-      {/* BUTTONS */}
-      <Button onClick={() => console.log("play local later")} size="xl">
-        {t("home.buttons.local")}
-      </Button>
-
-      <Button onClick={handleFindOpponent} size="xl">
-        {t("home.buttons.findOpp")}
-      </Button>
+    <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
 
       {/* CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
-        <Link to="/">
-          <Card>
-            <CardTitle>{t("home.cards.home.title")}</CardTitle>
-            <CardDescription>
-              {t("home.cards.home.description")}
-            </CardDescription>
-          </Card>
+        <Link to="/profile">
+          <div className="lg:col-span-1 flex h-full">
+            <AboutCard user={user}
+            className="flex-1"
+            />
+          </div>
         </Link>
 
-        <Link to="/game">
-          <Card>
-            <CardTitle>{t("home.cards.game.title")}</CardTitle>
-            <CardDescription>
-              {t("home.cards.game.description")}
-            </CardDescription>
-          </Card>
-        </Link>
+        <div className="lg:col-span-2 flex flex-col gap-6">
+          <Motion>
+            <PlayCard onFindOpponent={handleFindOpponent}
+            className="h-45"
+            />
+          </Motion>
+          <Motion>
+            <GameHistoryCard matches={matches}
+            className="h-65"
+            />
+          </Motion>
+        </div>
 
-        <Link to="/profile" className="card">
-          <Card>
-            <CardTitle>{t("home.cards.profile.title")}</CardTitle>
-            <CardDescription>
-              {t("home.cards.profile.description")}
-            </CardDescription>
-          </Card>
-        </Link>
       </div>
     </section>
   );

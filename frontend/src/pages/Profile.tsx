@@ -10,19 +10,7 @@ import { toast } from "sonner";
 // import { zodResolver } from "@hookform/resolvers/zod";
 // import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar"
-
-interface Match {
-  id: number,
-  date: string,
-  result: "DRAW" | "WIN" | "LOSS",
-  myScore: number,
-  oppScore: number,
-  opponent: {
-    username: string,
-    avatar: string,
-  }
-}
-
+import type { Match } from "@/lib/match"
 interface User {
     id: number
     username: string,
