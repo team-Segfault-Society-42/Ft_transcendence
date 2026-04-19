@@ -12,6 +12,12 @@ export class UsersController {
 
 	constructor(private usersService: UsersService, private readonly matchServices: MatchesService) {}
 
+	@ApiOperation({ summary: 'Get leaderboard of users' })
+	@Get('leaderboard')
+	getLeaderboard() {
+		return this.matchServices.getGameLeaderboard()
+	}
+	
 	@ApiOperation({ summary: 'Get all users' })
 	@Get()
 	getUsers() {
@@ -38,12 +44,6 @@ export class UsersController {
 	@Get(':id/history')
 	getHistory(@Param('id', ParseIntPipe) id: number) {
 		return this.matchServices.getFinishedGamesHistory(id)
-	}
-
-	@ApiOperation({ summary: 'Get leaderboard of users' })
-	@Get('leaderboard')
-	getLeaderboard() {
-		return this.matchServices.getGameLeaderboard()
 	}
 
 }

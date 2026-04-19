@@ -160,14 +160,11 @@ export class MatchesService {
     return (getUserInfoFromGame)
     }
 
-    async getGameLeaderboard(userId: number) {
+    async getGameLeaderboard() {
 
         const user = await this.prismaService.user.findMany({
-            where: { 
-                user: userId 
-            },
             orderBy: {
-                xp: "asc"
+                xp: "desc"
             },
             take: 10,
         })

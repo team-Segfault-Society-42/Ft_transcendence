@@ -36,7 +36,7 @@ export async function getUserHistory(id: number) {
 }
 
 export async function getLeaderboard() {
-  const response = await api.get('users/leaderboard')
+  const response = await api.get("users/leaderboard")
   return response.data
 }
 
@@ -48,4 +48,5 @@ export const userService = {
     getMe,
     userLogout,
     getUserHistory,
+    getLeaderboard,
 }
