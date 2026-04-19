@@ -286,6 +286,8 @@ export default function Board() {
           seconds: 9, //timeLeft,
         })}
       </div>
+
+      <div> Spectating this game: {game.spectatCnt} </div>
     </div>
   );
 }

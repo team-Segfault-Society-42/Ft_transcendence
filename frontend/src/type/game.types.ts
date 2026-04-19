@@ -10,6 +10,8 @@ export type PlayerRole = PlayerSymbol | "spectator";
 
 export type MovesGameHistory = number[];
 
+export type SpectatorsCnt = number | null;
+
 export interface PublicPlayerProfile {
   id: number;
   username: string;
@@ -69,4 +71,5 @@ export interface GameState {
   replayVotes: ReplayState;
   playerProfiles: PlayerProfilesInGame;
   movesGameHistory: MovesGameHistory;
+  spectatCnt: SpectatorsCnt;
 }
