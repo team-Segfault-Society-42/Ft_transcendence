@@ -160,12 +160,21 @@ export class MatchesService {
     return (getUserInfoFromGame)
     }
 
-    async getGameLeaderboard() {
+    async getGameLeaderboard(sortBy: 'wins' | 'xp') {
 
+        let orderBy;
+        if (sortBy === "wins") {
+            orderBy = { wins: "desc"}
+        }
+        else if (sortBy === "xp") {
+            orderBy = { xp: "desc" }
+        } 
+        else {
+            orderBy = { wins: "desc"}
+        }
+ 
         const user = await this.prismaService.user.findMany({
-            orderBy: {
-                xp: "desc"
-            },
+            orderBy: orderBy,
             take: 10,
         })
         
