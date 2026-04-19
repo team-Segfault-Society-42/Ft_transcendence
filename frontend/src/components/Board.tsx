@@ -2,6 +2,7 @@ import Square from "./Square";
 import { useGameStore } from "../Store/gameStore";
 import type { CellValue } from "../type/game.types";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 function truncateUserName(username: string, maxLength = 12): string {
   if (!username) return "";
@@ -63,6 +64,7 @@ function getEndGameMessage(
 export default function Board() {
   const { game, error, playMove, playerRole, requestReplay } = useGameStore();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   if (!game) {
     return (
@@ -248,6 +250,13 @@ export default function Board() {
                 )}
               </>
             )}
+
+            <button
+              className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+              onClick={() => navigate("/")}
+            >
+              {t("game.backHome", { defaultValue: "Back to home" })}
+            </button>
           </div>
         </div>
       )}
