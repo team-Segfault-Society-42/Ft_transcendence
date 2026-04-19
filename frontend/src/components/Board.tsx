@@ -3,6 +3,7 @@ import { useGameStore } from "../Store/gameStore";
 import type { CellValue } from "../type/game.types";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function truncateUserName(username: string, maxLength = 12): string {
   if (!username) return "";
@@ -61,10 +62,30 @@ function getEndGameMessage(
   };
 }
 
+const TURN_TIMEOUT_SECONDS = 30;
+
 export default function Board() {
   const { game, error, playMove, playerRole, requestReplay } = useGameStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const [timeLeft, setTimeLeft] = useState(TURN_TIMEOUT_SECONDS);
+
+  useEffect(() => {
+    if (!game || game.status !== "playing") {
+      setTimeLeft(TURN_TIMEOUT_SECONDS);
+      return;
+    }
+    const updateTimeLeft = () => {
+      const seconds = Math.floor((Date.now() - game.lastMove) / 1000);
+      const remainSecond = Math.max(0, TURN_TIMEOUT_SECONDS - seconds);
+      setTimeLeft(remainSecond);
+    };
+
+    updateTimeLeft();
+    const interval = setInterval(updateTimeLeft, 1000);
+    return () => clearInterval(interval);
+  }, [game?.status, game?.lastMove]);
 
   if (!game) {
     return (
@@ -283,7 +304,7 @@ export default function Board() {
       <div className="mt-6 text-white/60 font-medium">
         {t("game.timer", {
           defaultValue: "Time left: {{seconds}}s",
-          seconds: 9, //timeLeft,
+          seconds: timeLeft, //timeLeft,
         })}
       </div>
 

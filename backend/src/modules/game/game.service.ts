@@ -11,6 +11,9 @@ import {
   assignPlayerRole,
   resetBoardForReplay,
 } from './game.logic';
+
+export const TURN_TIMEOUT_MS = 30000;
+
 @Injectable()
 export class GameService {
   constructor(private readonly matchService: MatchesService) {}
@@ -202,5 +205,11 @@ export class GameService {
     await this.saveGameToDB(game);
     this.activeGame.set(gameId, game);
     return { gameId, game };
+  }
+
+  async finalizeTurnTimeout(gameId: string): Promise<GameState | null> {
+    const game = this.getMutableGameById(gameId);
+    await this.saveGameToDB(game);
+    return game;
   }
 }
