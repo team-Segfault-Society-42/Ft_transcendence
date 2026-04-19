@@ -11,6 +11,9 @@ import {
   assignPlayerRole,
   resetBoardForReplay,
 } from './game.logic';
+
+export const TURN_TIMEOUT_MS = 30000;
+
 @Injectable()
 export class GameService {
   constructor(private readonly matchService: MatchesService) {}
@@ -113,17 +116,9 @@ export class GameService {
     const timeOnClick = now - game.lastMove;
 
     // 30 SEC
-    if (timeOnClick > 30000) {
-      const timeOutWinner = game.currentPlayer === 'X' ? 'O' : 'X';
-      game.status = 'finished';
-      game.winner = timeOutWinner;
-      game.endReason = 'timeout';
-      game.scores[timeOutWinner] += 1;
-      game.toDisapear = -1;
-      await this.saveGameToDB(game);
-      game.replayVotes = { X: false, O: false };
-      this.activeGame.set(gameId, game);
-      return game;
+    if (timeOnClick > TURN_TIMEOUT_MS) {
+      const timeOutGame = await this.finalizeTurnTimeout(gameId);
+      if (timeOutGame) return timeOutGame;
     }
 
     validateToMove(game, r, c);
@@ -152,6 +147,10 @@ export class GameService {
     }
 
     return null;
+  }
+
+  deleteGame(gameId: string): boolean {
+    return this.activeGame.delete(gameId);
   }
 
   private async saveGameToDB(game: GameState) {
@@ -202,5 +201,26 @@ export class GameService {
     await this.saveGameToDB(game);
     this.activeGame.set(gameId, game);
     return { gameId, game };
+  }
+
+  async finalizeTurnTimeout(gameId: string): Promise<GameState | null> {
+    const game = this.getMutableGameById(gameId);
+    if (game.status !== 'playing') return null;
+
+    const elapsedTime = Date.now() - game.lastMove;
+    if (elapsedTime < TURN_TIMEOUT_MS) return null;
+
+    const timeOutWinner = game.currentPlayer === 'X' ? 'O' : 'X';
+
+    game.status = 'finished';
+    game.winner = timeOutWinner;
+    game.endReason = 'timeout';
+    game.scores[timeOutWinner] += 1;
+    game.toDisapear = -1;
+    game.replayVotes = { X: false, O: false };
+
+    await this.saveGameToDB(game);
+    this.activeGame.set(gameId, game);
+    return game;
   }
 }

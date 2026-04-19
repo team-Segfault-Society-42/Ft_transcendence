@@ -27,6 +27,7 @@ export function initGameState(): GameState {
     toDisapear: -1,
     lastMove: Date.now(),
     movesGameHistory: [],
+    spectatCnt: 0,
 
     players: {
       X: { ownerUserId: null, socketId: null },
