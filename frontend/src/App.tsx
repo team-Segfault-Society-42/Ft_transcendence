@@ -6,6 +6,8 @@ import Profile from "./pages/Profile";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import { Toaster } from "sonner";
+import LeaderBoard from "@/pages/Leaderboard"
+
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
         </Route>
       </Routes>
       <Toaster richColors theme="dark" />
