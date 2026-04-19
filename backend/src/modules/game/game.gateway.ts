@@ -7,7 +7,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { GameService } from './game.service';
+import { GameService, TURN_TIMEOUT_MS } from './game.service';
 import { PlayMoveDto } from './dto/play-move.dto';
 import { Server, Socket } from 'socket.io';
 import { GameState } from './game.types';
@@ -50,12 +50,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return `${gameId}:${role}`;
   }
 
-  private clearTurnTimer(gameId: string) {
-    const timer = this.turnTimers.get(gameId);
+  private clearTimerForfeit(gameId: string, role: 'X' | 'O') {
+    const timerKey = this.getTimerKey(gameId, role);
+    const timer = this.timersForfeit.get(timerKey);
 
     if (timer) {
       clearTimeout(timer);
-      this.turnTimers.delete(gameId);
+      console.log(`[RECONNECT] cleared timer for ${role} in game ${gameId}`);
+      this.timersForfeit.delete(timerKey);
     }
   }
 
@@ -77,22 +79,50 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           console.error('Reconnect timeout error:', error);
         })
         .finally(() => {
-          this.timersForfeit.delete(timerKey);
+          if (this.timersForfeit.get(timerKey) === timer) {
+            this.timersForfeit.delete(timerKey);
+          }
         });
     }, this.RECONNECT_GRACE_MS);
 
     this.timersForfeit.set(timerKey, timer);
   }
 
-  private clearTimerForfeit(gameId: string, role: 'X' | 'O') {
-    const timerKey = this.getTimerKey(gameId, role);
-    const timer = this.timersForfeit.get(timerKey);
+  private clearTurnTimer(gameId: string) {
+    const timer = this.turnTimers.get(gameId);
 
     if (timer) {
       clearTimeout(timer);
-      console.log(`[RECONNECT] cleared timer for ${role} in game ${gameId}`);
-      this.timersForfeit.delete(timerKey);
+      this.turnTimers.delete(gameId);
     }
+  }
+
+  private startTurnTimer(gameId: string, game: GameState) {
+    this.clearTurnTimer(gameId);
+
+    if (game.status !== 'playing') return;
+
+    const delay = Math.max(0, TURN_TIMEOUT_MS - (Date.now() - game.lastMove));
+
+    const timer = setTimeout(() => {
+      this.gameService
+        .finalizeTurnTimeout(gameId)
+        .then((result) => {
+          if (result) {
+            this.emitGameUpdate(gameId, result);
+          }
+        })
+        .catch((error) => {
+          console.error('Turn timeout error:', error);
+        })
+        .finally(() => {
+          if (this.turnTimers.get(gameId) === timer) {
+            this.turnTimers.delete(gameId);
+          }
+        });
+    }, delay);
+
+    this.turnTimers.set(gameId, timer);
   }
 
   private getSpectatorsCnt(gameId: string, game: GameState): number {
@@ -111,6 +141,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   private emitGameUpdate(gameId: string, game: GameState) {
+    this.startTurnTimer(gameId, game);
+
     this.server.to(gameId).emit('game_updated', {
       ...game,
       spectatCnt: this.getSpectatorsCnt(gameId, game),
@@ -137,9 +169,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const game = this.gameService.getGameById(gameId);
       this.emitGameUpdate(gameId, game);
     } catch (error) {
-      client.emit('game_error', {
-        message: error instanceof Error ? error.message : 'Not found',
-      });
+      console.log('disconnect refresh skipped:', error);
     }
   }
 

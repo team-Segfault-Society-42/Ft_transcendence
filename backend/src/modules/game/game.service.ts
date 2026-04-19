@@ -116,7 +116,7 @@ export class GameService {
     const timeOnClick = now - game.lastMove;
 
     // 30 SEC
-    if (timeOnClick > 30000) {
+    if (timeOnClick > TURN_TIMEOUT_MS) {
       const timeOutGame = await this.finalizeTurnTimeout(gameId);
       if (timeOutGame) return timeOutGame;
     }
