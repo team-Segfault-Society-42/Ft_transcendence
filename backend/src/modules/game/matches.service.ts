@@ -159,6 +159,31 @@ export class MatchesService {
 
     return (getUserInfoFromGame)
     }
+
+    async getGameLeaderboard(userId: number) {
+
+        const user = await this.prismaService.user.findMany({
+            where: { 
+                user: userId 
+            },
+            orderBy: {
+                xp: "asc"
+            },
+            take: 10,
+        })
+        
+        const getUserInfo = user.map((m) => {
+
+            return {
+                id: m.id,
+                username: m.username,
+                xp: m.xp
+            }
+        })
+
+        return (getUserInfo)
+
+    }
     
 }
 
