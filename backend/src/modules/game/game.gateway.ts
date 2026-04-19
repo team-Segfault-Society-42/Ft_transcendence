@@ -39,6 +39,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server!: Server;
 
   private timersForfeit = new Map<string, NodeJS.Timeout>();
+  private turnTimers = new Map<string, NodeJS.Timeout>();
   private readonly RECONNECT_GRACE_MS = 20000;
   constructor(
     private readonly gameService: GameService,
@@ -49,14 +50,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return `${gameId}:${role}`;
   }
 
-  private clearTimerForfeit(gameId: string, role: 'X' | 'O') {
-    const timerKey = this.getTimerKey(gameId, role);
-    const timer = this.timersForfeit.get(timerKey);
+  private clearTurnTimer(gameId: string) {
+    const timer = this.turnTimers.get(gameId);
 
     if (timer) {
       clearTimeout(timer);
-      console.log(`[RECONNECT] cleared timer for ${role} in game ${gameId}`);
-      this.timersForfeit.delete(timerKey);
+      this.turnTimers.delete(gameId);
     }
   }
 
@@ -83,6 +82,17 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }, this.RECONNECT_GRACE_MS);
 
     this.timersForfeit.set(timerKey, timer);
+  }
+
+  private clearTimerForfeit(gameId: string, role: 'X' | 'O') {
+    const timerKey = this.getTimerKey(gameId, role);
+    const timer = this.timersForfeit.get(timerKey);
+
+    if (timer) {
+      clearTimeout(timer);
+      console.log(`[RECONNECT] cleared timer for ${role} in game ${gameId}`);
+      this.timersForfeit.delete(timerKey);
+    }
   }
 
   private getSpectatorsCnt(gameId: string, game: GameState): number {
