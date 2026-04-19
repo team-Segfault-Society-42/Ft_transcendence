@@ -203,7 +203,6 @@ export default function Board() {
             <h2
               className={`text-2xl font-bold text-center wrap-break-word ${endGameMessage.color}`}
             >
-              {" "}
               {endGameMessage.title}
             </h2>
 
@@ -215,6 +214,12 @@ export default function Board() {
               {t("game.score", { defaultValue: "Score" })} — X: {game.scores.X}{" "}
               | O: {game.scores.O} | D: {game.scores.D}
             </div>
+
+            <p className="text-sm text-gray-500 text-center">
+              {playerRole === "X" || playerRole === "O"
+                ? "You can request a replay"
+                : "Players try to decide whether to replay"}
+            </p>
 
             {(playerRole === "X" || playerRole === "O") && (
               <>
@@ -233,21 +238,8 @@ export default function Board() {
                   {game.replayVotes.O ? "✓" : "…"}
                 </p>
 
-                {/* {((playerRole === "X" &&
-                  game.replayVotes.X &&
-                  !game.replayVotes.O) ||
-                  (playerRole === "O" &&
-                    game.replayVotes.O &&
-                    !game.replayVotes.X)) && (
-                  <p className="text-sm text-fuchsia-500 font-medium">
-                    {t("game.waitingReplayOther", {
-                      defaultValue: "Waiting for the other player...",
-                    })}
-                  </p>
-                )} */}
-
                 {waitingReplayOtherPlayer && (
-                  <div className="mb-4 rounded-lg border border-fuchsia-400 bg-fuchsia-500/20 px-4 py-3 text-fuchsia-100">
+                  <div className="text-sm text-fuchsia-500 font-medium text-center">
                     {t("game.waitingReplayOther", {
                       defaultValue:
                         "Replay requested. Waiting for the other player...",
