@@ -109,7 +109,7 @@ export class GameService {
     if (game.status !== 'playing') throw new Error('Waiting for both players');
 
     const role = getPlayerRoleByUserId(game, userId);
-    if (role == 'spectator') throw new Error('Spectators cannot play');
+    if (role === 'spectator') throw new Error('Spectators cannot play');
     if (role !== game.currentPlayer) throw new Error('It is not your turn');
 
     const now = Date.now();

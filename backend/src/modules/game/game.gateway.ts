@@ -236,9 +236,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: AuthSocket,
   ) {
     try {
+      const userId = client.data.user.sub;
       const newGameState = await this.gameService.playMove(
         body.gameId,
-        client.id,
+        userId,
         body.r,
         body.c,
       );
