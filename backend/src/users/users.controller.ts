@@ -1,4 +1,4 @@
-import { Controller, Param, ParseIntPipe, Body, Get, Patch, UseGuards } from '@nestjs/common';
+import { Controller, Param, ParseIntPipe, Body, Get, Patch, UseGuards, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto} from './dto/update-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -14,8 +14,9 @@ export class UsersController {
 
 	@ApiOperation({ summary: 'Get leaderboard of users' })
 	@Get('leaderboard')
-	getLeaderboard() {
-		return this.matchServices.getGameLeaderboard()
+	getLeaderboard( @Query('sortBy') sortBy: string) {
+		const safeSortBy = sortBy === "xp" ? "xp" : "wins"
+		return this.matchServices.getGameLeaderboard(safeSortBy)
 	}
 	
 	@ApiOperation({ summary: 'Get all users' })
