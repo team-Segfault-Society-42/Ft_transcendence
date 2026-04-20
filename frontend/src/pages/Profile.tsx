@@ -11,7 +11,7 @@ import { toast } from "sonner";
 // import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar"
 import type { Match } from "@/lib/match"
-import { Card, CardTitle, CardDescription } from "@/components/ui/Card"
+import { CardTitle } from "@/components/ui/Card"
 import { Winrate } from '@/components/ui/Winrate'
 
 interface User {
@@ -80,9 +80,6 @@ export default function Profile() {
           </div>
         );
       }
-
-      const totalGames = user.wins + user.losses + user.draws
-      const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
       const level = Math.floor(user.xp / 100)
       const xpProgress = user.xp % 100
 

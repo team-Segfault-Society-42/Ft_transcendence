@@ -59,16 +59,16 @@ export default function Home() {
         </Link>
 
         <div className="lg:col-span-2 flex flex-col gap-6">
-          <Motion>
+          <Link to="/game">
             <PlayCard onFindOpponent={handleFindOpponent}
             className="h-45"
             />
-          </Motion>
-          <Motion>
-            <GameHistoryCard matches={matches}
-            className="h-65"
-            />
-          </Motion>
+          </Link>
+          <Link to="/history">
+              <GameHistoryCard matches={matches}
+              className="h-65"
+              />
+          </Link>
         </div>
 
       </div>
