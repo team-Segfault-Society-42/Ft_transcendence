@@ -35,9 +35,10 @@ export async function getUserHistory(id: number) {
     return response.data
 }
 
-export async function getLeaderboard() {
-  const response = await api.get("users/leaderboard")
-  return response.data
+export async function getLeaderboard(sortBy?: "xp" | "wins") {
+
+    const response = await api.get("users/leaderboard", { params: sortBy ? { sortBy } : {} })
+    return response.data
 }
 
 export const userService = {
