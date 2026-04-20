@@ -26,7 +26,7 @@ export default function Home() {
   };
 	const handleLogin42 = () => {
 	const oauth42Url =
-		import.meta.env.VITE_OAUTH_42_START_URL ?? "https://127.0.0.1:8443/api/auth/42";
+		import.meta.env.VITE_OAUTH_42_START_URL ?? "http://localhost:1024/api/auth/42";
 
 	window.location.href = oauth42Url;
 	};
