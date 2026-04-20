@@ -9,6 +9,8 @@ import type { Match } from "@/lib/match"
 import { useEffect, useState } from "react"
 import { useOutletContext } from "react-router"
 import { userService } from "@/services/userService"
+import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -18,12 +20,26 @@ export default function Home() {
 
   const handleFindOpponent = async () => {
     try {
-      const data = await gameApi.createGame();
+      const response = await fetch("/api/game/create", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      const data: { gameId: string } = await response.json();
       navigate(`/game/${data.gameId}`);
     } catch (error) {
       console.log("created game error:", error);
     }
   };
+	const handleLogin42 = () => {
+	const oauth42Url =
+		import.meta.env.VITE_OAUTH_42_START_URL ?? "http://localhost:1024/api/auth/42";
+
+	window.location.href = oauth42Url;
+	};
 
   useEffect(() => {
     if (!user) return
@@ -48,6 +64,14 @@ export default function Home() {
     </Motion>
 
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <Button
+        onClick={handleLogin42}
+        size="xl">
+        Login with 42
+      </Button>
+
+
 
       {/* CARDS */}
         <Link to="/profile">

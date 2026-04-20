@@ -19,10 +19,8 @@ interface User {
     username: string,
     wins: number,
     losses: number,
-    draws: number
     bio: string,
     avatar: string
-    xp : number
 }
 
 export default function Profile() {
@@ -30,12 +28,32 @@ export default function Profile() {
 
   const { t } = useTranslation()
   const [user, setUser] = useOutletContext<[User | null, React.Dispatch<React.SetStateAction<User | null>>]>();
-  const [matches, setMatches] = useState<Match[]>([])
 
   const [isEdit, isInEdit] = useState(false)
   const [userName, setUserName] = useState(user?.username || "")
   const [bio, setBio] = useState(user?.bio || "")
 //   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user) {
+      setUserName(user.username)
+      setBio(user.bio)
+    }
+  }, [user])
+
+  if (!user) {
+    return (
+    <div>
+      <Spinner
+        variant="cyan"
+        size="lg"
+      />
+    </div>
+    )
+  }
+
+  const totalGames = user.wins + user.losses
+  const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
 
     async function handleSave() {
         if (!user) return;

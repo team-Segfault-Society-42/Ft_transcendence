@@ -30,15 +30,10 @@ export interface Move extends BoardPosition {
   player: PlayerSymbol;
 }
 
-export interface PlayerSeat {
-  ownerUserId: number | null;
-  socketId: string | null;
-}
-
 // to stock socketId of client x and client o
 export interface PlayersInGame {
-  X: PlayerSeat;
-  O: PlayerSeat;
+  X: string | null;
+  O: string | null;
 }
 
 export interface ReplayState {
