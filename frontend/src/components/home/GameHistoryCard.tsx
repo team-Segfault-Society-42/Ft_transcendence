@@ -16,7 +16,7 @@ export function GameHistoryCard({ matches, className }: Props) {
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-          Game History
+          Match History
         </CardTitle>
 
         <span className="text-xs text-white/50">

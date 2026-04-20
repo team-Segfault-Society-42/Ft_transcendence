@@ -1,6 +1,7 @@
 import { Card, CardTitle, CardDescription } from "@/components/ui/Card"
 import { Avatar } from "@/components/ui/Avatar"
 import { cn } from "@/lib/utils"
+import { Winrate } from "../ui/Winrate"
 
 interface User {
   username: string
@@ -8,6 +9,7 @@ interface User {
   bio?: string
   wins?: number
   losses?: number
+  draws?: number
 }
 
 type Props = {
@@ -16,11 +18,6 @@ type Props = {
 }
 
 export function AboutCard({ user, className }: Props) {
-
-  const wins = user?.wins ?? 0
-  const losses = user?.losses ?? 0
-  const total = wins + losses
-  const winrate = total > 0 ? (wins / total) * 100 : 0
 
   return (
     <Card
@@ -55,21 +52,11 @@ export function AboutCard({ user, className }: Props) {
       </CardDescription>
 
       {/* STATS */}
-      <div className="mt-6">
-        <div className="flex justify-between text-xs text-white/60 mb-1">
-          <span>
-            Winrate
-          </span>
-          <span>{winrate.toFixed(1)}%</span>
-        </div>
-
-        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-          <div
-            className="h-2 bg-linear-to-r from-cyan-400 to-purple-500 rounded-full transition-all duration-500"
-            style={{ width: `${winrate}%` }}
-          />
-        </div>
-      </div>
+      <Winrate
+        wins={user?.wins ?? 0}
+        losses={user?.losses ?? 0}
+        draws={user?.draws ?? 0}
+      />
 
     </Card>
   )

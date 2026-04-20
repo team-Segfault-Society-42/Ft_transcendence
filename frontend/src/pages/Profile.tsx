@@ -11,6 +11,9 @@ import { toast } from "sonner";
 // import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar"
 import type { Match } from "@/lib/match"
+import { Card, CardTitle, CardDescription } from "@/components/ui/Card"
+import { Winrate } from '@/components/ui/Winrate'
+
 interface User {
     id: number
     username: string,
@@ -143,32 +146,11 @@ export default function Profile() {
             </div>
       
             {/* WINRATE */}
-            <div className="mt-8">
-      
-              <div className="flex justify-between text-sm mb-2">
-
-                <span className="text-white/50">
-                  {t("profile.stats.winrate")}
-                </span>
-
-                <span className="font-semibold text-cyan-400">
-                  {winrate}%
-                </span>
-
-              </div>
-      
-              <div className="w-full bg-white/10 h-3 rounded-full overflow-hidden">
-                <div
-                  className="bg-linear-to-r from-cyan-400 to-purple-500 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${winrate}%` }}
-                />
-              </div>
-      
-              <p className="text-xs text-white/50 mt-2">
-                {t("profile.stats.games", { count: totalGames })}
-              </p>
-      
-            </div>
+            <Winrate
+              wins={user.wins}
+              losses={user.losses}
+              draws={user.draws}
+            />
 
             {/* Level */}
             <div className="mt-8">
@@ -220,12 +202,10 @@ export default function Profile() {
         
           <div className="mt-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6" >
 
-              <h3 className="text-lg font-semibold mb-6 flex items-center justify-center gap-2">
-
+              <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent mb-6 flex items-center justify-center gap-2">
                 <span className="w-2 h-2 bg-purple-400 rounded-full shadow-[0_0_8px_rgba(192,132,252,0.8)]"></span>
                 Match History
-
-              </h3>
+              </CardTitle>
 
               {matches.length === 0 ? (
                 <p> No matches played yet </p>
