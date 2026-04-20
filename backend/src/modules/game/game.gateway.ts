@@ -216,9 +216,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         userProfile,
       );
 
-      if (role === 'X' || role === 'O')
-        this.clearTimerForfeit(body.gameId, role);
-
       await client.join(body.gameId);
       client.data.currentGameId = body.gameId;
 
@@ -239,10 +236,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: AuthSocket,
   ) {
     try {
-      const userId = client.data.user.sub;
       const newGameState = await this.gameService.playMove(
         body.gameId,
-        userId,
+        client.id,
         body.r,
         body.c,
       );

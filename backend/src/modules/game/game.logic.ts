@@ -30,8 +30,8 @@ export function initGameState(): GameState {
     spectatCnt: 0,
 
     players: {
-      X: { ownerUserId: null, socketId: null },
-      O: { ownerUserId: null, socketId: null },
+      X: null,
+      O: null,
     },
 
     scores: {
@@ -175,30 +175,22 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
  * - 2nd client: O (starts the game)
  * - others: spectator
  * @param game - The game state
- * @param socketId - The client identifier
+ * @param clientId - The client identifier
  * @return PlayerRole The assigned player role
  */
 export function assignPlayerRole(
   game: GameState,
-  userId: number,
-  socketId: string,
+  clientId: string,
 ): PlayerRole {
-  if (game.players.X.ownerUserId === userId) {
-    game.players.X.socketId = socketId;
+  if (game.players.X === clientId) return 'X';
+  if (game.players.O === clientId) return 'O';
+
+  if (!game.players.X) {
+    game.players.X = clientId;
     return 'X';
   }
-  if (game.players.O.ownerUserId === userId) {
-    game.players.O.socketId = socketId;
-    return 'O';
-  }
-  if (!game.players.X.ownerUserId) {
-    game.players.X.ownerUserId = userId;
-    game.players.X.socketId = socketId;
-    return 'X';
-  }
-  if (!game.players.O.ownerUserId) {
-    game.players.O.ownerUserId = userId;
-    game.players.O.socketId = socketId;
+  if (!game.players.O) {
+    game.players.O = clientId;
     game.status = 'playing';
     game.currentPlayer = 'X';
     game.lastMove = Date.now();
@@ -209,33 +201,14 @@ export function assignPlayerRole(
 
 /**
  * (GETTER)
- * Get the player role for a user
+ * Get the player role for a client
  * @param game - The game state
- * @param userId - The user identifier
+ * @param clientId - The client identifier
  * @return PlayerRole The player role
  */
-export function getPlayerRoleByUserId(
-  game: GameState,
-  userId: number,
-): PlayerRole {
-  if (game.players.X.ownerUserId == userId) return 'X';
-  if (game.players.O.ownerUserId == userId) return 'O';
-  return 'spectator';
-}
-
-/**
- * (GETTER)
- * Get the player role for a connected/disconnected socket
- * @param game - The game state
- * @param socketId - The socket identifier
- * @return PlayerRole The player role
- */
-export function getPlayerRoleBySocketId(
-  game: GameState,
-  socketId: string,
-): PlayerRole {
-  if (game.players.X.socketId === socketId) return 'X';
-  if (game.players.O.socketId === socketId) return 'O';
+export function getPlayerRole(game: GameState, clientId: string): PlayerRole {
+  if (game.players.X == clientId) return 'X';
+  if (game.players.O == clientId) return 'O';
   return 'spectator';
 }
 
