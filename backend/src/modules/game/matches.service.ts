@@ -183,7 +183,8 @@ export class MatchesService {
             return {
                 id: m.id,
                 username: m.username,
-                xp: m.xp
+                xp: m.xp,
+                wins: m.wins
             }
         })
 
