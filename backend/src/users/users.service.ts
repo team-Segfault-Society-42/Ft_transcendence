@@ -18,6 +18,7 @@ const safeUserSelect = {
 	wins: true,
 	losses: true,
 	draws: true,
+	xp: true,
 };
 
 @Injectable()
