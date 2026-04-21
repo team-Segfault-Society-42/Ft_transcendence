@@ -1,6 +1,5 @@
 import {
   GameState,
-  Move,
   PlayerSymbol,
   CellValue,
   BoardPosition,
@@ -27,10 +26,17 @@ export function initGameState(): GameState {
     toDisapear: -1,
     lastMove: Date.now(),
     movesGameHistory: [],
+    spectatCnt: 0,
 
     players: {
-      X: null,
-      O: null,
+      X: {
+        socketId: null,
+        ownerUserId: null,
+      },
+      O: {
+        socketId: null,
+        ownerUserId: null,
+      },
     },
 
     scores: {
@@ -179,22 +185,49 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
  */
 export function assignPlayerRole(
   game: GameState,
-  clientId: string,
+  userId: number,
+  socketId: string,
 ): PlayerRole {
-  if (game.players.X === clientId) return 'X';
-  if (game.players.O === clientId) return 'O';
-
-  if (!game.players.X) {
-    game.players.X = clientId;
+  if (game.players.X.ownerUserId === userId) {
+    game.players.X.socketId = socketId;
     return 'X';
   }
-  if (!game.players.O) {
-    game.players.O = clientId;
+  if (game.players.O.ownerUserId === userId) {
+    game.players.O.socketId = socketId;
+    return 'O';
+  }
+
+  if (game.players.X.ownerUserId === null) {
+    game.players.X.ownerUserId = userId;
+    game.players.X.socketId = socketId;
+    return 'X';
+  }
+  if (game.players.O.ownerUserId === null) {
+    game.players.O.ownerUserId = userId;
+    game.players.O.socketId = socketId;
     game.status = 'playing';
     game.currentPlayer = 'X';
     game.lastMove = Date.now();
     return 'O';
   }
+  return 'spectator';
+}
+
+export function getPlayerRoleByUserId(
+  game: GameState,
+  userId: number,
+): PlayerRole {
+  if (game.players.X.ownerUserId === userId) return 'X';
+  if (game.players.O.ownerUserId === userId) return 'O';
+  return 'spectator';
+}
+
+export function getPlayerRoleBySocketId(
+  game: GameState,
+  socketId: string,
+): PlayerRole {
+  if (game.players.X.socketId === socketId) return 'X';
+  if (game.players.O.socketId === socketId) return 'O';
   return 'spectator';
 }
 
@@ -206,9 +239,7 @@ export function assignPlayerRole(
  * @return PlayerRole The player role
  */
 export function getPlayerRole(game: GameState, clientId: string): PlayerRole {
-  if (game.players.X == clientId) return 'X';
-  if (game.players.O == clientId) return 'O';
-  return 'spectator';
+  return getPlayerRoleBySocketId(game, clientId);
 }
 
 export function posToIdx(pos: BoardPosition): number {

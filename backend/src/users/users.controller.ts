@@ -1,15 +1,23 @@
-import { Controller, Param, ParseIntPipe, Body, Get, Patch } from '@nestjs/common';
+import { Controller, Param, ParseIntPipe, Body, Get, Patch, UseGuards, Query , Inject, forwardRef} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto} from './dto/update-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { MatchesService } from 'src/modules/game/matches.service';
 
 @ApiTags('Users')
 
 @Controller('users')
 export class UsersController {
 
-	constructor(private usersService: UsersService) {}
+	constructor(private usersService: UsersService, @Inject(forwardRef(() => MatchesService)) private readonly matchServices: MatchesService) {}
 
+	@ApiOperation({ summary: 'Get leaderboard of users' })
+	@Get('leaderboard')
+	getLeaderboard( @Query('sortBy') sortBy: string) {
+		const safeSortBy = sortBy === "xp" ? "xp" : "wins"
+		return this.matchServices.getGameLeaderboard(safeSortBy)
+	}
+	
 	@ApiOperation({ summary: 'Get all users' })
 	@Get()
 	getUsers() {

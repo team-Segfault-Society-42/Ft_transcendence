@@ -7,6 +7,8 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import { Toaster } from "./components/ui/Sonner";
 import Dashboard from "./components/layout/Dashboard";
+import LeaderBoard from "@/pages/Leaderboard"
+
 
 function App() {
   return (
@@ -20,6 +22,7 @@ function App() {
           <Route path="/history" element={<History />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
         </Route>
       </Routes>
       <Toaster richColors theme="dark" position="bottom-right"/>

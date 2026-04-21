@@ -3,6 +3,7 @@ import Board from "../components/Board";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import { useGameStore } from "../Store/gameStore";
+import { gameErrorMsg } from "@/lib/gameErrorMsg";
 
 export default function Game() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -12,6 +13,9 @@ export default function Game() {
       console.error("No gameId found in URL");
       return;
     }
+
+    useGameStore.getState().resetGameState();
+
     console.log("useEffect de Game s'execute");
     console.log("game page contruit avec gameId:", gameId);
 
@@ -46,12 +50,20 @@ export default function Game() {
     });
 
     client.on("game_error", (payload) => {
-      useGameStore.getState().setError(payload.message);
+      const message = gameErrorMsg(payload.message);
+
+      if (message === "Game not found") {
+        useGameStore.getState().resetGameState();
+        useGameStore.getState().setError("Game no longer available");
+        return;
+      }
+      useGameStore.getState().setError(gameErrorMsg(payload.message));
     });
 
     return () => {
       console.log("deconexion du socket");
       client.disconnect();
+      useGameStore.getState().resetGameState();
     };
   }, [gameId]);
 
