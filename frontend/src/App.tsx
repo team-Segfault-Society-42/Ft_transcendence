@@ -5,7 +5,7 @@ import Profile from "./pages/Profile";
 import History from "./pages/History";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
-import { Toaster } from "sonner";
+import { Toaster } from "./components/ui/Sonner";
 import Dashboard from "./components/layout/Dashboard";
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
           <Route path="/terms" element={<Terms />} />
         </Route>
       </Routes>
-      <Toaster richColors theme="dark" />
+      <Toaster richColors theme="dark" position="bottom-right"/>
     </div>
   );
 }
