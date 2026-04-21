@@ -14,7 +14,11 @@ services:
     environment:
       - CORS_ORIGINS=https://127.0.0.1:8443,https://${DOMAIN}:8443
       - NODE_ENV=production
- 
+      - FORTYTWO_CLIENT_ID=${FORTYTWO_CLIENT_ID}
+      - FORTYTWO_CLIENT_SECRET=${FORTYTWO_CLIENT_SECRET}
+      - FORTYTWO_REDIRECT_URI=${FORTYTWO_REDIRECT_URI}
+      - FRONTEND_OAUTH_SUCCESS_URL=${FRONTEND_OAUTH_SUCCESS_URL}
+
 
   # ── Reverse Proxy (Nginx) ────────────────────────────────────────
   proxy:

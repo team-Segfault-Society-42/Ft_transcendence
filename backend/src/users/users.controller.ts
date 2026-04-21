@@ -2,15 +2,13 @@ import { Controller, Param, ParseIntPipe, Body, Get, Patch, UseGuards, Query } f
 import { UsersService } from './users.service';
 import { UpdateUserDto} from './dto/update-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { MatchesService } from 'src/modules/game/matches.service';
 
 @ApiTags('Users')
 
 @Controller('users')
 export class UsersController {
 
-	constructor(private usersService: UsersService, private readonly matchServices: MatchesService) {}
+	constructor(private usersService: UsersService) {}
 
 	@ApiOperation({ summary: 'Get leaderboard of users' })
 	@Get('leaderboard')
@@ -38,13 +36,6 @@ export class UsersController {
 		@Body() updateUserDto: UpdateUserDto,
 	) {
 		return this.usersService.updateUser(id, updateUserDto);
-	}
-
-	@UseGuards(JwtAuthGuard)
-	@ApiOperation({ summary: 'Get history by ID' })
-	@Get(':id/history')
-	getHistory(@Param('id', ParseIntPipe) id: number) {
-		return this.matchServices.getFinishedGamesHistory(id)
 	}
 
 }

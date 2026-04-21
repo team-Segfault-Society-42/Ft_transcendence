@@ -2,7 +2,6 @@ import { Injectable, BadRequestException, InternalServerErrorException } from '@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GameResultDto } from './dto/game-result.dto';
 import { MovesGameHistory } from './game.types';
-import { Prisma } from '@prisma/client'
 
 
 @Injectable()
@@ -31,6 +30,10 @@ export class MatchesService {
                         endReason: result.endReason,
                     } 
                 })
+
+                // DEBUG TEST
+                // throw new Error("SABOTAGE_TEST_ROLLBACK"); 
+                //
 
                 const movesToCreate = history.map((n, i) => ({ 
                     gameId: newGame.id,

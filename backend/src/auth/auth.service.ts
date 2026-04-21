@@ -43,7 +43,6 @@ export class AuthService {
 				wins: user.wins,
 				losses: user.losses,
 				draws: user.draws,
-				xp: user.xp,
 			};
 		} catch (error: unknown) {
 			if (
@@ -59,12 +58,21 @@ export class AuthService {
 		}
 	}
 
+	async signTokenForUser(user: { id: number; email: string }) {
+		const payload = {
+			sub: user.id,
+			email: user.email,
+		};
+
+		return this.jwtService.signAsync(payload);
+	}
+
 	async login(loginDto: LoginDto) {
 		const user = await this.prisma.user.findUnique({
 			where: { email: loginDto.email },
 		});
 
-		if (!user) {
+		if (!user || !user.passwordHash) {
 			throw new UnauthorizedException('Invalid credentials');
 		}
 
@@ -77,12 +85,7 @@ export class AuthService {
 			throw new UnauthorizedException('Invalid credentials');
 		}
 
-		const payload = {
-			sub: user.id,
-			email: user.email,
-		};
-
-		const accessToken = await this.jwtService.signAsync(payload);
+		const accessToken = await this.signTokenForUser(user);
 
 		return { access_token: accessToken };
 	}
@@ -105,7 +108,6 @@ export class AuthService {
 			wins: user.wins,
 			losses: user.losses,
 			draws: user.draws,
-			xp: user.xp,
 		};
 	}
 }
