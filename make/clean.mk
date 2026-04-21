@@ -4,7 +4,7 @@
 
 ##@ CLEAN
 
-clean: ## Remove dangling images, stopped containers, unused networks + build cache
+clean: ## Remove dangling images, stopped containers, unused networks + build cache [BOTH]
 # ── Remove stopped containers ───────
 	@echo "$(CYAN)<Removing Stopped Containers>$(RES)"
 	@docker container prune -f
@@ -20,18 +20,23 @@ clean: ## Remove dangling images, stopped containers, unused networks + build ca
 	@docker system df
 
 
-nuke: ## Full wipe — stops stack, removes volumes + images.
-	@echo "$(ORANGE)⚠️  This will destroy all containers, images, and volumes for this stack."
-	@echo "   Postgres data will be wiped.$(RES)"
-	@printf "   Continue? [y/N] " && read ans && [ "$$ans" = "y" ] || (echo "$(RED)   Aborted$(RES)" && exit 1)
+nuke: ## Full wipe — stops stack, removes volumes + images, deletes .env + secrets. [BOTH]
+	@echo "$(ORANGE)⚠️  This will destroy all containers, images, and volumes for this stack,"
+	@echo "$(RED)   AND:$(RES)"
+	@echo "   - The .env file"
+	@echo "   - All secret files"
+	@echo "   - All Postgres data"
+	@printf "$(CYAN)Continue? [y/N] $(RES)" && read ans && [ "$$ans" = "y" ] || (echo "$(RED)   Aborted$(RES)" && exit 1)
  
 	@echo ""
 	@echo "$(CYAN)<Stopping stack and removing containers + volumes>$(RES)"
-	@docker compose -f $(COMPOSE_ALL) down --volumes --remove-orphans
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --volumes --remove-orphans
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down --volumes --remove-orphans
 	@docker volume prune -f
  
 	@echo "$(CYAN)<Removing images built by this stack>$(RES)"
-	@docker compose -f $(COMPOSE_ALL) down --rmi local 2>/dev/null || true
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --rmi local 2>/dev/null || true
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down --rmi local 2>/dev/null || true
 	@docker image prune -f
  
 	@echo "$(CYAN)<Removing postgres:$(POSTGRES_VERSION)>$(RES)"
@@ -40,6 +45,8 @@ nuke: ## Full wipe — stops stack, removes volumes + images.
 	@echo "$(CYAN)<Clearing all build cache>$(RES)"
 	@docker buildx prune -f
  
+	@echo "$(CYAN)<Removing .env and secret files>$(RES)"
+	@rm -f $(REQUIRED_FILES)
 	@echo ""
 	@echo "$(GREEN)Task completed. Everything is gone.$(RES)"
 	@echo "   Run \`make up\` to rebuild from scratch."

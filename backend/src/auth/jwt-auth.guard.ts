@@ -1,44 +1,106 @@
 import {
-	CanActivate,
-	ExecutionContext,
-	Injectable,
-	UnauthorizedException,
-} from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt' ;
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Reflector } from '@nestjs/core';
+import type { Request } from 'express';
+import type { Socket } from 'socket.io';
+import { IS_PUBLIC_KEY } from './public.decorator';
+
+export interface JwtPayload {
+  sub: number;
+  email: string;
+}
+
+export interface AuthRequest extends Request {
+  user: JwtPayload;
+}
+
+export type AuthSocket = Socket & {
+  data: {
+    user: JwtPayload;
+    currentGameId?: string;
+  };
+};
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-	constructor(private jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly reflector: Reflector,
+  ) {}
 
-	async canActivate(context: ExecutionContext): Promise<boolean> {
-		const request = context.switchToHttp().getRequest();
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
-		const token = this.extractTokenFromHeader(request);
+    if (isPublic) {
+      return true;
+    }
 
-		if (!token) {
-			throw new UnauthorizedException('Missing or invalid Authorization header');
-		}
+    const contextType = context.getType<'http' | 'ws'>();
+    let token: string | undefined;
 
-		try {
-			const payload = await this.jwtService.verifyAsync(token);
+    if (contextType === 'http') {
+      const request = context.switchToHttp().getRequest<AuthRequest>();
+      token = this.extractTokenFromHttpRequest(request);
+    } else if (contextType === 'ws') {
+      const client = context.switchToWs().getClient<AuthSocket>();
+      token = this.extractTokenFromWs(client);
+    }
 
-			request.user = payload;
+    if (!token) {
+      if (contextType === 'ws') return false;
+      throw new UnauthorizedException('Missing authentication token');
+    }
 
-			return true;
-		} catch {
-			throw new UnauthorizedException('Invalid or expired token');
-		}
-	}
+    try {
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
 
-	private extractTokenFromHeader(request: any): string | undefined {
-		const authHeader = request.headers['authorization'];
+      if (contextType === 'http') {
+        const request = context.switchToHttp().getRequest<AuthRequest>();
+        request.user = payload;
+      } else if (contextType === 'ws') {
+        const client = context.switchToWs().getClient<AuthSocket>();
+        client.data.user = payload;
+      }
 
-		if (!authHeader) return undefined;
+      return true;
+    } catch {
+      if (contextType === 'ws') return false;
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+  }
 
-		const [type, token] = authHeader.split(' ');
+  private extractTokenFromHttpRequest(request: Request): string | undefined {
+    return request.cookies?.access_token;
+  }
 
-		if (type !== 'Bearer') return undefined;
+  private extractTokenFromWs(client: AuthSocket): string | undefined {
+    const rawCookies = client.handshake.headers.cookie;
 
-		return token;
-	}
+    if (!rawCookies) {
+      return undefined;
+    }
+
+    for (const cookie of rawCookies.split(';')) {
+      const [key, ...valueParts] = cookie.trim().split('=');
+      const value = valueParts.join('=');
+
+      if (key === 'access_token' && value) {
+        try {
+          return decodeURIComponent(value);
+        } catch {
+          return undefined;
+        }
+      }
+    }
+
+    return undefined;
+  }
 }
