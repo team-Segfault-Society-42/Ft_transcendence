@@ -26,8 +26,16 @@ nuke: ## Full wipe — stops stack, removes volumes + images, deletes .env + sec
 	@echo "   - The .env file"
 	@echo "   - All secret files"
 	@echo "   - All Postgres data"
-	@printf "$(CYAN)Continue? [y/N] $(RES)" && read ans && [ "$$ans" = "y" ] || (echo "$(RED)   Aborted$(RES)" && exit 1)
- 
+# 	@printf "$(CYAN)Continue? [y/N] $(RES)" && read ans && [ "$$ans" = "y" ] || (echo "$(RED)   Aborted$(RES)" && exit 1)
+	@printf "$(CYAN)Continue? [y/N] $(RES)"; read ans; \
+	case "$$ans" in \
+		y|Y|yes|Yes|YES) \
+			$(MAKE) --no-print-directory _nuke-apply ;; \
+		*) \
+			exit 0 ;; \
+	esac
+	
+_nuke-apply: # Runs a full wipe
 	@echo ""
 	@echo "$(CYAN)<Stopping stack and removing containers + volumes>$(RES)"
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --volumes --remove-orphans
@@ -53,4 +61,4 @@ nuke: ## Full wipe — stops stack, removes volumes + images, deletes .env + sec
 	@echo ""
 	@docker system df
 	
-.PHONY: clean nuke
+.PHONY: clean nuke _nuke-apply
