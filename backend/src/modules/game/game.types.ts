@@ -10,6 +10,8 @@ export type PlayerRole = PlayerSymbol | 'spectator';
 
 export type MovesGameHistory = number[];
 
+export type SpectatorsCnt = number;
+
 export interface PublicPlayerProfile {
   id: number;
   username: string;
@@ -30,10 +32,15 @@ export interface Move extends BoardPosition {
   player: PlayerSymbol;
 }
 
-// to stock socketId of client x and client o
+export interface PlayerSeat {
+  socketId: string | null;
+  ownerUserId: number | null;
+}
+
+// to stock socketId and ownerUserId of client x and client o
 export interface PlayersInGame {
-  X: string | null;
-  O: string | null;
+  X: PlayerSeat;
+  O: PlayerSeat;
 }
 
 export interface ReplayState {
@@ -64,4 +71,5 @@ export interface GameState {
   replayVotes: ReplayState;
   playerProfiles: PlayerProfilesInGame;
   movesGameHistory: MovesGameHistory;
+  spectatCnt: SpectatorsCnt;
 }

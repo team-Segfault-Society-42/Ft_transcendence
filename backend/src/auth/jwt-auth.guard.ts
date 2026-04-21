@@ -22,6 +22,7 @@ export interface AuthRequest extends Request {
 export type AuthSocket = Socket & {
   data: {
     user: JwtPayload;
+    currentGameId?: string;
   };
 };
 

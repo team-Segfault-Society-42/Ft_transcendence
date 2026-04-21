@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GameService } from './game.service';
+import { MatchesService } from './matches.service';
 
 /*fichier pour DEBUG LA GAME ET LES STEPS */
 
@@ -7,17 +8,30 @@ describe('Game Engine Tests', () => {
   let service: GameService;
   let moduleRef: TestingModule;
   let gameId: string;
+  const playerX = { userId: 1, socketId: 'socket-x' };
+  const playerO = { userId: 2, socketId: 'socket-o' };
+  const matchesServiceMock = {
+    recordMatch: jest.fn(),
+  };
 
   beforeEach(async () => {
     moduleRef = await Test.createTestingModule({
-      providers: [GameService],
+      providers: [
+        GameService,
+        {
+          provide: MatchesService,
+          useValue: matchesServiceMock,
+        },
+      ],
     }).compile();
 
     service = moduleRef.get<GameService>(GameService);
     gameId = service.creatGame();
+    service.joinGame(gameId, playerX.socketId, playerX.userId);
+    service.joinGame(gameId, playerO.socketId, playerO.userId);
+    matchesServiceMock.recordMatch.mockClear();
   });
 
-  const mockClientId = 'test-client-id';
   afterEach(async () => {
     jest.clearAllTimers();
     jest.useRealTimers();
@@ -40,7 +54,7 @@ describe('Game Engine Tests', () => {
     console.log(`=========================================\n`);
   };
 
-  it('test 12 coups', () => {
+  it('test 12 coups', async () => {
     const sequence = [
       [0, 0],
       [0, 1],
@@ -66,7 +80,8 @@ describe('Game Engine Tests', () => {
       }
 
       // 2. On joue et on log
-      service.playMove(gameId, mockClientId, r, c);
+      const userId = i % 2 === 0 ? playerX.userId : playerO.userId;
+      await service.playMove(gameId, userId, r, c);
       logState(i + 1, r, c);
     }
 
@@ -74,7 +89,7 @@ describe('Game Engine Tests', () => {
     expect(finalState.status).toBe('finished');
   });
 
-  it('Test draw after 20 coups', () => {
+  it('Test draw after 20 coups', async () => {
     const safeSequence = [
       [0, 0], // Coup 1
       [0, 1], // Coup 2
@@ -88,7 +103,8 @@ describe('Game Engine Tests', () => {
 
     for (let i = 0; i < 50; i++) {
       const [r, c] = safeSequence[i % safeSequence.length];
-      service.playMove(gameId, mockClientId, r, c);
+      const userId = i % 2 === 0 ? playerX.userId : playerO.userId;
+      await service.playMove(gameId, userId, r, c);
 
       if (service.getGameById(gameId).status === 'finished') {
         break;
@@ -102,17 +118,17 @@ describe('Game Engine Tests', () => {
     expect(finalState.winner).toBeNull();
   });
 
-  it('déclare le joueur perdant s’il met plus de 30 secondes à jouer', () => {
+  it('déclare le joueur perdant s’il met plus de 30 secondes à jouer', async () => {
     jest.useFakeTimers();
 
-    service.playMove(gameId, 0, 0);
+    await service.playMove(gameId, playerX.userId, 0, 0);
 
     expect(service.getGameById(gameId).status).toBe('playing');
     expect(service.getGameById(gameId).currentPlayer).toBe('O');
 
     jest.advanceTimersByTime(31000);
 
-    service.playMove(gameId, 0, 1);
+    await service.playMove(gameId, playerO.userId, 0, 1);
 
     const finalState = service.getGameById(gameId);
 
