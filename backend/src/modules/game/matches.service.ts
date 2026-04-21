@@ -105,5 +105,95 @@ export class MatchesService {
             throw new InternalServerErrorException("Unable to save match result.");
         }
     }
+
+    async getFinishedGamesHistory(userId: number) {
+        const game = await this.prismaService.game.findMany({
+            where: {
+                OR: [
+                { player1Id: userId },
+                { player2Id: userId }
+                ]
+            },
+            include: {
+                player1: true,
+                player2: true,
+                winner: true
+            },
+            orderBy: {
+                date: "desc"
+            }
+        })
+
+
+        const getUserInfoFromGame = game.map((m) => {
+
+            const isPLayer1 = (m.player1Id === userId)
+            const opponent = isPLayer1 ? m.player2 : m.player1
+
+            
+            const hasWinner = (m.winnerId === userId)
+            let resultStatus: string
+
+            if (m.winnerId === null) {
+                resultStatus = "DRAW"
+            }
+            else if (m.winnerId === userId) {
+                resultStatus = "WIN"
+            }
+            else {
+                resultStatus = "LOSS"
+            }
+
+            const myScore = isPLayer1 ? m.scoresP1 : m.scoresP2
+            const oppScore = isPLayer1 ? m.scoresP2 : m.scoresP1
+
+            return {
+                id: m.id,
+                date: m.date,
+                result: resultStatus,
+                myScore: myScore,
+                oppScore: oppScore,
+                opponent : {
+                    username: opponent.username,
+                    avatar: opponent.avatar
+                }
+            }
+        })
+
+    return (getUserInfoFromGame)
+    }
+
+    async getGameLeaderboard(sortBy: 'wins' | 'xp') {
+
+        let orderBy;
+        if (sortBy === "wins") {
+            orderBy = { wins: "desc"}
+        }
+        else if (sortBy === "xp") {
+            orderBy = { xp: "desc" }
+        } 
+        else {
+            orderBy = { wins: "desc"}
+        }
+ 
+        const user = await this.prismaService.user.findMany({
+            orderBy: orderBy,
+            take: 10,
+        })
+        
+        const getUserInfo = user.map((m) => {
+
+            return {
+                id: m.id,
+                username: m.username,
+                xp: m.xp,
+                wins: m.wins
+            }
+        })
+
+        return (getUserInfo)
+
+    }
+    
 }
 

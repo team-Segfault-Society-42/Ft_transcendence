@@ -30,11 +30,24 @@ export async function updateUser(id: unknown, data: unknown) {
   return response.data;
 }
 
+export async function getUserHistory(id: number) {
+    const response = await api.get('users/' + id + '/history')
+    return response.data
+}
+
+export async function getLeaderboard(sortBy?: "xp" | "wins") {
+
+    const response = await api.get("users/leaderboard", { params: sortBy ? { sortBy } : {} })
+    return response.data
+}
+
 export const userService = {
-  getUser,
-  updateUser,
-  createUser,
-  userLogin,
-  getMe,
-  userLogout,
-};
+    getUser,
+    updateUser,
+    createUser,
+    userLogin,
+    getMe,
+    userLogout,
+    getUserHistory,
+    getLeaderboard,
+}
