@@ -11,7 +11,6 @@ import { toast } from "sonner";
 // import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar"
 import type { Match } from "@/lib/match"
-import { CardTitle } from "@/components/ui/Card"
 import { Winrate } from '@/components/ui/Winrate'
 
 interface User {
@@ -19,8 +18,10 @@ interface User {
     username: string,
     wins: number,
     losses: number,
+    draws: number,
     bio: string,
-    avatar: string
+    avatar: string,
+    xp: number
 }
 
 export default function Profile() {
@@ -28,6 +29,7 @@ export default function Profile() {
 
   const { t } = useTranslation()
   const [user, setUser] = useOutletContext<[User | null, React.Dispatch<React.SetStateAction<User | null>>]>();
+  const [matches, setMatches] = useState<Match[]>([])
 
   const [isEdit, isInEdit] = useState(false)
   const [userName, setUserName] = useState(user?.username || "")
@@ -51,9 +53,6 @@ export default function Profile() {
     </div>
     )
   }
-
-  const totalGames = user.wins + user.losses
-  const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
 
     async function handleSave() {
         if (!user) return;
@@ -213,32 +212,6 @@ export default function Profile() {
               {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
             </Button>
       
-          </div>
-        
-          <div className="mt-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6" >
-
-              <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent mb-6 flex items-center justify-center gap-2">
-                <span className="w-2 h-2 bg-purple-400 rounded-full shadow-[0_0_8px_rgba(192,132,252,0.8)]"></span>
-                Match History
-              </CardTitle>
-
-              {matches.length === 0 ? (
-                <p> No matches played yet </p>
-              ) : (
-
-                <div>
-                 {matches.map((match) => (
-
-                    <div key={match.id} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px' }}>
-                      {/* Data for front*/}
-                      <p>Date: { new Date(match.date).toLocaleString() } </p>
-                      <p>Result: <strong> { match.result } </strong> </p>
-                      <p>Opponent: { match.opponent.username } </p>
-                      </div>
-
-                 ))} 
-                 </div>
-              )}
           </div>
         
         </section>

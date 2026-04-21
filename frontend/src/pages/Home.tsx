@@ -9,8 +9,6 @@ import type { Match } from "@/lib/match"
 import { useEffect, useState } from "react"
 import { useOutletContext } from "react-router"
 import { userService } from "@/services/userService"
-import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -34,7 +32,6 @@ export default function Home() {
       console.log("created game error:", error);
     }
   };
-
 
   useEffect(() => {
     if (!user) return
