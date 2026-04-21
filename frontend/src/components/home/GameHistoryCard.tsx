@@ -25,7 +25,7 @@ export function GameHistoryCard({ matches, className }: Props) {
     </div>
 
     {/* LIST */}
-    <div className="space-y-3">
+    <div className="flex-1 flex flex-col">
         {matches.length ? (
         	matches.map((matches) => {
 
@@ -95,9 +95,11 @@ export function GameHistoryCard({ matches, className }: Props) {
     )
     })
     ) : (
+    <div className="flex-1 flex flex-col items-center justify-center text-center">
         <p className="text-sm text-white/60 text-center">
             No games yet
         </p>
+    </div>
     )}
 
     </div>

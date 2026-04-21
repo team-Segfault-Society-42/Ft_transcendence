@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Avatar } from "@/components/ui/Avatar"
 import type { Match } from "@/lib/match"
 import { Winrate } from '@/components/ui/Winrate'
+import { LevelProgress } from '@/components/ui/Level'
 
 interface User {
     id: number
@@ -97,12 +98,9 @@ export default function Profile() {
           </div>
         );
       }
-      const level = Math.floor(user.xp / 100)
-      const xpProgress = user.xp % 100
-
 
     return (
-        <section className="w-full max-w-lg">
+        <section className="w-full flex justify-center">
       
           <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8 overflow-hidden">
       
@@ -167,22 +165,9 @@ export default function Profile() {
             />
 
             {/* Level */}
-            <div className="mt-8">
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-white/50 font-medium">Level {level}</span>
-                <span className="text-white/30 text-[10px] uppercase tracking-tighter">
-                  {xpProgress} / 100 XP
-                </span>
-            </div>
-
-            {/* XP progression  */}
-              <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-                <div 
-                  className="bg-linear-to-r from-purple-500 to-pink-500 h-full transition-all duration-700"
-                  style={{ width: `${xpProgress}%` }}
-                />
-              </div>
-            </div>
+            <LevelProgress
+              xp={user.xp}
+            />
       
             {/* BIO */}
             <div className="mt-8">
@@ -208,7 +193,8 @@ export default function Profile() {
       
             {/* BUTTON */}
             <Button
-              onClick={handleSave}>
+              onClick={handleSave}
+              className="mt-8">
               {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
             </Button>
       
