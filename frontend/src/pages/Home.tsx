@@ -34,12 +34,7 @@ export default function Home() {
       console.log("created game error:", error);
     }
   };
-	const handleLogin42 = () => {
-	const oauth42Url =
-		import.meta.env.VITE_OAUTH_42_START_URL ?? "http://localhost:1024/api/auth/42";
 
-	window.location.href = oauth42Url;
-	};
 
   useEffect(() => {
     if (!user) return
@@ -64,14 +59,6 @@ export default function Home() {
     </Motion>
 
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-      <Button
-        onClick={handleLogin42}
-        size="xl">
-        Login with 42
-      </Button>
-
-
 
       {/* CARDS */}
         <Link to="/profile">
