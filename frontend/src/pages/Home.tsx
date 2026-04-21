@@ -18,68 +18,69 @@ export default function Home() {
 
   const handleFindOpponent = async () => {
     try {
-      const response = await fetch("/api/game/create", {
-        method: "POST",
-      });
+    	const response = await fetch("/api/game/create", {
+        	method: "POST",
+    });
 
-      if (!response.ok) {
+    if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`);
-      }
-
-      const data: { gameId: string } = await response.json();
-      navigate(`/game/${data.gameId}`);
-    } catch (error) {
-      console.log("created game error:", error);
     }
-  };
 
-  useEffect(() => {
-    if (!user) return
+    const data: { gameId: string } = await response.json();
+    navigate(`/game/${data.gameId}`);
+    } catch (error) {
+    	console.log("created game error:", error);
+    	}
+  	};
+
+  	useEffect(() => {
+    	if (!user) return
   
-    userService.getUserHistory(user.id)
-      .then(setMatches)
-  }, [user])
+    	userService.getUserHistory(user.id)
+      	.then(setMatches)
+  	}, [user])
 
-  return (
-    <section className="w-full flex flex-col gap-10">
+  	return (
+    	<section className="w-full flex flex-col gap-10">
 
     <Motion>
-      <div className="text-center space-y-4">
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-          {t("title")}
-        </h1>
+      	<div className="text-center space-y-4">
+        	<h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+          	{t("title")}
+        	</h1>
 
-        <p className="bg-linear-to-r from-cyan-400 to-pink-500  bg-clip-text text-transparent max-w-md mx-auto text-lg">
-          {t("home.hero.texte")}
-        </p>
-      </div>
+        	<p className="bg-linear-to-r from-cyan-400 to-pink-500  bg-clip-text text-transparent max-w-md mx-auto text-lg">
+          		{t("home.hero.texte")}
+        	</p>
+      	</div>
     </Motion>
 
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-      {/* CARDS */}
-        <Link to="/profile">
-          <div className="lg:col-span-1 flex h-full">
-            <AboutCard user={user}
-            className="flex-1"
-            />
-          </div>
+    	{/* CARDS */}
+    	<Link to="/profile">
+        	<div className="lg:col-span-1 flex h-full">
+            	<AboutCard user={user}
+            	className="flex-1"
+            	/>
+          	</div>
         </Link>
 
         <div className="lg:col-span-2 flex flex-col gap-6">
-          <Link to="/game">
-            <PlayCard onFindOpponent={handleFindOpponent}
-            className="h-45"
-            />
-          </Link>
-          <Link to="/history">
-              <GameHistoryCard matches={matches}
-              className="h-65"
-              />
-          </Link>
+        	<Link to="/game">
+            	<PlayCard 
+              	onFindOpponent={handleFindOpponent}
+            	/>
+          	</Link>
+          	<Link to="/history">    
+            	<GameHistoryCard 
+              	matches={matches}
+              	title="Match history"
+            	/>
+          	</Link>
         </div>
 
-      </div>
+    </div>
     </section>
   );
 }

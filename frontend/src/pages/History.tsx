@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useOutletContext } from "react-router"
 import { Spinner } from "@/components/ui/Spinner"
-import { Card, CardTitle } from "@/components/ui/Card"
 import { userService } from "@/services/userService"
 import type { Match } from "@/lib/match"
 import { GameHistoryCard } from "@/components/home/GameHistoryCard"
@@ -53,17 +52,16 @@ export default function History() {
   	}
 
   	return (
-		<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
+	<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
 
 		{/* TITLE */}
-		<CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent text-3xl mb-8 text-center">
-			{t("history.title") || "Match History"}
-		</CardTitle>
+		<h1 className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent text-3xl mb-8 text-center">
+			{t("history.title")}
+		</h1>
 
 		{/* CARD */}
-		<Card className="p-6 backdrop-blur-xl bg-white/5 border border-white/10">
-        	<GameHistoryCard matches={matches} />
-    	</Card>
+        <GameHistoryCard matches={matches} />
+
 
     </section>
   )

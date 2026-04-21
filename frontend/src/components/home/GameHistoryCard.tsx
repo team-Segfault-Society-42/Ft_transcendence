@@ -1,24 +1,27 @@
-import { Card, CardTitle } from "@/components/ui/Card"
+import { Card } from "@/components/ui/Card"
 import { Avatar } from "@/components/ui/Avatar"
 import type { Match } from "@/lib/match"
 import { cn } from "@/lib/utils"
+import { CardTitle } from "@/components/ui/Card"
 
 type Props = {
     matches: Match[]
     className?: string
+    title?: string
 }
 
-export function GameHistoryCard({ matches, className }: Props) {
+export function GameHistoryCard({ matches, className, title }: Props) {
 
 	return (
     <Card className={cn("h-full flex flex-col", className)}>
 
     {/* HEADER */}
     <div className="flex justify-between items-center mb-6">
-        <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-        	Match History
-        </CardTitle>
-
+        {title && (
+            <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+                {title}
+            </CardTitle>
+        )}
         <span className="text-xs text-white/50 top-left">
         	{matches.length} games
         </span>
