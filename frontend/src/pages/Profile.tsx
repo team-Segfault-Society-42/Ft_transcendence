@@ -35,6 +35,7 @@ export default function Profile() {
   const [isEdit, isInEdit] = useState(false)
   const [userName, setUserName] = useState(user?.username || "")
   const [bio, setBio] = useState(user?.bio || "")
+  const [loading, setLoading] = useState(true)
 //   const navigate = useNavigate()
 
   useEffect(() => {
@@ -43,17 +44,6 @@ export default function Profile() {
       setBio(user.bio)
     }
   }, [user])
-
-  if (!user) {
-    return (
-    <div>
-      <Spinner
-        variant="cyan"
-        size="lg"
-      />
-    </div>
-    )
-  }
 
     async function handleSave() {
         if (!user) return;
@@ -83,6 +73,9 @@ export default function Profile() {
           } catch (error) {
             console.error("Failed to fetch history:", error);
           }
+          finally {
+            setLoading(false)
+          }
         }
         fetchhistory();
       }
@@ -91,9 +84,9 @@ export default function Profile() {
     // DEBUG
     console.log(matches)
 
-      if (!user) {
+      if (!user || loading) {
         return (
-          <div>
+          <div className="flex justify-center mt-20">
             <Spinner variant="cyan" size="lg" />
           </div>
         );
