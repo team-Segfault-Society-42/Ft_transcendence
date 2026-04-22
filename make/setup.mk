@@ -6,6 +6,7 @@ SECRETS_DIR = secrets/
 
 # ── Add new .env defaults here ────────────────────────────────────────────────
 # Format: KEY=value   (replaces the KEY=... line after copying .env.example)
+# Note: if POSTGRES_VERSION is changed, please update it in `make/clean.mk` too
 DEFAULT_ENV_VARS = \
 	DOMAIN=127.0.0.1 \
 	POSTGRES_VERSION=18-alpine \
