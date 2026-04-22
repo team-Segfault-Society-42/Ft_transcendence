@@ -36,6 +36,7 @@ nuke: ## Full wipe — stops stack, removes volumes + images, deletes .env + sec
 	esac
 	
 _nuke-apply: # Runs a full wipe
+  	# ── Prompt for Postgres Image Removal ────────────────────────────────────
 	@printf "$(CYAN)Remove postgres:$(POSTGRES_VERSION)? Skip if rebuilding soon$(RES) [y/N] "; read ans; \
 	case "$$ans" in \
 		y|Y|yes|Yes|YES) \
@@ -44,20 +45,24 @@ _nuke-apply: # Runs a full wipe
 		*) ;; \
 	esac
 
+  	# ── Stop Stack, Remove Containers + Volumes ──────────────────────────────
 	@echo ""
 	@echo "$(CYAN)<Stopping stack and removing containers + volumes>$(RES)"
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --volumes --remove-orphans
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down --volumes --remove-orphans
 	@docker volume prune -f
- 
+
+  	# ── Remove dev & prod Images ─────────────────────────────────────────────
 	@echo "$(CYAN)<Removing images built by this stack>$(RES)"
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --rmi local 2>/dev/null || true
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down --rmi local 2>/dev/null || true
 	@docker image prune -f
- 
+
+  	# ── Clear Build Cache ────────────────────────────────────────────────────
 	@echo "$(CYAN)<Clearing all build cache>$(RES)"
 	@docker buildx prune -f
- 
+
+  	# ── Remove Setup & Secret Files ──────────────────────────────────────────
 	@echo "$(CYAN)<Removing .env and secret files>$(RES)"
 	@rm -f $(REQUIRED_FILES)
 	@echo ""
