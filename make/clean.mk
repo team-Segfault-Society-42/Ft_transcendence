@@ -2,6 +2,9 @@
 #                  CLEAN TARGETS
 # ══════════════════════════════════════════════════════
 
+# Fallback if .env is missing or does not define POSTGRES_VERSION (mirrors setup.mk default)
+POSTGRES_VERSION ?= 18-alpine
+
 ##@ CLEAN
 
 clean: ## Remove dangling images, stopped containers, unused networks + build cache [BOTH]
