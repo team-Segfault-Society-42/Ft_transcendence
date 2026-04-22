@@ -2,11 +2,12 @@ import { Injectable, BadRequestException, InternalServerErrorException } from '@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { GameResultDto } from './dto/game-result.dto';
 import { MovesGameHistory } from './game.types';
+import { AchievementsService } from './achievements.service';
 
 
 @Injectable()
 export class MatchesService {
-    constructor(private readonly prismaService: PrismaService ) {}
+    constructor(private readonly prismaService: PrismaService , private readonly achievementService: AchievementsService) {}
 
     async recordMatch(result: GameResultDto, history: MovesGameHistory) {
 
@@ -30,10 +31,6 @@ export class MatchesService {
                         endReason: result.endReason,
                     } 
                 })
-
-                // DEBUG TEST
-                // throw new Error("SABOTAGE_TEST_ROLLBACK"); 
-                //
 
                 const movesToCreate = history.map((n, i) => ({ 
                     gameId: newGame.id,
@@ -98,7 +95,15 @@ export class MatchesService {
                         }   
                     }) 
                 }
+
+                await this.achievementService.unlockAchievement(result.player1Id, 'FIRST_GAME', tx)
+                await this.achievementService.unlockAchievement(result.player2Id, 'FIRST_GAME', tx)
+
+                if (result.winnerId) {
+                    await this.achievementService.unlockAchievement(result.winnerId, 'FIRST_WIN', tx) 
+                }
             })
+            
         }
         catch (error) {
             console.error(`Error saving match: ${error.message}`);
@@ -194,6 +199,5 @@ export class MatchesService {
         return (getUserInfo)
 
     }
-    
 }
 
