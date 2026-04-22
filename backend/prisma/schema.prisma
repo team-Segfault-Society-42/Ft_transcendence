@@ -77,7 +77,7 @@ model Achievement {
   createdAt   DateTime @default(now())
   icon        String?
 
-  user       UserAchievement[]
+  user        UserAchievement[]
 }
 
 model UserAchievement {
