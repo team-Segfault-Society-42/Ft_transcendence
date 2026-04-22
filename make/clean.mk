@@ -36,6 +36,14 @@ nuke: ## Full wipe — stops stack, removes volumes + images, deletes .env + sec
 	esac
 	
 _nuke-apply: # Runs a full wipe
+	@printf "$(CYAN)Remove postgres:$(POSTGRES_VERSION)? Skip if rebuilding soon$(RES) [y/N] "; read ans; \
+	case "$$ans" in \
+		y|Y|yes|Yes|YES) \
+			echo "$(CYAN)<Removing postgres:$(POSTGRES_VERSION)>$(RES)"; \
+			docker image rm postgres:$(POSTGRES_VERSION) 2>/dev/null || true ;; \
+		*) ;; \
+	esac
+
 	@echo ""
 	@echo "$(CYAN)<Stopping stack and removing containers + volumes>$(RES)"
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --volumes --remove-orphans
@@ -46,9 +54,6 @@ _nuke-apply: # Runs a full wipe
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --rmi local 2>/dev/null || true
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down --rmi local 2>/dev/null || true
 	@docker image prune -f
- 
-	@echo "$(CYAN)<Removing postgres:$(POSTGRES_VERSION)>$(RES)"
-	@docker image rm postgres:$(POSTGRES_VERSION) 2>/dev/null || true
  
 	@echo "$(CYAN)<Clearing all build cache>$(RES)"
 	@docker buildx prune -f
