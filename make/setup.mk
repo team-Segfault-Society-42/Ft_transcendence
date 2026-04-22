@@ -37,7 +37,8 @@ REQUIRED_FILES = \
 # ══════════════════════════════════════════════════════
 
 setup: # Prompts user to run default setup
-	@printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
+	@echo "$(ORANGE)Building default setup will overwrite all setup files.$(RES)"; \
+	printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
 	case "$$ans" in \
 		y|Y|yes|Yes|YES) \
 			$(MAKE) --no-print-directory _setup-apply ;; \
@@ -56,6 +57,7 @@ _check-required-files: # Checks required files exist
 	if [ "$$missing" -eq 0 ]; then \
 		echo "$(GREEN)✓ All required files present$(RES)"; \
 	else \
+		echo "$(CYAN)Missing files detected. Rebuilding defaults.$(RES)"; \
 		$(MAKE) --no-print-directory _setup-apply ; \
 	fi; \
 	
