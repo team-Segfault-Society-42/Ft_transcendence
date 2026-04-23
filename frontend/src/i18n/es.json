@@ -63,6 +63,7 @@
   
     "profile": {
       "loading": "Cargando...",
+      "level": "Nivel {{level}}",
       "stats": {
         "wins": "Victorias",
         "losses": "Derrotas",

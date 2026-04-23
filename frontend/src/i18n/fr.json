@@ -63,6 +63,7 @@
 
     "profile": {
         "loading": "Chargement...",
+        "level": "Niveau {{level}}",
         "stats": {
             "wins": "Victoires",
             "losses": "Défaites",

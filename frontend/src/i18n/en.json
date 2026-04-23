@@ -63,6 +63,7 @@
 
     "profile": {
         "loading": "Loading...",
+        "level": "Level {{level}}",
         "stats": {
             "wins": "Wins",
             "losses": "Losses",
@@ -82,7 +83,8 @@
             "guest": "Guest",
             "viewProfile": "View profile",
             "noBio": "No bio yet"
-        }
+        },
+        "xp": "{{current}} / {{max}} XP"
     },
 
     "history": {
