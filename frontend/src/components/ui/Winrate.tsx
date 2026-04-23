@@ -20,14 +20,14 @@ type Props = {
                 {t("profile.stats.winrate")}
             </span>
             <span className="font-semibold text-cyan-400">
-                {formattedWinrate}%
+              {t("profile.stats.winrateValue", { value: formattedWinrate })}
             </span>
         </div>
   
         <div className="w-full bg-white/10 h-3 rounded-full overflow-hidden">
             <div
                 className="bg-linear-to-r from-cyan-400 to-purple-500 h-3 rounded-full transition-all duration-500"
-                style={{ width: `${formattedWinrate}%` }}
+                style={{ width: `${winrate}%` }}
             />
         </div>
 
