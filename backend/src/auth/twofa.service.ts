@@ -60,9 +60,40 @@ export class TwoFactorService {
 	}
 
 	async verifySetup(userId: number, code: string) {
-		void userId;
-		void code;
-		throw new Error('Method not implemented.');
+		const user = await this.prisma.user.findUnique({
+			where: { id: userId },
+		});
+
+		if (!user) {
+			throw new UnauthorizedException('User not found');
+		}
+
+		if (user.isTwoFactorEnabled) {
+			throw new BadRequestException('Two-factor authentication is already enabled');
+		}
+
+		if (!user.twoFactorTempSecret) {
+			throw new BadRequestException('No two-factor setup is in progress');
+		}
+
+		const isCodeValid = this.verifyTotpCode(user.twoFactorTempSecret, code);
+
+		if (!isCodeValid) {
+			throw new BadRequestException('Invalid two-factor authentication code');
+		}
+
+		await this.prisma.user.update({
+			where: { id: userId },
+			data: {
+				isTwoFactorEnabled: true,
+				twoFactorSecret: user.twoFactorTempSecret,
+				twoFactorTempSecret: null,
+			},
+		});
+
+		return {
+			message: 'Two-factor authentication enabled successfully',
+		};
 	}
 
 	async createTwoFactorPendingToken(user: { id: number; email: string }) {
@@ -84,8 +115,9 @@ export class TwoFactorService {
 	}
 
 	private verifyTotpCode(secret: string, code: string): boolean {
-		void secret;
-		void code;
-		throw new Error('Method not implemented.');
+		return authenticator.verify({
+			token: code,
+			secret,
+		});
 	}
 }
