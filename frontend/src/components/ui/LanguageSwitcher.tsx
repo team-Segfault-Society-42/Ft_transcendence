@@ -22,8 +22,8 @@ export default function LanguageSwitcher() {
 					onClick={() => changeLang(lang.code)}
 					className={`px-2 py-1 rounded transition ${
 						i18n.language === lang.code
-							? "text-cyan-400"
-							: "text-white/40 hover:text-white"
+							? "text-cyan-400 hover:scale-110 active:scale-95"
+							: "text-white/40 hover:text-white hover:scale-110 active:scale-95"
 					}`}>
 					<span>
 						{lang.flag}

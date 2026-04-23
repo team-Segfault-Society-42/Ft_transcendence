@@ -35,17 +35,16 @@ export function AuthModal({
         {/* Modal */}
         <div className="relative z-10 w-full max-w-md bg-slate-800 p-6 rounded-2xl border border-white/10">
 
-        <h2 className="text-2xl font-bold text-cyan-500 mb-2">
-          {t("auth.title")}
-        </h2>
-
-        <p className="text-white/60 mb-4">
+        <h2 className="text-2xl mb-2 bg-linear-to-br from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           {mode === "signup" ? t("auth.description") : t("auth.description_login")}
-        </p>
+        </h2>
 
         <AuthForm
           mode={mode}
-          onSuccess={onSuccess}/>
+          onSuccess={() => 
+          { onClose()
+            onSuccess?.()
+          }}/>
 
         <Button
           type="button"

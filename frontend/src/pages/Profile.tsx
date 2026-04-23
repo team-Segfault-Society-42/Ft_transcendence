@@ -10,14 +10,19 @@ import { toast } from "sonner";
 // import { zodResolver } from "@hookform/resolvers/zod";
 // import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar"
+import type { Match } from "@/lib/match"
+import { Winrate } from '@/components/ui/Winrate'
+import { LevelProgress } from '@/components/ui/Level'
 
 interface User {
     id: number
     username: string,
     wins: number,
     losses: number,
+    draws: number,
     bio: string,
-    avatar: string
+    avatar: string,
+    xp: number
 }
 
 export default function Profile() {
@@ -25,10 +30,12 @@ export default function Profile() {
 
   const { t } = useTranslation()
   const [user, setUser] = useOutletContext<[User | null, React.Dispatch<React.SetStateAction<User | null>>]>();
+  const [matches, setMatches] = useState<Match[]>([])
 
   const [isEdit, isInEdit] = useState(false)
   const [userName, setUserName] = useState(user?.username || "")
   const [bio, setBio] = useState(user?.bio || "")
+  const [loading, setLoading] = useState(true)
 //   const navigate = useNavigate()
 
   useEffect(() => {
@@ -38,39 +45,55 @@ export default function Profile() {
     }
   }, [user])
 
-  if (!user) {
-    return (
-    <div>
-      <Spinner
-        variant="cyan"
-        size="lg"
-      />
-    </div>
-    )
-  }
-
-  const totalGames = user.wins + user.losses
-  const winrate = totalGames > 0 ? ((user.wins / totalGames) * 100).toFixed(1) : "0"
-
     async function handleSave() {
         if (!user) return;
         if (isEdit) {
           try {
             await userService.updateUser(user.id, { username: userName, bio: bio })
             setUser({... user, username: userName, bio: bio})
-            toast.info( t("auth.buttons.edit"), { position: "top-left"})
+            toast.info( t("auth.buttons.edit"))
           } catch (error: any) {
               const serverMessage = error.response?.data?.message || error.message
 			        const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
-              toast.error(t("auth.error") + finalMessage, { position: "bottom-left" })
+              toast.error(t("auth.error") + finalMessage)
           }
         }
         isInEdit(!isEdit)
     }
 
+    useEffect(() => {
+      if (user) {
+        setUserName(user.username);
+        setBio(user.bio);
+
+        async function fetchhistory() {
+          try {
+            const data = await userService.getUserHistory(user!.id);
+            setMatches(data);
+          } catch (error) {
+            console.error("Failed to fetch history:", error);
+          }
+          finally {
+            setLoading(false)
+          }
+        }
+        fetchhistory();
+      }
+    }, [user]);
+
+    // DEBUG
+    console.log(matches)
+
+      if (!user || loading) {
+        return (
+          <div className="flex justify-center mt-20">
+            <Spinner variant="cyan" size="lg" />
+          </div>
+        );
+      }
 
     return (
-        <section className="w-full max-w-lg">
+        <section className="w-full flex justify-center">
       
           <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8 overflow-hidden">
       
@@ -128,32 +151,16 @@ export default function Profile() {
             </div>
       
             {/* WINRATE */}
-            <div className="mt-8">
-      
-              <div className="flex justify-between text-sm mb-2">
+            <Winrate
+              wins={user.wins}
+              losses={user.losses}
+              draws={user.draws}
+            />
 
-                <span className="text-white/50">
-                  {t("profile.stats.winrate")}
-                </span>
-
-                <span className="font-semibold text-cyan-400">
-                  {winrate}%
-                </span>
-
-              </div>
-      
-              <div className="w-full bg-white/10 h-3 rounded-full overflow-hidden">
-                <div
-                  className="bg-linear-to-r from-cyan-400 to-purple-500 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${winrate}%` }}
-                />
-              </div>
-      
-              <p className="text-xs text-white/50 mt-2">
-                {t("profile.stats.games", { count: totalGames })}
-              </p>
-      
-            </div>
+            {/* Level */}
+            <LevelProgress
+              xp={user.xp}
+            />
       
             {/* BIO */}
             <div className="mt-8">
@@ -179,12 +186,13 @@ export default function Profile() {
       
             {/* BUTTON */}
             <Button
-              onClick={handleSave}>
+              onClick={handleSave}
+              className="mt-8">
               {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
             </Button>
       
           </div>
-      
+        
         </section>
       )
 }

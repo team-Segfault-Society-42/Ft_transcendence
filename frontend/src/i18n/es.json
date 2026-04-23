@@ -13,7 +13,7 @@
       },
       "buttons": {
         "register": "Registrarse",
-        "login": "Se conectar",
+        "login": "Conectar se",
         "start": "INICIAR PARTIDA",
         "hi": "Hola, ",
         "local": "Jugar en local",
@@ -78,7 +78,7 @@
             "register": "Registrarse",
             "loading": "Conectando al servidor...",
             "change_method": "Cambiar método",
-            "login": "Se conectar",
+            "login": "Conectar se",
             "no_account": "¿ No tienes cuenta ? Regístrate",
             "already_account": "¿ Ya tienes una cuenta ? Iniciar sesión",
             "logout": ": Cerrar sesión",

@@ -34,7 +34,7 @@ export default function MainLayout() {
         if (error.response?.status != 401) {
           const serverMessage = error.response?.data?.message || error.message
 			    const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
-          toast.error(t("auth.error") + finalMessage, { position: "bottom-right" })
+          toast.error(t("auth.error") + finalMessage)
          }
          setUser(null)
 
@@ -50,7 +50,7 @@ export default function MainLayout() {
       try {
         const response = await userService.userLogout()
         setUser(null)
-        toast.success(response.message, {position: "top-left" })
+        toast.success(response.message)
         navigate("/")
 
       } catch {
