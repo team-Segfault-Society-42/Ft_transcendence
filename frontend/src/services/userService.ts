@@ -1,5 +1,14 @@
 import { api } from "@/services/api";
 
+export interface LoginResponse {
+	message: string;
+	twoFactorRequired?: boolean;
+}
+
+export interface TwoFactorLoginResponse {
+	message: string;
+}
+
 export async function userLogout() {
   const response = await api.post("auth/logout");
   return response.data;
@@ -10,9 +19,16 @@ export async function getMe() {
   return response.data;
 }
 
-export async function userLogin(data: unknown) {
+export async function userLogin(data: unknown): Promise<LoginResponse> {
   const response = await api.post("auth/login", data);
   return response.data;
+}
+
+export async function completeTwoFactorLogin(
+	code: string,
+): Promise<TwoFactorLoginResponse> {
+	const response = await api.post("auth/2fa/login", { code });
+	return response.data;
 }
 
 export async function createUser(data: unknown) {
@@ -46,6 +62,7 @@ export const userService = {
     updateUser,
     createUser,
     userLogin,
+	completeTwoFactorLogin,
     getMe,
     userLogout,
     getUserHistory,

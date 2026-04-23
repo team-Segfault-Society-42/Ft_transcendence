@@ -14,9 +14,10 @@ type AuthMode = "login" | "signup"
 interface AuthFormProps {
     mode: AuthMode
     onSuccess?: () => void
+	onTwoFactorRequired?: () => void;
 }
 
-export function AuthForm({ mode, onSuccess }: AuthFormProps) {
+export function AuthForm({ mode, onSuccess, onTwoFactorRequired, }: AuthFormProps) {
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
 
@@ -43,18 +44,28 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
 
   async function onSubmit(data: any) {
     try {
-        setIsLoading(true)
+			setIsLoading(true)
 
-        if (mode === "signup") {
-            await userService.createUser(data)
-        }
-        else {
-            await userService.userLogin(data)
-        }
+			if (mode === "signup") {
+				await userService.createUser(data);
+				toast.success(t("auth.success"));
+				form.reset();
+				onSuccess?.();
+				return;
+			}
+
+			const result = await userService.userLogin(data);
+
+			if (result.twoFactorRequired) {
+				toast.info("Enter your 2FA code to finish login");
+				form.reset();
+				onTwoFactorRequired?.();
+				return;
+			}
         toast.success(t("auth.success"))
         form.reset()
         onSuccess?.()
-    } 
+    }
     catch (error: any) {
         const serverMessage = error.response?.data?.message || error.message
         const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
