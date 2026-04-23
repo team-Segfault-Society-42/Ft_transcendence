@@ -96,17 +96,34 @@ export class TwoFactorService {
 		};
 	}
 
+
 	async createTwoFactorPendingToken(user: { id: number; email: string }) {
-		void user;
-		throw new Error('Method not implemented.');
+		const payload: TwoFactorPendingPayload = {
+			sub: user.id,
+			email: user.email,
+			type: '2fa_pending',
+		};
+
+		const token = await this.jwtService.signAsync(payload, {
+			expiresIn: '5m',
+		});
+
+		return { token };
 	}
 
 	async verifyTwoFactorPendingToken(
 		token: string,
 	): Promise<TwoFactorPendingPayload> {
-		void token;
-		throw new Error('Method not implemented.');
+		const payload =
+			await this.jwtService.verifyAsync<TwoFactorPendingPayload>(token);
+
+		if (payload.type !== '2fa_pending') {
+			throw new UnauthorizedException('Invalid two-factor pending token');
+		}
+
+		return payload;
 	}
+
 
 	async verifyLoginCode(userId: number, code: string) {
 		void userId;
