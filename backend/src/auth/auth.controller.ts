@@ -6,11 +6,16 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Public } from './public.decorator';
 import type { AuthRequest } from './jwt-auth.guard';
+import { TwoFactorService } from './twofa.service';
+import { TwoFactorCodeDto } from './dto/twofa-code.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-	constructor(private readonly authService: AuthService) {}
+	constructor(
+		private readonly authService: AuthService,
+		private readonly twoFactorService: TwoFactorService,
+	) {}
 
 	@Public()
 	@ApiOperation({ summary: 'Register a new user' })
@@ -85,5 +90,45 @@ export class AuthController {
 	@Get('me')
 	me(@Req() req: AuthRequest) {
 		return this.authService.me(req.user.sub);
+	}
+
+	@ApiOperation({ summary: 'Generate 2FA setup data for the authenticated user' })
+	@ApiResponse({
+		status: 201,
+		description: '2FA setup data generated successfully',
+	})
+	@ApiResponse({
+		status: 400,
+		description: '2FA is already enabled',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized',
+	})
+	@Post('2fa/enable')
+	async enableTwoFactor(@Req() req: AuthRequest) {
+		return this.twoFactorService.generateSetup(req.user.sub);
+	}
+
+	@ApiOperation({ summary: 'Verify 2FA setup and enable it for the authenticated user' })
+	@ApiBody({ type: TwoFactorCodeDto })
+	@ApiResponse({
+		status: 201,
+		description: '2FA enabled successfully',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Invalid code or no setup in progress',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized',
+	})
+	@Post('2fa/verify')
+	async verifyTwoFactorSetup(
+		@Req() req: AuthRequest,
+		@Body() twoFactorCodeDto: TwoFactorCodeDto,
+	) {
+		return this.twoFactorService.verifySetup(req.user.sub, twoFactorCodeDto.code);
 	}
 }
