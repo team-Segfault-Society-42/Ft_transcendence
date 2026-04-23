@@ -50,7 +50,8 @@
             "wins": "Wins",
             "losses": "Losses",
             "winrate": "Winrate",
-            "games": "{{count}} games played"
+            "game_one": "{{count}} game played",
+            "game_other": "{{count}} games played"
         },
         "bio": "Bio",
         "buttons": {

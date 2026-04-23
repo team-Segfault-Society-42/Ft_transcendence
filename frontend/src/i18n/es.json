@@ -50,7 +50,8 @@
         "wins": "Victorias",
         "losses": "Derrotas",
         "winrate": "Porcentaje de victorias",
-        "games": "{{count}} partidas jugadas"
+        "game_one": "{{count}} partida jugadas",
+        "game_other": "{{count}} partidas jugadas"
       },
       "bio": "Biografía",
       "buttons": {
