@@ -46,7 +46,7 @@ export default function Footer() {
 
                 <div className="ml-auto text-xs text-white/30">
                     <Motion>
-                        © {new Date().getFullYear()}
+                        {t("footer.copyright", { year: new Date().getFullYear() })}
                     </Motion>
                 </div>
 

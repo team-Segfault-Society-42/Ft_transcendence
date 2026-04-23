@@ -118,7 +118,8 @@
     "footer": {
         "brand": "ft_transcendence",
         "privacy": "Privacidad",
-        "terms": "Términos de uso"
+        "terms": "Términos de uso",
+        "copyright": "© {{year}}"
     },
   
     "privacy": {

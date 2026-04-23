@@ -120,7 +120,8 @@
     "footer": {
         "projectname": "ft_transcendence",
         "privacy": "Confidentialité",
-        "terms": "Conditions d'utilisation"
+        "terms": "Conditions d'utilisation",
+        "copyright": "© {{year}}"
     },
 
     "privacy": {
