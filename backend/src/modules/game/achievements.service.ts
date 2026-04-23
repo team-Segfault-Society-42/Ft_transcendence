@@ -37,7 +37,7 @@ export class AchievementsService {
   }
 
   async getAchievements(userId: number) {
-    const userAchievement = await this.prismaService.userachievement.findMany({
+    const userAchievement = await this.prismaService.userchievement.findMany({
       where: { userId: userId },
       orderBy: {
         unlockedAt: "desc"
@@ -47,6 +47,19 @@ export class AchievementsService {
       }
     })
 
+    const getInfoFromAchievements = userAchievement.map((m) => {
+      return {
+        id: m.userId,
+        achievementId: m.achievementId,
+        unlockedAt: m.unlockedAt,
+        achievement: {
+          id: m.achievement.id,
+          key: m.achievement.key,
+          displayName: m.achievement.displayName,
+          description: m.achievement.description,
+        }
+      }
+    })
+    return getInfoFromAchievements
   }
-
 }
