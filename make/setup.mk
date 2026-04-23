@@ -37,7 +37,9 @@ REQUIRED_FILES = \
 
 # ══════════════════════════════════════════════════════
 
-setup: # Prompts user to run default setup
+##@ DEV TOOLS
+
+setup: ## Prompts user to create default setup and secrets [DEV]
 	@echo "$(ORANGE)Building default setup will overwrite all setup files.$(RES)"; \
 	printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
 	case "$$ans" in \
@@ -61,7 +63,7 @@ _check-required-files: # Checks required files exist
 		echo "$(CYAN)Missing files detected. Rebuilding defaults.$(RES)"; \
 		$(MAKE) --no-print-directory _setup-apply ; \
 	fi; \
-	
+
 
 _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
   	# ── Overwrite .env File ─────────────────────────────────────────────────────
@@ -97,6 +99,8 @@ _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
 		*) \
 			echo "Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'";; \
 	esac
-	
+
+seed: ## Populates the DB with 10 dummy users (Requires the stack to be running) [DEV]
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) exec backend npx prisma db seed
 
 .PHONY: setup _setup-apply _check-required-files
