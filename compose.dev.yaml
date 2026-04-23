@@ -8,6 +8,8 @@ services:
     volumes:
       - ./frontend:/app                         # reflect host changes instantly
       - frontend_node_modules:/app/node_modules # prevent node_module overwrite in container
+    environment:
+      - VITE_OAUTH_42_START_URL=${VITE_OAUTH_42_START_URL}
 
 
   # ── Backend (Nest.js) ────────────────────────────────────────────
@@ -22,6 +24,9 @@ services:
       - FORTYTWO_CLIENT_SECRET=${FORTYTWO_CLIENT_SECRET}
       - FORTYTWO_REDIRECT_URI=${FORTYTWO_REDIRECT_URI}
       - FRONTEND_OAUTH_SUCCESS_URL=${FRONTEND_OAUTH_SUCCESS_URL}
+      - DOMAIN=${DOMAIN}
+      - TWO_FACTOR_URL=${TWO_FACTOR_URL}
+
     volumes:
       - ./backend:/app                          # reflect host changes instantly
       - backend_node_modules:/app/node_modules  # prevent node_module overwrite in container

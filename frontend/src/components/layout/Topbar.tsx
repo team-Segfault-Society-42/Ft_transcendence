@@ -21,12 +21,12 @@ export function Topbar({ user, onLoginClick, onLogoutClick }: HeaderProps) {
   const { t } = useTranslation()
 
   const handleLogin42 = () => {
-    const oauth42Url =
-      import.meta.env.VITE_OAUTH_42_START_URL ?? "http://localhost:1024/api/auth/42";
-  
-    window.location.href = oauth42Url;
+	const fortyTwoStartUrl =
+		import.meta.env.VITE_OAUTH_42_START_URL ?? "/api/auth/42";
+
+    window.location.href = fortyTwoStartUrl;
     };
-  
+
   return (
     <header className="h-16 min-h-16 border-b border-white/10 flex items-center justify-between px-6 gap-6">
 
@@ -41,22 +41,22 @@ export function Topbar({ user, onLoginClick, onLogoutClick }: HeaderProps) {
         src={user.avatar}
         fallback={user.username[0]}/>
 
-      <Button 
+      <Button
         onClick={onLogoutClick}>
         <span>
           {t("home.buttons.hi")} {user.username} {t("auth.buttons.logout")}
         </span>
       </Button>
-      
 
-      </> 
-      
-      ) : ( 
-                
+
+      </>
+
+      ) : (
+
       <Button
           onClick={onLoginClick}>
-          {t("home.buttons.login")} 
-      </Button> 
+          {t("home.buttons.login")}
+      </Button>
       )}
 
       <Button
@@ -65,7 +65,7 @@ export function Topbar({ user, onLoginClick, onLogoutClick }: HeaderProps) {
           Login with 42
         </span>
       </Button>
-      
+
     </div>
 
     </header>

@@ -21,6 +21,20 @@ export class OAuthController {
 		private readonly authService: AuthService,
 	) {}
 
+	private getFrontendSuccessRedirectUrl(): string {
+		return (
+			process.env.FRONTEND_OAUTH_SUCCESS_URL ??
+			'http://localhost:1024/'
+		);
+	}
+
+	private getTwoFactorRedirectUrl(): string {
+		return (
+			process.env.TWO_FACTOR_URL ??
+			'http://localhost:1024/two-factor'
+		);
+	}
+
 	@Public()
 	@Get('42')
 	startFortyTwoOAuth(@Res() res: Response) {
@@ -33,18 +47,15 @@ export class OAuthController {
 			);
 		}
 
-		// 1. generate state
 		const state = Math.random().toString(36).substring(2);
 
-		// 2.store in cookie
 		res.cookie('oauth_state', state, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
-			maxAge: 5 * 60 * 1000, // 5 minutes
+			maxAge: 5 * 60 * 1000,
 		});
 
-		// 3. build authorization URL
 		const params = new URLSearchParams({
 			client_id: clientId,
 			redirect_uri: redirectUri,
@@ -55,7 +66,6 @@ export class OAuthController {
 
 		const authorizationUrl = `https://api.intra.42.fr/oauth/authorize?${params.toString()}`;
 
-		// 4. redirect
 		return res.redirect(authorizationUrl);
 	}
 
@@ -122,19 +132,15 @@ export class OAuthController {
 			sameSite: 'lax',
 		});
 
-		const defaultSuccessRedirectUrl = 'http://localhost:1024/';
-		const configuredSuccessRedirectUrl =
-			process.env.FRONTEND_OAUTH_SUCCESS_URL ?? defaultSuccessRedirectUrl;
-
 		const redirectUrl =
 			loginResult.type === '2fa_required'
-				? 'http://localhost:1024/two-factor'
-				: configuredSuccessRedirectUrl;
+				? this.getTwoFactorRedirectUrl()
+				: this.getFrontendSuccessRedirectUrl();
 
 		return res?.redirect(redirectUrl);
 	}
 
-////////////////////Google OAuth//////////////////
+	//////////////////// Google OAuth ////////////////////
 	@Public()
 	@Get('google')
 	startGoogleOAuth(@Res() res: Response) {
@@ -200,16 +206,10 @@ export class OAuthController {
 			});
 		}
 
-
-
-		const defaultSuccessRedirectUrl = 'http://localhost:1024/';
-		const configuredSuccessRedirectUrl =
-			process.env.FRONTEND_OAUTH_SUCCESS_URL ?? defaultSuccessRedirectUrl;
-
 		const redirectUrl =
 			loginResult.type === '2fa_required'
-				? 'http://localhost:1024/two-factor'
-				: configuredSuccessRedirectUrl;
+				? this.getTwoFactorRedirectUrl()
+				: this.getFrontendSuccessRedirectUrl();
 
 		return res?.redirect(redirectUrl);
 	}
