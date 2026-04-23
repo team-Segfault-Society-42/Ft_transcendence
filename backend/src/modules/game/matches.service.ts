@@ -205,9 +205,7 @@ export class MatchesService {
                 wins: m.wins
             }
         })
-
         return (getUserInfo)
-
     }
 }
 

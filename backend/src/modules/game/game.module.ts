@@ -14,6 +14,6 @@ import { AchievementsService } from './achievements.service';
   })],
   providers: [GameService, GameGateway, MatchesService, AchievementsService],
   controllers: [GameController],
-  exports: [MatchesService],
+  exports: [MatchesService, AchievementsService],
 })
 export class GameModule {}
