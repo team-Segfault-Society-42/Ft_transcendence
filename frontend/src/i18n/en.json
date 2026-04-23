@@ -56,6 +56,14 @@
         "buttons": {
             "edit": "Edit profile",
             "save": "Save changes"
+        },
+        "about": {
+            "title": "About",
+            "notConnected": "Not connected",
+            "login": "Login to see your profile",
+            "guest": "Guest",
+            "viewProfile": "View profile",
+            "noBio": "No bio yet"
         }
     },
 

@@ -3,6 +3,7 @@ import { Avatar } from "@/components/ui/Avatar"
 import { cn } from "@/lib/utils"
 import { Winrate } from "../ui/Winrate"
 import { LevelProgress } from "../ui/Level"
+import { useTranslation } from "react-i18next"
 
 interface User {
   username: string
@@ -20,19 +21,22 @@ type Props = {
 }
 
 export function AboutCard({ user, className }: Props) {
+  const { t } = useTranslation()
 
   if (!user) {
     return (
       <Card className={cn("bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent", className)}>
-        <CardTitle>About</CardTitle>
+        <CardTitle>
+          {t("profile.about.title")}
+        </CardTitle>
 
         <div className="flex-1 flex flex-col items-center justify-center text-center">
           <p className="text-white/60 mt-40 text-center">
-            Not connected
+            {t("profile.about.notConnected")}
           </p>
 
           <p className="text-xs text-white/40 text-center">
-            Login to see your profile
+            {t("profile.about.login")}
           </p>
         </div>
       </Card>
@@ -45,7 +49,7 @@ export function AboutCard({ user, className }: Props) {
     >
       {/* TITLE */}
       <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-        About
+        {t("profile.about.title")}
       </CardTitle>
 
       {/* PROFILE */}
@@ -58,17 +62,17 @@ export function AboutCard({ user, className }: Props) {
 
         <div>
           <p className="font-semibold text-white">
-            {user?.username || "Guest"}
+            {user?.username || t("profile.about.guest")}
           </p>
           <p className="text-xs text-white/60">
-            View profile
+            {t("profile.about.viewProfile")}
           </p>
         </div>
       </div>
 
       {/* BIO */}
       <CardDescription className="mt-4">
-        {user?.bio || "No bio yet"}
+        {user?.bio || t("profile.about.noBio")}
       </CardDescription>
 
       {/* STATS */}

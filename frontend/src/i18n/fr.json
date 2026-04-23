@@ -56,6 +56,14 @@
         "buttons": {
             "edit": "Modifier le profil",
             "save": "Sauvegarder les changements"
+        },
+        "about": {
+            "title": "À propos",
+            "notConnected": "Non connecté",
+            "login": "Connecte-toi pour voir ton profil",
+            "guest": "Invité",
+            "viewProfile": "Voir le profil",
+            "noBio": "Pas encore de bio"
         }
     },
     
