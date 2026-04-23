@@ -32,7 +32,7 @@ export default function Dashboard() {
         if (error.response?.status != 401) {
           const serverMessage = error.response?.data?.message || error.message
           const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
-          toast.error(t("auth.error") + finalMessage)
+          toast.error(t("auth.errorWithMessage", { message: finalMessage }))
         }
         setUser(null)
       } finally {
@@ -44,9 +44,8 @@ export default function Dashboard() {
 
   async function handleLogout() {
     try {
-      const response = await userService.userLogout()
       setUser(null)
-      toast.success(response.message)
+      toast.success(t("auth.logoutSuccess"))
       navigate("/")
     } catch {
       setUser(null)

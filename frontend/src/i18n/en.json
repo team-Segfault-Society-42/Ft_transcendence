@@ -112,7 +112,9 @@
             "email": "Invalid email address.",
             "password": "The password must be at least 8 characters long.",
             "bio": "The bio does contain more than 180 characters"
-          }
+        },
+        "logoutSuccess": "Logged out successfully",
+        "errorWithMessage": "An error occurred: {{message}}"
       },
 
     "footer": {

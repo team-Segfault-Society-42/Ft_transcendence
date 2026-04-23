@@ -110,8 +110,9 @@
             "email": "Dirección de correo inválida.",
             "password": "La contraseña debe tener al menos 8 caracteres.",
             "bio": "La bio debe contener menos de 180 caracteres"
-
-        }
+        },
+        "logoutSuccess": "Desconexión exitosa",
+        "errorWithMessage": "Ocurrió un error: {{message}}"
     },
   
     "footer": {
