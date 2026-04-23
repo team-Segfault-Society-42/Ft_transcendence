@@ -38,6 +38,34 @@ async function main() {
       description: 'Play your first game.',
     },
   });
+
+  const drawGame = await prisma.achievement.upsert({
+    where: { key: 'DRAW_GAME' },
+    update: {
+      displayName: 'Boring',
+      description: 'Draw a game.',
+    },
+    create: {
+      key: 'DRAW_GAME',
+      displayName: 'Boring',
+      description: 'Draw a game.',
+    },
+  });
+
+    const looseByTime = await prisma.achievement.upsert({
+    where: { key: 'LOSE_BY_TIME' },
+    update: {
+      displayName: 'Noob',
+      description: 'Lose a game by time.',
+    },
+    create: {
+      key: 'LOSE_BY_TIME',
+      displayName: 'Noob',
+      description: 'Lose a game by time.',
+    },
+  });
+
+
 }
 
 main()
