@@ -86,14 +86,35 @@ export class OAuthController {
 		}
 
 		const user = await this.oauthService.handleFortyTwoCallback(code);
-		const accessToken = await this.authService.signTokenForUser(user);
+		const loginResult = await this.authService.createLoginResultForUser(user);
 
-		res?.cookie('access_token', accessToken, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			maxAge: 60 * 60 * 1000,
-		});
+		if (loginResult.type === '2fa_required') {
+			res?.cookie('2fa_pending', loginResult.two_factor_token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				maxAge: 5 * 60 * 1000,
+			});
+
+			res?.clearCookie('access_token', {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+			});
+		} else {
+			res?.cookie('access_token', loginResult.access_token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				maxAge: 60 * 60 * 1000,
+			});
+
+			res?.clearCookie('2fa_pending', {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+			});
+		}
 
 		res?.clearCookie('oauth_state', {
 			httpOnly: true,
@@ -143,14 +164,37 @@ export class OAuthController {
 		}
 
 		const user = await this.oauthService.handleGoogleCallback(code);
-		const accessToken = await this.authService.signTokenForUser(user);
+		const loginResult = await this.authService.createLoginResultForUser(user);
 
-		res?.cookie('access_token', accessToken, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			maxAge: 60 * 60 * 1000,
-		});
+		if (loginResult.type === '2fa_required') {
+			res?.cookie('2fa_pending', loginResult.two_factor_token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				maxAge: 5 * 60 * 1000,
+			});
+
+			res?.clearCookie('access_token', {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+			});
+		} else {
+			res?.cookie('access_token', loginResult.access_token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				maxAge: 60 * 60 * 1000,
+			});
+
+			res?.clearCookie('2fa_pending', {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+			});
+		}
+
+
 
 		return {
 			message: 'OAuth login successful',

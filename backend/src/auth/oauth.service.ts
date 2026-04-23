@@ -81,6 +81,7 @@ export class OAuthService {
 				losses: user.losses,
 				draws: user.draws,
 				xp: user.xp,
+				isTwoFactorEnabled: user.isTwoFactorEnabled,
 			};
 		}
 
@@ -109,6 +110,7 @@ export class OAuthService {
 				losses: existingUserByEmail.losses,
 				draws: existingUserByEmail.draws,
 				xp: existingUserByEmail.xp,
+				isTwoFactorEnabled: existingUserByEmail.isTwoFactorEnabled,
 			};
 		}
 
@@ -145,6 +147,7 @@ export class OAuthService {
 			losses: user.losses,
 			draws: user.draws,
 			xp: user.xp,
+			isTwoFactorEnabled: user.isTwoFactorEnabled,
 		};
 	}
 

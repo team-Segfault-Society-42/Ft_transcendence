@@ -99,7 +99,7 @@ export class AuthController {
 	}
 
 	@Public()
-	@ApiOperation({ summary: 'Log out the current user and clear the auth cookie' })
+	@ApiOperation({ summary: 'Log out the current user and clear auth cookies' })
 	@ApiResponse({
 		status: 201,
 		description: 'Logout successful',
@@ -107,6 +107,12 @@ export class AuthController {
 	@Post('logout')
 	logout(@Res({ passthrough: true }) res: Response) {
 		res.clearCookie('access_token', {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+		});
+
+		res.clearCookie('2fa_pending', {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',

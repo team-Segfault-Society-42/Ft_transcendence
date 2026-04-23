@@ -84,24 +84,11 @@ export class AuthService {
 		return this.jwtService.signAsync(payload);
 	}
 
-	async login(loginDto: LoginDto): Promise<LoginResult> {
-		const user = await this.prisma.user.findUnique({
-			where: { email: loginDto.email },
-		});
-
-		if (!user || !user.passwordHash) {
-			throw new UnauthorizedException('Invalid credentials');
-		}
-
-		const passwordMatches = await bcrypt.compare(
-			loginDto.password,
-			user.passwordHash,
-		);
-
-		if (!passwordMatches) {
-			throw new UnauthorizedException('Invalid credentials');
-		}
-
+	async createLoginResultForUser(user: {
+		id: number;
+		email: string;
+		isTwoFactorEnabled: boolean;
+	}): Promise<LoginResult> {
 		if (user.isTwoFactorEnabled) {
 			const { token } = await this.twoFactorService.createTwoFactorPendingToken({
 				id: user.id,
@@ -120,6 +107,27 @@ export class AuthService {
 			type: 'full_auth',
 			access_token: accessToken,
 		};
+	}
+
+	async login(loginDto: LoginDto): Promise<LoginResult> {
+		const user = await this.prisma.user.findUnique({
+			where: { email: loginDto.email },
+		});
+
+		if (!user || !user.passwordHash) {
+			throw new UnauthorizedException('Invalid credentials');
+		}
+
+		const passwordMatches = await bcrypt.compare(
+			loginDto.password,
+			user.passwordHash,
+		);
+
+		if (!passwordMatches) {
+			throw new UnauthorizedException('Invalid credentials');
+		}
+
+		return this.createLoginResultForUser(user);
 	}
 
 	async me(userId: number) {
