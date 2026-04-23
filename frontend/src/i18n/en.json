@@ -8,6 +8,9 @@
     },
 
     "home": {
+        "play":{
+            "title": "Play"
+        },
         "hero":{
             "texte": "Play. Compete. Improve. Challenge players and become the best."
         },

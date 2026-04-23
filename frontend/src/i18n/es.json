@@ -8,7 +8,10 @@
     },
   
     "home": {
-        "hero": {
+      "play": {
+        "title": "Jugar"
+      },
+      "hero": {
             "texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
       },
       "buttons": {

@@ -8,6 +8,9 @@
     },
 
     "home": {
+        "play": {
+            "title": "Jouer"
+        },
         "hero":{
             "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
         },
