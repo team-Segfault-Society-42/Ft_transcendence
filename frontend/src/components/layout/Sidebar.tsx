@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { House, Gamepad2, UserRound, UsersRound, MessageCircle, History } from "lucide-react"
+import { House, Gamepad2, UserRound, UsersRound, MessageCircle, History, Trophy } from "lucide-react"
 
 export function Sidebar() {
 
@@ -10,6 +10,7 @@ export function Sidebar() {
     { to: "/", label: "sidebar.home", icon: House },
     { to: "/game", label: "sidebar.game", icon: Gamepad2 },
     { to: "/profile", label: "sidebar.profile", icon: UserRound },
+    { to: "/leaderboard", label: "sidebar.leaderboard", icon: Trophy },
     { to: "/friends", label: "sidebar.friends", icon: UsersRound },
     { to: "/chat", label: "sidebar.chat", icon: MessageCircle },
     { to: "/history", label: "sidebar.history", icon: History}

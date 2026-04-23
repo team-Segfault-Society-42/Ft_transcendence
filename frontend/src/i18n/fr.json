@@ -42,6 +42,7 @@
         "home": "Accueil",
         "game": "Jeu",
         "profile": "Profil",
+        "leaderboard": "Classement",
         "friends": "Amis",
         "chat": "Chat",
         "history": "Historique"
@@ -88,8 +89,8 @@
     },
 
     "history": {
-        "title": "Game History",
-        "empty": "No games yet"
+        "title": "Historique des parties",
+        "empty": "Aucune partie pour le moment"
     },
     
     "auth": {        

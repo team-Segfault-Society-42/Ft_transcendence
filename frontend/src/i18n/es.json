@@ -42,6 +42,7 @@
       "home": "Inicio",
       "game": "Juego",
       "profile": "Perfil",
+      "leaderboard": "Clasificación",
       "friends": "Amigos",
       "chat": "Chat",
       "history": "Historial"
@@ -85,6 +86,11 @@
         "viewProfile": "Ver perfil",
         "noBio": "Sin biografía"
       }
+    },
+
+    "history": {
+        "title": "Historial de partidas",
+        "empty": "No hay partidas todavía"
     },
 
     "auth": {
