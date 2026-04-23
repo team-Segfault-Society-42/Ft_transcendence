@@ -1,18 +1,30 @@
-// import 'dotenv/config';
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { Pool } from 'pg';
+import * as bcrypt from 'bcrypt';
 import * as fs from 'node:fs';
+
 
 // ── Define Prisma Client ────────────────────────────────────────────────────
 const connectionString = fs.readFileSync('/run/secrets/database_url', 'utf8').trim();
-
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
-
 const prisma = new PrismaClient({ adapter });
 
+
+// ── Define Constants ────────────────────────────────────────────────────────
+const DUMMY_COUNT = 10;
+const PASSWORD = 'Dummy123';
+const AVATARS = Array.from(
+  { length: DUMMY_COUNT },
+  (_, n) => `https://api.dicebear.com/9.x/pixel-art/svg?seed=dummy${n}`
+);
+
+
+// ── Seed Database ───────────────────────────────────────────────────────────
 async function main() {
+
+  // ── Seed Achievements ────────────────────────────────────────────────
   const firstWin = await prisma.achievement.upsert({
     where: { key: 'FIRST_WIN' },
     update: {
@@ -25,7 +37,6 @@ async function main() {
       description: 'Win your first game.',
     },
   });
-
   const firstGame = await prisma.achievement.upsert({
     where: { key: 'FIRST_GAME' },
     update: {
@@ -38,7 +49,6 @@ async function main() {
       description: 'Play your first game.',
     },
   });
-
   const drawGame = await prisma.achievement.upsert({
     where: { key: 'DRAW_GAME' },
     update: {
@@ -51,7 +61,6 @@ async function main() {
       description: 'Draw a game.',
     },
   });
-
     const looseByTime = await prisma.achievement.upsert({
     where: { key: 'LOSE_BY_TIME' },
     update: {
@@ -65,8 +74,24 @@ async function main() {
     },
   });
 
+	// ── Update or Create Users ───────────────────────────────────────────
+  const passwordHash = await bcrypt.hash(PASSWORD, 10);
 
+  for (let n = 0; n < DUMMY_COUNT; n++) {
+    await prisma.user.upsert({
+      where: { email: `dummy${n}@mail.com` },
+      update: {},
+      create: {
+        email: `dummy${n}@mail.com`,
+        username: `dummy${n}`,
+        passwordHash,
+        avatar: AVATARS[n],
+      },
+    });
+    console.log(`Seeded dummy${n}`);
+  }
 }
+
 
 main()
   .then(() => {
