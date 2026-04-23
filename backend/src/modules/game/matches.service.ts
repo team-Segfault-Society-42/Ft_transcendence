@@ -113,7 +113,6 @@ export class MatchesService {
                     await this.achievementService.unlockAchievement(loserId, 'LOSE_BY_TIME', tx)
                 }
 
-
             })
             
         }
@@ -140,7 +139,6 @@ export class MatchesService {
                 date: "desc"
             }
         })
-
 
         const getUserInfoFromGame = game.map((m) => {
 

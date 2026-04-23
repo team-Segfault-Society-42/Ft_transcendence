@@ -35,4 +35,18 @@ export class AchievementsService {
       });
     }
   }
+
+  async getAchievements(userId: number) {
+    const userAchievement = await this.prismaService.userachievement.findMany({
+      where: { userId: userId },
+      orderBy: {
+        unlockedAt: "desc"
+      },
+      include: {
+        achievement: true
+      }
+    })
+
+  }
+
 }
