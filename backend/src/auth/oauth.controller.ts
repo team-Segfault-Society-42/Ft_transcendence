@@ -122,10 +122,16 @@ export class OAuthController {
 			sameSite: 'lax',
 		});
 
-		const successRedirectUrl =
-			process.env.FRONTEND_OAUTH_SUCCESS_URL ?? 'http://localhost:1024/';
+		const defaultSuccessRedirectUrl = 'http://localhost:1024/';
+		const configuredSuccessRedirectUrl =
+			process.env.FRONTEND_OAUTH_SUCCESS_URL ?? defaultSuccessRedirectUrl;
 
-		return res?.redirect(successRedirectUrl);
+		const redirectUrl =
+			loginResult.type === '2fa_required'
+				? 'http://localhost:1024/two-factor'
+				: configuredSuccessRedirectUrl;
+
+		return res?.redirect(redirectUrl);
 	}
 
 ////////////////////Google OAuth//////////////////
@@ -196,9 +202,15 @@ export class OAuthController {
 
 
 
-		return {
-			message: 'OAuth login successful',
-			user,
-		};
+		const defaultSuccessRedirectUrl = 'http://localhost:1024/';
+		const configuredSuccessRedirectUrl =
+			process.env.FRONTEND_OAUTH_SUCCESS_URL ?? defaultSuccessRedirectUrl;
+
+		const redirectUrl =
+			loginResult.type === '2fa_required'
+				? 'http://localhost:1024/two-factor'
+				: configuredSuccessRedirectUrl;
+
+		return res?.redirect(redirectUrl);
 	}
 }
