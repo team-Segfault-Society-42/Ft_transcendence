@@ -1,5 +1,13 @@
-import { Body, Controller, Post, Get, Req, Res } from '@nestjs/common';
-import type { Response } from 'express';
+import {
+	Body,
+	Controller,
+	Post,
+	Get,
+	Req,
+	Res,
+	UnauthorizedException,
+} from '@nestjs/common';
+import type { Request, Response } from 'express';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -159,5 +167,63 @@ export class AuthController {
 		@Body() twoFactorCodeDto: TwoFactorCodeDto,
 	) {
 		return this.twoFactorService.verifySetup(req.user.sub, twoFactorCodeDto.code);
+	}
+
+	@Public()
+	@ApiOperation({ summary: 'Complete login with a valid TOTP code' })
+	@ApiBody({ type: TwoFactorCodeDto })
+	@ApiResponse({
+		status: 201,
+		description: '2FA login completed successfully',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Invalid code or 2FA not enabled',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Missing or invalid 2FA pending token',
+	})
+	@Post('2fa/login')
+	async completeTwoFactorLogin(
+		@Body() twoFactorCodeDto: TwoFactorCodeDto,
+		@Req() req: Request,
+		@Res({ passthrough: true }) res: Response,
+	) {
+		const pendingToken = req.cookies?.['2fa_pending'];
+
+		if (!pendingToken) {
+			throw new UnauthorizedException('Missing two-factor pending token');
+		}
+
+		const payload =
+			await this.twoFactorService.verifyTwoFactorPendingToken(pendingToken);
+
+		await this.twoFactorService.verifyLoginCode(
+			payload.sub,
+			twoFactorCodeDto.code,
+		);
+
+		const accessToken = await this.authService.signTokenForUser({
+			id: payload.sub,
+			email: payload.email,
+		});
+
+		res.cookie('access_token', accessToken, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+			maxAge: 60 * 60 * 1000,
+		});
+
+		res.clearCookie('2fa_pending', {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+		});
+
+		return {
+			message: 'Two-factor login successful',
+		};
 	}
 }

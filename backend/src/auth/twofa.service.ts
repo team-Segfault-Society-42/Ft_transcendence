@@ -126,9 +126,23 @@ export class TwoFactorService {
 
 
 	async verifyLoginCode(userId: number, code: string) {
-		void userId;
-		void code;
-		throw new Error('Method not implemented.');
+		const user = await this.prisma.user.findUnique({
+			where: { id: userId },
+		});
+
+		if (!user) {
+			throw new UnauthorizedException('User not found');
+		}
+
+		if (!user.isTwoFactorEnabled || !user.twoFactorSecret) {
+			throw new BadRequestException('Two-factor authentication is not enabled');
+		}
+
+		const isCodeValid = this.verifyTotpCode(user.twoFactorSecret, code);
+
+		if (!isCodeValid) {
+			throw new BadRequestException('Invalid two-factor authentication code');
+		}
 	}
 
 	private verifyTotpCode(secret: string, code: string): boolean {
