@@ -46,7 +46,7 @@
         "chat": "Chat",
         "history": "History"
     },
-    
+
     "game": {
         "turn": "{{player}}'s Turn {{symbol}}",
         "vs": "VS",
@@ -123,7 +123,8 @@
             "bio": "The bio does contain more than 180 characters"
         },
         "logoutSuccess": "Logged out successfully",
-        "errorWithMessage": "An error occurred: {{message}}"
+        "errorWithMessage": "An error occurred: {{message}}",
+        "loginWith42": "Login with 42"
       },
 
     "footer": {

@@ -121,7 +121,8 @@
             "bio": "La bio debe contener menos de 180 caracteres"
         },
         "logoutSuccess": "Desconexión exitosa",
-        "errorWithMessage": "Ocurrió un error: {{message}}"
+        "errorWithMessage": "Ocurrió un error: {{message}}",
+        "loginWith42": "Iniciar sesión con 42"
     },
   
     "footer": {

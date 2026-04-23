@@ -123,7 +123,8 @@
             "bio": "La bio doit contenir moins de 180 caractères"
         },
         "logoutSuccess": "Déconnexion réussie",
-        "errorWithMessage": "Une erreur est survenue : {{message}}"
+        "errorWithMessage": "Une erreur est survenue : {{message}}",
+        "loginWith42": "Se connecter avec 42"
     },
 
     "footer": {
