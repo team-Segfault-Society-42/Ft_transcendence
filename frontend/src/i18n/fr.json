@@ -41,7 +41,12 @@
         "wins": "GAGNE !",
         "replay": "RECOMMENCER",
         "mode": "Mode 2 joueurs",
-        "reset": "REDEMARRER SESSION"
+        "reset": "REDEMARRER SESSION",
+        "result": {
+            "win": "Victoire",
+            "loss": "Défaite",
+            "draw": "Égalité"
+        }
     },
 
     "profile": {
@@ -66,6 +71,11 @@
             "viewProfile": "Voir le profil",
             "noBio": "Pas encore de bio"
         }
+    },
+
+    "history": {
+        "title": "Game History",
+        "empty": "No games yet"
     },
     
     "auth": {        

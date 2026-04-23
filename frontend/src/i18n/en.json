@@ -41,7 +41,12 @@
         "wins": "WINS!",
         "replay": "REPLAY",
         "mode": "2 players mode",
-        "reset": "RESET SESSION"
+        "reset": "RESET SESSION",
+        "result": {
+            "win": "Win",
+            "loss": "Loss",
+            "draw": "Draw"
+        }
     },
 
     "profile": {
@@ -50,8 +55,8 @@
             "wins": "Wins",
             "losses": "Losses",
             "winrate": "Winrate",
-            "game_one": "{{count}} game played",
-            "game_other": "{{count}} games played"
+            "games_one": "{{count}} game played",
+            "games_other": "{{count}} games played"
         },
         "bio": "Bio",
         "buttons": {
@@ -66,6 +71,11 @@
             "viewProfile": "View profile",
             "noBio": "No bio yet"
         }
+    },
+
+    "history": {
+        "title": "Game History",
+        "empty": "No games yet"
     },
 
     "auth": {

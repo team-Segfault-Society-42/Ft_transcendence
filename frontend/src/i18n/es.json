@@ -41,7 +41,12 @@
         "wins": "¡GANA!",
         "replay": "Reiniciar",
         "mode": "Modo 2 jugadores",
-      "reset": "Reiniciar sesión"
+        "reset": "Reiniciar sesión",
+      "result": {
+          "win": "Victoria",
+          "loss": "Derrota",
+          "draw": "Empate"
+      }
     },
   
     "profile": {
@@ -50,8 +55,8 @@
         "wins": "Victorias",
         "losses": "Derrotas",
         "winrate": "Porcentaje de victorias",
-        "game_one": "{{count}} partida jugadas",
-        "game_other": "{{count}} partidas jugadas"
+        "games_one": "{{count}} partida jugadas",
+        "games_other": "{{count}} partidas jugadas"
       },
       "bio": "Biografía",
       "buttons": {

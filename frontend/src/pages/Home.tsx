@@ -75,7 +75,6 @@ export default function Home() {
           	<Link to="/history">    
             	<GameHistoryCard 
               	matches={matches}
-              	title="Match history"
             	/>
           	</Link>
         </div>
