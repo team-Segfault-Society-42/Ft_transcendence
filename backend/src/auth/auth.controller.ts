@@ -38,7 +38,7 @@ export class AuthController {
 	@ApiBody({ type: LoginDto })
 	@ApiResponse({
 		status: 201,
-		description: 'Login successful',
+		description: 'Login successful or 2FA required',
 	})
 	@ApiResponse({
 		status: 401,
@@ -49,16 +49,45 @@ export class AuthController {
 		@Body() loginDto: LoginDto,
 		@Res({ passthrough: true }) res: Response,
 	) {
-		const { access_token } = await this.authService.login(loginDto);
+		const result = await this.authService.login(loginDto);
 
-		res.cookie('access_token', access_token, {
+		if (result.type === '2fa_required') {
+			res.cookie('2fa_pending', result.two_factor_token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				maxAge: 5 * 60 * 1000,
+			});
+
+			res.clearCookie('access_token', {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+			});
+
+			return {
+				message: 'Two-factor authentication required',
+				twoFactorRequired: true,
+			};
+		}
+
+		res.cookie('access_token', result.access_token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
 			maxAge: 60 * 60 * 1000,
 		});
 
-		return { message: 'Login successful' };
+		res.clearCookie('2fa_pending', {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+		});
+
+		return {
+			message: 'Login successful',
+			twoFactorRequired: false,
+		};
 	}
 
 	@Public()
