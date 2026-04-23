@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Motion } from "@/components/ui/Motion";
-import { gameApi } from "@/services/gameApi";
 import { AboutCard } from "@/components/home/AboutCard"
 import { PlayCard } from "@/components/home/PlayCard"
 import { GameHistoryCard } from "@/components/home/GameHistoryCard"
@@ -35,7 +34,7 @@ export default function Home() {
 
   	useEffect(() => {
     	if (!user) return
-  
+
     	userService.getUserHistory(user.id)
       	.then(setMatches)
   	}, [user])
@@ -68,12 +67,12 @@ export default function Home() {
 
         <div className="lg:col-span-2 flex flex-col gap-6">
         	<Link to="/game">
-            	<PlayCard 
+            	<PlayCard
               	onFindOpponent={handleFindOpponent}
             	/>
           	</Link>
-          	<Link to="/history">    
-            	<GameHistoryCard 
+          	<Link to="/history">
+            	<GameHistoryCard
               	matches={matches}
               	title="Match history"
             	/>
