@@ -38,6 +38,15 @@
         }
     },
 
+    "sidebar":{
+        "home": "Home",
+        "game": "Game",
+        "profile": "Profile",
+        "friends": "Friends",
+        "chat": "Chat",
+        "history": "History"
+    },
+    
     "game": {
         "turn": "{{player}}'s Turn {{symbol}}",
         "vs": "VS",

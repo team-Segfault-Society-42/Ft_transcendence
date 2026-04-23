@@ -7,12 +7,12 @@ export function Sidebar() {
   const { t } = useTranslation()
 
   const links = [
-    { to: "/", label: "Home", icon: House },
-    { to: "/game", label: "Game", icon: Gamepad2 },
-    { to: "/profile", label: "Profile", icon: UserRound },
-    { to: "/friends", label: "Friends", icon: UsersRound },
-    { to: "/chat", label: "Chat", icon: MessageCircle },
-    { to: "/history", label: "History", icon: History}
+    { to: "/", label: "sidebar.home", icon: House },
+    { to: "/game", label: "sidebar.game", icon: Gamepad2 },
+    { to: "/profile", label: "sidebar.profile", icon: UserRound },
+    { to: "/friends", label: "sidebar.friends", icon: UsersRound },
+    { to: "/chat", label: "sidebar.chat", icon: MessageCircle },
+    { to: "/history", label: "sidebar.history", icon: History}
   ]
 
   return (
