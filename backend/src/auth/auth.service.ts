@@ -60,6 +60,7 @@ export class AuthService {
 			losses: user.losses,
 			draws: user.draws,
 			xp: user.xp,
+			isTwoFactorEnabled: user.isTwoFactorEnabled,
 			};
 		} catch (error: unknown) {
 			if (
@@ -149,6 +150,7 @@ export class AuthService {
 			losses: user.losses,
 			draws: user.draws,
 			xp: user.xp,
+			isTwoFactorEnabled: user.isTwoFactorEnabled,
 			};
 	}
 }
