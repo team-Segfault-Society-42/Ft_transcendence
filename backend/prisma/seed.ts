@@ -2,10 +2,10 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
+import * as fs from 'node:fs';
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) 
-    throw new Error('DATABASE_URL is not set');
+// ── Define Prisma Client ────────────────────────────────────────────────────
+const connectionString = fs.readFileSync('/run/secrets/database_url', 'utf8').trim();
 
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
