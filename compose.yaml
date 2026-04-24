@@ -37,8 +37,8 @@ services:
         condition: service_healthy
 # Uncomment temporarily to access Prisma Studio from host
     # ports:
-    #   - "5555:5555"
-    
+    #  - "5555:5555"
+
 # Uncomment to test backend only (as a single service)
     # ports:
     #   - "3000:3000"

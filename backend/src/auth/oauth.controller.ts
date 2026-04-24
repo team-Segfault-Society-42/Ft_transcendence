@@ -21,6 +21,20 @@ export class OAuthController {
 		private readonly authService: AuthService,
 	) {}
 
+	private getFrontendSuccessRedirectUrl(): string {
+		return (
+			process.env.FRONTEND_OAUTH_SUCCESS_URL ??
+			'http://localhost:1024/'
+		);
+	}
+
+	private getTwoFactorRedirectUrl(): string {
+		return (
+			process.env.TWO_FACTOR_URL ??
+			'http://localhost:1024/two-factor'
+		);
+	}
+
 	@Public()
 	@Get('42')
 	startFortyTwoOAuth(@Res() res: Response) {
@@ -33,18 +47,15 @@ export class OAuthController {
 			);
 		}
 
-		// 1. generate state
 		const state = Math.random().toString(36).substring(2);
 
-		// 2.store in cookie
 		res.cookie('oauth_state', state, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
-			maxAge: 5 * 60 * 1000, // 5 minutes
+			maxAge: 5 * 60 * 1000,
 		});
 
-		// 3. build authorization URL
 		const params = new URLSearchParams({
 			client_id: clientId,
 			redirect_uri: redirectUri,
@@ -55,7 +66,6 @@ export class OAuthController {
 
 		const authorizationUrl = `https://api.intra.42.fr/oauth/authorize?${params.toString()}`;
 
-		// 4. redirect
 		return res.redirect(authorizationUrl);
 	}
 
@@ -86,14 +96,35 @@ export class OAuthController {
 		}
 
 		const user = await this.oauthService.handleFortyTwoCallback(code);
-		const accessToken = await this.authService.signTokenForUser(user);
+		const loginResult = await this.authService.createLoginResultForUser(user);
 
-		res?.cookie('access_token', accessToken, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			maxAge: 60 * 60 * 1000,
-		});
+		if (loginResult.type === '2fa_required') {
+			res?.cookie('2fa_pending', loginResult.two_factor_token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				maxAge: 5 * 60 * 1000,
+			});
+
+			res?.clearCookie('access_token', {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+			});
+		} else {
+			res?.cookie('access_token', loginResult.access_token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				maxAge: 60 * 60 * 1000,
+			});
+
+			res?.clearCookie('2fa_pending', {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+			});
+		}
 
 		res?.clearCookie('oauth_state', {
 			httpOnly: true,
@@ -101,13 +132,15 @@ export class OAuthController {
 			sameSite: 'lax',
 		});
 
-		const successRedirectUrl =
-			process.env.FRONTEND_OAUTH_SUCCESS_URL ?? 'http://localhost:1024/';
+		const redirectUrl =
+			loginResult.type === '2fa_required'
+				? this.getTwoFactorRedirectUrl()
+				: this.getFrontendSuccessRedirectUrl();
 
-		return res?.redirect(successRedirectUrl);
+		return res?.redirect(redirectUrl);
 	}
 
-////////////////////Google OAuth//////////////////
+	//////////////////// Google OAuth ////////////////////
 	@Public()
 	@Get('google')
 	startGoogleOAuth(@Res() res: Response) {
@@ -143,18 +176,41 @@ export class OAuthController {
 		}
 
 		const user = await this.oauthService.handleGoogleCallback(code);
-		const accessToken = await this.authService.signTokenForUser(user);
+		const loginResult = await this.authService.createLoginResultForUser(user);
 
-		res?.cookie('access_token', accessToken, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			maxAge: 60 * 60 * 1000,
-		});
+		if (loginResult.type === '2fa_required') {
+			res?.cookie('2fa_pending', loginResult.two_factor_token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				maxAge: 5 * 60 * 1000,
+			});
 
-		return {
-			message: 'OAuth login successful',
-			user,
-		};
+			res?.clearCookie('access_token', {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+			});
+		} else {
+			res?.cookie('access_token', loginResult.access_token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				maxAge: 60 * 60 * 1000,
+			});
+
+			res?.clearCookie('2fa_pending', {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+			});
+		}
+
+		const redirectUrl =
+			loginResult.type === '2fa_required'
+				? this.getTwoFactorRedirectUrl()
+				: this.getFrontendSuccessRedirectUrl();
+
+		return res?.redirect(redirectUrl);
 	}
 }

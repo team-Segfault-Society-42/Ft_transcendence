@@ -8,6 +8,7 @@ import Terms from "./pages/Terms";
 import { Toaster } from "./components/ui/Sonner";
 import Dashboard from "./components/layout/Dashboard";
 import LeaderBoard from "@/pages/Leaderboard"
+import TwoFactorLogin from "./pages/TwoFactorLogin";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
+		  <Route path="/two-factor" element={<TwoFactorLogin />} />
         </Route>
       </Routes>
       <Toaster richColors theme="dark" position="bottom-right"/>

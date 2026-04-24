@@ -23,6 +23,7 @@ interface User {
     bio: string,
     avatar: string,
     xp: number
+	isTwoFactorEnabled: boolean
 }
 
 export default function Profile() {
@@ -37,6 +38,10 @@ export default function Profile() {
   const [bio, setBio] = useState(user?.bio || "")
   const [loading, setLoading] = useState(true)
 //   const navigate = useNavigate()
+
+  const [twoFactorCode, setTwoFactorCode] = useState("")
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState("")
+  const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -60,6 +65,45 @@ export default function Profile() {
         }
         isInEdit(!isEdit)
     }
+
+	async function handleEnableTwoFactor() {
+		if (!user) return
+
+		try {
+			setIsTwoFactorLoading(true)
+			const result = await userService.enableTwoFactor()
+			setQrCodeDataUrl(result.qrCodeDataUrl)
+			toast.success("2FA setup started")
+		} catch (error: any) {
+		const serverMessage = error.response?.data?.message || error.message
+		const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
+		toast.error(t("auth.error") + finalMessage)
+		} finally {
+			setIsTwoFactorLoading(false)
+		}
+	}
+
+	async function handleVerifyTwoFactor() {
+		if (!user) return
+
+		try {
+			setIsTwoFactorLoading(true)
+			const result = await userService.verifyTwoFactorSetup(twoFactorCode)
+			toast.success(result.message)
+
+			const refreshedUser = await userService.getMe()
+			setUser(refreshedUser)
+
+			setTwoFactorCode("")
+			setQrCodeDataUrl("")
+		} catch (error: any) {
+			const serverMessage = error.response?.data?.message || error.message
+			const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
+			toast.error(t("auth.error") + finalMessage)
+		} finally {
+			setIsTwoFactorLoading(false)
+		}
+	}
 
     useEffect(() => {
       if (user) {
@@ -94,16 +138,16 @@ export default function Profile() {
 
     return (
         <section className="w-full flex justify-center">
-      
+
           <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8 overflow-hidden">
-      
+
             {/* GLOW BACKGROUND */}
             <div className="absolute -top-20 -right-20 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl"></div>
             <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl"></div>
-      
+
             {/* HEADER */}
             <div className="relative flex flex-col items-center gap-4">
-      
+
             {/* AVATAR */}
             <div className="relative group">
               <Avatar
@@ -113,7 +157,7 @@ export default function Profile() {
                 className="border border-white/20 z-10 relative"/>
               <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
             </div>
-      
+
               {/* USERNAME */}
               {isEdit ? (
                 <Input
@@ -125,9 +169,9 @@ export default function Profile() {
                   {user.username}
                 </h1>
               )}
-      
+
             </div>
-      
+
             {/* STATS */}
             <div className="mt-8 grid grid-cols-2 gap-4 text-center">
               {[
@@ -149,7 +193,7 @@ export default function Profile() {
                 </div>
               ))}
             </div>
-      
+
             {/* WINRATE */}
             <Winrate
               wins={user.wins}
@@ -161,14 +205,14 @@ export default function Profile() {
             <LevelProgress
               xp={user.xp}
             />
-      
+
             {/* BIO */}
             <div className="mt-8">
-      
+
               <p className="text-white/50 text-sm mb-2">
                 {t("profile.bio")}
               </p>
-      
+
               {isEdit ? (
                 <textarea
                   value={bio}
@@ -181,18 +225,79 @@ export default function Profile() {
                   {user.bio}
                 </p>
               )}
-      
+
             </div>
-      
+						{/* 2FA */}
+			<div className="mt-8">
+				<p className="text-white/50 text-sm mb-2">
+					Two-Factor Authentication
+				</p>
+
+				{user.isTwoFactorEnabled ? (
+				<div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
+					<p className="text-sm text-green-400 font-medium">
+						2FA is enabled on your account.
+					</p>
+				</div>
+				) : (
+				<div className="space-y-4">
+					<Button
+						type="button"
+						onClick={handleEnableTwoFactor}
+						disabled={isTwoFactorLoading}
+						className="w-full"
+					>
+						{isTwoFactorLoading ? "Loading..." : "Enable 2FA"}
+					</Button>
+
+					{qrCodeDataUrl && (
+						<div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10 space-y-4">
+							<img
+								src={qrCodeDataUrl}
+								alt="2FA QR code"
+								className="mx-auto rounded-lg bg-white p-2"
+						/>
+
+						<Input
+							value={twoFactorCode}
+							onChange={(e) => setTwoFactorCode(e.target.value)}
+							placeholder="Enter 6-digit code"
+							maxLength={6}
+						/>
+
+						<Button
+							type="button"
+							onClick={handleVerifyTwoFactor}
+							disabled={isTwoFactorLoading || twoFactorCode.length !== 6}
+							className="w-full"
+						>
+							{isTwoFactorLoading ? "Verifying..." : "Verify 2FA"}
+						</Button>
+
+						<Button
+							type="button"
+							variant="secondary"
+							onClick={handleEnableTwoFactor}
+							disabled={isTwoFactorLoading}
+							className="w-full"
+						>
+							Regenerate QR
+						</Button>
+					</div>
+					)}
+				</div>
+				)}
+			</div>
+
             {/* BUTTON */}
             <Button
               onClick={handleSave}
               className="mt-8">
               {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
             </Button>
-      
+
           </div>
-        
+
         </section>
       )
 }

@@ -34,7 +34,7 @@ export default function Home() {
 
   	useEffect(() => {
     	if (!user) return
-  
+
     	userService.getUserHistory(user.id)
       	.then(setMatches)
   	}, [user])
@@ -67,12 +67,12 @@ export default function Home() {
 
         <div className="lg:col-span-2 flex flex-col gap-6">
         	<Link to="/game">
-            	<PlayCard 
+            	<PlayCard
               	onFindOpponent={handleFindOpponent}
             	/>
           	</Link>
-          	<Link to="/history">    
-            	<GameHistoryCard 
+          	<Link to="/history">
+            	<GameHistoryCard
               	matches={matches}
             	/>
           	</Link>
