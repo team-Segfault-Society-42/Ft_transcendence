@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Motion } from "@/components/ui/Motion";
-import { gameApi } from "@/services/gameApi";
 import { AboutCard } from "@/components/home/AboutCard"
 import { PlayCard } from "@/components/home/PlayCard"
 import { GameHistoryCard } from "@/components/home/GameHistoryCard"
