@@ -85,7 +85,17 @@
         "guest": "Invitado",
         "viewProfile": "Ver perfil",
         "noBio": "Sin biografía"
-      }
+      },
+      "xp": "{{current}} / {{max}} XP"
+    },
+
+    "leaderboard": {
+      "title": "Clasificación",
+      "topXP": "Nivel más alto",
+      "topWins": "Más victorias",
+      "empty": "No hay jugadores en la clasificación",
+      "xp": "{{value}} XP",
+      "wins": "{{value}} Victorias"
     },
 
     "history": {

@@ -89,6 +89,15 @@
         "xp": "{{current}} / {{max}} XP"
     },
 
+    "leaderboard":{
+      "title": "Leaderboard",
+      "topXP": "Highest level",
+      "topWins": "Most wins",
+      "empty": "No players are listed in the rankings",
+      "xp": "{{value}} XP",
+      "wins": "{{value}} Wins"
+    },
+
     "history": {
         "title": "Game History",
         "empty": "No games yet"
