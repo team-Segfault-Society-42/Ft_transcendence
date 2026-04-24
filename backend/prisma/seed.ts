@@ -1,4 +1,4 @@
-import 'dotenv/config';
+// import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
@@ -69,6 +69,9 @@ async function main() {
 }
 
 main()
+  .then(() => {
+    console.log("✅ Seeding terminé avec succès !");
+  })
   .catch((e) => {
     console.error(e);
     process.exit(1);
