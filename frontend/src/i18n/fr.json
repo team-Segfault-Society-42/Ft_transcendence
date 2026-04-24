@@ -1,12 +1,6 @@
 {
     "title": "ft_transcendence",
 
-    "header": {
-        "home": "Accueil",
-        "game": "Jeu",
-        "profile": "Profil"
-    },
-
     "home": {
         "play": {
             "title": "Jouer"
@@ -21,20 +15,6 @@
             "hi": "Salut, ",
             "local": "Jeu local",
             "findOpp": "Trouver un adversaire"
-        },
-        "cards":{
-            "home":{
-                "title": "🏠 Accueil",
-                "description": "Bienvenue sur la page principal ! Explore l'application."
-            },
-            "game":{
-                "title": "🎮 Jeu",
-                "description": "Lance une partie et dépasse toi pour obtenir la victoire !"
-            },
-            "profile":{
-                "title": "👤 Profil",
-                "description": "Consulte tes statistiques et personnalise ton profil."
-            }
         }
     },
 
@@ -103,8 +83,7 @@
         "empty": "Aucune partie pour le moment"
     },
     
-    "auth": {        
-        "title": "Segfault Society",
+    "auth": {
         "description": "Crée ton compte",
         "description_login": "Connectez-vous",
         "username": "Nom d'utilisateur",

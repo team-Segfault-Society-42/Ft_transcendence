@@ -1,12 +1,6 @@
 {
     "title": "ft_transcendence",
 
-    "header": {
-        "home": "Home",
-        "game": "Game",
-        "profile": "Profile"
-    },
-
     "home": {
         "play":{
             "title": "Play"
@@ -21,20 +15,6 @@
             "hi": "Hi,",
             "local": "Play local",
             "findOpp": "Find an opponent"
-        },
-        "cards":{
-            "home":{
-                "title": "🏠 Home",
-                "description": "Welcome to the main page ! Explore the app !"
-            },
-            "game":{
-                "title": "🎮 Game",
-                "description": "Start a match and challenge yourself."
-            },
-            "profile":{
-                "title": "👤 Profile",
-                "description": "View your stats and customize your profile."
-            }
         }
     },
 
@@ -104,7 +84,6 @@
     },
 
     "auth": {
-        "title": "Segfault Society",
         "description": "Create your account",
         "description_login": "Log in",
         "username": "Username",
