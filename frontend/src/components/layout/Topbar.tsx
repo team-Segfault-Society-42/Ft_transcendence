@@ -61,8 +61,8 @@ export function Topbar({ user, onLoginClick, onLogoutClick }: HeaderProps) {
 
       <Button
         onClick={handleLogin42}>
-          <span>
-          Login with 42
+        <span>
+          {t("auth.loginWith42")}
         </span>
       </Button>
       

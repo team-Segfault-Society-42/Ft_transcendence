@@ -1,13 +1,10 @@
 {
     "title": "ft_transcendence",
 
-    "header": {
-        "home": "Home",
-        "game": "Game",
-        "profile": "Profile"
-    },
-
     "home": {
+        "play":{
+            "title": "Play"
+        },
         "hero":{
             "texte": "Play. Compete. Improve. Challenge players and become the best."
         },
@@ -18,21 +15,17 @@
             "hi": "Hi,",
             "local": "Play local",
             "findOpp": "Find an opponent"
-        },
-        "cards":{
-            "home":{
-                "title": "🏠 Home",
-                "description": "Welcome to the main page ! Explore the app !"
-            },
-            "game":{
-                "title": "🎮 Game",
-                "description": "Start a match and challenge yourself."
-            },
-            "profile":{
-                "title": "👤 Profile",
-                "description": "View your stats and customize your profile."
-            }
         }
+    },
+
+    "sidebar":{
+        "home": "Home",
+        "game": "Game",
+        "profile": "Profile",
+        "leaderboard": "Leaderboard",
+        "friends": "Friends",
+        "chat": "Chat",
+        "history": "History"
     },
 
     "game": {
@@ -41,26 +34,56 @@
         "wins": "WINS!",
         "replay": "REPLAY",
         "mode": "2 players mode",
-        "reset": "RESET SESSION"
+        "reset": "RESET SESSION",
+        "result": {
+            "win": "Win",
+            "loss": "Loss",
+            "draw": "Draw"
+        }
     },
 
     "profile": {
         "loading": "Loading...",
+        "level": "Level {{level}}",
         "stats": {
             "wins": "Wins",
             "losses": "Losses",
             "winrate": "Winrate",
-            "games": "{{count}} games played"
+            "games_one": "{{count}} game played",
+            "games_other": "{{count}} games played",
+            "winrateValue": "{{value}}%"
         },
         "bio": "Bio",
         "buttons": {
             "edit": "Edit profile",
             "save": "Save changes"
-        }
+        },
+        "about": {
+            "title": "About",
+            "notConnected": "Not connected",
+            "login": "Login to see your profile",
+            "guest": "Guest",
+            "viewProfile": "View profile",
+            "noBio": "No bio yet"
+        },
+        "xp": "{{current}} / {{max}} XP"
+    },
+
+    "leaderboard":{
+      "title": "Leaderboard",
+      "topXP": "Highest level",
+      "topWins": "Most wins",
+      "empty": "No players are listed in the rankings",
+      "xp": "{{value}} XP",
+      "wins": "{{value}} Wins"
+    },
+
+    "history": {
+        "title": "Game History",
+        "empty": "No games yet"
     },
 
     "auth": {
-        "title": "Segfault Society",
         "description": "Create your account",
         "description_login": "Log in",
         "username": "Username",
@@ -90,13 +113,17 @@
             "email": "Invalid email address.",
             "password": "The password must be at least 8 characters long.",
             "bio": "The bio does contain more than 180 characters"
-          }
+        },
+        "logoutSuccess": "Logged out successfully",
+        "errorWithMessage": "An error occurred: {{message}}",
+        "loginWith42": "Login with 42"
       },
 
     "footer": {
         "projectname": "ft_transcendence",
         "privacy": "Privacy Policy",
-        "terms": "Terms of Service"
+        "terms": "Terms of Service",
+        "copyright": "© {{year}}"
     },
 
     "privacy": {
