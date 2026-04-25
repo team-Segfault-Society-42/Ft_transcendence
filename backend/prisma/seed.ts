@@ -20,6 +20,29 @@ const AVATARS = Array.from(
   (_, n) => `https://api.dicebear.com/9.x/pixel-art/svg?seed=dummy${n}`
 );
 
+// ── Define Simulated Games Outcome ──────────────────────────────────────────
+const GAMES = [
+  { p1: 0, p2: 1, scoresP1: 5, scoresP2: 2, winner: 0,    endReason: 'win'     },
+  { p1: 2, p2: 3, scoresP1: 1, scoresP2: 5, winner: 3,    endReason: 'win'     },
+  { p1: 4, p2: 5, scoresP1: 5, scoresP2: 5, winner: null, endReason: 'draw'    },
+  { p1: 6, p2: 7, scoresP1: 0, scoresP2: 5, winner: 7,    endReason: 'win'     },
+  { p1: 8, p2: 9, scoresP1: 5, scoresP2: 4, winner: 8,    endReason: 'win'     },
+  { p1: 0, p2: 3, scoresP1: 3, scoresP2: 5, winner: 3,    endReason: 'win'     },
+  { p1: 1, p2: 4, scoresP1: 5, scoresP2: 1, winner: 1,    endReason: 'win'     },
+  { p1: 2, p2: 5, scoresP1: 5, scoresP2: 0, winner: 2,    endReason: 'forfeit' },
+  { p1: 6, p2: 9, scoresP1: 4, scoresP2: 5, winner: 9,    endReason: 'win'     },
+  { p1: 7, p2: 8, scoresP1: 5, scoresP2: 3, winner: 7,    endReason: 'win'     },
+  { p1: 0, p2: 5, scoresP1: 2, scoresP2: 5, winner: 5,    endReason: 'win'     },
+  { p1: 1, p2: 6, scoresP1: 5, scoresP2: 5, winner: null, endReason: 'draw'    },
+  { p1: 3, p2: 8, scoresP1: 5, scoresP2: 2, winner: 3,    endReason: 'win'     },
+  { p1: 4, p2: 9, scoresP1: 1, scoresP2: 5, winner: 9,    endReason: 'forfeit' },
+  { p1: 2, p2: 7, scoresP1: 5, scoresP2: 3, winner: 2,    endReason: 'win'     },
+  { p1: 0, p2: 9, scoresP1: 5, scoresP2: 0, winner: 0,    endReason: 'win'     },
+  { p1: 1, p2: 8, scoresP1: 3, scoresP2: 5, winner: 8,    endReason: 'win'     },
+  { p1: 5, p2: 6, scoresP1: 5, scoresP2: 4, winner: 5,    endReason: 'win'     },
+  { p1: 3, p2: 7, scoresP1: 5, scoresP2: 5, winner: null, endReason: 'draw'    },
+  { p1: 4, p2: 8, scoresP1: 2, scoresP2: 5, winner: 8,    endReason: 'win'     },
+];
 
 // ── Seed Database ───────────────────────────────────────────────────────────
 async function main() {
