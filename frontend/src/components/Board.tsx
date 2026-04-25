@@ -2,7 +2,7 @@ import Square from "./Square";
 import { useGameStore } from "../Store/gameStore";
 import type { CellValue } from "../type/game.types";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -67,8 +67,16 @@ function getEndGameMessage(
 const TURN_TIMEOUT_SECONDS = 30;
 
 export default function Board() {
-  const { gameId, game, error, playMove, playerRole, requestReplay } =
-    useGameStore();
+  const {
+    gameId,
+    client,
+    game,
+    error,
+    playMove,
+    playerRole,
+    requestReplay,
+    leaveGame,
+  } = useGameStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -126,7 +134,14 @@ export default function Board() {
             Copy
           </Button>
         </div>
-        <Button onClick={() => navigate("/")}>leave the game</Button>
+        <Button
+          onClick={() => {
+            client;
+            navigate("/");
+          }}
+        >
+          leave the game
+        </Button>
       </div>
     );
   }
@@ -308,7 +323,19 @@ export default function Board() {
 
             <button
               className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-              onClick={() => navigate("/")}
+              onClick={() => {
+                leaveGame();
+                console.log(
+                  "socket",
+                  client,
+                  "role",
+                  playerRole,
+                  "click en backhome from gameid =",
+                  gameId,
+                  "and send leave_game",
+                );
+                navigate("/");
+              }}
             >
               {t("game.backHome", { defaultValue: "Back to home" })}
             </button>

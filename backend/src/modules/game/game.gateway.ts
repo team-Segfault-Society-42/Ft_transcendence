@@ -276,6 +276,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() body: { gameId: string },
     @ConnectedSocket() client: AuthSocket,
   ) {
+    console.log('LEAVE_GAME received from:', client.id);
+    console.log('gameId:', body.gameId);
     try {
       client.to(body.gameId).emit('opponent_left', {
         message: 'Your opponent left - no replay',

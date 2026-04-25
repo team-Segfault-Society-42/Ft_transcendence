@@ -17,6 +17,7 @@ type GameStore = {
   resetGameState: () => void;
   playMove: (index: number) => void;
   requestReplay: () => void;
+  leaveGame: () => void;
 };
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -52,6 +53,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (playerRole !== "X" && playerRole !== "O") return;
 
     client.emit("request_replay", { gameId });
+  },
+
+  leaveGame: () => {
+    const { client, gameId } = get();
+    if (!client || !gameId) return;
+    client.emit("leave_game", { gameId });
   },
 
   playMove: (index) => {
