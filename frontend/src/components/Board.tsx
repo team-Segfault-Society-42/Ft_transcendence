@@ -115,10 +115,20 @@ export default function Board() {
   if (status === "waiting" && playerRole === "X") {
     const urlInvit = `${window.location.origin}/game/${gameId}`;
     return (
-      <div>
-        <h2> Waiting Oppenent</h2>
+      <div className="text-center p-10">
+        <h2> Waiting for oppenent...</h2>
+        <p>Share this link to invite someone:</p>
+        <div className="flex gap-2 justify-center mt-4">
+          <input value={urlInvit} className="..."></input>
+          <button onClick={() => navigator.clipboard.writeText(urlInvit)}>
+            Copy
+          </button>
+        </div>
       </div>
     );
+  }
+  {
+    /* <button> </div></button> */
   }
 
   const playerXName = game.playerProfiles?.X?.username || "Player X";
