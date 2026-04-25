@@ -4,6 +4,7 @@ import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import { useGameStore } from "../Store/gameStore";
 import { gameErrorMsg } from "@/lib/gameErrorMsg";
+import { toast } from "sonner";
 
 export default function Game() {
   const { gameId } = useParams<{ gameId: string }>();
@@ -58,6 +59,10 @@ export default function Game() {
         return;
       }
       useGameStore.getState().setError(gameErrorMsg(payload.message));
+    });
+
+    client.on("opponent_left", () => {
+      toast.warning("oppenent left - no replay");
     });
 
     return () => {
