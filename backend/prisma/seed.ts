@@ -48,6 +48,8 @@ const GAMES = [
 async function main() {
 
   // ── Seed Achievements ────────────────────────────────────────────────
+  console.log(`\x1b[36m>>> Seeding Achievements`)
+
   const firstWin = await prisma.achievement.upsert({
     where: { key: 'FIRST_WIN' },
     update: {
@@ -60,6 +62,8 @@ async function main() {
       description: 'Win your first game.',
     },
   });
+  console.log(`\x1b[32m✓ First Win`)
+
   const firstGame = await prisma.achievement.upsert({
     where: { key: 'FIRST_GAME' },
     update: {
@@ -72,6 +76,8 @@ async function main() {
       description: 'Play your first game.',
     },
   });
+  console.log(`\x1b[32m✓ First Game`)
+
   const drawGame = await prisma.achievement.upsert({
     where: { key: 'DRAW_GAME' },
     update: {
@@ -84,6 +90,8 @@ async function main() {
       description: 'Draw a game.',
     },
   });
+  console.log(`\x1b[32m✓ Draw Game`)
+
     const looseByTime = await prisma.achievement.upsert({
     where: { key: 'LOSE_BY_TIME' },
     update: {
@@ -96,8 +104,11 @@ async function main() {
       description: 'Lose a game by time.',
     },
   });
+  console.log(`\x1b[32m✓ Lose by Time`)
 
   // ── Update or Create Users ───────────────────────────────────────────
+  console.log(`\x1b[36m>>> Seeding Dummy Users`)
+
   const passwordHash = await bcrypt.hash(PASSWORD, 10);
 
   for (let n = 0; n < DUMMY_COUNT; n++) {
@@ -111,15 +122,15 @@ async function main() {
         avatar: AVATARS[n],
       },
     });
-    console.log(`Seeded dummy${n}`);
-  }
+  process.stdout.write(`\r\x1b[32m✓ Seeded dummy ${n + 1}/${DUMMY_COUNT}\x1b[0m`);
+}
+  console.log(``);
 
   // ── Fetch all users in ascending order ──────────────────────────
   const users = await prisma.user.findMany({
     where: { username: { in: Array.from({ length: DUMMY_COUNT}, (_, n) => `dummy${n}`) } },
     orderBy: { username: 'asc' },
   });
-  console.log(`Fetched ${DUMMY_COUNT} users`);
 
   // ── Wipe any existing games ─────────────────────────────────────
   await prisma.game.deleteMany({
@@ -128,7 +139,7 @@ async function main() {
       { player2: { username: { startsWith: 'dummy' } } },
     ]},
   });
-  console.log('Deleted any existing games');
+  console.log('\x1b[32m✓ Deleted any existing games');
 
   // ── Add Games to Database ───────────────────────────────────────
   for (const {p1, p2, winner, endReason, s1, s2} of GAMES) {
@@ -143,7 +154,7 @@ async function main() {
       },
     });
   }
-  console.log('Added Games to Database')
+  console.log('\x1b[32m✓ Added Games to Database')
 
   // ── Calculate Stats and XP for users ────────────────────────────
   for (const user of users) {
@@ -161,13 +172,13 @@ async function main() {
     const xp = wins * 20 + draws * 10 + losses * 5;
     await prisma.user.update({ where: { id: user.id }, data: { wins, losses, draws, xp } });
   }
-  console.log('Updated Users\' XP and Stats');
+  console.log('\x1b[32m✓ Updated Users\' XP and Stats\x1b[0m');
 }
 
 
 main()
   .then(() => {
-    console.log("✅ Seeding terminé avec succès !");
+    console.log("\x1b[36m>>> Seeding terminé avec succès!\x1b[0m");
   })
   .catch((e) => {
     console.error(e);
