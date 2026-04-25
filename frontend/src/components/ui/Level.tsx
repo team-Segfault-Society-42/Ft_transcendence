@@ -14,11 +14,11 @@ export function LevelProgress({ xp }: LevelProgressProps) {
     <div className="mt-8">
       <div className="flex justify-between text-sm mb-2">
         <span className="text-white/50 font-medium">
-          {t("profile.level")} {level}
+          {t("profile.level", {level})}
         </span>
 
         <span className="text-white/30 text-[10px] uppercase tracking-tighter">
-          {xpProgress} / 100 XP
+          {t("profile.xp", { current: xpProgress, max: 100 })}
         </span>
       </div>
 

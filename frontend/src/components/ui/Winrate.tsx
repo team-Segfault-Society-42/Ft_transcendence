@@ -10,6 +10,7 @@ type Props = {
 
     const totalGames = wins + losses + draws
     const winrate = totalGames > 0 ? (wins / totalGames) * 100 : 0
+    const formattedWinrate = winrate.toFixed(2)
     const { t } = useTranslation()
   
     return (
@@ -19,7 +20,7 @@ type Props = {
                 {t("profile.stats.winrate")}
             </span>
             <span className="font-semibold text-cyan-400">
-                {winrate}%
+              {t("profile.stats.winrateValue", { value: formattedWinrate })}
             </span>
         </div>
   

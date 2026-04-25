@@ -12,22 +12,25 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  email         String         @unique
-  passwordHash  String?
-  username      String         @unique
-  bio           String?
-  avatar        String
-  wins          Int            @default(0)
-  losses        Int            @default(0)
-  draws         Int            @default(0)
-  xp            Int            @default(0)
-  gameAsP1      Game[]         @relation("player1")
-  gameAsP2      Game[]         @relation("player2")
-  wonGames      Game[]         @relation("asWinner")
-  moves         Move[]
-  oauthAccounts OAuthAccount[]
-  achievements  UserAchievement[]
+  id                  Int            @id @default(autoincrement())
+  email               String         @unique
+  passwordHash        String?
+  username            String         @unique
+  bio                 String?
+  avatar              String
+  wins                Int            @default(0)
+  losses              Int            @default(0)
+  draws               Int            @default(0)
+  xp                  Int            @default(0)
+  isTwoFactorEnabled  Boolean        @default(false)
+  twoFactorSecret     String?
+  twoFactorTempSecret String?
+  gameAsP1            Game[]         @relation("player1")
+  gameAsP2            Game[]         @relation("player2")
+  wonGamees           Game[]         @relation("asWinner")
+  moves               Move[]
+  oauthAccounts       OAuthAccount[]
+  achievements        UserAchievement[]
 }
 
 model OAuthAccount {

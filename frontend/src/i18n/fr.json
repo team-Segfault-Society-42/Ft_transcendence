@@ -1,13 +1,10 @@
 {
     "title": "ft_transcendence",
 
-    "header": {
-        "home": "Accueil",
-        "game": "Jeu",
-        "profile": "Profil"
-    },
-
     "home": {
+        "play": {
+            "title": "Jouer"
+        },
         "hero":{
             "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
         },
@@ -18,21 +15,17 @@
             "hi": "Salut, ",
             "local": "Jeu local",
             "findOpp": "Trouver un adversaire"
-        },
-        "cards":{
-            "home":{
-                "title": "🏠 Accueil",
-                "description": "Bienvenue sur la page principal ! Explore l'application."
-            },
-            "game":{
-                "title": "🎮 Jeu",
-                "description": "Lance une partie et dépasse toi pour obtenir la victoire !"
-            },
-            "profile":{
-                "title": "👤 Profil",
-                "description": "Consulte tes statistiques et personnalise ton profil."
-            }
         }
+    },
+
+    "sidebar": {
+        "home": "Accueil",
+        "game": "Jeu",
+        "profile": "Profil",
+        "leaderboard": "Classement",
+        "friends": "Amis",
+        "chat": "Chat",
+        "history": "Historique"
     },
 
     "game": {
@@ -41,26 +34,56 @@
         "wins": "GAGNE !",
         "replay": "RECOMMENCER",
         "mode": "Mode 2 joueurs",
-        "reset": "REDEMARRER SESSION"
+        "reset": "REDEMARRER SESSION",
+        "result": {
+            "win": "Victoire",
+            "loss": "Défaite",
+            "draw": "Égalité"
+        }
     },
 
     "profile": {
         "loading": "Chargement...",
+        "level": "Niveau {{level}}",
         "stats": {
             "wins": "Victoires",
             "losses": "Défaites",
             "winrate": "Taux de victoires",
-            "games": "{{count}} parties jouées"
+            "games_one": "{{count}} partie jouée",
+            "games_other": "{{count}} parties jouées",
+            "winrateValue": "{{value}}%"
         },
         "bio": "Bio",
         "buttons": {
             "edit": "Modifier le profil",
             "save": "Sauvegarder les changements"
-        }
+        },
+        "about": {
+            "title": "À propos",
+            "notConnected": "Non connecté",
+            "login": "Connecte-toi pour voir ton profil",
+            "guest": "Invité",
+            "viewProfile": "Voir le profil",
+            "noBio": "Pas encore de bio"
+        },
+        "xp": "{{current}} / {{max}} XP"
+    },
+
+    "leaderboard": {
+        "title": "Classement",
+        "topXP": "Plus haut niveau",
+        "topWins": "Plus de victoires",
+        "empty": "Aucun joueur dans le classement",
+        "xp": "{{value}} XP",
+        "wins": "{{value}} Victoires"
+    },
+
+    "history": {
+        "title": "Historique des parties",
+        "empty": "Aucune partie pour le moment"
     },
     
-    "auth": {        
-        "title": "Segfault Society",
+    "auth": {
         "description": "Crée ton compte",
         "description_login": "Connectez-vous",
         "username": "Nom d'utilisateur",
@@ -90,14 +113,17 @@
             "email": "Adresse email invalide",
             "password": "Le mot de passe doit contenir au moins 8 caractères.",
             "bio": "La bio doit contenir moins de 180 caractères"
-
-      }
+        },
+        "logoutSuccess": "Déconnexion réussie",
+        "errorWithMessage": "Une erreur est survenue : {{message}}",
+        "loginWith42": "Se connecter avec 42"
     },
 
     "footer": {
         "projectname": "ft_transcendence",
         "privacy": "Confidentialité",
-        "terms": "Conditions d'utilisation"
+        "terms": "Conditions d'utilisation",
+        "copyright": "© {{year}}"
     },
 
     "privacy": {

@@ -3,6 +3,7 @@ import { Avatar } from "@/components/ui/Avatar"
 import type { Match } from "@/lib/match"
 import { cn } from "@/lib/utils"
 import { CardTitle } from "@/components/ui/Card"
+import { useTranslation } from "react-i18next"
 
 type Props = {
     matches: Match[]
@@ -10,29 +11,28 @@ type Props = {
     title?: string
 }
 
-export function GameHistoryCard({ matches, className, title }: Props) {
+export function GameHistoryCard({ matches, className }: Props) {
+    const { t } = useTranslation()
 
 	return (
     <Card className={cn("h-full flex flex-col", className)}>
 
     {/* HEADER */}
     <div className="flex justify-between items-center mb-6">
-        {title && (
             <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-                {title}
+                {t("history.title")}
             </CardTitle>
-        )}
         <span className="text-xs text-white/50 top-left">
-        	{matches.length} games
+            {t("profile.stats.games", { count: matches.length })}
         </span>
     </div>
 
     {/* LIST */}
     <div className="flex-1 flex flex-col">
         {matches.length ? (
-        	matches.map((matches) => {
+        	matches.map((match) => {
 
-            const result = matches.result.toLowerCase()
+            const result = match.result.toLowerCase()
 
             const resultColor =
             	result === "win"
@@ -57,7 +57,7 @@ export function GameHistoryCard({ matches, className, title }: Props) {
 
             return (
               	<div
-                  	key={matches.id}
+                  	key={match.id}
                   	className={cn(
                   	"flex items-center justify-between p-3 rounded-xl border transition hover:scale-[1.01]",
                   	bgColor,
@@ -67,17 +67,17 @@ export function GameHistoryCard({ matches, className, title }: Props) {
     {/* LEFT */}
     <div className="flex items-center gap-3">
         <Avatar
-            src={matches.opponent.avatar}
-            fallback={matches.opponent.username[0]}
+            src={match.opponent.avatar}
+            fallback={match.opponent.username[0]}
         />
 		<div>
     
 			<p className="font-medium">
-       			vs {matches.opponent.username}
+       			{t("game.vs")} {match.opponent.username}
      		</p>
 
     		<p className="text-xs text-white/60">
-        		{new Date(matches.date).toLocaleDateString()}
+        		{new Date(match.date).toLocaleDateString()}
     		</p>
     	</div>
 
@@ -86,11 +86,11 @@ export function GameHistoryCard({ matches, className, title }: Props) {
     {/* RIGHT */}
     <div className="text-right">
         <p className={cn("font-semibold uppercase", resultColor)}>
-            {result}
+            {t(`game.result.${result}`)}
         </p>
 
         <p className="text-xs text-white/50">
-            {matches.myScore} - {matches.oppScore}
+            {match.myScore} - {match.oppScore}
         </p>
 	</div>
 
@@ -100,7 +100,7 @@ export function GameHistoryCard({ matches, className, title }: Props) {
     ) : (
     <div className="flex-1 flex flex-col items-center justify-center text-center">
         <p className="text-sm text-white/60 text-center">
-            No games yet
+            {t("history.empty")}
         </p>
     </div>
     )}
