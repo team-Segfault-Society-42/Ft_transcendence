@@ -126,11 +126,9 @@ export default function Board() {
             Copy
           </Button>
         </div>
+        <Button onClick={() => navigate("/")}>leave the game</Button>
       </div>
     );
-  }
-  {
-    /* <button> </div></button> */
   }
 
   const playerXName = game.playerProfiles?.X?.username || "Player X";
