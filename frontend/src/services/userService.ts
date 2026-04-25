@@ -78,6 +78,11 @@ export async function getLeaderboard(sortBy?: "xp" | "wins") {
     return response.data
 }
 
+export async function getAchievements(id: number) {
+  const response = await api.get('users/' + id + '/achievements')
+  return response.data
+}
+
 export const userService = {
     getUser,
     updateUser,
@@ -90,4 +95,5 @@ export const userService = {
     userLogout,
     getUserHistory,
     getLeaderboard,
+    getAchievements,
 }

@@ -3,13 +3,23 @@ import { UsersService } from './users.service';
 import { UpdateUserDto} from './dto/update-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { MatchesService } from 'src/modules/game/matches.service';
+import { AchievementsService } from 'src/modules/game/achievements.service';
 
 @ApiTags('Users')
 
 @Controller('users')
 export class UsersController {
 
-	constructor(private usersService: UsersService, @Inject(forwardRef(() => MatchesService)) private readonly matchServices: MatchesService) {}
+	constructor(private usersService: UsersService, 
+		@Inject(forwardRef(() => MatchesService)) private readonly matchServices: MatchesService,
+		private readonly achievementsService: AchievementsService) {}
+
+
+	@ApiOperation({ summary: 'Get all of achievements of users' })
+	@Get(':id/achievements')
+	getAchievements(@Param('id', ParseIntPipe) id: number) {
+		return this.achievementsService.getAchievements(id)
+	}
 
 	@ApiOperation({ summary: 'Get leaderboard of users' })
 	@Get('leaderboard')
