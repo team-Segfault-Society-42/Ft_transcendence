@@ -15,6 +15,8 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
+import { subscribe } from 'node:diagnostics_channel';
+import { error } from 'node:console';
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const parts = rawOrigins.split(',');
@@ -33,7 +35,7 @@ const allowedOrigins = trimmedOrigins.filter(function (origin) {
     credentials: true,
   },
 })
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard) // TODO: verify if can delete (is no necessary bcz CALLED FOR APP)
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
@@ -262,6 +264,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const updateGame = this.gameService.requestReplay(body.gameId, userId);
       this.emitGameUpdate(body.gameId, updateGame);
       return updateGame;
+    } catch (error) {
+      client.emit('game_error', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+  }
+
+  @SubscribeMessage('leave_game')
+  async handleLeaveGame(
+    @MessageBody() body: { gameId: string },
+    @ConnectedSocket() client: AuthSocket,
+  ) {
+    try {
+      client.to(body.gameId).emit('opponent_left', {
+        message: 'Your opponent left - no replay',
+      });
+
+      await client.leave(body.gameId);
     } catch (error) {
       client.emit('game_error', {
         message: error instanceof Error ? error.message : 'Unknown error',
