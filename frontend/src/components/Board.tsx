@@ -4,6 +4,8 @@ import type { CellValue } from "../type/game.types";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 
 function truncateUserName(username: string, maxLength = 12): string {
   if (!username) return "";
@@ -119,10 +121,10 @@ export default function Board() {
         <h2> Waiting for oppenent...</h2>
         <p>Share this link to invite someone:</p>
         <div className="flex gap-2 justify-center mt-4">
-          <input value={urlInvit} className="..."></input>
-          <button onClick={() => navigator.clipboard.writeText(urlInvit)}>
+          <Input readOnly value={urlInvit} className="..."></Input>
+          <Button onClick={() => navigator.clipboard.writeText(urlInvit)}>
             Copy
-          </button>
+          </Button>
         </div>
       </div>
     );
