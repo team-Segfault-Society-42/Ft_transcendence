@@ -114,21 +114,23 @@ async function main() {
     console.log(`Seeded dummy${n}`);
   }
 
-  // ── Fetch all users in ascending order ────────────────────────
+  // ── Fetch all users in ascending order ──────────────────────────
   const users = await prisma.user.findMany({
     where: { username: { in: Array.from({ length: DUMMY_COUNT}, (_, n) => `dummy${n}`) } },
     orderBy: { username: 'asc' },
   });
+  console.log(`Fetched ${DUMMY_COUNT} users`);
 
-  // ── Wipe any existing games ────────────────────────────────────
+  // ── Wipe any existing games ─────────────────────────────────────
   await prisma.game.deleteMany({
     where: { OR: [
       { player1: { username: { startsWith: 'dummy' } } },
       { player2: { username: { startsWith: 'dummy' } } },
     ]},
   });
+  console.log('Deleted any existing games');
 
-  // ── Run Game Simulation ───────────────────────────────────────
+  // ── Add Games to Database ───────────────────────────────────────
   for (const {p1, p2, winner, endReason, s1, s2} of GAMES) {
     await prisma.game.create({
       data: {
@@ -141,6 +143,25 @@ async function main() {
       },
     });
   }
+  console.log('Added Games to Database')
+
+  // ── Calculate Stats and XP for users ────────────────────────────
+  for (const user of users) {
+    // ── Get Total Games ───────────────────────
+    const wins = await prisma.game.count({ where: { winnerId: user.id } });
+    const draws = await prisma.game.count({
+      where: { OR: [{ player1Id: user.id }, { player2Id: user.id }], endReason: 'draw' },
+    });
+    const total = await prisma.game.count({
+      where: { OR: [{ player1Id: user.id }, { player2Id: user.id }] },
+    });
+    const losses = total - wins - draws;
+
+    // ── XP & Update User ──────────────────────
+    const xp = wins * 20 + draws * 10 + losses * 5;
+    await prisma.user.update({ where: { id: user.id }, data: { wins, losses, draws, xp } });
+  }
+  console.log('Updated Users\' XP and Stats');
 }
 
 
