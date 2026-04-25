@@ -2,7 +2,7 @@ import Square from "./Square";
 import { useGameStore } from "../Store/gameStore";
 import type { CellValue } from "../type/game.types";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function truncateUserName(username: string, maxLength = 12): string {
@@ -65,7 +65,8 @@ function getEndGameMessage(
 const TURN_TIMEOUT_SECONDS = 30;
 
 export default function Board() {
-  const { game, error, playMove, playerRole, requestReplay } = useGameStore();
+  const { gameId, game, error, playMove, playerRole, requestReplay } =
+    useGameStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -110,6 +111,15 @@ export default function Board() {
   }
 
   const { board, currentPlayer, status, winner, toDisapear } = game;
+
+  if (status === "waiting" && playerRole === "X") {
+    const urlInvit = `${window.location.origin}/game/${gameId}`;
+    return (
+      <div>
+        <h2> Waiting Oppenent</h2>
+      </div>
+    );
+  }
 
   const playerXName = game.playerProfiles?.X?.username || "Player X";
   const playerOName = game.playerProfiles?.O?.username || "Player O";
