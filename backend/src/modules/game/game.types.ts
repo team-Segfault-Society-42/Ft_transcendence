@@ -12,6 +12,8 @@ export type MovesGameHistory = number[];
 
 export type SpectatorsCnt = number;
 
+export type PlayerLeft = 'X' | 'O' | null;
+
 export interface PublicPlayerProfile {
   id: number;
   username: string;
@@ -72,4 +74,5 @@ export interface GameState {
   playerProfiles: PlayerProfilesInGame;
   movesGameHistory: MovesGameHistory;
   spectatCnt: SpectatorsCnt;
+  playerLeft: PlayerLeft;
 }
