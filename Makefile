@@ -88,31 +88,44 @@ SHOW_PROD_LOGS = docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) lo
 logs: ## Display logs for all containers [DEV]
 	@$(SHOW_DEV_LOGS)
 
-logs-proxy: ## Display logs for the proxy container [DEV]
+logs-proxy: ### Display logs for the proxy container [DEV]
 	@$(SHOW_DEV_LOGS) -f $(SERVICE_PROXY)
 
-logs-front: ## Display logs for the frontend container [DEV]
+logs-front: ### Display logs for the frontend container [DEV]
 	@$(SHOW_DEV_LOGS) -f $(SERVICE_FRONTEND)
 
-logs-back: ## Display logs for the backend container [DEV]
+logs-back: ### Display logs for the backend container [DEV]
 	@$(SHOW_DEV_LOGS) -f $(SERVICE_BACKEND)
 
-logs-db: ## Display logs for the database container [DEV]
+logs-db: ### Display logs for the database container [DEV]
 	@$(SHOW_DEV_LOGS) -f $(SERVICE_DATABASE)
 
 p-logs: ## Display logs for all containers [PROD]
 	@$(SHOW_PROD_LOGS)
 
-p-logs-proxy: ## Display logs for the proxy container [PROD]
+p-logs-proxy: ### Display logs for the proxy container [PROD]
 	@$(SHOW_PROD_LOGS) -f $(SERVICE_PROXY)
 
-p-logs-front: ## Display logs for the frontend container [PROD]
+p-logs-front: ### Display logs for the frontend container [PROD]
 	@$(SHOW_PROD_LOGS) -f $(SERVICE_FRONTEND)
 
-p-logs-back: ## Display logs for the backend container [PROD]
+p-logs-back: ### Display logs for the backend container [PROD]
 	@$(SHOW_PROD_LOGS) -f $(SERVICE_BACKEND)
 
-p-logs-db: ## Display logs for the database container [PROD]
+p-logs-db: ### Display logs for the database container [PROD]
 	@$(SHOW_PROD_LOGS) -f $(SERVICE_DATABASE)
 
-.PHONY: logs logs-proxy logs-front logs-back logs-db p-logs p-logs-proxy p-logs-front p-logs-back p-logs-db
+logs-help: ## Show all available log commands [UTIL]
+	@printf "\n$(BOLD_YEL) LOGS           $(RES)\n"
+	@grep -hE '^[a-zA-Z_-]+:.*?###|^##@' $(MAKEFILE_LIST) | awk ' \
+		BEGIN { FS = ":.*?### "; in_logs = 0 } \
+		/^##@ LOGS/ { in_logs = 1; next } \
+		/^##@/      { in_logs = 0; next } \
+		in_logs && /###/ { \
+			target = $$1; \
+			comment = $$2; \
+			tag = ""; \
+			$(PRINT_TAGS) \
+		}'
+
+.PHONY: logs logs-proxy logs-front logs-back logs-db p-logs p-logs-proxy p-logs-front p-logs-back p-logs-db logs-help

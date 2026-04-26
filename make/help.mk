@@ -19,8 +19,8 @@ PRINT_TAGS = \
 	} \
 	printf " ・$(CYAN)%-12s$(RES) %s %s\n", target, tag, comment; \
 
-help: # Show help [UTIL]
-	@grep -hE '^[a-zA-Z_-]+:.*?##|^##@' $(MAKEFILE_LIST) | awk ' \
+help: # Show List of make targets [UTIL]
+	@grep -hE '^[a-zA-Z_-]+:.*[^#]## |^##@' $(MAKEFILE_LIST) | awk ' \
 		BEGIN { FS = ":.*?## " } \
 		/^##@/ { \
 			section = substr($$0, 5); \
