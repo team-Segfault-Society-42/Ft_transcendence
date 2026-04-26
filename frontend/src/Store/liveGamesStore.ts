@@ -7,7 +7,7 @@ type LiveGamesStore = {
   loading: boolean;
   error: string | null;
 
-  fetchGame: () => Promise<void>;
+  fetchGames: () => Promise<void>;
   reset: () => void;
 };
 
@@ -16,7 +16,7 @@ export const useLiveGamesStore = create<LiveGamesStore>((set) => ({
   loading: false,
   error: null,
 
-  fetchGame: async () => {
+  fetchGames: async () => {
     set({ loading: true, error: null });
     try {
       const data = await gameApi.getLiveGames();

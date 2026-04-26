@@ -3,11 +3,15 @@ import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 import { useLiveGamesStore } from "@/Store/liveGamesStore";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/Spinner";
 
 export default function LiveGamesDisplay() {
+  const navigate = useNavigate();
+
   const { games, loading } = useLiveGamesStore();
-  const fetchGames = useLiveGamesStore((state) => state.fetchGame);
+  const fetchGames = useLiveGamesStore((state) => state.fetchGames);
+
   useEffect(() => {
     fetchGames();
   }, [fetchGames]);
@@ -27,13 +31,16 @@ export default function LiveGamesDisplay() {
 
         <span>{game.playerX?.username} is waiting</span>
 
-        <Button>Join</Button>
+        <Button onClick={() => navigate(`/game/${game.gameId}`)}>Join</Button>
       </Card>
     ));
   }
 
   function renderPlayingGames() {
-    if (games.playing.length === 0) return <p>No game to spectate</p>;
+    if (games.playing.length === 0) {
+      return <p>No game to spectate</p>;
+    }
+
     return games.playing.map((game) => (
       <Card key={game.gameId}>
         <Avatar
@@ -41,15 +48,23 @@ export default function LiveGamesDisplay() {
           fallback={game.playerX?.username?.[0] || "?"}
           size="md"
         />
+
         <Avatar
           src={game.playerO?.avatar || undefined}
           fallback={game.playerO?.username?.[0] || "?"}
           size="md"
         />
+
         <span>
           {game.playerX?.username || "?"} vs {game.playerO?.username || "?"}
         </span>
-        <Button variant="secondary">Watch</Button>
+
+        <Button
+          variant="secondary"
+          onClick={() => navigate(`/game/${game.gameId}`)}
+        >
+          Watch
+        </Button>
       </Card>
     ));
   }
@@ -57,6 +72,7 @@ export default function LiveGamesDisplay() {
   if (loading) {
     return <Spinner variant="cyan" size="lg" />;
   }
+
   return (
     <div className="p-8 space-y-10">
       <section>
