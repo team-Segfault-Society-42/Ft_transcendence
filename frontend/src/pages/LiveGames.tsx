@@ -3,26 +3,43 @@ import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 import { useLiveGamesStore } from "@/Store/liveGamesStore";
 import { useEffect } from "react";
+import { Spinner } from "@/components/ui/Spinner";
 
 export default function LiveGamesDisplay() {
-  const games = useLiveGamesStore((state) => state.games);
+  const { games, loading } = useLiveGamesStore();
   const fetchGames = useLiveGamesStore((state) => state.fetchGame);
-
   useEffect(() => {
     fetchGames();
   }, [fetchGames]);
 
+  function renderWaitingGames() {
+    if (games.waiting.length === 0) {
+      return <p>No open games</p>;
+    }
+
+    return games.waiting.map((game) => (
+      <Card key={game.gameId}>
+        <Avatar
+          src={game.playerX?.avatar}
+          fallback={game.playerX?.username[0] || "?"}
+          size="md"
+        />
+
+        <span>{game.playerX?.username} is waiting</span>
+
+        <Button>Join</Button>
+      </Card>
+    ));
+  }
+
+  if (loading) {
+    return <Spinner variant="cyan" size="lg" />;
+  }
   return (
     <div className="p-8 space-y-10">
       <section>
         <h2>Open games</h2>
-        <p>Waiting: {games.waiting.length}</p>
-
-        <Card>
-          <Avatar fallback="J" size="md" />
-          <span>John is waiting for an opponent</span>
-          <Button>Join</Button>
-        </Card>
+        {renderWaitingGames()}
       </section>
 
       <section>
