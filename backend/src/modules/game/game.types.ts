@@ -35,11 +35,10 @@ export interface Move extends BoardPosition {
 }
 
 export interface PlayerSeat {
-  socketId: string | null;
   ownerUserId: number | null;
+  socketId: string | null;
 }
-
-// to stock socketId and ownerUserId of client x and client o
+// to stock socketId of client x and client o
 export interface PlayersInGame {
   X: PlayerSeat;
   O: PlayerSeat;
@@ -54,6 +53,22 @@ export interface ScoreBoard {
   X: number;
   O: number;
   D: number;
+}
+
+export interface WaitingGame {
+  gameId: string;
+  playerX: PublicPlayerProfile | null;
+}
+
+export interface PlayingGame {
+  gameId: string;
+  playerX: PublicPlayerProfile | null;
+  playerO: PublicPlayerProfile | null;
+}
+
+export interface LivesGamesResponse {
+  waiting: WaitingGame;
+  playing: PlayingGame;
 }
 
 export interface GameState {

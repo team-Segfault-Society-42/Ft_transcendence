@@ -55,6 +55,22 @@ export interface ScoreBoard {
   D: number;
 }
 
+export interface WaitingGame {
+  gameId: string;
+  playerX: PublicPlayerProfile | null;
+}
+
+export interface PlayingGame {
+  gameId: string;
+  playerX: PublicPlayerProfile | null;
+  playerO: PublicPlayerProfile | null;
+}
+
+export interface LivesGamesResponse {
+  waiting: WaitingGame;
+  playing: PlayingGame;
+}
+
 export interface GameState {
   board: CellValue[][];
   currentPlayer: PlayerSymbol;
