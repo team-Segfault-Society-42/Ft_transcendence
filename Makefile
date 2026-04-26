@@ -1,4 +1,4 @@
-include make/colours.mk make/help.mk make/clean.mk make/setup.mk 
+include make/colours.mk make/help.mk make/clean.mk make/setup.mk
 -include .env
 export
 
@@ -20,25 +20,22 @@ COMPOSE_PROD		= compose.prod.yaml
 # ══════════════════════════════════════════════════════
 ##@ START STACK
 
-up: _check-required-files ## Start the stack, rebuild images [DEV]
+up: _check-required-files ## Start (or restart after code changes) [DEV]
 	@echo "$(GREEN)Running in Dev Mode$(RES)"
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d --build
 
-build: _check-required-files ## Build all containers [DEV]
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build
-
-no-cache: _check-required-files ## Rebuild all containers in no-cache mode [DEV]
+no-cache: _check-required-files
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build --no-cache
 
-re: down build up ## Stop, rebuild, and restart the full stack [DEV]
+re: down up ## Clean stop and restart the running stack [DEV]
 
-reset: downv no-cache up ## Stop (remove volumes), full rebuild (no cache), restart containers [DEV]
+reset: downv no-cache up ## Wipe volumes, full no-cache rebuild, restart [DEV]
 
 prod: ## Start the stack, rebuild images [PROD]
 	@echo "$(RED)Running in Production Mode$(RES)"
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) up -d --build
 
-.PHONY: up build no-cache re reset prod
+.PHONY: up no-cache re reset prod
 
 # ══════════════════════════════════════════════════════
 #                 STOPING THE STACK
@@ -51,10 +48,10 @@ down: ## Stop all running containers [DEV]
 
 downv: ## Remove volumes and stop running containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down -v
-	
+
 p-down: ## Stop all running containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
-	
+
 p-downv: ## Remove volumes and stop running containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down -v
 
@@ -70,10 +67,10 @@ ps: ## Display all running containers [DEV]
 
 p-ps: ## Display all running containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) ps
-	
+
 ls: ## Display all images [UTIL]
 	@docker image ls -a
-	
+
 info: ## Display Docker system information, build cache, etc. [UTIL]
 	@docker system df
 
@@ -93,7 +90,7 @@ logs: ## Display logs for all containers [DEV]
 
 logs-proxy: ## Display logs for the proxy container [DEV]
 	@$(SHOW_DEV_LOGS) -f $(SERVICE_PROXY)
-	
+
 logs-front: ## Display logs for the frontend container [DEV]
 	@$(SHOW_DEV_LOGS) -f $(SERVICE_FRONTEND)
 
@@ -108,7 +105,7 @@ p-logs: ## Display logs for all containers [PROD]
 
 p-logs-proxy: ## Display logs for the proxy container [PROD]
 	@$(SHOW_PROD_LOGS) -f $(SERVICE_PROXY)
-	
+
 p-logs-front: ## Display logs for the frontend container [PROD]
 	@$(SHOW_PROD_LOGS) -f $(SERVICE_FRONTEND)
 
