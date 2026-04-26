@@ -20,14 +20,17 @@ COMPOSE_PROD		= compose.prod.yaml
 # ══════════════════════════════════════════════════════
 ##@ START STACK
 
-up: _check-required-files ## Start (or restart after code changes) [DEV]
+up: _check-required-files ## Start (or restart) the dev stack [DEV]
 	@echo "$(GREEN)Running in Dev Mode$(RES)"
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d --build
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d
+
+build: _check-required-files
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build
 
 no-cache: _check-required-files
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build --no-cache
 
-re: down up ## Clean stop and restart the running stack [DEV]
+re: down build up ## Rebuild images and restart — use when Dockerfile or dependencies change [DEV]
 
 reset: downv no-cache up ## Wipe volumes, full no-cache rebuild, restart [DEV]
 
@@ -35,7 +38,7 @@ prod: ## Start the stack, rebuild images [PROD]
 	@echo "$(RED)Running in Production Mode$(RES)"
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) up -d --build
 
-.PHONY: up no-cache re reset prod
+.PHONY: up build no-cache re reset prod
 
 # ══════════════════════════════════════════════════════
 #                 STOPING THE STACK
