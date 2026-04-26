@@ -66,9 +66,9 @@ export interface PlayingGame {
   playerO: PublicPlayerProfile | null;
 }
 
-export interface LivesGamesResponse {
-  waiting: WaitingGame;
-  playing: PlayingGame;
+export interface LiveGamesResponse {
+  waiting: WaitingGame[];
+  playing: PlayingGame[];
 }
 
 export interface GameState {
