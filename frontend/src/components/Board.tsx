@@ -185,6 +185,12 @@ export default function Board() {
     playerONameTrunc,
   );
 
+  const xDisconnect =
+    game.players.X.socketId === null && game.players.X.ownerUserId !== null;
+  const oDisconnect =
+    game.players.O.socketId === null && game.players.O.ownerUserId !== null;
+  const oppenentDisconnect =
+    playerRole === "X" ? oDisconnect : playerRole === "O" ? xDisconnect : false;
   return (
     <div className="relative inline-block text-center p-4">
       {status !== "finished" && (
@@ -275,6 +281,12 @@ export default function Board() {
           {t("game.waitingMove", {
             defaultValue: "Waiting for opponent move...",
           })}
+        </div>
+      )}
+
+      {status === "playing" && oppenentDisconnect && (
+        <div className="border border-orange-400 bg-orange-500/20 px-4 py-3 text-orange-100">
+          Opponent disconnected — waiting 20s for reconnection...
         </div>
       )}
 
