@@ -184,7 +184,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (result) {
       if (result.game.status === 'playing')
         this.startReconnectTimer(result.gameId, result.role);
-
+      if (result?.game.status === 'finished')
+        result.game.playerLeft = result.role;
       this.emitGameUpdate(result.gameId, result.game);
       this.cleanupFinishedGameIfEmpty(result.gameId);
       return;

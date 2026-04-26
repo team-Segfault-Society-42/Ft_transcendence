@@ -3,9 +3,10 @@ import { useGameStore } from "../Store/gameStore";
 import type { CellValue } from "../type/game.types";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { toast } from "sonner";
 
 function truncateUserName(username: string, maxLength = 12): string {
   if (!username) return "";
@@ -81,6 +82,14 @@ export default function Board() {
   const navigate = useNavigate();
 
   const [timeLeft, setTimeLeft] = useState(TURN_TIMEOUT_SECONDS);
+  const playerLeftToast = useRef(false);
+
+  useEffect(() => {
+    if (game?.playerLeft) {
+      toast.warning("Opponent left - no replay!");
+      playerLeftToast.current = true;
+    }
+  }, [game?.playerLeft]);
 
   useEffect(() => {
     if (!game || game.status !== "playing") {
