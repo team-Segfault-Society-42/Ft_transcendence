@@ -18,4 +18,8 @@ export class GameController {
   getFinishedGameHistory(@Param('id') gameId: string) {
     return this.gameService.getFinishedGamesHistory(gameId);
   }
+  @Get('liveGames')
+  getLiveGames() {
+    return this.gameService.getLiveGames();
+  }
 }
