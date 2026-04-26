@@ -10,10 +10,17 @@ export class GameController {
     const gameId = this.gameService.creatGame();
     return { gameId };
   }
+
+  @Get('liveGames')
+  getLiveGames() {
+    return this.gameService.getLiveGames();
+  }
+
   @Get(':id')
   getGame(@Param('id') gameId: string) {
     return this.gameService.getGameById(gameId);
   }
+
   @Get(':id/history')
   getFinishedGameHistory(@Param('id') gameId: string) {
     return this.gameService.getFinishedGamesHistory(gameId);

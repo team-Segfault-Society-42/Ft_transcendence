@@ -18,8 +18,9 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -e
             cd /app/Ft_transcendence
             git fetch origin
             git checkout dev
             git reset --hard origin/dev
-            make prod
+            docker compose -p prod -f compose.yaml -f compose.prod.yaml up -d --build backend frontend

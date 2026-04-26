@@ -3,7 +3,10 @@ import { useGameStore } from "../Store/gameStore";
 import type { CellValue } from "../type/game.types";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { toast } from "sonner";
 
 function truncateUserName(username: string, maxLength = 12): string {
   if (!username) return "";
@@ -65,11 +68,36 @@ function getEndGameMessage(
 const TURN_TIMEOUT_SECONDS = 30;
 
 export default function Board() {
-  const { game, error, playMove, playerRole, requestReplay } = useGameStore();
+  const {
+    gameId,
+    client,
+    game,
+    error,
+    playMove,
+    playerRole,
+    requestReplay,
+    leaveGame,
+  } = useGameStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [timeLeft, setTimeLeft] = useState(TURN_TIMEOUT_SECONDS);
+  const playerLeftToast = useRef(false);
+  const oldOppDiscnct = useRef(false);
+
+  const xDisconnect =
+    game?.players.X.socketId === null && game.players.X.ownerUserId !== null;
+  const oDisconnect =
+    game?.players.O.socketId === null && game.players.O.ownerUserId !== null;
+  const opponentDisconnect =
+    playerRole === "X" ? oDisconnect : playerRole === "O" ? xDisconnect : false;
+
+  useEffect(() => {
+    if (game?.playerLeft) {
+      toast.warning("Opponent left - no replay!");
+      playerLeftToast.current = true;
+    }
+  }, [game?.playerLeft]);
 
   useEffect(() => {
     if (!game || game.status !== "playing") {
@@ -87,6 +115,12 @@ export default function Board() {
     return () => clearInterval(interval);
   }, [game?.status, game?.lastMove]);
 
+  useEffect(() => {
+    if (oldOppDiscnct.current && !opponentDisconnect) {
+      toast.success("Opponent reconnected!");
+    }
+    oldOppDiscnct.current = opponentDisconnect;
+  }, [opponentDisconnect]);
   if (error && !game) {
     return (
       <div className="text-white text-center p-8">
@@ -110,6 +144,30 @@ export default function Board() {
   }
 
   const { board, currentPlayer, status, winner, toDisapear } = game;
+
+  if (status === "waiting" && playerRole === "X") {
+    const urlInvit = `${window.location.origin}/game/${gameId}`;
+    return (
+      <div className="text-center p-10">
+        <h2> Waiting for oppenent...</h2>
+        <p>Share this link to invite someone:</p>
+        <div className="flex gap-2 justify-center mt-4">
+          <Input readOnly value={urlInvit} className="..."></Input>
+          <Button onClick={() => navigator.clipboard.writeText(urlInvit)}>
+            Copy
+          </Button>
+        </div>
+        <Button
+          onClick={() => {
+            // client;
+            navigate("/");
+          }}
+        >
+          leave the game
+        </Button>
+      </div>
+    );
+  }
 
   const playerXName = game.playerProfiles?.X?.username || "Player X";
   const playerOName = game.playerProfiles?.O?.username || "Player O";
@@ -234,6 +292,12 @@ export default function Board() {
         </div>
       )}
 
+      {status === "playing" && opponentDisconnect && (
+        <div className="border border-orange-400 bg-orange-500/20 px-4 py-3 text-orange-100">
+          Opponent disconnected — waiting 20s for reconnection...
+        </div>
+      )}
+
       {showPopup && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
           <div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center gap-4 min-w-[320px] max-w-[90vw]">
@@ -253,13 +317,16 @@ export default function Board() {
             </div>
 
             <p className="text-sm text-gray-500 text-center">
-              {playerRole === "X" || playerRole === "O"
-                ? "You can request a replay"
-                : "Players try to decide whether to replay"}
+              {game.playerLeft
+                ? "Opponent left - replay unavailable"
+                : playerRole === "X" || playerRole === "O"
+                  ? "You can request a replay"
+                  : "Players try to decide whether to replay"}
             </p>
 
-            {(playerRole === "X" || playerRole === "O") && (
+            {(playerRole === "X" || playerRole === "O") && !game.playerLeft && (
               <>
+                {/* if (game.playerLeft) toast.warning("Opponent left - no replay!"); */}
                 <button
                   className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
                   onClick={requestReplay}
@@ -288,7 +355,19 @@ export default function Board() {
 
             <button
               className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-              onClick={() => navigate("/")}
+              onClick={() => {
+                leaveGame();
+                console.log(
+                  "socket",
+                  client,
+                  "role",
+                  playerRole,
+                  "click en backhome from gameid =",
+                  gameId,
+                  "and send leave_game",
+                );
+                navigate("/");
+              }}
             >
               {t("game.backHome", { defaultValue: "Back to home" })}
             </button>

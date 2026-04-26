@@ -27,6 +27,7 @@ export function initGameState(): GameState {
     lastMove: Date.now(),
     movesGameHistory: [],
     spectatCnt: 0,
+    playerLeft: null,
 
     players: {
       X: {

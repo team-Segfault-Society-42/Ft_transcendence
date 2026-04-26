@@ -8,6 +8,7 @@ type GameStore = {
   game: GameState | null;
   error: string | null;
   playerRole: PlayerRole | null;
+  playerLeft: "X" | "O" | null;
 
   setGameId: (gameId: string | null) => void;
   setClient: (client: Socket | null) => void;
@@ -17,6 +18,7 @@ type GameStore = {
   resetGameState: () => void;
   playMove: (index: number) => void;
   requestReplay: () => void;
+  leaveGame: () => void;
 };
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -25,6 +27,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   game: null,
   error: null,
   playerRole: null,
+  playerLeft: null,
 
   setGameId: (gameId) => set({ gameId }),
   setClient: (client) => set({ client }),
@@ -52,6 +55,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (playerRole !== "X" && playerRole !== "O") return;
 
     client.emit("request_replay", { gameId });
+  },
+
+  leaveGame: () => {
+    const { gameId, client } = get();
+    if (!client || !gameId) return;
+    client.emit("leave_game", { gameId });
   },
 
   playMove: (index) => {

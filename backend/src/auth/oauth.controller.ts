@@ -54,6 +54,7 @@ export class OAuthController {
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
 			maxAge: 5 * 60 * 1000,
+			path: '/',
 		});
 
 		const params = new URLSearchParams({
