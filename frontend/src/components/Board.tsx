@@ -83,6 +83,14 @@ export default function Board() {
 
   const [timeLeft, setTimeLeft] = useState(TURN_TIMEOUT_SECONDS);
   const playerLeftToast = useRef(false);
+  const oldOppDiscnct = useRef(false);
+
+  const xDisconnect =
+    game?.players.X.socketId === null && game.players.X.ownerUserId !== null;
+  const oDisconnect =
+    game?.players.O.socketId === null && game.players.O.ownerUserId !== null;
+  const opponentDisconnect =
+    playerRole === "X" ? oDisconnect : playerRole === "O" ? xDisconnect : false;
 
   useEffect(() => {
     if (game?.playerLeft) {
@@ -107,6 +115,12 @@ export default function Board() {
     return () => clearInterval(interval);
   }, [game?.status, game?.lastMove]);
 
+  useEffect(() => {
+    if (oldOppDiscnct.current && !opponentDisconnect) {
+      toast.success("Opponent reconnected!");
+    }
+    oldOppDiscnct.current = opponentDisconnect;
+  }, [opponentDisconnect]);
   if (error && !game) {
     return (
       <div className="text-white text-center p-8">
@@ -185,12 +199,6 @@ export default function Board() {
     playerONameTrunc,
   );
 
-  const xDisconnect =
-    game.players.X.socketId === null && game.players.X.ownerUserId !== null;
-  const oDisconnect =
-    game.players.O.socketId === null && game.players.O.ownerUserId !== null;
-  const oppenentDisconnect =
-    playerRole === "X" ? oDisconnect : playerRole === "O" ? xDisconnect : false;
   return (
     <div className="relative inline-block text-center p-4">
       {status !== "finished" && (
@@ -284,7 +292,7 @@ export default function Board() {
         </div>
       )}
 
-      {status === "playing" && oppenentDisconnect && (
+      {status === "playing" && opponentDisconnect && (
         <div className="border border-orange-400 bg-orange-500/20 px-4 py-3 text-orange-100">
           Opponent disconnected — waiting 20s for reconnection...
         </div>
