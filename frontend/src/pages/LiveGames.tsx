@@ -7,6 +7,7 @@ export default function LiveGamesDisplay() {
     <div className="p-8 space-y-10">
       <section>
         <h2>Open games</h2>
+        <p>Waiting games : {}</p>
         <Card>
           <Avatar fallback="J" size="md" />
           <span> John is waiting for oppenennt</span>
