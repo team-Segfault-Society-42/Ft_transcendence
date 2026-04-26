@@ -24,7 +24,7 @@ export default function LiveGamesDisplay() {
     return games.waiting.map((game) => (
       <Card key={game.gameId}>
         <Avatar
-          src={game.playerX?.avatar}
+          src={game.playerX?.avatar || undefined}
           fallback={game.playerX?.username[0] || "?"}
           size="md"
         />

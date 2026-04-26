@@ -1,5 +1,5 @@
 import { api } from "@/services/api";
-import type { LivesGamesResponse } from "@/type/game.types";
+import type { LiveGamesResponse } from "@/type/game.types";
 
 export async function createGame() {
   const response = await api.post<{ gameId: string }>("game/create");
@@ -7,7 +7,7 @@ export async function createGame() {
 }
 
 export async function getLiveGames() {
-  const response = await api.get<LivesGamesResponse>("game/liveGames");
+  const response = await api.get<LiveGamesResponse>("game/liveGames");
   return response.data;
 }
 
