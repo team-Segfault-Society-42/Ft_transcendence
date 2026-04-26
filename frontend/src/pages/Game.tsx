@@ -61,11 +61,6 @@ export default function Game() {
       useGameStore.getState().setError(gameErrorMsg(payload.message));
     });
 
-    client.on("opponent_left", (payload) => {
-      console.log("OPPONENT_LEFT RECEIVED:", payload);
-      toast.warning(payload?.message ?? "Opponent left - no replay");
-    });
-
     return () => {
       console.log("deconexion du socket");
       client.disconnect();

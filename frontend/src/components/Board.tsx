@@ -136,7 +136,7 @@ export default function Board() {
         </div>
         <Button
           onClick={() => {
-            client;
+            // client;
             navigate("/");
           }}
         >
@@ -288,13 +288,16 @@ export default function Board() {
             </div>
 
             <p className="text-sm text-gray-500 text-center">
-              {playerRole === "X" || playerRole === "O"
-                ? "You can request a replay"
-                : "Players try to decide whether to replay"}
+              {game.playerLeft
+                ? "Opponent left - replay unavailable"
+                : playerRole === "X" || playerRole === "O"
+                  ? "You can request a replay"
+                  : "Players try to decide whether to replay"}
             </p>
 
-            {(playerRole === "X" || playerRole === "O") && (
+            {(playerRole === "X" || playerRole === "O") && !game.playerLeft && (
               <>
+                {/* if (game.playerLeft) toast.warning("Opponent left - no replay!"); */}
                 <button
                   className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
                   onClick={requestReplay}

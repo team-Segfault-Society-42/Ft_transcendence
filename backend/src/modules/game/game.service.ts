@@ -223,4 +223,12 @@ export class GameService {
     this.activeGame.set(gameId, game);
     return game;
   }
+
+  setPlayerLeft(gameId: string, userId: number): GameState {
+    const game = this.getMutableGameById(gameId);
+    const role = getPlayerRoleByUserId(game, userId);
+    if (role === 'X' || role === 'O') game.playerLeft = role;
+    this.activeGame.set(gameId, game);
+    return game;
+  }
 }

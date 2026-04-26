@@ -10,7 +10,7 @@ import {
 import { GameService, TURN_TIMEOUT_MS } from './game.service';
 import { PlayMoveDto } from './dto/play-move.dto';
 import { Server, Socket } from 'socket.io';
-import { GameState } from './game.types';
+import { GameState, PlayerRole } from './game.types';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
@@ -279,10 +279,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('LEAVE_GAME received from:', client.id);
     console.log('gameId:', body.gameId);
     try {
-      client.to(body.gameId).emit('opponent_left', {
-        message: 'Your opponent left - no replay',
-      });
-
+      const userId = client.data.user.sub;
+      const game = this.gameService.setPlayerLeft(body.gameId, userId);
+      this.emitGameUpdate(body.gameId, game);
       await client.leave(body.gameId);
     } catch (error) {
       client.emit('game_error', {
