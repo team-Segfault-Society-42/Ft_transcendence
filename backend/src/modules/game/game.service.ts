@@ -239,7 +239,7 @@ export class GameService {
     for (const game of allGames) {
       if (game.status === 'waiting') waiting.push(game);
       else if (game.status === 'playing') playing.push(game);
-      return { waiting, playing };
     }
+    return { waiting, playing };
   }
 }
