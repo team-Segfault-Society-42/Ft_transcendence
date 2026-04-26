@@ -233,12 +233,23 @@ export class GameService {
   }
 
   getLiveGames() {
-    const waiting: GameState[] = [];
-    const playing: GameState[] = [];
-    const allGames = [...this.activeGame.values()];
-    for (const game of allGames) {
-      if (game.status === 'waiting') waiting.push(game);
-      else if (game.status === 'playing') playing.push(game);
+    const waiting: { gameId: string; playerX: PublicPlayerProfile | null }[] =
+      [];
+    const playing: {
+      gameId: string;
+      playerX: PublicPlayerProfile | null;
+      playerO: PublicPlayerProfile | null;
+    }[] = [];
+    const allGames = [...this.activeGame.entries()];
+    for (const [gameId, game] of allGames) {
+      if (game.status === 'waiting')
+        waiting.push({ gameId, playerX: game.playerProfiles.X });
+      else if (game.status === 'playing')
+        playing.push({
+          gameId,
+          playerX: game.playerProfiles.X,
+          playerO: game.playerProfiles.O,
+        });
     }
     return { waiting, playing };
   }
