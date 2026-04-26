@@ -14,7 +14,7 @@ PRINT_TAGS = \
 		tag = "$(MAGENTA)[BOTH]$(RES)  —  "; \
 		gsub(/\[BOTH\]/, "", comment); \
 	} else if (index(comment, "[UTIL]")) { \
-		tag = "$(GREY)[UTIL]$(RES)  —  "; \
+		tag = "$(PURPLE)[UTIL]$(RES)  —  "; \
 		gsub(/\[UTIL\]/, "", comment); \
 	} \
 	printf " ・$(CYAN)%-12s$(RES) %s %s\n", target, tag, comment; \
