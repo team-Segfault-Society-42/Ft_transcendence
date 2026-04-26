@@ -1,7 +1,7 @@
 # ══════════════════════════════════════════════════════
 #                      HELP
 # ══════════════════════════════════════════════════════
-##@ HELP
+## HELP
 
 PRINT_TAGS = \
 	if (index(comment, "[DEV]")) { \
@@ -19,7 +19,7 @@ PRINT_TAGS = \
 	} \
 	printf " ・$(CYAN)%-12s$(RES) %s %s\n", target, tag, comment; \
 
-help: ## Show help [UTIL]
+help: # Show help [UTIL]
 	@grep -hE '^[a-zA-Z_-]+:.*?##|^##@' $(MAKEFILE_LIST) | awk ' \
 		BEGIN { FS = ":.*?## " } \
 		/^##@/ { \
