@@ -65,12 +65,14 @@ export class AuthController {
 				secure: process.env.NODE_ENV === 'production',
 				sameSite: 'lax',
 				maxAge: 5 * 60 * 1000,
+				path: '/',
 			});
 
 			res.clearCookie('access_token', {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === 'production',
 				sameSite: 'lax',
+				path: '/',
 			});
 
 			return {
@@ -84,12 +86,14 @@ export class AuthController {
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
 			maxAge: 60 * 60 * 1000,
+			path: '/',
 		});
 
 		res.clearCookie('2fa_pending', {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
+			path: '/',
 		});
 
 		return {
@@ -110,12 +114,14 @@ export class AuthController {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
+			path: '/',
 		});
 
 		res.clearCookie('2fa_pending', {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
+			path: '/',
 		});
 
 		return { message: 'Logout successful' };
@@ -220,12 +226,14 @@ export class AuthController {
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
 			maxAge: 60 * 60 * 1000,
+			path: '/',
 		});
 
 		res.clearCookie('2fa_pending', {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
+			path: '/',
 		});
 
 		return {

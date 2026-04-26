@@ -42,15 +42,17 @@ export default function Dashboard() {
     getCurrentUser()
   }, [])
 
-  async function handleLogout() {
-    try {
-      setUser(null)
-      toast.success(t("auth.logoutSuccess"))
-      navigate("/")
-    } catch {
-      setUser(null)
-    }
-  }
+	async function handleLogout() {
+			try {
+				const response = await userService.userLogout()
+
+				setUser(null)
+				toast.success(response.message ?? t("auth.logoutSuccess"))
+				navigate("/")
+			} catch {
+				setUser(null)
+			}
+		}
 
   async function handleLoginSuccess() {
     const result = await userService.getMe()
