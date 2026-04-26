@@ -32,6 +32,28 @@ export default function LiveGamesDisplay() {
     ));
   }
 
+  function renderPlayingGames() {
+    if (games.playing.length === 0) return <p>No game to spectate</p>;
+    return games.playing.map((game) => (
+      <Card key={game.gameId}>
+        <Avatar
+          src={game.playerX?.avatar || undefined}
+          fallback={game.playerX?.username?.[0] || "?"}
+          size="md"
+        />
+        <Avatar
+          src={game.playerO?.avatar || undefined}
+          fallback={game.playerO?.username?.[0] || "?"}
+          size="md"
+        />
+        <span>
+          {game.playerX?.username || "?"} vs {game.playerO?.username || "?"}
+        </span>
+        <Button variant="secondary">Watch</Button>
+      </Card>
+    ));
+  }
+
   if (loading) {
     return <Spinner variant="cyan" size="lg" />;
   }
@@ -44,14 +66,7 @@ export default function LiveGamesDisplay() {
 
       <section>
         <h2>Live games</h2>
-        <p>Playing: {games.playing.length}</p>
-
-        <Card>
-          <Avatar fallback="A" size="md" />
-          <Avatar fallback="B" size="md" />
-          <span>Alice vs Bob</span>
-          <Button variant="secondary">Watch</Button>
-        </Card>
+        {renderPlayingGames()}
       </section>
     </div>
   );
