@@ -16,7 +16,7 @@ export function isCellEmpty(
 export function initGameState(): GameState {
   return {
     board: createEmptyBoard(BOARD_SIZE),
-    currentPlayer: 'X', // 1st to log take X
+    currentPlayer: 'X',
     status: 'waiting',
     winner: null,
     endReason: null,
@@ -57,15 +57,6 @@ export function initGameState(): GameState {
     },
   };
 }
-
-// 	queue,
-// 	idx,
-// 	history,
-// 	scores,
-// 	resetSession,
-// 	replayGame,
-
-// const toDisapear = idx > 5 ? queue[idx % 6] : -1
 
 export function checkWinner(board: CellValue[][]): PlayerSymbol | null {
   const size = 3;
@@ -132,18 +123,11 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
   game.moveCount++;
   game.queuIdx.push({ r, c });
   game.movesGameHistory.push(r * 3 + c);
-  // DEBUG : state before add
-  console.log('--- QUEUE APRES AJOUT ---');
-  console.table(game.queuIdx);
 
   if (game.queuIdx.length > 6) {
     const oldMove = game.queuIdx.shift();
     if (oldMove) {
       game.board[oldMove.r][oldMove.c] = null;
-      // DEBUG : state after delete
-      console.log(`[SHIFT] Supprimé du board : [${oldMove.r},${oldMove.c}]`);
-      console.log('--- QUEUE APRES SHIFT ---');
-      console.table(game.queuIdx);
     }
   }
   if (game.queuIdx.length >= 6) game.toDisapear = posToIdx(game.queuIdx[0]);
@@ -151,7 +135,6 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
 
   const winner = checkWinner(game.board);
   if (winner) {
-    console.log('winner is : ' + winner);
     game.status = 'finished';
     game.winner = winner;
     game.endReason = 'win';
@@ -162,7 +145,6 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
   }
 
   if (checkDraw(game.moveCount)) {
-    console.log('Its a Draw ');
     game.status = 'finished';
     game.endReason = 'draw';
     game.scores.D += 1;
