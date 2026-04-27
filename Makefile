@@ -64,7 +64,7 @@ p-down: ## Stop all running prod containers [PROD]
 p-downv: # Remove volumes and stop running containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down -v
 
-.PHONY: down downv p-down p-downv
+.PHONY: down downv down-all p-down p-downv
 
 # ══════════════════════════════════════════════════════
 #               		UTILITY
@@ -83,7 +83,7 @@ ls: ## Display all images [UTIL]
 info: # Display Docker system information, build cache, etc. [UTIL]
 	@docker system df
 
-.PHONY: ps ls info p-ps
+.PHONY: ps ls info
 
 # ══════════════════════════════════════════════════════
 #               	 	 LOGS
