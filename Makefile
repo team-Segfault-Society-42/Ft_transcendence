@@ -52,6 +52,12 @@ down: ## Stop all running dev containers [DEV]
 downv: # Remove volumes and stop running containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down -v
 
+down-all: ## Stop all dev & prod containers [BOTH]
+	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down
+	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
+
 p-down: ## Stop all running prod containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
 
