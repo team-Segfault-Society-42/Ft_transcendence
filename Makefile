@@ -46,13 +46,13 @@ prod: ## Start the stack, rebuild images [PROD]
 
 ##@ STOP STACK
 
-down: ## Stop all running containers [DEV]
+down: ## Stop all running dev containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down
 
 downv: # Remove volumes and stop running containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down -v
 
-p-down: ## Stop all running containers [PROD]
+p-down: ## Stop all running prod containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
 
 p-downv: # Remove volumes and stop running containers [PROD]
@@ -65,10 +65,10 @@ p-downv: # Remove volumes and stop running containers [PROD]
 # ══════════════════════════════════════════════════════
 ##@ UTILITY
 
-ps: ## Display all running containers [DEV]
+ps: ## Display all running containers [BOTH]
+	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) ps
-
-p-ps: ## Display all running containers [PROD]
+	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) ps
 
 ls: ## Display all images [UTIL]
