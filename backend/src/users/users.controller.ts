@@ -1,23 +1,44 @@
-import { Controller, Param, ParseIntPipe, Body, Get, Patch, UseGuards, Query , Inject, forwardRef} from '@nestjs/common';
+import {
+	Controller,
+	Param,
+	ParseIntPipe,
+	Body,
+	Get,
+	Patch,
+	UseGuards,
+	Query,
+	Inject,
+	forwardRef,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto} from './dto/update-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { MatchesService } from 'src/modules/game/matches.service';
+import { AchievementsService } from 'src/modules/game/achievements.service';
 
 @ApiTags('Users')
-
 @Controller('users')
 export class UsersController {
+	constructor(
+		private usersService: UsersService,
+		@Inject(forwardRef(() => MatchesService))
+		private readonly matchServices: MatchesService,
+		private readonly achievementsService: AchievementsService,
+	) {}
 
-	constructor(private usersService: UsersService, @Inject(forwardRef(() => MatchesService)) private readonly matchServices: MatchesService) {}
+	@ApiOperation({ summary: 'Get all of achievements of users' })
+	@Get(':id/achievements')
+	getAchievements(@Param('id', ParseIntPipe) id: number) {
+		return this.achievementsService.getAchievements(id);
+	}
 
 	@ApiOperation({ summary: 'Get leaderboard of users' })
 	@Get('leaderboard')
-	getLeaderboard( @Query('sortBy') sortBy: string) {
-		const safeSortBy = sortBy === "xp" ? "xp" : "wins"
-		return this.matchServices.getGameLeaderboard(safeSortBy)
+	getLeaderboard(@Query('sortBy') sortBy: string) {
+		const safeSortBy = sortBy === 'xp' ? 'xp' : 'wins';
+		return this.matchServices.getGameLeaderboard(safeSortBy);
 	}
-	
+
 	@ApiOperation({ summary: 'Get all users' })
 	@Get()
 	getUsers() {
@@ -33,12 +54,15 @@ export class UsersController {
 	@ApiOperation({ summary: 'Update user' })
 	@Patch(':id')
 	updateUser(
-		@Param('id', ParseIntPipe) id: number,
-		@Body() updateUserDto: UpdateUserDto,
+	@Param('id', ParseIntPipe) id: number,
+	@Body() updateUserDto: UpdateUserDto,
 	) {
 		return this.usersService.updateUser(id, updateUserDto);
 	}
 
+	@ApiOperation({ summary: 'Get history by ID' })
+	@Get(':id/history')
+	getHistory(@Param('id', ParseIntPipe) id: number) {
+		return this.matchServices.getFinishedGamesHistory(id);
+	}
 }
-
-

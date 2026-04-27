@@ -1,66 +1,89 @@
 {
     "title": "ft_transcendence",
   
-    "header": {
-        "home": "Inicio",
-        "game": "Juego",
-        "profile": "Perfil"
-    },
-  
     "home": {
-        "hero": {
+      "play": {
+        "title": "Jugar"
+      },
+      "hero": {
             "texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
       },
       "buttons": {
         "register": "Registrarse",
-        "login": "Se conectar",
+        "login": "Conectar se",
         "start": "INICIAR PARTIDA",
         "hi": "Hola, ",
         "local": "Jugar en local",
         "findOpp": "Buscar un oponente"
-      },
-      "cards": {
-        "home": {
-          "title": "🏠 Inicio",
-          "description": "¡Bienvenido a la página principal! Explora la aplicación."
-        },
-        "game": {
-          "title": "🎮 Juego",
-          "description": "Comienza una partida y ponte a prueba."
-        },
-        "profile": {
-          "title": "👤 Perfil",
-          "description": "Consulta tus estadísticas y personaliza tu perfil."
-        }
       }
     },
   
+    "sidebar": {
+      "home": "Inicio",
+      "game": "Juego",
+      "profile": "Perfil",
+      "leaderboard": "Clasificación",
+      "friends": "Amigos",
+      "chat": "Chat",
+      "history": "Historial"
+    },
+
     "game": {
         "turn": "Turno de {{player}} : {{symbol}}",
         "vs": "VS",
         "wins": "¡GANA!",
         "replay": "Reiniciar",
         "mode": "Modo 2 jugadores",
-      "reset": "Reiniciar sesión"
+        "reset": "Reiniciar sesión",
+      "result": {
+          "win": "Victoria",
+          "loss": "Derrota",
+          "draw": "Empate"
+      }
     },
   
     "profile": {
       "loading": "Cargando...",
+      "level": "Nivel {{level}}",
       "stats": {
         "wins": "Victorias",
         "losses": "Derrotas",
         "winrate": "Porcentaje de victorias",
-        "games": "{{count}} partidas jugadas"
+        "games_one": "{{count}} partida jugadas",
+        "games_other": "{{count}} partidas jugadas",
+        "winrateValue": "{{value}}%"
       },
       "bio": "Biografía",
       "buttons": {
         "edit": "Editar perfil",
         "save": "Guardar cambios"
-      }
+      },
+      "about": {
+        "title": "Acerca de",
+        "notConnected": "No conectado",
+        "loginHint": "Inicia sesión para ver tu perfil",
+        "guest": "Invitado",
+        "viewProfile": "Ver perfil",
+        "noBio": "Sin biografía"
+      },
+      "xp": "{{current}} / {{max}} XP"
+    },
+
+    "leaderboard": {
+      "title": "Clasificación",
+      "topXP": "Nivel más alto",
+      "topWins": "Más victorias",
+      "empty": "No hay jugadores en la clasificación",
+      "xp": "{{value}} XP",
+      "wins": "{{value}} Victorias"
+    },
+
+    "history": {
+        "title": "Historial de partidas",
+        "empty": "No hay partidas todavía"
     },
 
     "auth": {
-        "title": "Segfault Society",
         "description": "Crea tu cuenta",
         "description_login": "Acceso",
 
@@ -78,7 +101,7 @@
             "register": "Registrarse",
             "loading": "Conectando al servidor...",
             "change_method": "Cambiar método",
-            "login": "Se conectar",
+            "login": "Conectar se",
             "no_account": "¿ No tienes cuenta ? Regístrate",
             "already_account": "¿ Ya tienes una cuenta ? Iniciar sesión",
             "logout": ": Cerrar sesión",
@@ -93,14 +116,17 @@
             "email": "Dirección de correo inválida.",
             "password": "La contraseña debe tener al menos 8 caracteres.",
             "bio": "La bio debe contener menos de 180 caracteres"
-
-        }
+        },
+        "logoutSuccess": "Desconexión exitosa",
+        "errorWithMessage": "Ocurrió un error: {{message}}",
+        "loginWith42": "Iniciar sesión con 42"
     },
   
     "footer": {
         "brand": "ft_transcendence",
         "privacy": "Privacidad",
-        "terms": "Términos de uso"
+        "terms": "Términos de uso",
+        "copyright": "© {{year}}"
     },
   
     "privacy": {

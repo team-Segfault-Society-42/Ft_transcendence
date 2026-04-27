@@ -10,7 +10,16 @@ export function Card({ children, className }: CardProps) {
     return (
         <div
             className={cn(
-            "bg-linear-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-400/20 rounded-xl p-6 backdrop-blur transition hover:scale-105 group",
+                "bg-white/5",
+                "backdrop-blur-xl",
+                "border border-white/10",
+                "rounded-2xl",
+                "p-6",
+                "shadow-xl",
+        
+                "transition-all duration-300",
+                "hover:bg-white/10",
+                "hover:scale-[1.02]",
             className
             )}>
             {children}
@@ -27,7 +36,7 @@ export function CardTitle({ children, className }: CardTitleProps) {
     return (
         <h3
             className={cn(
-            "font-bold text-lg mb-2 transition group-hover:text-cyan-300",
+            "font-bold text-lg mb-2",
             className
             )}>
             {children}
@@ -44,7 +53,7 @@ export function CardDescription({ children, className }: CardDescriptionProps) {
     return (
         <p
             className={cn(
-            "text-white/70 text-sm",
+            "text-white",
             className
             )}>
             {children}

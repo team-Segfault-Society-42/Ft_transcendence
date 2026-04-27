@@ -11,7 +11,7 @@ export function Label({ children, htmlFor, className }: LabelProps) {
     <label
       htmlFor={htmlFor}
       className={cn(
-        "text-sm font-medium text-white/70",
+        "text-sm font-medium bg-linear-to-br from-cyan-400 to-pink-500 bg-clip-text text-transparent inline-block min-w-50",
         className
       )}>
       {children}

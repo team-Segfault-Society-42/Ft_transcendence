@@ -5,6 +5,9 @@ services:
     container_name: prod-frontend
     build:
       target: prod    # targets the prod stage in a multi-stage Dockerfile
+      args:
+      - VITE_OAUTH_42_START_URL=${VITE_OAUTH_42_START_URL}
+
 
   # ── Backend (Nest.js) ────────────────────────────────────────────
   backend:
@@ -18,6 +21,9 @@ services:
       - FORTYTWO_CLIENT_SECRET=${FORTYTWO_CLIENT_SECRET}
       - FORTYTWO_REDIRECT_URI=${FORTYTWO_REDIRECT_URI}
       - FRONTEND_OAUTH_SUCCESS_URL=${FRONTEND_OAUTH_SUCCESS_URL}
+      - DOMAIN=${DOMAIN}
+      - TWO_FACTOR_URL=${TWO_FACTOR_URL}
+
 
 
   # ── Reverse Proxy (Nginx) ────────────────────────────────────────

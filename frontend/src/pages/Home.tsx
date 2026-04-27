@@ -1,93 +1,84 @@
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Motion } from "@/components/ui/Motion";
+import { AboutCard } from "@/components/home/AboutCard"
+import { PlayCard } from "@/components/home/PlayCard"
+import { GameHistoryCard } from "@/components/home/GameHistoryCard"
+import type { Match } from "@/lib/match"
+import { useEffect, useState } from "react"
+import { useOutletContext } from "react-router"
+import { userService } from "@/services/userService"
 
 export default function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [user] = useOutletContext<any>()
+  const [matches, setMatches] = useState<Match[]>([])
 
   const handleFindOpponent = async () => {
     try {
-      const response = await fetch("/api/game/create", {
-        method: "POST",
-      });
+    	const response = await fetch("/api/game/create", {
+        	method: "POST",
+    });
 
-      if (!response.ok) {
+    if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`);
-      }
-
-      const data: { gameId: string } = await response.json();
-      navigate(`/game/${data.gameId}`);
-    } catch (error) {
-      console.log("created game error:", error);
     }
-  };
-	const handleLogin42 = () => {
-	const oauth42Url =
-		import.meta.env.VITE_OAUTH_42_START_URL ?? "http://localhost:1024/api/auth/42";
 
-	window.location.href = oauth42Url;
-	};
+    const data: { gameId: string } = await response.json();
+    navigate(`/game/${data.gameId}`);
+    } catch (error) {
+    	console.log("created game error:", error);
+    	}
+  	};
 
-  return (
-    <section className="flex flex-col items-center text-center gap-12">
-      <div className="space-y-6">
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {t("title")}
-        </h1>
+  	useEffect(() => {
+    	if (!user) return
 
-        <p className="text-white/60 max-w-md mx-auto text-lg">
-          {t("home.hero.texte")}
-        </p>
-      </div>
+    	userService.getUserHistory(user.id)
+      	.then(setMatches)
+  	}, [user])
 
-      {/* BUTTONS */}
-      <Button onClick={() => console.log("play local later")} size="xl">
-        {t("home.buttons.local")}
-      </Button>
+  	return (
+    	<section className="w-full flex flex-col gap-10">
 
-      <Button onClick={handleFindOpponent} size="xl">
-        {t("home.buttons.findOpp")}
-      </Button>
+    <Motion>
+      	<div className="text-center space-y-4">
+        	<h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+          	{t("title")}
+        	</h1>
 
-      <Button
-        onClick={handleLogin42}
-        size="xl">
-        Login with 42
-      </Button>
+        	<p className="bg-linear-to-r from-cyan-400 to-pink-500  bg-clip-text text-transparent max-w-md mx-auto text-lg">
+          		{t("home.hero.texte")}
+        	</p>
+      	</div>
+    </Motion>
 
+    <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-
-      {/* CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full">
-        <Link to="/">
-          <Card>
-            <CardTitle>{t("home.cards.home.title")}</CardTitle>
-            <CardDescription>
-              {t("home.cards.home.description")}
-            </CardDescription>
-          </Card>
+    	{/* CARDS */}
+    	<Link to="/profile">
+        	<div className="lg:col-span-1 flex h-full">
+            	<AboutCard user={user}
+            	className="flex-1"
+            	/>
+          	</div>
         </Link>
 
-        <Link to="/game">
-          <Card>
-            <CardTitle>{t("home.cards.game.title")}</CardTitle>
-            <CardDescription>
-              {t("home.cards.game.description")}
-            </CardDescription>
-          </Card>
-        </Link>
+        <div className="lg:col-span-2 flex flex-col gap-6">
+        	<Link to="/game">
+            	<PlayCard
+              	onFindOpponent={handleFindOpponent}
+            	/>
+          	</Link>
+          	<Link to="/history">
+            	<GameHistoryCard
+              	matches={matches}
+            	/>
+          	</Link>
+        </div>
 
-        <Link to="/profile" className="card">
-          <Card>
-            <CardTitle>{t("home.cards.profile.title")}</CardTitle>
-            <CardDescription>
-              {t("home.cards.profile.description")}
-            </CardDescription>
-          </Card>
-        </Link>
-      </div>
+    </div>
     </section>
   );
 }

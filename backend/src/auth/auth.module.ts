@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { OAuthController } from './oauth.controller';
 import { OAuthService } from './oauth.service';
+import { TwoFactorService } from './twofa.service';
 
 @Module({
 	imports: [
@@ -18,7 +19,7 @@ import { OAuthService } from './oauth.service';
 		HttpModule,
 	],
 	controllers: [AuthController, OAuthController],
-	providers: [AuthService, OAuthService, JwtAuthGuard],
+	providers: [AuthService, OAuthService, TwoFactorService, JwtAuthGuard],
 	exports: [JwtAuthGuard],
 })
 export class AuthModule {}

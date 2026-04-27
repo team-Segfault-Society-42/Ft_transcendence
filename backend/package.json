@@ -28,13 +28,16 @@
     "@nestjs/platform-socket.io": "^11.1.17",
     "@nestjs/swagger": "^11.2.6",
     "@nestjs/websockets": "^11.1.17",
+    "@otplib/v12-adapter": "^13.4.0",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "cookie-parser": "^1.4.7",
+    "otplib": "^13.4.0",
     "pg": "^8.20.0",
+    "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1"
@@ -50,6 +53,8 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
+    "@types/otplib": "^10.0.0",
+    "@types/qrcode": "^1.5.6",
     "@types/supertest": "^6.0.2",
     "dotenv": "^17.4.1",
     "eslint": "^9.18.0",
@@ -84,5 +89,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "seed": "npx ts-node prisma/seed.ts"
   }
 }

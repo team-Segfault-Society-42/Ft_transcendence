@@ -6,6 +6,7 @@ SECRETS_DIR = secrets/
 
 # ── Add new .env defaults here ────────────────────────────────────────────────
 # Format: KEY=value   (replaces the KEY=... line after copying .env.example)
+# Note: if POSTGRES_VERSION is changed, please update it in `make/clean.mk` too
 DEFAULT_ENV_VARS = \
 	DOMAIN=127.0.0.1 \
 	POSTGRES_VERSION=18-alpine \
@@ -36,7 +37,17 @@ REQUIRED_FILES = \
 
 # ══════════════════════════════════════════════════════
 
-setup: # Checks required files; prompt for default setup if any are missing
+setup: # Prompts user to run default setup
+	@echo "$(ORANGE)Building default setup will overwrite all setup files.$(RES)"; \
+	printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
+	case "$$ans" in \
+		y|Y|yes|Yes|YES) \
+			$(MAKE) --no-print-directory _setup-apply ;; \
+		*) \
+			exit 0 ;; \
+	esac
+
+_check-required-files: # Checks required files exist
 	@missing=0; \
 	for f in $(REQUIRED_FILES); do \
 		if [ ! -f "$$f" ]; then \
@@ -46,18 +57,14 @@ setup: # Checks required files; prompt for default setup if any are missing
 	done; \
 	if [ "$$missing" -eq 0 ]; then \
 		echo "$(GREEN)✓ All required files present$(RES)"; \
-		exit 0; \
+	else \
+		echo "$(CYAN)Missing files detected. Rebuilding defaults.$(RES)"; \
+		$(MAKE) --no-print-directory _setup-apply ; \
 	fi; \
-	printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
-	case "$$ans" in \
-		y|Y|yes|Yes|YES) \
-			$(MAKE) --no-print-directory _setup-apply ;; \
-		*) \
-			echo "$(RED)Aborted. Fix missing files manually by running $(GOLD)\`make setup\`$(RES)"; \
-			exit 1 ;; \
-	esac
+	
 
 _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
+  	# ── Overwrite .env File ─────────────────────────────────────────────────────
 	@{ \
 		for pair in $(DEV_ONLY_ENV_VARS); do \
 			echo "$$pair"; \
@@ -65,12 +72,14 @@ _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
 		grep -v '^\s*#' .env.example; \
 	} > .env
 	@echo "$(GREEN)✓ .env created (dev-only vars prepended, comments stripped)$(RES)"
+  	# ── Replace values with Defaults ─────────────────────────────────────────
 	@for pair in $(DEFAULT_ENV_VARS); do \
 		key=$$(echo "$$pair" | cut -d= -f1); \
 		val=$$(echo "$$pair" | cut -d= -f2-); \
 		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env; \
 	done
 	@echo "$(GREEN)✓ Default values applied to .env$(RES)"
+  	# ── Create Secret Files ──────────────────────────────────────────────────
 	@mkdir -p $(SECRETS_DIR)
 	@for pair in $(DEFAULT_SECRETS); do \
 		file=$$(echo "$$pair" | cut -d= -f1); \
@@ -78,5 +87,16 @@ _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
 		echo "$$content" > $(SECRETS_DIR)$$file; \
 		echo "$(GREEN)✓ $(SECRETS_DIR)$$file created$(RES)"; \
 	done
+  	# ── Prompt for auto LAN setup ────────────────────────────────────────────
+	@printf "$(CYAN)Setup with local LAN?$(RES) [y/N] "; read ans; \
+	case "$$ans" in \
+		y|Y|yes|Yes|YES) \
+			ip=$$(ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($$i=="src") print $$(i+1)}'); \
+			sed -i "s|^DOMAIN=.*|DOMAIN=$$ip|" .env; \
+			echo "Using custom DOMAIN: '$(GOLD)$$ip$(RES)'";; \
+		*) \
+			echo "Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'";; \
+	esac
+	
 
-.PHONY: setup _setup-apply
+.PHONY: setup _setup-apply _check-required-files

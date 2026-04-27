@@ -223,4 +223,34 @@ export class GameService {
     this.activeGame.set(gameId, game);
     return game;
   }
+
+  setPlayerLeft(gameId: string, userId: number): GameState {
+    const game = this.getMutableGameById(gameId);
+    const role = getPlayerRoleByUserId(game, userId);
+    if (role === 'X' || role === 'O') game.playerLeft = role;
+    this.activeGame.set(gameId, game);
+    return game;
+  }
+
+  getLiveGames() {
+    const waiting: { gameId: string; playerX: PublicPlayerProfile | null }[] =
+      [];
+    const playing: {
+      gameId: string;
+      playerX: PublicPlayerProfile | null;
+      playerO: PublicPlayerProfile | null;
+    }[] = [];
+    const allGames = [...this.activeGame.entries()];
+    for (const [gameId, game] of allGames) {
+      if (game.status === 'waiting')
+        waiting.push({ gameId, playerX: game.playerProfiles.X });
+      else if (game.status === 'playing')
+        playing.push({
+          gameId,
+          playerX: game.playerProfiles.X,
+          playerO: game.playerProfiles.O,
+        });
+    }
+    return { waiting, playing };
+  }
 }

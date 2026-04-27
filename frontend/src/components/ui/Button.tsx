@@ -1,13 +1,14 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none",
+  "inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none border border-white",
   {
     variants: {
       variant: {
-        primary: "bg-linear-to-r from-cyan-500 to-purple-500 text-white hover:bg-cyan-400 hover:scale-110 active:scale-95",
+        primary: "bg-linear-to-r from-cyan-400 to-pink-500 text-white hover:bg-cyan-400 hover:scale-110 active:scale-95",
         secondary: "bg-slate-800 text-white border border-white/10 hover:scale-110 active:scale-95",
         danger: "bg-red-500 text-white hover:bg-red-400 hover:scale-110 active:scale-95",
       },
@@ -39,13 +40,15 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
+  const { t } = useTranslation()
+
   return (
     <button
       className={cn(buttonVariants({ variant, size }), className)}
       disabled={loading || disabled}
       {...props}
     >
-      {loading ? "Loading..." : children}
+      {loading ? t("buttons.loading") : children}
     </button>
   )
 }

@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from "react-i18next"
+import { Motion } from '@/components/ui/Motion';
 
 export default function Footer() {
     const { t } = useTranslation()
@@ -9,12 +10,15 @@ export default function Footer() {
 
             <div className="relative max-w-6xl mx-auto px-6 py-4 flex items-center">
 
-                <div className="text-white/60 font-semibold">
-                    {t("footer.projectname")}
-                </div>
+                <Motion>
+                    <div className="text-white/60 font-semibold">
+                        {t("footer.projectname")}
+                    </div>
+                </Motion>
 
                 <nav className="absolute left-1/2 -translate-x-1/2 flex gap-6 uppercase tracking-wide text-sm">
 
+                <Motion>
                     <NavLink
                         to="/privacy"
                         className={({ isActive }) =>
@@ -24,7 +28,9 @@ export default function Footer() {
                         }>
                         {t("footer.privacy")}
                     </NavLink>
+                </Motion>
 
+                <Motion>
                     <NavLink
                         to="/terms"
                         className={({ isActive }) =>
@@ -34,11 +40,14 @@ export default function Footer() {
                         }>
                         {t("footer.terms")}
                     </NavLink>
+                </Motion>
 
                 </nav>
 
                 <div className="ml-auto text-xs text-white/30">
-                    © {new Date().getFullYear()}
+                    <Motion>
+                        {t("footer.copyright", { year: new Date().getFullYear() })}
+                    </Motion>
                 </div>
 
             </div>

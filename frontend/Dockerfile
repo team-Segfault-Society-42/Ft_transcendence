@@ -22,8 +22,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+ARG VITE_OAUTH_42_START_URL
+ENV VITE_OAUTH_42_START_URL=$VITE_OAUTH_42_START_URL
+
 COPY . .
-RUN npm run build 
+RUN npm run build
 
 # ── Stage 3: Production ──────────────────────────────────────────────────────
 FROM nginx:1.28-alpine AS prod

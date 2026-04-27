@@ -12,21 +12,25 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  email         String         @unique
-  passwordHash  String?
-  username      String         @unique
-  bio           String?
-  avatar        String
-  wins          Int            @default(0)
-  losses        Int            @default(0)
-  draws         Int            @default(0)
-  xp            Int            @default(0)
-  gameAsP1      Game[]         @relation("player1")
-  gameAsP2      Game[]         @relation("player2")
-  wonGamees     Game[]         @relation("asWinner")
-  moves         Move[]
-  oauthAccounts OAuthAccount[]
+  id                  Int            @id @default(autoincrement())
+  email               String         @unique
+  passwordHash        String?
+  username            String         @unique
+  bio                 String?
+  avatar              String
+  wins                Int            @default(0)
+  losses              Int            @default(0)
+  draws               Int            @default(0)
+  xp                  Int            @default(0)
+  isTwoFactorEnabled  Boolean        @default(false)
+  twoFactorSecret     String?
+  twoFactorTempSecret String?
+  gameAsP1            Game[]         @relation("player1")
+  gameAsP2            Game[]         @relation("player2")
+  wonGamees           Game[]         @relation("asWinner")
+  moves               Move[]
+  oauthAccounts       OAuthAccount[]
+  achievements        UserAchievement[]
 }
 
 model OAuthAccount {
@@ -66,4 +70,28 @@ model Move {
   player       User    @relation(fields: [playerId], references: [id])
   playerId     Int
 
+}
+
+model Achievement {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  displayName String
+  description String
+  createdAt   DateTime @default(now())
+  icon        String?
+
+  user        UserAchievement[]
+}
+
+model UserAchievement {
+  userId          Int
+  achievementId   Int
+  unlockedAt      DateTime  @default(now())
+  progress        Int?
+
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@id([userId, achievementId])
+  
 }

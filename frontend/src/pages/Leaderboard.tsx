@@ -1,5 +1,7 @@
 import { userService } from "@/services/userService";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/Button";
 
 interface LeaderBoard {
   id: number;
@@ -11,6 +13,7 @@ interface LeaderBoard {
 export default function LeaderBoard() {
   const [leaderboard, setLeaderboard] = useState<LeaderBoard[]>([]);
   const [sortBy, setSortBy] = useState<"xp" | "wins">("wins");
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -24,44 +27,39 @@ export default function LeaderBoard() {
     fetchLeaderboard();
   }, [sortBy]);
 
-  // DEBUG
-  console.log(leaderboard);
-  console.log(sortBy);
-  //
-
   return (
     <div className="max-w-3xl mx-auto text-white p-6">
+
+        <h1 className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent text-3xl mb-8 text-center">
+          {t("leaderboard.title")}
+        </h1>
+      
       <div className="mt-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6">
-        <h3 className="text-lg font-semibold mb-6 flex items-center justify-center gap-2">
-          LeaderBoard
-        </h3>
-
         <div className="flex gap-4 justify-center mb-8">
-          <button
+          <Button
             onClick={() => setSortBy("xp")}
-            className={`px-4 py-2 rounded-lg transition-all ${
-              sortBy === "xp"
-                ? "bg-blue-600 shadow-lg shadow-blue-900/20"
-                : "bg-white/5 hover:bg-white/10"
-            }`}
+            variant={sortBy === "xp"
+              ? "primary"
+              : "secondary"
+            }
           >
-            Top XP
-          </button>
+            {t("leaderboard.topXP")}
+          </Button>
 
-          <button
+          <Button
             onClick={() => setSortBy("wins")}
-            className={`px-4 py-2 rounded-lg transition-all ${
-              sortBy === "wins"
-                ? "bg-blue-600 shadow-lg shadow-blue-900/20"
-                : "bg-white/1 hover:bg-white/10"
-            }`}
+            variant={sortBy === "wins"
+              ? "primary"
+              : "secondary"}
           >
-            Top Wins
-          </button>
+            {t("leaderboard.topWins")}
+          </Button>
         </div>
 
         {leaderboard.length === 0 ? (
-          <p> No players are listed in the rankings </p>
+          <p className="text-center">
+            {t("leaderboard.empty")}
+          </p>
         ) : (
           <div>
             {leaderboard.map((l, index) => (
@@ -79,8 +77,8 @@ export default function LeaderBoard() {
                 <div className="text-right">
                   <p className="text-blue-400 font-bold">
                     {sortBy === "xp"
-                      ? `${l.xp} XP`
-                      : `${l.wins ?? 0} Victoires`}
+                      ? t("leaderboard.xp", { value: l.xp })
+                      : t("leaderboard.wins", { value: l.wins ?? 0 })}
                   </p>
                 </div>
               </div>
