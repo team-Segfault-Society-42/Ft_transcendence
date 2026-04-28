@@ -72,17 +72,6 @@ model Move {
 
 }
 
-model Achievement {
-  id          Int      @id @default(autoincrement())
-  key         String   @unique
-  displayName String
-  description String
-  createdAt   DateTime @default(now())
-  icon        String?
-
-  user        UserAchievement[]
-}
-
 model UserAchievement {
   userId          Int
   achievementId   Int
