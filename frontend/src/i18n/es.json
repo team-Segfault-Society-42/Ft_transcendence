@@ -119,7 +119,15 @@
         },
         "logoutSuccess": "Desconexión exitosa",
         "errorWithMessage": "Ocurrió un error: {{message}}",
-        "loginWith42": "Iniciar sesión con 42"
+        "loginWith42": "Iniciar sesión con 42",
+        "twofa": {
+          "title": "Autenticación de dos factores",
+          "description": "Introduce el código de 6 dígitos de tu aplicación de autenticación.",
+          "verifying": "Verificando...",
+          "verify": "Verificar código",
+          "back": "Volver al inicio de sesión",
+          "success": "Autenticación 2FA exitosa"
+        }
     },
   
     "footer": {

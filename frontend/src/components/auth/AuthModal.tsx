@@ -44,7 +44,7 @@ export function AuthModal({
 		try {
 			setIsVerifying(true);
 			await userService.completeTwoFactorLogin(code);
-			toast.success("Two-factor login successful");
+			toast.success(t("auth.twofa.success"));
 			setCode("");
 			setStep("auth");
 			onSuccess?.();
@@ -104,11 +104,11 @@ export function AuthModal({
 				) : (
 					<>
 						<h2 className="text-2xl mb-2 bg-linear-to-br from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-							Two-factor authentication
+							{t("auth.twofa.title")}
 						</h2>
 
 						<p className="text-white/70 mb-4">
-							Enter the 6-digit code from your authenticator app.
+							{t("auth.twofa.description")}
 						</p>
 
 						<form onSubmit={handleTwoFactorSubmit} className="space-y-4">
@@ -120,7 +120,9 @@ export function AuthModal({
 							/>
 
 							<Button className="w-full" disabled={isVerifying}>
-								{isVerifying ? "Verifying..." : "Verify code"}
+								{isVerifying
+									? t("auth.twofa.verifying")
+									: t("auth.twofa.verify")}
 							</Button>
 						</form>
 
@@ -133,7 +135,7 @@ export function AuthModal({
 								setCode("");
 							}}
 						>
-							Back to login
+							{t("auth.twofa.back")}
 						</Button>
 					</>
 				)}

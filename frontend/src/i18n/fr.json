@@ -116,7 +116,15 @@
         },
         "logoutSuccess": "Déconnexion réussie",
         "errorWithMessage": "Une erreur est survenue : {{message}}",
-        "loginWith42": "Se connecter avec 42"
+        "loginWith42": "Se connecter avec 42",
+        "twofa": {
+            "title": "Authentification à deux facteurs",
+            "description": "Entrez le code à 6 chiffres de votre application d’authentification.",
+            "verifying": "Vérification...",
+            "verify": "Vérifier le code",
+            "back": "Retour à la connexion",
+            "success": "Connexion 2FA réussie"
+        }
     },
 
     "footer": {
