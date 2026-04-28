@@ -9,11 +9,11 @@ export function OAuth42Button() {
     <Button
       type="button"
       variant="secondary"
-      className="w-full flex items-center justify-center gap-3 bg-white/5 border border-white/10 hover:bg-white/10"
+      className="w-full flex items-center justify-center gap-3"
       onClick={handleLogin}
     >
       <img
-        src="/42logo.png"
+        src="/42logo.svg"
         alt="42"
         className="w-5 h-5"
       />
