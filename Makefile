@@ -83,7 +83,13 @@ ls: ## Display all images [UTIL]
 info: # Display Docker system information, build cache, etc. [UTIL]
 	@docker system df
 
-.PHONY: ps ls info
+swagger: ## Print URL to access Swagger Documentation [UTIL]
+	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
+	@echo "http://$(DOMAIN):1024/api/api-docs"
+	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
+	@echo "https://$(DOMAIN):8443/api/api-docs"
+
+.PHONY: ps ls info swagger
 
 # ══════════════════════════════════════════════════════
 #               	 	 LOGS
