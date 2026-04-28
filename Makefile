@@ -89,7 +89,13 @@ swagger: ## Print URL to access Swagger Documentation [UTIL]
 	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
 	@echo "https://$(DOMAIN):8443/api/api-docs"
 
-.PHONY: ps ls info swagger
+prisma: ## Start Prisma Studio (Stack MUST be running) [DEV]
+	@docker ps --filter "name=dev-backend" --filter "status=running" -q | grep -q . \
+		|| (echo "$(BOLD_RED)Error: dev-backend not running, $(RES)Run $(BOLD_CYAN)make up$(RES) first." && exit 1)
+	@docker exec -it dev-backend npx prisma studio --port 5555 --browser none --url="$(shell cat $(SECRETS_DIR)database_url.txt)" \
+		|| true
+
+.PHONY: ps ls info swagger prisma
 
 # ══════════════════════════════════════════════════════
 #               	 	 LOGS
