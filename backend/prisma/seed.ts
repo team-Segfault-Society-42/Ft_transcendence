@@ -15,6 +15,7 @@ const prisma = new PrismaClient({ adapter });
 // ── Define Constants ────────────────────────────────────────────────────────
 const DUMMY_COUNT = 10;
 const PASSWORD = 'Dummy123';
+const DUMMY_USERNAMES = Array.from({ length: DUMMY_COUNT }, (_, n) => `dummy${n}`);
 const AVATARS = Array.from(
   { length: DUMMY_COUNT },
   (_, n) => `https://api.dicebear.com/9.x/pixel-art/svg?seed=dummy${n}`
@@ -69,18 +70,18 @@ async function main() {
 
   // ── Fetch all users in ascending order ──────────────────────────
   const users = await prisma.user.findMany({
-    where: { username: { in: Array.from({ length: DUMMY_COUNT}, (_, n) => `dummy${n}`) } },
+    where: { username: { in: DUMMY_USERNAMES } },
     orderBy: { username: 'asc' },
   });
 
-  // ── Wipe any existing games ─────────────────────────────────────
+  // ── Wipe any existing games between dummy accounts ──────────────
   await prisma.game.deleteMany({
-    where: { OR: [
-      { player1: { username: { startsWith: 'dummy' } } },
-      { player2: { username: { startsWith: 'dummy' } } },
-    ]},
+    where: {
+      player1: { username: { in: DUMMY_USERNAMES } },
+      player2: { username: { in: DUMMY_USERNAMES } },
+    },
   });
-  console.log('\x1b[32m✓ Deleted any existing games');
+  console.log('\x1b[32m✓ Deleted any existing games between dummy accounts');
 
   // ── Add Games to Database ───────────────────────────────────────
   for (const {p1, p2, winner, endReason, s1, s2} of GAMES) {
