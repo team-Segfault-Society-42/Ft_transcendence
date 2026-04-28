@@ -17,6 +17,8 @@ services:
     container_name: dev-backend
     build:
       target: dev
+    ports:
+      - "5555:5555"
     environment:
       - JWT_SECRET=${JWT_SECRET}
       - CORS_ORIGINS=http://localhost:1024
