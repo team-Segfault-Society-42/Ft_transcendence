@@ -5,6 +5,8 @@ import { AuthForm } from "./AuthForm";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { userService } from "@/services/userService";
+import { OAuth42Button } from "./OAuth42Button";
+import { Divider } from "@/components/ui/Divider";
 
 type AuthMode = "login" | "signup";
 
@@ -83,6 +85,10 @@ export function AuthModal({
 								setStep("twofa");
 							}}
 						/>
+
+						<Divider/>
+
+						<OAuth42Button/>
 
 						<Button
 							type="button"
