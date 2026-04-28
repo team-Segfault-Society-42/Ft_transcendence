@@ -16,9 +16,6 @@ services:
       dockerfile: Dockerfile
     networks:
       - client-side
-# Uncomment to test frontend only (as a single service)
-    # ports:
-    #   - "5173:5173"
 
   # ── Backend (Nest.js) ────────────────────────────────────────────
   backend:
@@ -35,13 +32,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-# Uncomment temporarily to access Prisma Studio from host
-    # ports:
-    #  - "5555:5555"
-
-# Uncomment to test backend only (as a single service)
-    # ports:
-    #   - "3000:3000"
 
 
   # ── Reverse Proxy (Nginx) ────────────────────────────────────────
