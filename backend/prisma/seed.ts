@@ -47,65 +47,6 @@ const GAMES = [
 // ── Seed Database ───────────────────────────────────────────────────────────
 async function main() {
 
-  // ── Seed Achievements ────────────────────────────────────────────────
-  console.log(`\x1b[36m>>> Seeding Achievements`)
-
-  const firstWin = await prisma.achievement.upsert({
-    where: { key: 'FIRST_WIN' },
-    update: {
-      displayName: 'First Blood',
-      description: 'Win your first game.',
-    },
-    create: {
-      key: 'FIRST_WIN',
-      displayName: 'First Blood',
-      description: 'Win your first game.',
-    },
-  });
-  console.log(`\x1b[32m✓ First Win`)
-
-  const firstGame = await prisma.achievement.upsert({
-    where: { key: 'FIRST_GAME' },
-    update: {
-      displayName: 'First of all',
-      description: 'Play your first game.',
-    },
-    create: {
-      key: 'FIRST_GAME',
-      displayName: 'First of all',
-      description: 'Play your first game.',
-    },
-  });
-  console.log(`\x1b[32m✓ First Game`)
-
-  const drawGame = await prisma.achievement.upsert({
-    where: { key: 'DRAW_GAME' },
-    update: {
-      displayName: 'Boring',
-      description: 'Draw a game.',
-    },
-    create: {
-      key: 'DRAW_GAME',
-      displayName: 'Boring',
-      description: 'Draw a game.',
-    },
-  });
-  console.log(`\x1b[32m✓ Draw Game`)
-
-    const looseByTime = await prisma.achievement.upsert({
-    where: { key: 'LOSE_BY_TIME' },
-    update: {
-      displayName: 'Noob',
-      description: 'Lose a game by time.',
-    },
-    create: {
-      key: 'LOSE_BY_TIME',
-      displayName: 'Noob',
-      description: 'Lose a game by time.',
-    },
-  });
-  console.log(`\x1b[32m✓ Lose by Time`)
-
   // ── Update or Create Users ───────────────────────────────────────────
   console.log(`\x1b[36m>>> Seeding Dummy Users`)
 
@@ -178,7 +119,7 @@ async function main() {
 
 main()
   .then(() => {
-    console.log("\x1b[36m>>> Seeding terminé avec succès!\x1b[0m");
+    console.log("\x1b[36m>>> Seeding successful!\x1b[0m");
   })
   .catch((e) => {
     console.error(e);
