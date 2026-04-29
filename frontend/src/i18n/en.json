@@ -116,9 +116,16 @@
         },
         "logoutSuccess": "Logged out successfully",
         "errorWithMessage": "An error occurred: {{message}}",
-        "loginWith42": "Login with 42"
-      },
-
+        "loginWith42": "Login with 42",
+        "twofa": {
+            "title": "Two-factor authentication",
+            "description": "Enter the 6-digit code from your authenticator app.",
+            "verifying": "Verifying...",
+            "verify": "Verify code",
+            "back": "Back to login",
+            "success": "Two-factor login successful"
+        }
+    },
     "footer": {
         "projectname": "ft_transcendence",
         "privacy": "Privacy Policy",

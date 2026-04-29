@@ -2,6 +2,7 @@ import { Avatar } from "@/components/ui/Avatar"
 import LanguageSwitcher from "../ui/LanguageSwitcher"
 import { Button } from "@/components/ui/Button"
 import { useTranslation } from "react-i18next"
+import { Username } from "@/components/ui/Username";
 
 interface User {
   username: string
@@ -20,13 +21,6 @@ export function Topbar({ user, onLoginClick, onLogoutClick }: HeaderProps) {
 
   const { t } = useTranslation()
 
-  const handleLogin42 = () => {
-	const fortyTwoStartUrl =
-		import.meta.env.VITE_OAUTH_42_START_URL ?? "/api/auth/42";
-
-    window.location.href = fortyTwoStartUrl;
-    };
-
   return (
     <header className="h-16 min-h-16 border-b border-white/10 flex items-center justify-between px-6 gap-6">
 
@@ -42,9 +36,18 @@ export function Topbar({ user, onLoginClick, onLogoutClick }: HeaderProps) {
         fallback={user.username[0]}/>
 
       <Button
-        onClick={onLogoutClick}>
+        onClick={onLogoutClick}
+        variant="secondary"
+        className="flex items-center gap-2 min-w-0">
         <span>
-          {t("home.buttons.hi")} {user.username} {t("auth.buttons.logout")}
+          {t("home.buttons.hi")}
+        </span>
+          <Username
+            name={user.username}
+            variant="topbar"
+          />
+        <span>
+          {t("auth.buttons.logout")}
         </span>
       </Button>
 
@@ -54,17 +57,11 @@ export function Topbar({ user, onLoginClick, onLogoutClick }: HeaderProps) {
       ) : (
 
       <Button
-          onClick={onLoginClick}>
+          onClick={onLoginClick}
+          variant="secondary">
           {t("home.buttons.login")}
       </Button>
       )}
-
-      <Button
-        onClick={handleLogin42}>
-        <span>
-          {t("auth.loginWith42")}
-        </span>
-      </Button>
 
     </div>
 
