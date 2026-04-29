@@ -1,10 +1,7 @@
-import {
-  Injectable,
-  BadRequestException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { AchievementKey, ACHIEVEMENTS } from './achievements.lists';
 
 @Injectable()
 export class AchievementsService {
@@ -17,21 +14,19 @@ export class AchievementsService {
   ) {
     const prisma = tx || this.prismaService;
 
-    const achievement = await prisma.achievement.findUnique({
-      where: { key },
-    });
+    const achievement =  ACHIEVEMENTS[key as AchievementKey]
 
     if (!achievement) return;
 
     const alreadyHasIt = await prisma.userAchievement.findUnique({
       where: {
-        userId_achievementId: { userId, achievementId: achievement.id },
+        userId_key: { userId, key: achievement.key },
       },
     });
 
     if (!alreadyHasIt) {
       await prisma.userAchievement.create({
-        data: { userId, achievementId: achievement.id },
+        data: { userId, key: achievement.key },
       });
     }
   }
@@ -41,22 +36,20 @@ export class AchievementsService {
       where: { userId: userId },
       orderBy: {
         unlockedAt: "desc"
-      },
-      include: {
-        achievement: true
-      }
-    })
-
+      }})
+    
     const getInfoFromAchievements = userAchievement.map((m) => {
+
+      const metaData = ACHIEVEMENTS[m.key as AchievementKey]
+
       return {
         id: m.userId,
-        achievementId: m.achievementId,
+        achievementId: m.key,
         unlockedAt: m.unlockedAt,
         achievement: {
-          id: m.achievement.id,
-          key: m.achievement.key,
-          displayName: m.achievement.displayName,
-          description: m.achievement.description,
+          key: m.key,
+          displayName: metaData?.displayName || 'Unknown success',
+          description: metaData?.description || 'Description not available',
         }
       }
     })
