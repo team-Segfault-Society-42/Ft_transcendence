@@ -13,6 +13,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import type { Match } from "@/lib/match";
 import { Winrate } from "@/components/ui/Winrate";
 import { LevelProgress } from "@/components/ui/Level";
+import { Username } from "@/components/ui/Username";
 
 interface User {
   id: number;
@@ -164,7 +165,9 @@ export default function Profile() {
             />
           ) : (
             <h1 className="text-2xl font-bold tracking-wide">
-              {user.username}
+              <Username
+                name={user.username}
+                variant="profile"/>
             </h1>
           )}
         </div>

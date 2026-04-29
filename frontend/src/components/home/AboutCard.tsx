@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"
 import { Winrate } from "../ui/Winrate"
 import { LevelProgress } from "../ui/Level"
 import { useTranslation } from "react-i18next"
+import { Username } from "@/components/ui/Username"
 
 interface User {
   username: string
@@ -53,16 +54,20 @@ export function AboutCard({ user, className }: Props) {
       </CardTitle>
 
       {/* PROFILE */}
-      <div className="flex items-center gap-4 mt-4">
+      <div className="flex items-center gap-4 mt-4 min-w-0">
         <Avatar
           src={user?.avatar}
           fallback={user?.username?.[0] || "?"}
           size="lg"
         />
 
-        <div>
+        <div className="flex flex-col min-w-0">
           <p className="font-semibold text-white">
-            {user?.username || t("profile.about.guest")}
+            {user?.username ? (
+              <Username name={user.username}/>
+            ) : (
+              t("profile.about.guest")
+            )}
           </p>
           <p className="text-xs text-white/60">
             {t("profile.about.viewProfile")}

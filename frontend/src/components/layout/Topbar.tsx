@@ -2,6 +2,7 @@ import { Avatar } from "@/components/ui/Avatar"
 import LanguageSwitcher from "../ui/LanguageSwitcher"
 import { Button } from "@/components/ui/Button"
 import { useTranslation } from "react-i18next"
+import { Username } from "@/components/ui/Username";
 
 interface User {
   username: string
@@ -36,9 +37,17 @@ export function Topbar({ user, onLoginClick, onLogoutClick }: HeaderProps) {
 
       <Button
         onClick={onLogoutClick}
-        variant="secondary">
+        variant="secondary"
+        className="flex items-center gap-2 min-w-0">
         <span>
-          {t("home.buttons.hi")} {user.username} {t("auth.buttons.logout")}
+          {t("home.buttons.hi")}
+        </span>
+          <Username
+            name={user.username}
+            variant="topbar"
+          />
+        <span>
+          {t("auth.buttons.logout")}
         </span>
       </Button>
 
