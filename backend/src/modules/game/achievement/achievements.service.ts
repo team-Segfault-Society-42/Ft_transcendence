@@ -19,17 +19,11 @@ export class AchievementsService {
 
     if (!achievement) return;
 
-    const alreadyHasIt = await prisma.userAchievement.findUnique({
-      where: {
-        userId_key: { userId, key: achievement.key },
-      },
-    });
-
-    if (!alreadyHasIt) {
-      await prisma.userAchievement.create({
-        data: { userId, key: achievement.key },
-      });
-    }
+    await prisma.userAchievement.upsert({
+      where: { userId_key: { userId, key: achievement.key } },
+      update: {},
+      create: { userId, key: achievement.key },
+    })
   }
 
   async getAchievements(userId: number) {
