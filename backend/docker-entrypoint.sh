@@ -6,7 +6,7 @@ export JWT_SECRET=$(cat /run/secrets/jwt_secret)
 
 npx prisma db push
 
-echo "🌱 Seeding achievements..."
+echo "🌱 Seeding dummy users and games..."
 npx prisma db seed
 
 exec "$@"

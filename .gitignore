@@ -66,5 +66,3 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # curl cookie storage
 cookies.txt
-
-.claude
