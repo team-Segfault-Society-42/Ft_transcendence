@@ -46,29 +46,35 @@ prod: ## Start the stack, rebuild images [PROD]
 
 ##@ STOP STACK
 
-down: ## Stop all running containers [DEV]
+down: ## Stop all running dev containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down
 
 downv: # Remove volumes and stop running containers [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down -v
 
-p-down: ## Stop all running containers [PROD]
+down-all: ## Stop all dev & prod containers [BOTH]
+	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down
+	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
+
+p-down: ## Stop all running prod containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
 
 p-downv: # Remove volumes and stop running containers [PROD]
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down -v
 
-.PHONY: down downv p-down p-downv
+.PHONY: down downv down-all p-down p-downv
 
 # ══════════════════════════════════════════════════════
 #               		UTILITY
 # ══════════════════════════════════════════════════════
 ##@ UTILITY
 
-ps: ## Display all running containers [DEV]
+ps: ## Display all running containers [BOTH]
+	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) ps
-
-p-ps: ## Display all running containers [PROD]
+	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
 	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) ps
 
 ls: ## Display all images [UTIL]
@@ -77,7 +83,19 @@ ls: ## Display all images [UTIL]
 info: # Display Docker system information, build cache, etc. [UTIL]
 	@docker system df
 
-.PHONY: ps ls info p-ps
+swagger: ## Print URL to access Swagger Documentation [UTIL]
+	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
+	@echo "http://$(DOMAIN):1024/api/api-docs"
+	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
+	@echo "https://$(DOMAIN):8443/api/api-docs"
+
+prisma: ## Start Prisma Studio (Stack MUST be running) [DEV]
+	@docker ps --filter "name=dev-backend" --filter "status=running" -q | grep -q . \
+		|| (echo "$(BOLD_RED)Error: dev-backend not running, $(RES)Run $(BOLD_CYAN)make up$(RES) first." && exit 1)
+	@docker exec -it dev-backend npx prisma studio --port 5555 --browser none --url="$(shell cat $(SECRETS_DIR)database_url.txt)" \
+		|| true
+
+.PHONY: ps ls info swagger prisma
 
 # ══════════════════════════════════════════════════════
 #               	 	 LOGS
