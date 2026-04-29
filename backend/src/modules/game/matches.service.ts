@@ -104,49 +104,9 @@ export class MatchesService {
           });
         }
 
-        await this.achievementService.unlockAchievement(
-          result.player1Id,
-          'FIRST_GAME',
-          tx,
-        );
-        await this.achievementService.unlockAchievement(
-          result.player2Id,
-          'FIRST_GAME',
-          tx,
-        );
+        // ── Handle Match Achievements ────────────────────────────────────────────────────────
+        await this.achievementService.handleMatchAchievements(result, tx)
 
-        if (result.winnerId) {
-          await this.achievementService.unlockAchievement(
-            result.winnerId,
-            'FIRST_WIN',
-            tx,
-          );
-        }
-
-        if (!result.winnerId) {
-          await this.achievementService.unlockAchievement(
-            result.player1Id,
-            'DRAW_GAME',
-            tx,
-          );
-          await this.achievementService.unlockAchievement(
-            result.player2Id,
-            'DRAW_GAME',
-            tx,
-          );
-        }
-
-        if (result.endReason === 'timeout') {
-          const loserId =
-            result.winnerId === result.player1Id
-              ? result.player2Id
-              : result.player1Id;
-          await this.achievementService.unlockAchievement(
-            loserId,
-            'LOSE_BY_TIME',
-            tx,
-          );
-        }
       });
     } catch (error) {
       console.error(`Error saving match: ${error.message}`);
