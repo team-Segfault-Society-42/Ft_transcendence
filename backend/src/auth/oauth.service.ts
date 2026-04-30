@@ -4,10 +4,11 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 
 export interface OAuthProfile {
-	provider: 'google' | '42';
+	provider: '42' | 'google' ;
 	providerUserId: string;
 	email: string;
 	displayName: string;
+	providerUsername?: string;
 	avatarUrl: string;
 }
 
@@ -200,6 +201,7 @@ export class OAuthService {
 			providerUserId: String(fortyTwoUser.id),
 			email: fortyTwoUser.email,
 			displayName: fortyTwoUser.displayname,
+			providerUsername: fortyTwoUser.login,
 			avatarUrl:
 				fortyTwoUser.image?.versions?.medium ??
 				fortyTwoUser.image?.link ??
