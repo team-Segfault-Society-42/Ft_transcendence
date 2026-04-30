@@ -3,7 +3,8 @@
   
     "home": {
       "play": {
-        "title": "Jugar"
+        "title": "Jugar Tres En Raya",
+        "description": "Un juego de estrategia atemporal. ¡Sé el primero en conseguir 3 en línea y gana la partida!"
       },
       "hero": {
             "texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
@@ -49,6 +50,7 @@
         "wins": "Victorias",
         "losses": "Derrotas",
         "winrate": "Porcentaje de victorias",
+        "games_zero": "Ninguna partida jugada",
         "games_one": "{{count}} partida jugadas",
         "games_other": "{{count}} partidas jugadas",
         "winrateValue": "{{value}}%"

@@ -3,7 +3,8 @@
 
     "home": {
         "play":{
-            "title": "Play"
+            "title": "Play Tic-Tac-Toe",
+            "description": "A timeless game of strategy. Be the first to get 3 in a row and claim victory!"
         },
         "hero":{
             "texte": "Play. Compete. Improve. Challenge players and become the best."
@@ -15,6 +16,9 @@
             "hi": "Hi,",
             "local": "Play local",
             "findOpp": "Find an opponent"
+        },
+        "history":{
+            "empty": "Your match history will appear here."
         }
     },
 
@@ -49,6 +53,7 @@
             "wins": "Wins",
             "losses": "Losses",
             "winrate": "Winrate",
+            "games_zero": "No games played",
             "games_one": "{{count}} game played",
             "games_other": "{{count}} games played",
             "winrateValue": "{{value}}%"

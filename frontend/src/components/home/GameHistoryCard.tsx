@@ -4,6 +4,7 @@ import type { Match } from "@/lib/match"
 import { cn } from "@/lib/utils"
 import { CardTitle } from "@/components/ui/Card"
 import { useTranslation } from "react-i18next"
+import { GameHistoryEmpty } from "../ui/GameHistoryEmpty"
 
 type Props = {
     matches: Match[]
@@ -15,7 +16,7 @@ export function GameHistoryCard({ matches, className }: Props) {
     const { t } = useTranslation()
 
 	return (
-    <Card className={cn("min-h-80 h-full relative flex flex-col items-center justify-center", className)}>
+    <Card className={cn("min-h-80 h-full relative flex flex-col items-center justify-center bg-slate-900", className)}>
 
     {/* HEADER */}
             <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
@@ -100,7 +101,13 @@ export function GameHistoryCard({ matches, className }: Props) {
         <p className="text-sm text-white text-center">
             {t("history.empty")}
         </p>
+
+        <Card className="h-full flex flex-col items-center justify-center mt-6">
+            <GameHistoryEmpty />
+        </Card>
     </div>
+
+    
     )}
 
     </div>

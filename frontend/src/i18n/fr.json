@@ -3,7 +3,8 @@
 
     "home": {
         "play": {
-            "title": "Jouer"
+            "title": "Jouer au Morpion",
+            "description": "Un jeu de stratégie intemporel. Soyez le premier à aligner 3 symboles pour remporter la victoire !"
         },
         "hero":{
             "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
@@ -49,6 +50,7 @@
             "wins": "Victoires",
             "losses": "Défaites",
             "winrate": "Taux de victoires",
+            "games_zero": "Aucune partie jouée",
             "games_one": "{{count}} partie jouée",
             "games_other": "{{count}} parties jouées",
             "winrateValue": "{{value}}%"

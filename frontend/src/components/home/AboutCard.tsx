@@ -26,19 +26,30 @@ export function AboutCard({ user, className }: Props) {
 
   if (!user) {
     return (
-      <Card className={cn("h-full relative flex items-center justify-center", className)}>
+      <Card className={cn("h-full relative flex items-center justify-center bg-slate-900", className)}>
+
         <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           {t("profile.about.title")}
         </CardTitle>
 
-        <div className="flex flex-col items-center justify-center text-center">
-          <p className="text-white">
-            {t("profile.about.notConnected")}
-          </p>
+        <div className="flex flex-col items-center justify-center text-center gap-4">
 
-          <p className="text-xs text-white/40 mt-2">
-            {t("profile.about.login")}
-          </p>
+          <div className="w-14 h-14 rounded-full border border-cyan-400/40 flex items-center justify-center text-cyan-400">
+            <span className="text-xl font-bold">
+              ?
+            </span>
+          </div>
+
+          <div>
+            <p className="text-white font-medium">
+              {t("profile.about.notConnected")}
+            </p>
+
+            <p className="text-sm text-white/40 mt-2">
+              {t("profile.about.login")}
+            </p>
+          </div>
+          
         </div>
       </Card>
     )
@@ -46,7 +57,7 @@ export function AboutCard({ user, className }: Props) {
 
   return (
     <Card
-      className={cn("min-h-80 h-full flex flex-col", className)}
+      className={cn("min-h-65 h-full flex flex-col bg-slate-900", className)}
     >
       {/* TITLE */}
       <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
