@@ -54,29 +54,27 @@ export default function Home() {
       	</div>
     </Motion>
 
-    <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
 
     	{/* CARDS */}
-    	<Link to="/profile">
-        	<div className="lg:col-span-1 flex h-full">
-            	<AboutCard user={user}
-            	className="flex-1"
-            	/>
-          	</div>
+    	<Link to="/profile" className="h-full">
+            <AboutCard user={user}
+            className="flex-1"
+            />
         </Link>
 
-        <div className="lg:col-span-2 flex flex-col gap-6">
-        	<Link to="/game">
-            	<PlayCard
-              	onFindOpponent={handleFindOpponent}
-            	/>
-          	</Link>
-          	<Link to="/history">
-            	<GameHistoryCard
-              	matches={matches}
-            	/>
-          	</Link>
-        </div>
+        <Link to="/game">
+            <PlayCard
+            onFindOpponent={handleFindOpponent}
+            />
+        </Link>
+
+
+        <Link to="/history" className="h-full">
+            <GameHistoryCard
+            matches={matches}
+            />
+        </Link>
 
     </div>
     </section>

@@ -26,17 +26,17 @@ export function AboutCard({ user, className }: Props) {
 
   if (!user) {
     return (
-      <Card className={cn("bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent", className)}>
-        <CardTitle>
+      <Card className={cn("h-full relative flex items-center justify-center", className)}>
+        <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           {t("profile.about.title")}
         </CardTitle>
 
-        <div className="flex-1 flex flex-col items-center justify-center text-center">
-          <p className="text-white/60 mt-40 text-center">
+        <div className="flex flex-col items-center justify-center text-center">
+          <p className="text-white">
             {t("profile.about.notConnected")}
           </p>
 
-          <p className="text-xs text-white/40 text-center">
+          <p className="text-xs text-white/40 mt-2">
             {t("profile.about.login")}
           </p>
         </div>
@@ -46,14 +46,15 @@ export function AboutCard({ user, className }: Props) {
 
   return (
     <Card
-    className={cn("h-full cursor-pointer hover:scale-[1.02] flex flex-col", className)}
+      className={cn("min-h-80 h-full flex flex-col", className)}
     >
       {/* TITLE */}
-      <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+      <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
         {t("profile.about.title")}
       </CardTitle>
 
       {/* PROFILE */}
+      <div className="mt-12">
       <div className="flex items-center gap-4 mt-4 min-w-0">
         <Avatar
           src={user?.avatar}
@@ -74,7 +75,7 @@ export function AboutCard({ user, className }: Props) {
           </p>
         </div>
       </div>
-
+      </div>
       {/* BIO */}
       <CardDescription className="mt-4">
         {user?.bio || t("profile.about.noBio")}

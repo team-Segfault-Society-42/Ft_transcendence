@@ -10,28 +10,29 @@ export function PlayCard({ onFindOpponent }: Props) {
     const { t } = useTranslation();
 
   return (
-    <Card className="h-full">
+    <Card className="min-h-80 h-full relative flex items-center justify-center">
 
-      <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+      <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
         {t("home.play.title")}
       </CardTitle>
 
-      <div className="flex flex-col gap-4 mt-6">
+        <div className="flex flex-col gap-4 max-w-md">
 
-      <Button
-        onClick={() => console.log("play local later")}
-        size="xl">
-        {t("home.buttons.local")}
-      </Button>
+        <Button
+          onClick={() => console.log("play local later")}
+          size="lg"
+          className="w-full">
+          {t("home.buttons.local")}
+        </Button>
 
-      <Button
-        onClick={onFindOpponent}
-        size="xl">
-        {t("home.buttons.findOpp")}
-      </Button>
+        <Button
+          onClick={onFindOpponent}
+          size="lg"
+          className="w-full">
+          {t("home.buttons.findOpp")}
+        </Button>
 
       </div>
-
     </Card>
   )
 }

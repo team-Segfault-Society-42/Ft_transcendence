@@ -15,20 +15,18 @@ export function GameHistoryCard({ matches, className }: Props) {
     const { t } = useTranslation()
 
 	return (
-    <Card className={cn("h-full flex flex-col", className)}>
+    <Card className={cn("min-h-80 h-full relative flex flex-col items-center justify-center", className)}>
 
     {/* HEADER */}
-    <div className="flex justify-between items-center mb-6">
-            <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+            <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
                 {t("history.title")}
             </CardTitle>
-        <span className="text-xs text-white/50 top-left">
+        <span className="text-xs text-white/50 absolute top-6 right-6">
             {t("profile.stats.games", { count: matches.length })}
         </span>
-    </div>
 
     {/* LIST */}
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex items-center justify-center mt-4">
         {matches.length ? (
         	matches.map((match) => {
 
@@ -99,7 +97,7 @@ export function GameHistoryCard({ matches, className }: Props) {
     })
     ) : (
     <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <p className="text-sm text-white/60 text-center">
+        <p className="text-sm text-white text-center">
             {t("history.empty")}
         </p>
     </div>
