@@ -23,7 +23,7 @@ export class AchievementsService {
       where: { userId_key: { userId, key: achievement.key } },
       update: {},
       create: { userId, key: achievement.key },
-    })
+    });
   }
 
   async getAchievements(userId: number) {
@@ -51,26 +51,46 @@ export class AchievementsService {
     return getInfoFromAchievements;
   }
 
-  async handleMatchAchievements(result: GameResultDto , tx?: Prisma.TransactionClient) {
+  async handleMatchAchievements(
+    result: GameResultDto,
+    tx?: Prisma.TransactionClient,
+  ) {
+    const prisma = tx || this.prismaService;
 
-        await this.unlockAchievement( result.player1Id, 'FIRST_GAME',tx )
-        await this.unlockAchievement( result.player2Id, 'FIRST_GAME',tx )
+    await this.unlockAchievement(result.player1Id, 'FIRST_GAME', tx);
+    await this.unlockAchievement(result.player2Id, 'FIRST_GAME', tx);
 
-        if (result.winnerId) {
-          await this.unlockAchievement( result.winnerId,'FIRST_WIN', tx )
+    if (result.winnerId) {
+      await this.unlockAchievement(result.winnerId, 'FIRST_WIN', tx);
+
+      const winner = await prisma.user.findUnique({
+        where: { id: result.winnerId },
+      });
+
+      if (winner) {
+        if (winner.wins >= 5) {
+          await this.unlockAchievement(winner.id, 'WIN_5', tx);
         }
-
-        if (!result.winnerId) {
-          await this.unlockAchievement( result.player1Id, 'DRAW_GAME', tx )
-          await this.unlockAchievement( result.player2Id, 'DRAW_GAME', tx )
+        if (winner.wins >= 10) {
+          await this.unlockAchievement(winner.id, 'WIN_10', tx);
         }
-
-        if (result.endReason === 'timeout') {
-          const loserId = result.winnerId === result.player1Id ? result.player2Id : result.player1Id;
-          await this.unlockAchievement( loserId, 'LOSE_BY_TIME', tx )
+        if (winner.wins >= 50) {
+          await this.unlockAchievement(winner.id, 'WIN_50', tx);
         }
+      }
+    }
+
+    if (!result.winnerId) {
+      await this.unlockAchievement(result.player1Id, 'DRAW_GAME', tx);
+      await this.unlockAchievement(result.player2Id, 'DRAW_GAME', tx);
+    }
+
+    if (result.endReason === 'timeout') {
+      const loserId =
+        result.winnerId === result.player1Id
+          ? result.player2Id
+          : result.player1Id;
+      await this.unlockAchievement(loserId, 'LOSE_BY_TIME', tx);
+    }
   }
-
 }
-
-
