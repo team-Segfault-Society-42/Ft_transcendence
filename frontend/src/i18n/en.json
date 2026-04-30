@@ -23,6 +23,7 @@
     },
 
     "sidebar":{
+        "title": "Dashboard",
         "home": "Home",
         "game": "Game",
         "profile": "Profile",

@@ -1,6 +1,4 @@
-import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { Motion } from "@/components/ui/Motion";
 import { AboutCard } from "@/components/home/AboutCard"
 import { PlayCard } from "@/components/home/PlayCard"
 import { GameHistoryCard } from "@/components/home/GameHistoryCard"
@@ -10,7 +8,6 @@ import { useOutletContext } from "react-router"
 import { userService } from "@/services/userService"
 
 export default function Home() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [user] = useOutletContext<any>()
   const [matches, setMatches] = useState<Match[]>([])
@@ -42,17 +39,7 @@ export default function Home() {
   	return (
     	<section className="w-full flex flex-col gap-10">
 
-    <Motion>
-      	<div className="text-center space-y-4">
-        	<h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-          	{t("title")}
-        	</h1>
-
-        	<p className="bg-linear-to-r from-cyan-400 to-pink-500  bg-clip-text text-transparent max-w-md mx-auto text-lg">
-          		{t("home.hero.texte")}
-        	</p>
-      	</div>
-    </Motion>
+    
 
     <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
 

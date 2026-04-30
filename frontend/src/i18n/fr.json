@@ -20,6 +20,7 @@
     },
 
     "sidebar": {
+        "title": "Tableau de bord",
         "home": "Accueil",
         "game": "Jeu",
         "profile": "Profil",
