@@ -120,9 +120,14 @@
         "twofa": {
             "title": "Authentification à deux facteurs",
             "description": "Entrez le code à 6 chiffres de votre application d’authentification.",
+            "enabled": "La 2FA est activée sur votre compte.",
+            "enable": "Activer la 2FA",
             "verifying": "Vérification...",
             "verify": "Vérifier le code",
-            "back": "Retour à la connexion",
+            "enterCode": "Entrez le code à 6 chiffres",
+            "regenerate": "Régénérer le QR code",
+            "loading": "Chargement...",
+            "setupStarted": "Configuration 2FA démarrée",
             "success": "Connexion 2FA réussie"
         }
     },

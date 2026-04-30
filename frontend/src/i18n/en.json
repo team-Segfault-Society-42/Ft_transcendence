@@ -120,9 +120,14 @@
         "twofa": {
             "title": "Two-factor authentication",
             "description": "Enter the 6-digit code from your authenticator app.",
+            "enabled": "2FA is enabled on your account.",
+            "enable": "Enable 2FA",
             "verifying": "Verifying...",
             "verify": "Verify code",
-            "back": "Back to login",
+            "enterCode": "Enter 6-digit code",
+            "regenerate": "Regenerate QR code",
+            "loading": "Loading...",
+            "setupStarted": "2FA setup started",
             "success": "Two-factor login successful"
         }
     },
