@@ -1,7 +1,8 @@
 # Secrets
 /secrets
 .env*
-!.env.example
+!.env.dev.example
+!.env.prod.example
 
 # compiled output
 node_modules/
