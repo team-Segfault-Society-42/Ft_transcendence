@@ -5,19 +5,13 @@
 SECRETS_DIR = secrets/
 
 # ── Add new .env defaults here ────────────────────────────────────────────────
-# Format: KEY=value   (replaces the KEY=... line after copying .env.example)
+# Format: KEY=value   (KEY must match KEYs in .env.dev.example and .env.prod.example)
 # Note: if POSTGRES_VERSION is changed, please update it in `make/clean.mk` too
-DEFAULT_ENV_VARS = \
-	DOMAIN=127.0.0.1 \
+ENV_VARS = \
 	POSTGRES_VERSION=18-alpine \
 	POSTGRES_DB=transcendence \
 	POSTGRES_USER=postgres_superuser \
 	BACKEND_USER=backend_user \
-
-# ── Dev-only vars not present in .env.example (appended to .env) ──────────────
-DEV_ONLY_ENV_VARS = \
-	BACKEND_PW=changeme \
-	JWT_SECRET=jwt-changeme \
 
 # ── Add new secrets here ───────────────────────────────────────────────────────
 # Format: filename=content   (file created at $(SECRETS_DIR)filename)
@@ -29,7 +23,8 @@ DEFAULT_SECRETS = \
 
 # ── Files that must exist before the stack can start ──────────────────────────
 REQUIRED_FILES = \
-	.env \
+	.env.dev \
+	.env.prod \
 	$(SECRETS_DIR)backend_pw.txt \
 	$(SECRETS_DIR)postgres_root_pw.txt \
 	$(SECRETS_DIR)jwt_secret.txt \
@@ -75,7 +70,7 @@ _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
 	} > .env
 	@echo "$(GREEN)✓ .env created (dev-only vars prepended, comments stripped)$(RES)"
   	# ── Replace values with Defaults ─────────────────────────────────────────
-	@for pair in $(DEFAULT_ENV_VARS); do \
+	@for pair in $(ENV_VARS); do \
 		key=$$(echo "$$pair" | cut -d= -f1); \
 		val=$$(echo "$$pair" | cut -d= -f2-); \
 		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env; \
