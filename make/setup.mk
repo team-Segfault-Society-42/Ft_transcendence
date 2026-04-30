@@ -60,23 +60,24 @@ _check-required-files: # Checks required files exist
 	fi; \
 
 
-_setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
-  	# ── Overwrite .env File ─────────────────────────────────────────────────────
-	@{ \
-		for pair in $(DEV_ONLY_ENV_VARS); do \
-			echo "$$pair"; \
-		done; \
-		grep -v '^\s*#' .env.example; \
-	} > .env
-	@echo "$(GREEN)✓ .env created (dev-only vars prepended, comments stripped)$(RES)"
-  	# ── Replace values with Defaults ─────────────────────────────────────────
+_setup-apply: # Generate .env.dev and .env.prod and create all secrets
+# ── Build .env.dev ───────────────────────────────────────────────────────────
+	@cp .env.dev.example .env.dev
 	@for pair in $(ENV_VARS); do \
 		key=$$(echo "$$pair" | cut -d= -f1); \
 		val=$$(echo "$$pair" | cut -d= -f2-); \
-		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env; \
+		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env.dev; \
 	done
-	@echo "$(GREEN)✓ Default values applied to .env$(RES)"
-  	# ── Create Secret Files ──────────────────────────────────────────────────
+	@echo "$(GREEN)✓ Created .env.dev with defaults$(RES)"
+# ── Build .env.prod ──────────────────────────────────────────────────────────
+	@cp .env.prod.example .env.prod
+	@for pair in $(ENV_VARS); do \
+		key=$$(echo "$$pair" | cut -d= -f1); \
+		val=$$(echo "$$pair" | cut -d= -f2-); \
+		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env.dev; \
+	done
+	@echo "$(GREEN)✓ Created .env.prod with defaults$(RES)"
+# ── Create Secret Files ──────────────────────────────────────────────────────
 	@mkdir -p $(SECRETS_DIR)
 	@for pair in $(DEFAULT_SECRETS); do \
 		file=$$(echo "$$pair" | cut -d= -f1); \
@@ -84,7 +85,7 @@ _setup-apply: # Wipe and recreate .env and all secrets with hardcoded defaults
 		echo "$$content" > $(SECRETS_DIR)$$file; \
 		echo "$(GREEN)✓ $(SECRETS_DIR)$$file created$(RES)"; \
 	done
-  	# ── Prompt for auto LAN setup ────────────────────────────────────────────
+# ── Prompt for auto LAN setup ────────────────────────────────────────────────
 	@printf "$(CYAN)Setup with local LAN?$(RES) [y/N] "; read ans; \
 	case "$$ans" in \
 		y|Y|yes|Yes|YES) \
