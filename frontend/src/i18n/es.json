@@ -10,7 +10,7 @@
       },
       "buttons": {
         "register": "Registrarse",
-        "login": "Conectar se",
+        "login": "Ingresar",
         "start": "INICIAR PARTIDA",
         "hi": "Hola, ",
         "local": "Jugar en local",
@@ -101,7 +101,7 @@
             "register": "Registrarse",
             "loading": "Conectando al servidor...",
             "change_method": "Cambiar método",
-            "login": "Conectar se",
+            "login": "Ingresar",
             "no_account": "¿ No tienes cuenta ? Regístrate",
             "already_account": "¿ Ya tienes una cuenta ? Iniciar sesión",
             "logout": ": Cerrar sesión",
@@ -119,7 +119,7 @@
         },
         "logoutSuccess": "Desconexión exitosa",
         "errorWithMessage": "Ocurrió un error: {{message}}",
-        "loginWith42": "Iniciar sesión con 42",
+        "loginWith42": "Ingresar con 42",
         "twofa": {
           "title": "Autenticación de dos factores",
           "description": "Introduce el código de 6 dígitos de tu aplicación de autenticación.",
