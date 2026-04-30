@@ -56,6 +56,29 @@ export class OAuthService {
 		private readonly httpService: HttpService,
 	) {}
 
+		private normalizeUsername(value: string) {
+		return value
+			.toLowerCase()
+			.trim()
+			.replace(/[^a-z0-9_]/g, '_')
+			.replace(/_+/g, '_')
+			.replace(/^_+|_+$/g, '');
+	}
+
+	private async generateUniqueUsername(baseUsername: string) {
+		const cleanBaseUsername = this.normalizeUsername(baseUsername) || 'user';
+
+		let candidate = cleanBaseUsername;
+		let suffix = 1;
+
+		while (await this.prisma.user.findUnique({ where: { username: candidate } })) {
+			candidate = `${cleanBaseUsername}_${suffix}`;
+			suffix++;
+		}
+
+		return candidate;
+	}
+
 	private async findOrCreateUserFromOAuthProfile(profile: OAuthProfile) {
 		const existingOAuthAccount = await this.prisma.oAuthAccount.findUnique({
 			where: {
