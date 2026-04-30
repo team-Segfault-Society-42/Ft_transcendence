@@ -3,10 +3,11 @@
 
     "home": {
         "play": {
-            "title": "Jouer au Morpion",
+            "title": "Jouer une partie",
             "description": "Un jeu de stratégie intemporel. Soyez le premier à aligner 3 symboles pour remporter la victoire !"
         },
         "hero":{
+            "title": "Morpion",
             "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
         },
         "buttons":{

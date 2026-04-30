@@ -3,10 +3,11 @@
 
     "home": {
         "play":{
-            "title": "Play Tic-Tac-Toe",
+            "title": "Play game",
             "description": "A timeless game of strategy. Be the first to get 3 in a row and claim victory!"
         },
         "hero":{
+            "title": "Tic-Tac-Toe",
             "texte": "Play. Compete. Improve. Challenge players and become the best."
         },
         "buttons":{

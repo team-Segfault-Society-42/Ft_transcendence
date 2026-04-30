@@ -32,7 +32,7 @@ export function Topbar({ user, onLoginClick, onLogoutClick }: HeaderProps) {
 
     <div className="absolute left-1/2 -translate-x-1/2">
       <Motion>
-        <h1 className="text-3xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+        <h1 className="text-5xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           {t("title")}
         </h1>
       </Motion>
