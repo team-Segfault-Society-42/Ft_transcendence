@@ -1,14 +1,15 @@
 import {
-  Controller,
-  Param,
-  ParseIntPipe,
-  Body,
-  Get,
-  Patch,
-  UseGuards,
-  Query,
-  Inject,
-  forwardRef,
+	Controller,
+	Param,
+	ParseIntPipe,
+	Body,
+	Get,
+	Patch,
+	Query,
+	Inject,
+	forwardRef,
+	Req,
+	ForbiddenException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -51,14 +52,18 @@ export class UsersController {
     return this.usersService.getUser(id);
   }
 
-  @ApiOperation({ summary: 'Update user' })
-  @Patch(':id')
-  updateUser(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
-    return this.usersService.updateUser(id, updateUserDto);
-  }
+	@ApiOperation({ summary: 'Update user' })
+	@Patch(':id')
+	updateUser(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() updateUserDto: UpdateUserDto,
+		@Req() req,
+	) {
+		if (req.user.sub !== id) {
+			throw new ForbiddenException('You can only update your own profile');
+		}
+		return this.usersService.updateUser(id, updateUserDto);
+	}
 
   @ApiOperation({ summary: 'Get history by ID' })
   @Get(':id/history')
