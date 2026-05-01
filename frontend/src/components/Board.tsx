@@ -357,15 +357,6 @@ export default function Board() {
               className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
               onClick={() => {
                 leaveGame();
-                console.log(
-                  "socket",
-                  client,
-                  "role",
-                  playerRole,
-                  "click en backhome from gameid =",
-                  gameId,
-                  "and send leave_game",
-                );
                 navigate("/");
               }}
             >

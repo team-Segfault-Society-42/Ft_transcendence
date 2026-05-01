@@ -10,13 +10,11 @@ import {
 import { GameService, TURN_TIMEOUT_MS } from './game.service';
 import { PlayMoveDto } from './dto/play-move.dto';
 import { Server, Socket } from 'socket.io';
-import { GameState, PlayerRole } from './game.types';
+import { GameState } from './game.types';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
-import { subscribe } from 'node:diagnostics_channel';
-import { error } from 'node:console';
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const parts = rawOrigins.split(',');

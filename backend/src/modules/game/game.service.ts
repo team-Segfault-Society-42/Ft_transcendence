@@ -99,13 +99,6 @@ export class GameService {
     c: number,
   ): Promise<GameState> {
     const game = this.getMutableGameById(gameId);
-    // debug
-    console.log('status =', game.status);
-    console.log('players =', game.players);
-    console.log('userId =', userId);
-    console.log('role =', getPlayerRoleByUserId(game, userId));
-    console.log('currentPlayer =', game.currentPlayer);
-    //
     if (game.status !== 'playing') throw new Error('Waiting for both players');
 
     const role = getPlayerRoleByUserId(game, userId);
@@ -171,7 +164,6 @@ export class GameService {
     };
 
     await this.matchService.recordMatch(data, game.movesGameHistory);
-    console.log('Save to DB successful');
   }
 
   async finalizeReconnectTimeout(
@@ -187,9 +179,6 @@ export class GameService {
     const other = role === 'X' ? 'O' : 'X';
     if (game.players[other].ownerUserId === null) return null;
     if (game.players[other].socketId == null) return null;
-    // if other player is not online maybe return state cancelled in the future
-
-    console.log(`[RECONNECT] finalize forfeit for ${role} in game ${gameId}`);
 
     game.status = 'finished';
     game.winner = other;
