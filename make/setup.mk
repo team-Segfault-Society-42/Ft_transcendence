@@ -36,9 +36,9 @@ REQUIRED_FILES = \
 
 setup: ## Prompts user to create default setup and secrets [DEV]
 	@echo "$(ORANGE)Building default setup will overwrite all setup files.$(RES)"; \
-	printf "$(CYAN)Build default setup?$(RES) [y/N] "; read ans; \
+	printf "$(CYAN)Build default setup?$(RES) [Y/n] "; read ans; \
 	case "$$ans" in \
-		y|Y|yes|Yes|YES) \
+		y|Y|yes|Yes|YES|"") \
 			$(MAKE) --no-print-directory _setup-apply ;; \
 		*) \
 			exit 0 ;; \
@@ -86,23 +86,35 @@ _setup-apply: # Generate .env.dev and .env.prod and create all secrets
 		echo "$(GREEN)✓ $(SECRETS_DIR)$$file created$(RES)"; \
 	done
 # ── Prompt for auto LAN setup ────────────────────────────────────────────────
-	@printf "$(CYAN)Automatically setup DOMAIN?$(RES) [y/N] "; read ans; \
+	@printf "$(CYAN)Automatically setup DOMAIN?$(RES) [Y/n] "; read ans; \
 	case "$$ans" in \
-		y|Y|yes|Yes|YES) \
-			$(MAKE) --no-print-directory _domain-dev ;; \
+		y|Y|yes|Yes|YES|"") \
+			$(MAKE) --no-print-directory _domain-dev ;\
+			$(MAKE) --no-print-directory _domain-prod ;; \
 		*) \
 			exit 0 ;; \
 	esac
 
 _domain-dev: # Prompt user and setup DOMAIN in .env.dev
-	@printf "$(CYAN)Set dev DOMAIN to local LAN?$(RES) [y/N] "; read ans; \
+	@printf "$(GREEN)[DEV]  $(CYAN)Set DOMAIN to local LAN?$(RES) [Y/n] "; read ans; \
 	case "$$ans" in \
-		y|Y|yes|Yes|YES) \
+		y|Y|yes|Yes|YES|"") \
 			ip=$$(ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($$i=="src") print $$(i+1)}'); \
 			sed -i "s|^DOMAIN=.*|DOMAIN=$$ip|" .env.dev; \
-			echo "Using custom DOMAIN: '$(GOLD)$$ip$(RES)'";; \
+			echo "       Using custom DOMAIN: '$(GOLD)$$ip$(RES)'\n";; \
 		*) \
-			echo "Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'";; \
+			echo "       Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'\n";; \
+	esac
+
+_domain-prod: # Prompt user and setup DOMAIN in .env.dev
+	@printf "$(RED)[PROD] $(CYAN)Set DOMAIN to local LAN?$(RES) [Y/n] "; read ans; \
+	case "$$ans" in \
+		y|Y|yes|Yes|YES|"") \
+			ip=$$(ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($$i=="src") print $$(i+1)}'); \
+			sed -i "s|^DOMAIN=.*|DOMAIN=$$ip|" .env.prod; \
+			echo "       Using custom DOMAIN: '$(GOLD)$$ip$(RES)'\n";; \
+		*) \
+			echo "       Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'\n";; \
 	esac
 
 seed: ## Populates the DB with 10 dummy users (Requires the stack to be running) [DEV]
