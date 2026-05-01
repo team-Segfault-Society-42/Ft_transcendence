@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -25,6 +26,23 @@ export type LoginResult =
 	| FullAuthLoginResult
 	| TwoFactorRequiredLoginResult;
 
+const privateUserSelect = {
+	id: true,
+	email: true,
+	username: true,
+	bio: true,
+	avatar: true,
+	wins: true,
+	losses: true,
+	draws: true,
+	xp: true,
+	isTwoFactorEnabled: true,
+} satisfies Prisma.UserSelect;
+
+type PrivateUser = Prisma.UserGetPayload<{
+	select: typeof privateUserSelect;
+}>;
+
 @Injectable()
 export class AuthService {
 	constructor(
@@ -33,7 +51,7 @@ export class AuthService {
 		private readonly twoFactorService: TwoFactorService,
 	) {}
 
-	private toPrivateUser(user: any) {
+	private toPrivateUser(user: PrivateUser) {
 	return {
 		id: user.id,
 		email: user.email,
@@ -63,6 +81,7 @@ export class AuthService {
 				losses: 0,
 				draws: 0,
 			},
+			select: privateUserSelect,
 		});
 
 		return this.toPrivateUser(user);
@@ -138,6 +157,7 @@ export class AuthService {
 	async me(userId: number) {
 		const user = await this.prisma.user.findUnique({
 			where: { id: userId },
+			select: privateUserSelect,
 			});
 
 		if (!user) {
