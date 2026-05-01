@@ -28,7 +28,9 @@ COPY prisma ./prisma/
 RUN npx prisma generate
 
 COPY . .
-RUN npm run build && ls -la /app/dist/
+RUN 	npm run build \
+	&&	npx tsc --project tsconfig.seed.json \
+	&& 	ls -la /app/dist/
 
 
 # ── Stage 3: Production ───────────────────────────────────────────────────────
