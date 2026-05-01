@@ -65,7 +65,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { client, gameId, game } = get();
 
     if (!client || !gameId || !game) {
-      console.warn("Missing socket, gameId or game");
       return;
     }
 

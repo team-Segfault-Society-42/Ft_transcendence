@@ -70,7 +70,6 @@ const TURN_TIMEOUT_SECONDS = 30;
 export default function Board() {
   const {
     gameId,
-    client,
     game,
     error,
     playMove,
@@ -159,7 +158,6 @@ export default function Board() {
         </div>
         <Button
           onClick={() => {
-            // client;
             navigate("/");
           }}
         >
