@@ -326,7 +326,6 @@ export default function Board() {
 
             {(playerRole === "X" || playerRole === "O") && !game.playerLeft && (
               <>
-                {/* if (game.playerLeft) toast.warning("Opponent left - no replay!"); */}
                 <button
                   className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
                   onClick={requestReplay}

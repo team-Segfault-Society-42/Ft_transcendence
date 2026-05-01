@@ -34,7 +34,7 @@ const allowedOrigins = trimmedOrigins.filter(function (origin) {
   },
 })
 @UseGuards(JwtAuthGuard) // TODO: verify if can delete (is no necessary bcz CALLED FOR APP)
-export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class GameGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
@@ -170,10 +170,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       ...game,
       spectatCnt: this.getSpectatorsCnt(gameId, game),
     });
-  }
-
-  handleConnection(client: Socket) {
-    console.log(`Client connected : ${client.id}`);
   }
 
   handleDisconnect(client: AuthSocket) {
