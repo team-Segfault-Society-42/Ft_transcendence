@@ -1,5 +1,5 @@
 # ══════════════════════════════════════════════════════
-#               DEFAULT SETUP FOR DEV USE
+#               DEFAULTS FOR DOTENV FILES
 # ══════════════════════════════════════════════════════
 
 SECRETS_DIR = secrets/
@@ -59,6 +59,9 @@ _check-required-files: # Checks required files exist
 		$(MAKE) --no-print-directory _setup-apply ; \
 	fi; \
 
+# ══════════════════════════════════════════════════════
+#               AUTO BUILD DOTENV FILES
+# ══════════════════════════════════════════════════════
 
 _setup-apply: # Generate .env.dev and .env.prod and create all secrets
 # ── Build .env.dev ───────────────────────────────────────────────────────────
@@ -95,6 +98,10 @@ _setup-apply: # Generate .env.dev and .env.prod and create all secrets
 			exit 0 ;; \
 	esac
 
+
+# ══════════════════════════════════════════════════════
+#             DOMAIN AUTOMATIC CONFIGURATION
+# ══════════════════════════════════════════════════════
 _domain-dev: # Prompt user and setup DOMAIN in .env.dev
 	@printf "$(GREEN)[DEV]  $(CYAN)Set DOMAIN to local LAN?$(RES) [Y/n] "; read ans; \
 	case "$$ans" in \
