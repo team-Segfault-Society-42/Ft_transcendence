@@ -86,11 +86,20 @@ _setup-apply: # Generate .env.dev and .env.prod and create all secrets
 		echo "$(GREEN)✓ $(SECRETS_DIR)$$file created$(RES)"; \
 	done
 # ── Prompt for auto LAN setup ────────────────────────────────────────────────
-	@printf "$(CYAN)Setup with local LAN?$(RES) [y/N] "; read ans; \
+	@printf "$(CYAN)Automatically setup DOMAIN?$(RES) [y/N] "; read ans; \
+	case "$$ans" in \
+		y|Y|yes|Yes|YES) \
+			$(MAKE) --no-print-directory _domain-dev ;; \
+		*) \
+			exit 0 ;; \
+	esac
+
+_domain-dev: # Prompt user and setup DOMAIN in .env.dev
+	@printf "$(CYAN)Set dev DOMAIN to local LAN?$(RES) [y/N] "; read ans; \
 	case "$$ans" in \
 		y|Y|yes|Yes|YES) \
 			ip=$$(ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($$i=="src") print $$(i+1)}'); \
-			sed -i "s|^DOMAIN=.*|DOMAIN=$$ip|" .env; \
+			sed -i "s|^DOMAIN=.*|DOMAIN=$$ip|" .env.dev; \
 			echo "Using custom DOMAIN: '$(GOLD)$$ip$(RES)'";; \
 		*) \
 			echo "Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'";; \
