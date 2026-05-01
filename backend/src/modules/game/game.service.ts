@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { GameState, PlayerRole, PublicPlayerProfile } from './game.types';
 import { MatchesService } from './matches.service';
@@ -26,9 +30,27 @@ export class GameService {
     return game;
   }
 
-  createGame(): string {
+  private findActiveGameByUserId(userId: number): [string, GameState] | null {
+    for (const [gameId, game] of this.activeGame.entries()) {
+      if (game.status === 'finished') continue;
+
+      if (
+        game.players.X.ownerUserId === userId ||
+        game.players.O.ownerUserId === userId
+      ) {
+        return [gameId, game];
+      }
+    }
+
+    return null;
+  }
+
+  createGame(userId: number): string {
+    const active = this.findActiveGameByUserId(userId);
+    if (active) throw new ConflictException('User already has an active game');
     const gameId = randomUUID();
     const newGame = initGameState();
+    newGame.players.X.ownerUserId = userId;
     this.activeGame.set(gameId, newGame);
     return gameId;
   }
@@ -62,6 +84,10 @@ export class GameService {
     user?: PublicPlayerProfile,
   ): { game: GameState; role: PlayerRole } {
     const game = this.getMutableGameById(gameId);
+    const active = this.findActiveGameByUserId(userId);
+    if (active && active[0] !== gameId) {
+      throw new ConflictException('User already has an active game');
+    }
 
     const role = assignPlayerRole(game, userId, socketId);
 

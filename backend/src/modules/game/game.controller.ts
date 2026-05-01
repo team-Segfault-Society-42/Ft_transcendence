@@ -1,13 +1,14 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { GameService } from './game.service';
+import type { AuthRequest } from 'src/auth/jwt-auth.guard';
 
 @Controller('game')
 export class GameController {
   constructor(private readonly gameService: GameService) {}
 
   @Post('create')
-  createGame() {
-    const gameId = this.gameService.createGame();
+  createGame(@Req() req: AuthRequest) {
+    const gameId = this.gameService.createGame(req.user.sub);
     return { gameId };
   }
 
