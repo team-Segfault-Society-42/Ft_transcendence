@@ -12,6 +12,11 @@ export class GameController {
     return { gameId };
   }
 
+  @Get('active')
+  getActiveGame(@Req() req: AuthRequest) {
+    return this.gameService.getActiveGameByUserId(req.user.sub);
+  }
+
   @Get('liveGames')
   getLiveGames() {
     return this.gameService.getLiveGames();

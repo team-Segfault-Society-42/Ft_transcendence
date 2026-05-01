@@ -77,6 +77,23 @@ export class GameService {
     };
   }
 
+  getActiveGameByUserId(userId: number) {
+    const active = this.findActiveGameByUserId(userId);
+    if (!active) return null;
+
+    const [gameId, game] = active;
+    const role = getPlayerRoleByUserId(game, userId);
+    const opponent =
+      role === 'X' ? game.playerProfiles.O : game.playerProfiles.X;
+    return {
+      gameId,
+      status: game.status,
+      role,
+      currentPlayer: game.currentPlayer,
+      opponent,
+    };
+  }
+
   joinGame(
     gameId: string,
     socketId: string,
