@@ -9,15 +9,15 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 // import { CreateUserDto } from './dto/create-user.dto';
 
-const safeUserSelect = {
+const publicUserSelect = {
 	id: true,
-	email: true,
 	username: true,
 	bio: true,
 	avatar: true,
 	wins: true,
 	losses: true,
 	draws: true,
+	xp: true,
 };
 
 @Injectable()
@@ -26,14 +26,14 @@ export class UsersService {
 
 	async getUsers() {
 		return this.prisma.user.findMany({
-			select: safeUserSelect,
+			select: publicUserSelect,
 		});
 	}
 
 	async getUser(id: number) {
 		const user = await this.prisma.user.findUnique({
 			where: { id },
-			select: safeUserSelect,
+			select: publicUserSelect,
 		});
 
 		if (!user) {
@@ -57,7 +57,7 @@ export class UsersService {
 			return await this.prisma.user.update({
 				where: { id },
 				data: updateUserDto,
-				select: safeUserSelect,
+				select: publicUserSelect,
 			});
 		} catch (error) {
 			if (
