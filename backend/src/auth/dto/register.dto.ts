@@ -27,7 +27,7 @@ export class RegisterDto {
 		username: string;
 
 		@ApiPropertyOptional({
-				example: 'I like Pong and backend development.',
+				example: 'I like to play Tic-tac-toe and backend development.',
 				description: 'Optional user biography',
 		})
 		@IsOptional()
