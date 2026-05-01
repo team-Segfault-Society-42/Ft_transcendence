@@ -33,6 +33,21 @@ export class AuthService {
 		private readonly twoFactorService: TwoFactorService,
 	) {}
 
+	private toPrivateUser(user: any) {
+	return {
+		id: user.id,
+		email: user.email,
+		username: user.username,
+		bio: user.bio,
+		avatar: user.avatar,
+		wins: user.wins,
+		losses: user.losses,
+		draws: user.draws,
+		xp: user.xp,
+		isTwoFactorEnabled: user.isTwoFactorEnabled,
+		};
+	}
+
 	async register(registerDto: RegisterDto) {
 		const passwordHash = await bcrypt.hash(registerDto.password, 10);
 
@@ -50,18 +65,7 @@ export class AuthService {
 			},
 		});
 
-		return {
-			id: user.id,
-			email: user.email,
-			username: user.username,
-			bio: user.bio,
-			avatar: user.avatar,
-			wins: user.wins,
-			losses: user.losses,
-			draws: user.draws,
-			xp: user.xp,
-			isTwoFactorEnabled: user.isTwoFactorEnabled,
-			};
+		return this.toPrivateUser(user);
 		} catch (error: unknown) {
 			if (
 				typeof error === 'object' &&
@@ -140,17 +144,6 @@ export class AuthService {
 			throw new NotFoundException('User not found');
 			}
 
-		return {
-			id: user.id,
-			email: user.email,
-			username: user.username,
-			bio: user.bio,
-			avatar: user.avatar,
-			wins: user.wins,
-			losses: user.losses,
-			draws: user.draws,
-			xp: user.xp,
-			isTwoFactorEnabled: user.isTwoFactorEnabled,
-			};
+		return this.toPrivateUser(user);
 	}
 }
