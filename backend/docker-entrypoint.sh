@@ -7,7 +7,7 @@ npx prisma db push
 
 echo "🌱 Seeding dummy users and games..."
 if [ "$NODE_ENV" = "production" ]; then
-	node ./dist/seed.js
+	node ./dist/prisma/seed.js
 else
 	npx prisma db seed
 fi
