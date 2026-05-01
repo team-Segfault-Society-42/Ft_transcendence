@@ -138,8 +138,8 @@ export class OAuthService {
 			};
 		}
 
-		const baseUsername = profile.displayName.toLowerCase().replace(/\s+/g, '_');
-		const username = `${baseUsername}_${Date.now()}`;
+		const baseUsername = profile.providerUsername ?? profile.displayName;
+		const username = await this.generateUniqueUsername(baseUsername);
 
 		const user = await this.prisma.user.create({
 			data: {
