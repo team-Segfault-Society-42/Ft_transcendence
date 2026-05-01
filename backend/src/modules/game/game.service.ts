@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { randomUUID } from 'crypto'; //generer des IDs uniques pour les matchs
+import { randomUUID } from 'crypto';
 import { GameState, PlayerRole, PublicPlayerProfile } from './game.types';
 import { MatchesService } from './matches.service';
 import {
@@ -26,7 +26,7 @@ export class GameService {
     return game;
   }
 
-  creatGame(): string {
+  createGame(): string {
     const gameId = randomUUID();
     const newGame = initGameState();
     this.activeGame.set(gameId, newGame);

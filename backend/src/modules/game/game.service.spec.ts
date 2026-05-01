@@ -26,7 +26,7 @@ describe('Game Engine Tests', () => {
     }).compile();
 
     service = moduleRef.get<GameService>(GameService);
-    gameId = service.creatGame();
+    gameId = service.createGame();
     service.joinGame(gameId, playerX.socketId, playerX.userId);
     service.joinGame(gameId, playerO.socketId, playerO.userId);
     matchesServiceMock.recordMatch.mockClear();

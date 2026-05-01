@@ -7,7 +7,7 @@ export class GameController {
 
   @Post('create')
   createGame() {
-    const gameId = this.gameService.creatGame();
+    const gameId = this.gameService.createGame();
     return { gameId };
   }
 
