@@ -158,6 +158,7 @@ export default function Board() {
         </div>
         <Button
           onClick={() => {
+			leaveGame();
             navigate("/");
           }}
         >

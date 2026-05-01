@@ -285,4 +285,22 @@ export class GameService {
     }
     return { waiting, playing };
   }
+
+  leaveGame(
+    gameId: string,
+    userId: number,
+  ): { deleted: boolean; game: GameState | null } {
+    const game = this.getMutableGameById(gameId);
+    const role = getPlayerRoleByUserId(game, userId);
+
+    if (game.status === 'waiting' && role === 'X') {
+      this.activeGame.delete(gameId);
+      return { deleted: true, game: null };
+    }
+
+    if (role === 'X' || role === 'O') game.playerLeft = role;
+
+    this.activeGame.set(gameId, game);
+    return { deleted: false, game };
+  }
 }

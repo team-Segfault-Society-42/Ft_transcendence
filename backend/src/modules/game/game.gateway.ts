@@ -263,9 +263,22 @@ export class GameGateway implements OnGatewayDisconnect {
   ) {
     try {
       const userId = client.data.user.sub;
-      const game = this.gameService.setPlayerLeft(body.gameId, userId);
-      this.emitGameUpdate(body.gameId, game);
-      await client.leave(body.gameId);
+      const result = this.gameService.leaveGame(body.gameId, userId);
+
+      if (result.deleted) {
+        await client.leave(body.gameId);
+        if (client.data.currentGameId === body.gameId) {
+          delete client.data.currentGameId;
+        }
+        return;
+      }
+      if (result.game) {
+        this.emitGameUpdate(body.gameId, result.game);
+        await client.leave(body.gameId);
+        if (client.data.currentGameId === body.gameId) {
+          delete client.data.currentGameId;
+        }
+      }
     } catch (error) {
       client.emit('game_error', {
         message: error instanceof Error ? error.message : 'Unknown error',
