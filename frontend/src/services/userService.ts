@@ -72,7 +72,7 @@ export async function getUserHistory(id: number) {
     return response.data
 }
 
-export async function getLeaderboard(sortBy?: "xp" | "wins") {
+export async function getLeaderboard(sortBy?: "xp" | "wins" | "winrate" | "totalgames") {
 
     const response = await api.get("users/leaderboard", { params: sortBy ? { sortBy } : {} })
     return response.data
