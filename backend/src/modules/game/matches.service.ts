@@ -114,20 +114,29 @@ export class MatchesService {
     }
   }
 
-  async getFinishedGamesHistory(userId: number) {
-    const game = await this.prismaService.game.findMany({
-      where: {
-        OR: [{ player1Id: userId }, { player2Id: userId }],
-      },
-      include: {
-        player1: true,
-        player2: true,
-        winner: true,
-      },
-      orderBy: {
-        date: 'desc',
-      },
-    });
+	async getFinishedGamesHistory(userId: number) {
+		const game = await this.prismaService.game.findMany({
+		where: {
+			OR: [{ player1Id: userId }, { player2Id: userId }],
+		},
+		include: {
+				player1: {
+					select: {
+						username: true,
+						avatar: true,
+					},
+				},
+				player2: {
+					select: {
+						username: true,
+						avatar: true,
+					},
+				},
+			},
+		orderBy: {
+			date: 'desc',
+			},
+		});
 
     const getUserInfoFromGame = game.map((m) => {
       const isPLayer1 = m.player1Id === userId;

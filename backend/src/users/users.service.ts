@@ -18,13 +18,17 @@ const publicUserSelect = {
 	losses: true,
 	draws: true,
 	xp: true,
-};
+} satisfies Prisma.UserSelect;
+
+type PublicUser = Prisma.UserGetPayload<{
+	select: typeof publicUserSelect;
+}>;
 
 @Injectable()
 export class UsersService {
 	constructor(private prisma: PrismaService) {}
 
-	private toPublicUser(user: any) {
+	private toPublicUser(user: PublicUser) {
 	return {
 		id: user.id,
 		username: user.username,
@@ -37,14 +41,23 @@ export class UsersService {
 	};
 }
 
-	async getUsers() {
-		const users = await this.prisma.user.findMany();
+	async getUsers(limit?: string, offset?: string) {
+		const parsedLimit = Math.min(Number(limit) || 20, 100);
+		const parsedOffset = Number(offset) || 0;
+
+		const users = await this.prisma.user.findMany({
+			select: publicUserSelect,
+			take: parsedLimit,
+			skip: parsedOffset,
+		});
+
 		return users.map(user => this.toPublicUser(user));
 	}
 
 	async getUser(id: number) {
 		const user = await this.prisma.user.findUnique({
 			where: { id },
+			select: publicUserSelect,
 		});
 
 		if (!user)

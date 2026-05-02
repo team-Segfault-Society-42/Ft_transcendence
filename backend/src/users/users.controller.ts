@@ -40,11 +40,14 @@ export class UsersController {
     return this.matchServices.getGameLeaderboard(safeSortBy);
   }
 
-  @ApiOperation({ summary: 'Get all users' })
-  @Get()
-  getUsers() {
-    return this.usersService.getUsers();
-  }
+	@ApiOperation({ summary: 'Get all users' })
+	@Get()
+	getUsers(
+		@Query('limit') limit?: string,
+		@Query('offset') offset?: string,
+	) {
+		return this.usersService.getUsers(limit, offset);
+	}
 
   @ApiOperation({ summary: 'Get user by ID' })
   @Get(':id')
