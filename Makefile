@@ -1,5 +1,5 @@
 include make/colours.mk make/help.mk make/clean.mk make/setup.mk
--include .env
+-include .env.dev
 export
 
 # ══════════════════════════════════════════════════════
@@ -15,6 +15,9 @@ COMPOSE_FILE		= compose.yaml
 COMPOSE_DEV			= compose.dev.yaml
 COMPOSE_PROD		= compose.prod.yaml
 
+ENV_DEV				= --env-file .env.dev
+ENV_PROD			= --env-file .env.prod
+
 # ══════════════════════════════════════════════════════
 #                 STARTING THE STACK
 # ══════════════════════════════════════════════════════
@@ -22,13 +25,13 @@ COMPOSE_PROD		= compose.prod.yaml
 
 up: _check-required-files ## Start (or restart) the dev stack [DEV]
 	@echo "$(GREEN)Running in Dev Mode$(RES)"
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) up -d
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) up -d
 
 build: _check-required-files
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) build
 
 no-cache: _check-required-files
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) build --no-cache
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) build --no-cache
 
 re: down build up ## Rebuild images and restart — use when Dockerfile or dependencies change [DEV]
 
@@ -36,7 +39,7 @@ reset: downv no-cache up ## Wipe volumes, full no-cache rebuild, restart [DEV]
 
 prod: ## Start the stack, rebuild images [PROD]
 	@echo "$(RED)Running in Production Mode$(RES)"
-	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) up -d --build
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) $(ENV_PROD) up -d --build
 
 .PHONY: up build no-cache re reset prod
 
@@ -47,22 +50,22 @@ prod: ## Start the stack, rebuild images [PROD]
 ##@ STOP STACK
 
 down: ## Stop all running dev containers [DEV]
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) down
 
 downv: # Remove volumes and stop running containers [DEV]
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down -v
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) down -v
 
 down-all: ## Stop all dev & prod containers [BOTH]
 	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) down
 	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
-	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) $(ENV_PROD) down
 
 p-down: ## Stop all running prod containers [PROD]
-	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) $(ENV_PROD) down
 
 p-downv: # Remove volumes and stop running containers [PROD]
-	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down -v
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) $(ENV_PROD) down -v
 
 .PHONY: down downv down-all p-down p-downv
 
@@ -73,9 +76,9 @@ p-downv: # Remove volumes and stop running containers [PROD]
 
 ps: ## Display all running containers [BOTH]
 	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) ps
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) ps
 	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
-	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) ps
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) $(ENV_PROD) ps
 
 ls: ## Display all images [UTIL]
 	@docker image ls -a
@@ -101,8 +104,8 @@ prisma: ## Start Prisma Studio (Stack MUST be running) [DEV]
 #               	 	 LOGS
 # ══════════════════════════════════════════════════════
 
-SHOW_DEV_LOGS = docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) logs
-SHOW_PROD_LOGS = docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) logs
+SHOW_DEV_LOGS = docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) logs
+SHOW_PROD_LOGS = docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) $(ENV_PROD) logs
 
 ##@ LOGS
 
