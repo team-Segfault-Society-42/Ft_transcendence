@@ -127,4 +127,4 @@ _domain-prod: # Prompt user and setup DOMAIN in .env.dev
 seed: ## Populates the DB with 10 dummy users (Requires the stack to be running) [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) exec backend npx prisma db seed
 
-.PHONY: setup _setup-apply _check-required-files
+.PHONY: setup _setup-apply _check-required-files seed _domain-dev _domain-prod
