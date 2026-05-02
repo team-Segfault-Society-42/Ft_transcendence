@@ -23,7 +23,6 @@ model User {
   draws               Int            @default(0)
   xp                  Int            @default(0)
   totalGames          Int            @default(0)
-  winrate             Float          @default(0)
   isTwoFactorEnabled  Boolean        @default(false)
   twoFactorSecret     String?
   twoFactorTempSecret String?

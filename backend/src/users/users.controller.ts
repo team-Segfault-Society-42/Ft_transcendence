@@ -17,7 +17,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { MatchesService } from 'src/modules/game/matches.service';
 import { AchievementsService } from 'src/modules/game/achievement/achievements.service';
 
-type SortBy = 'xp' | 'wins' | 'winrate' | 'totalGames';
+type SortBy = 'xp' | 'wins' | 'totalGames';
 
 @ApiTags('Users')
 @Controller('users')
@@ -38,7 +38,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get leaderboard of users' })
   @Get('leaderboard')
   getLeaderboard(@Query('sortBy') sortBy?: SortBy) {
-    const allowedSorts: SortBy[] = ['xp', 'wins', 'winrate', 'totalGames'];
+    const allowedSorts: SortBy[] = ['xp', 'wins', 'totalGames'];
 
     const safeSortBy: SortBy = sortBy && allowedSorts.includes(sortBy) ? sortBy : 'xp';
     return this.matchServices.getGameLeaderboard(safeSortBy);
