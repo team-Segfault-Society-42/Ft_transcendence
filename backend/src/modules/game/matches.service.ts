@@ -172,7 +172,7 @@ export class MatchesService {
     return getUserInfoFromGame;
   }
 
-  async getGameLeaderboard(sortBy: 'wins' | 'xp') {
+  async getGameLeaderboard(sortBy: 'wins' | 'xp' | 'winrate' | 'totalGames') {
     let orderBy;
     if (sortBy === 'wins') {
       orderBy = { wins: 'desc' };
