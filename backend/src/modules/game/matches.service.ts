@@ -135,7 +135,7 @@ export class MatchesService {
 			},
 		orderBy: {
 			date: 'desc',
-		},
+			},
 		});
 
     const getUserInfoFromGame = game.map((m) => {
