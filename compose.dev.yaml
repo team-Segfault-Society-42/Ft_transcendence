@@ -20,7 +20,6 @@ services:
     ports:
       - "5555:5555"
     environment:
-      - JWT_SECRET=${JWT_SECRET}
       - CORS_ORIGINS=http://localhost:1024
       - FORTYTWO_CLIENT_ID=${FORTYTWO_CLIENT_ID}
       - FORTYTWO_CLIENT_SECRET=${FORTYTWO_CLIENT_SECRET}
