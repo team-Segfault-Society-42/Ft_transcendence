@@ -4,10 +4,11 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 
 export interface OAuthProfile {
-	provider: 'google' | '42';
+	provider: '42' | 'google' ;
 	providerUserId: string;
 	email: string;
 	displayName: string;
+	providerUsername?: string;
 	avatarUrl: string;
 }
 
@@ -54,6 +55,29 @@ export class OAuthService {
 		private readonly prisma: PrismaService,
 		private readonly httpService: HttpService,
 	) {}
+
+		private normalizeUsername(value: string) {
+		return value
+			.toLowerCase()
+			.trim()
+			.replace(/[^a-z0-9_]/g, '_')
+			.replace(/_+/g, '_')
+			.replace(/^_+|_+$/g, '');
+	}
+
+	private async generateUniqueUsername(baseUsername: string) {
+		const cleanBaseUsername = this.normalizeUsername(baseUsername) || 'user';
+
+		let candidate = cleanBaseUsername;
+		let suffix = 1;
+
+		while (await this.prisma.user.findUnique({ where: { username: candidate } })) {
+			candidate = `${cleanBaseUsername}_${suffix}`;
+			suffix++;
+		}
+
+		return candidate;
+	}
 
 	private async findOrCreateUserFromOAuthProfile(profile: OAuthProfile) {
 		const existingOAuthAccount = await this.prisma.oAuthAccount.findUnique({
@@ -114,8 +138,8 @@ export class OAuthService {
 			};
 		}
 
-		const baseUsername = profile.displayName.toLowerCase().replace(/\s+/g, '_');
-		const username = `${baseUsername}_${Date.now()}`;
+		const baseUsername = profile.providerUsername ?? profile.displayName;
+		const username = await this.generateUniqueUsername(baseUsername);
 
 		const user = await this.prisma.user.create({
 			data: {
@@ -200,6 +224,7 @@ export class OAuthService {
 			providerUserId: String(fortyTwoUser.id),
 			email: fortyTwoUser.email,
 			displayName: fortyTwoUser.displayname,
+			providerUsername: fortyTwoUser.login,
 			avatarUrl:
 				fortyTwoUser.image?.versions?.medium ??
 				fortyTwoUser.image?.link ??

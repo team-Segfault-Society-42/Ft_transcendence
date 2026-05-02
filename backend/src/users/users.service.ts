@@ -9,38 +9,48 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 // import { CreateUserDto } from './dto/create-user.dto';
 
-const safeUserSelect = {
+const publicUserSelect = {
 	id: true,
-	email: true,
 	username: true,
 	bio: true,
 	avatar: true,
 	wins: true,
 	losses: true,
 	draws: true,
+	xp: true,
 };
 
 @Injectable()
 export class UsersService {
 	constructor(private prisma: PrismaService) {}
 
+	private toPublicUser(user: any) {
+	return {
+		id: user.id,
+		username: user.username,
+		bio: user.bio,
+		avatar: user.avatar,
+		wins: user.wins,
+		losses: user.losses,
+		draws: user.draws,
+		xp: user.xp,
+	};
+}
+
 	async getUsers() {
-		return this.prisma.user.findMany({
-			select: safeUserSelect,
-		});
+		const users = await this.prisma.user.findMany();
+		return users.map(user => this.toPublicUser(user));
 	}
 
 	async getUser(id: number) {
 		const user = await this.prisma.user.findUnique({
 			where: { id },
-			select: safeUserSelect,
 		});
 
-		if (!user) {
+		if (!user)
 			throw new NotFoundException('User not found');
-		}
 
-		return user;
+		return this.toPublicUser(user);
 	}
 
 	async updateUser(id: number, updateUserDto: UpdateUserDto) {
@@ -54,11 +64,12 @@ export class UsersService {
 		}
 
 		try {
-			return await this.prisma.user.update({
+			const updatedUser = await this.prisma.user.update({
 				where: { id },
 				data: updateUserDto,
-				select: safeUserSelect,
 			});
+
+			return this.toPublicUser(updatedUser);
 		} catch (error) {
 			if (
 				error instanceof Prisma.PrismaClientKnownRequestError &&
