@@ -73,9 +73,12 @@
       "title": "Leaderboard",
       "topXP": "Highest level",
       "topWins": "Most wins",
+      "topTotalGames": "Most games played",
       "empty": "No players are listed in the rankings",
       "xp": "{{value}} XP",
-      "wins": "{{value}} Wins"
+      "wins": "{{value}} Wins",
+      "totalGames": "{{value}} Games"
+
     },
 
     "history": {
