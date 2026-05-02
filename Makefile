@@ -87,10 +87,12 @@ info: # Display Docker system information, build cache, etc. [UTIL]
 	@docker system df
 
 swagger: ## Print URL to access Swagger Documentation [UTIL]
-	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
-	@echo "http://$(DOMAIN):1024/api/api-docs"
-	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
-	@echo "https://$(DOMAIN):8443/api/api-docs"
+	@dev_domain=$$(grep '^DOMAIN=' .env.dev | cut -d= -f2-); \
+	prod_domain=$$(grep '^DOMAIN=' .env.prod | cut -d= -f2-); \
+	echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"; \
+	echo "http://$$dev_domain:1024/api/api-docs"; \
+	echo "\n$(RED)═════ PROD ════════════════════════$(RES)"; \
+	echo "https://$$prod_domain:8443/api/api-docs"
 
 prisma: ## Start Prisma Studio (Stack MUST be running) [DEV]
 	@docker ps --filter "name=dev-backend" --filter "status=running" -q | grep -q . \
