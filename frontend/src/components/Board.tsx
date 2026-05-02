@@ -200,7 +200,7 @@ export default function Board() {
 
   return (
     <div className="relative inline-block text-center p-4">
-      {status !== "finished" && (
+      {/* {status !== "finished" && (
         <div
           className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${
             currentPlayer === "X"
@@ -220,10 +220,10 @@ export default function Board() {
                 symbol: "O",
               })}
         </div>
-      )}
+      )} */}
 
       <div className="grid grid-cols-3 gap-4 mb-8 text-white">
-        <div className="bg-gray-800 p-4 rounded flex flex-col items-center">
+        <div className={`bg-gray-800 p-4 rounded flex flex-col items-center ${currentPlayer === 'X' ? 'ring-2 ring-cyan-400' : ''}`}>
           {playerXAvatar ? (
             <img
               src={playerXAvatar}
@@ -242,7 +242,7 @@ export default function Board() {
           <p className="text-sm">{t("game.vs", { defaultValue: "VS" })}</p>
         </div>
 
-        <div className="bg-gray-800 p-4 rounded flex flex-col items-center">
+        <div className={`bg-gray-800 p-4 rounded flex flex-col items-center ${currentPlayer === 'O' ? 'ring-2 ring-cyan-400' : ''}`}>
           {playerOAvatar ? (
             <img
               src={playerOAvatar}
