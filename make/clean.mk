@@ -51,14 +51,14 @@ _nuke-apply: # Runs a full wipe
   	# ── Stop Stack, Remove Containers + Volumes ──────────────────────────────
 	@echo ""
 	@echo "$(CYAN)<Stopping stack and removing containers + volumes>$(RES)"
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --volumes --remove-orphans
-	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down --volumes --remove-orphans
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) down --volumes --remove-orphans
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) $(ENV_PROD) down --volumes --remove-orphans
 	@docker volume prune -f
 
   	# ── Remove dev & prod Images ─────────────────────────────────────────────
 	@echo "$(CYAN)<Removing images built by this stack>$(RES)"
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) down --rmi local 2>/dev/null || true
-	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) down --rmi local 2>/dev/null || true
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) down --rmi local 2>/dev/null || true
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) $(ENV_PROD) down --rmi local 2>/dev/null || true
 	@docker image prune -f
 
   	# ── Clear Build Cache ────────────────────────────────────────────────────
