@@ -247,5 +247,21 @@ export function resetBoardForReplay(game: GameState): GameState {
     O: false,
   };
 
+  swapPlayerRoles(game);
+  return game;
+}
+
+export function swapPlayerRoles(game: GameState): GameState {
+  const oldX = game.players.X;
+  const oldProfile = game.playerProfiles.X;
+  const oldScores = game.scores.X;
+
+  game.players.X = game.players.O;
+  game.playerProfiles.X = game.playerProfiles.O;
+  game.scores.X = game.scores.O;
+  game.players.O = oldX;
+  game.playerProfiles.O = oldProfile;
+  game.scores.O = oldScores;
+
   return game;
 }

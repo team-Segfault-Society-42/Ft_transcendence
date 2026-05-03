@@ -40,6 +40,10 @@ export default function Game() {
       useGameStore.getState().syncFromServer(payload);
     });
 
+    client.on("role_updated", (payload) => {
+      useGameStore.getState().setPlayerRole(payload.role);
+    });
+
     client.on("game_error", (payload) => {
       const message = gameErrorMsg(payload.message);
 

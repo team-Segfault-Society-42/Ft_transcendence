@@ -165,6 +165,16 @@ export class GameGateway implements OnGatewayDisconnect {
     });
   }
 
+  private emitUpdatedRoles(game: GameState) {
+    const socketId_X = game.players.X.socketId;
+    const socketId_O = game.players.O.socketId;
+
+    if (socketId_X)
+      this.server.to(socketId_X).emit('role_updated', { role: 'X' });
+    if (socketId_O)
+      this.server.to(socketId_O).emit('role_updated', { role: 'O' });
+  }
+
   handleDisconnect(client: AuthSocket) {
     const result = this.gameService.processPlayerDisconnection(client.id);
     if (result) {
@@ -247,6 +257,8 @@ export class GameGateway implements OnGatewayDisconnect {
     try {
       const userId = client.data.user.sub;
       const updateGame = this.gameService.requestReplay(body.gameId, userId);
+
+      this.emitUpdatedRoles(updateGame);
       this.emitGameUpdate(body.gameId, updateGame);
       return updateGame;
     } catch (error) {
