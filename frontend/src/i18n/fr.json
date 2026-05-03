@@ -17,6 +17,9 @@
             "hi": "Salut, ",
             "local": "Jeu local",
             "findOpp": "Trouver un adversaire"
+        },
+        "history":{
+            "empty": "Votre historique de parties s’affichera ici."
         }
     },
 

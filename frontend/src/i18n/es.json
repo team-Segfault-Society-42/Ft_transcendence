@@ -17,6 +17,9 @@
         "hi": "Hola, ",
         "local": "Jugar en local",
         "findOpp": "Buscar un oponente"
+      },
+      "history":{
+        "empty": "Tu historial de partidas se mostrará aquí."
       }
     },
   
