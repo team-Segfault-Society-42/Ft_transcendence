@@ -41,15 +41,24 @@ export class UsersService {
 	};
 }
 
-	async getUsers(query: { limit?: number; offset?: number }) {
+	async getUsers(query: { limit?: number; offset?: number; search?: string }) {
 		const limit = Math.min(query.limit ?? 20, 100);
 		const offset = query.offset ?? 0;
-
+		const where = query.search
+			? {
+					username: {
+						contains: query.search,
+						mode: 'insensitive' as const,
+					},
+				}
+			: {};
 		const users = await this.prisma.user.findMany({
+			where,
 			select: publicUserSelect,
 			take: limit,
 			skip: offset,
 		});
+
 
 		return users.map(user => this.toPublicUser(user));
 	}
