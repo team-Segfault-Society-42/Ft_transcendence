@@ -44,10 +44,11 @@ export class UsersService {
 	async getUsers(query: { limit?: number; offset?: number; search?: string }) {
 		const limit = Math.min(query.limit ?? 20, 100);
 		const offset = query.offset ?? 0;
-		const where = query.search
+		const search = query.search?.trim();
+		const where = search
 			? {
 					username: {
-						contains: query.search,
+						contains: search,
 						mode: 'insensitive' as const,
 					},
 				}

@@ -1,4 +1,4 @@
-import { IsOptional, IsInt, Min, IsString, MaxLength } from 'class-validator';
+import { IsOptional, IsInt, Min, IsString, MaxLength, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -26,10 +26,12 @@ export class GetUsersQueryDto {
 	@ApiPropertyOptional({
 		example: 'nico',
 		description: 'Optional case-insensitive username search.',
+		minLength: 1,
 		maxLength: 50,
 	})
 	@IsOptional()
 	@IsString()
+	@MinLength(1)
 	@MaxLength(50)
 	search?: string;
 }
