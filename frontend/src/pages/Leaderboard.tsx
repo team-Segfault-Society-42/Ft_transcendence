@@ -9,11 +9,12 @@ interface LeaderBoard {
   username: string;
   xp: number;
   wins: number;
+  totalGames: number;
 }
 
 export default function LeaderBoard() {
   const [leaderboard, setLeaderboard] = useState<LeaderBoard[]>([]);
-  const [sortBy, setSortBy] = useState<"xp" | "wins">("wins");
+  const [sortBy, setSortBy] = useState<"xp" | "totalGames" | "wins">("wins");
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -55,6 +56,15 @@ export default function LeaderBoard() {
           >
             {t("leaderboard.topWins")}
           </Button>
+
+          <Button
+            onClick={() => setSortBy("totalGames")}
+            variant={sortBy === "totalGames"
+              ? "primary"
+              : "secondary"}
+          >
+            {t("leaderboard.topTotalGames")}
+          </Button>
         </div>
 
         {leaderboard.length === 0 ? (
@@ -82,7 +92,9 @@ export default function LeaderBoard() {
                   <p className="text-blue-400 font-bold">
                     {sortBy === "xp"
                       ? t("leaderboard.xp", { value: l.xp })
-                      : t("leaderboard.wins", { value: l.wins ?? 0 })}
+                      : sortBy === "totalGames"
+                        ? t("leaderboard.totalGames", { value: l.totalGames })
+                        : t("leaderboard.wins", { value: l.wins ?? 0 })}
                   </p>
                 </div>
               </div>

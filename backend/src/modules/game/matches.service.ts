@@ -60,6 +60,7 @@ export class MatchesService {
             data: {
               wins: { increment: 1 },
               xp: { increment: 20 },
+              totalGames: { increment: 1 },
             },
           });
 
@@ -68,6 +69,7 @@ export class MatchesService {
             data: {
               losses: { increment: 1 },
               xp: { increment: 5 },
+              totalGames: { increment: 1 },
             },
           });
         } else if (result.winnerId === result.player2Id) {
@@ -76,6 +78,7 @@ export class MatchesService {
             data: {
               wins: { increment: 1 },
               xp: { increment: 20 },
+              totalGames: { increment: 1 },
             },
           });
 
@@ -84,6 +87,7 @@ export class MatchesService {
             data: {
               losses: { increment: 1 },
               xp: { increment: 5 },
+              totalGames: { increment: 1 },
             },
           });
         } else {
@@ -92,6 +96,7 @@ export class MatchesService {
             data: {
               draws: { increment: 1 },
               xp: { increment: 10 },
+              totalGames: { increment: 1 },
             },
           });
 
@@ -100,6 +105,7 @@ export class MatchesService {
             data: {
               draws: { increment: 1 },
               xp: { increment: 10 },
+              totalGames: { increment: 1 },
             },
           });
         }
@@ -114,20 +120,29 @@ export class MatchesService {
     }
   }
 
-  async getFinishedGamesHistory(userId: number) {
-    const game = await this.prismaService.game.findMany({
-      where: {
-        OR: [{ player1Id: userId }, { player2Id: userId }],
-      },
-      include: {
-        player1: true,
-        player2: true,
-        winner: true,
-      },
-      orderBy: {
-        date: 'desc',
-      },
-    });
+	async getFinishedGamesHistory(userId: number) {
+		const game = await this.prismaService.game.findMany({
+		where: {
+			OR: [{ player1Id: userId }, { player2Id: userId }],
+		},
+		include: {
+				player1: {
+					select: {
+						username: true,
+						avatar: true,
+					},
+				},
+				player2: {
+					select: {
+						username: true,
+						avatar: true,
+					},
+				},
+			},
+		orderBy: {
+			date: 'desc',
+			},
+		});
 
     const getUserInfoFromGame = game.map((m) => {
       const isPLayer1 = m.player1Id === userId;
@@ -163,12 +178,14 @@ export class MatchesService {
     return getUserInfoFromGame;
   }
 
-  async getGameLeaderboard(sortBy: 'wins' | 'xp') {
+  async getGameLeaderboard(sortBy: 'wins' | 'xp' | 'totalGames') {
     let orderBy;
     if (sortBy === 'wins') {
       orderBy = { wins: 'desc' };
     } else if (sortBy === 'xp') {
       orderBy = { xp: 'desc' };
+    } else if (sortBy === 'totalGames') {
+      orderBy = { totalGames: 'desc' };
     } else {
       orderBy = { wins: 'desc' };
     }
@@ -184,6 +201,7 @@ export class MatchesService {
         username: m.username,
         xp: m.xp,
         wins: m.wins,
+        totalGames: m.totalGames,
       };
     });
     return getUserInfo;

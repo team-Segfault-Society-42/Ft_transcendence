@@ -80,9 +80,11 @@
       "title": "Clasificación",
       "topXP": "Nivel más alto",
       "topWins": "Más victorias",
+      "topTotalGames": "Más partidas jugadas",
       "empty": "No hay jugadores en la clasificación",
       "xp": "{{value}} XP",
-      "wins": "{{value}} Victorias"
+      "wins": "{{value}} Victorias",
+      "totalGames": "{{value}} Partidas"
     },
 
     "history": {

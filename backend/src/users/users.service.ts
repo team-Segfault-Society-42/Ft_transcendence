@@ -18,13 +18,17 @@ const publicUserSelect = {
 	losses: true,
 	draws: true,
 	xp: true,
-};
+} satisfies Prisma.UserSelect;
+
+type PublicUser = Prisma.UserGetPayload<{
+	select: typeof publicUserSelect;
+}>;
 
 @Injectable()
 export class UsersService {
 	constructor(private prisma: PrismaService) {}
 
-	private toPublicUser(user: any) {
+	private toPublicUser(user: PublicUser) {
 	return {
 		id: user.id,
 		username: user.username,
@@ -37,14 +41,36 @@ export class UsersService {
 	};
 }
 
-	async getUsers() {
-		const users = await this.prisma.user.findMany();
+	async getUsers(query: { limit?: number; offset?: number; search?: string }) {
+		const limit = Math.min(query.limit ?? 20, 100);
+		const offset = query.offset ?? 0;
+		const search = query.search?.trim();
+		if (query.search !== undefined && search === '') {
+			throw new BadRequestException('search cannot be empty or only spaces');
+		}
+		const where = search
+			? {
+					username: {
+						contains: search,
+						mode: 'insensitive' as const,
+					},
+				}
+			: {};
+		const users = await this.prisma.user.findMany({
+			where,
+			select: publicUserSelect,
+			take: limit,
+			skip: offset,
+		});
+
+
 		return users.map(user => this.toPublicUser(user));
 	}
 
 	async getUser(id: number) {
 		const user = await this.prisma.user.findUnique({
 			where: { id },
+			select: publicUserSelect,
 		});
 
 		if (!user)

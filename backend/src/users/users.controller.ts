@@ -16,6 +16,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { MatchesService } from 'src/modules/game/matches.service';
 import { AchievementsService } from 'src/modules/game/achievement/achievements.service';
+import { GetUsersQueryDto } from './dto/get-users-query.dto';
+
+type SortBy = 'xp' | 'wins' | 'totalGames';
 
 @ApiTags('Users')
 @Controller('users')
@@ -35,16 +38,18 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get leaderboard of users' })
   @Get('leaderboard')
-  getLeaderboard(@Query('sortBy') sortBy: string) {
-    const safeSortBy = sortBy === 'xp' ? 'xp' : 'wins';
+  getLeaderboard(@Query('sortBy') sortBy?: SortBy) {
+    const allowedSorts: SortBy[] = ['xp', 'wins', 'totalGames'];
+
+    const safeSortBy: SortBy = sortBy && allowedSorts.includes(sortBy) ? sortBy : 'xp';
     return this.matchServices.getGameLeaderboard(safeSortBy);
   }
 
-  @ApiOperation({ summary: 'Get all users' })
-  @Get()
-  getUsers() {
-    return this.usersService.getUsers();
-  }
+	@ApiOperation({ summary: 'Get all users' })
+	@Get()
+	getUsers(@Query() query: GetUsersQueryDto) {
+		return this.usersService.getUsers(query);
+	}
 
   @ApiOperation({ summary: 'Get user by ID' })
   @Get(':id')

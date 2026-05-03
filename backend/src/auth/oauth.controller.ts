@@ -117,7 +117,7 @@ export class OAuthController {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === 'production',
 				sameSite: 'lax',
-				maxAge: 60 * 60 * 1000,
+				maxAge: 8 * 60 * 60 * 1000,
 			});
 
 			res?.clearCookie('2fa_pending', {
@@ -197,7 +197,7 @@ export class OAuthController {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === 'production',
 				sameSite: 'lax',
-				maxAge: 60 * 60 * 1000,
+				maxAge: 8 * 60 * 60 * 1000,
 			});
 
 			res?.clearCookie('2fa_pending', {

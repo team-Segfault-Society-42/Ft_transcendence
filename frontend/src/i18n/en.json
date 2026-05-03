@@ -77,12 +77,15 @@
     },
 
     "leaderboard":{
-        "title": "Leaderboard",
-        "topXP": "Highest level",
-        "topWins": "Most wins",
-        "empty": "No players are listed in the rankings",
-        "xp": "{{value}} XP",
-        "wins": "{{value}} Wins"
+      "title": "Leaderboard",
+      "topXP": "Highest level",
+      "topWins": "Most wins",
+      "topTotalGames": "Most games played",
+      "empty": "No players are listed in the rankings",
+      "xp": "{{value}} XP",
+      "wins": "{{value}} Wins",
+      "totalGames": "{{value}} Games"
+
     },
 
     "history": {

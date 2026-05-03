@@ -112,7 +112,7 @@ async function main() {
 
     // ── XP & Update User ──────────────────────
     const xp = wins * 20 + draws * 10 + losses * 5;
-    await prisma.user.update({ where: { id: user.id }, data: { wins, losses, draws, xp } });
+    await prisma.user.update({ where: { id: user.id }, data: { wins, losses, draws, xp, totalGames: total } });
   }
   console.log('\x1b[32m✓ Updated Users\' XP and Stats\x1b[0m');
 }
