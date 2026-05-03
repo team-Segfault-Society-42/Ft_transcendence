@@ -158,7 +158,7 @@ export default function Board() {
         </div>
         <Button
           onClick={() => {
-			leaveGame();
+            leaveGame();
             navigate("/");
           }}
         >
@@ -200,30 +200,12 @@ export default function Board() {
 
   return (
     <div className="relative inline-block text-center p-4">
-      {/* {status !== "finished" && (
-        <div
-          className={`mb-6 py-2 rounded-lg text-xl font-bold shadow-md ${
-            currentPlayer === "X"
-              ? "bg-cyan-500 text-white"
-              : "bg-fuchsia-500 text-white"
-          }`}
-        >
-          {currentPlayer === "X"
-            ? t("game.turn", {
-                defaultValue: "{{player}}'s turn {{symbol}}",
-                player: playerXNameTrunc,
-                symbol: "X",
-              })
-            : t("game.turn", {
-                defaultValue: "{{player}}'s turn {{symbol}}",
-                player: playerONameTrunc,
-                symbol: "O",
-              })}
-        </div>
-      )} */}
-
       <div className="grid grid-cols-3 gap-4 mb-8 text-white">
-        <div className={`bg-gray-800 p-4 rounded flex flex-col items-center ${currentPlayer === 'X' ? 'ring-2 ring-cyan-400' : ''}`}>
+        <div
+          className={`bg-gray-800 p-4 rounded flex flex-col items-center ${currentPlayer === "X" ? "ring-2 ring-cyan-400" : ""}`}
+        >
+          <p>X</p>
+          <div className="mt-4 text-white/80 font-medium">{game.scores.X}</div>
           {playerXAvatar ? (
             <img
               src={playerXAvatar}
@@ -240,9 +222,14 @@ export default function Board() {
 
         <div className="bg-gray-700 p-4 rounded flex flex-col items-center justify-center">
           <p className="text-sm">{t("game.vs", { defaultValue: "VS" })}</p>
+          <div className="mt-4 text-white/80 font-medium">{game.scores.D}</div>
         </div>
 
-        <div className={`bg-gray-800 p-4 rounded flex flex-col items-center ${currentPlayer === 'O' ? 'ring-2 ring-cyan-400' : ''}`}>
+        <div
+          className={`bg-gray-800 p-4 rounded flex flex-col items-center ${currentPlayer === "O" ? "ring-2 ring-cyan-400" : ""}`}
+        >
+          <p>O</p>
+          <div className="mt-4 text-white/80 font-medium">{game.scores.O}</div>
           {playerOAvatar ? (
             <img
               src={playerOAvatar}
@@ -265,14 +252,8 @@ export default function Board() {
       )}
 
       <div className="mb-4 text-sm text-white/70">
-        {playerRole === "X" &&
-          t("game.roleX", { defaultValue: "You are player X" })}
-        {playerRole === "O" &&
-          t("game.roleO", { defaultValue: "You are player O" })}
         {playerRole === "spectator" &&
           t("game.spectating", { defaultValue: "You are spectating" })}
-        {playerRole === null &&
-          t("game.joining", { defaultValue: "Joining game..." })}
       </div>
 
       {status === "waiting" && (
@@ -378,15 +359,10 @@ export default function Board() {
         ))}
       </div>
 
-      <div className="mt-4 text-white/80 font-medium">
-        {t("game.score", { defaultValue: "Score" })} — X: {game.scores.X} | O:{" "}
-        {game.scores.O} | D: {game.scores.D}
-      </div>
-
       <div className="mt-6 text-white/60 font-medium">
         {t("game.timer", {
           defaultValue: "Time left: {{seconds}}s",
-          seconds: timeLeft, //timeLeft,
+          seconds: timeLeft,
         })}
       </div>
 
