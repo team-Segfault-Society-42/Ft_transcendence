@@ -60,6 +60,7 @@ export class MatchesService {
             data: {
               wins: { increment: 1 },
               xp: { increment: 20 },
+              totalGames: { increment: 1 },
             },
           });
 
@@ -68,6 +69,7 @@ export class MatchesService {
             data: {
               losses: { increment: 1 },
               xp: { increment: 5 },
+              totalGames: { increment: 1 },
             },
           });
         } else if (result.winnerId === result.player2Id) {
@@ -76,6 +78,7 @@ export class MatchesService {
             data: {
               wins: { increment: 1 },
               xp: { increment: 20 },
+              totalGames: { increment: 1 },
             },
           });
 
@@ -84,6 +87,7 @@ export class MatchesService {
             data: {
               losses: { increment: 1 },
               xp: { increment: 5 },
+              totalGames: { increment: 1 },
             },
           });
         } else {
@@ -92,6 +96,7 @@ export class MatchesService {
             data: {
               draws: { increment: 1 },
               xp: { increment: 10 },
+              totalGames: { increment: 1 },
             },
           });
 
@@ -100,6 +105,7 @@ export class MatchesService {
             data: {
               draws: { increment: 1 },
               xp: { increment: 10 },
+              totalGames: { increment: 1 },
             },
           });
         }
@@ -172,12 +178,14 @@ export class MatchesService {
     return getUserInfoFromGame;
   }
 
-  async getGameLeaderboard(sortBy: 'wins' | 'xp') {
+  async getGameLeaderboard(sortBy: 'wins' | 'xp' | 'totalGames') {
     let orderBy;
     if (sortBy === 'wins') {
       orderBy = { wins: 'desc' };
     } else if (sortBy === 'xp') {
       orderBy = { xp: 'desc' };
+    } else if (sortBy === 'totalGames') {
+      orderBy = { totalGames: 'desc' };
     } else {
       orderBy = { wins: 'desc' };
     }
@@ -193,6 +201,7 @@ export class MatchesService {
         username: m.username,
         xp: m.xp,
         wins: m.wins,
+        totalGames: m.totalGames,
       };
     });
     return getUserInfo;
