@@ -16,6 +16,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { MatchesService } from 'src/modules/game/matches.service';
 import { AchievementsService } from 'src/modules/game/achievement/achievements.service';
+import { GetUsersQueryDto } from './dto/get-users-query.dto';
 
 type SortBy = 'xp' | 'wins' | 'totalGames';
 
@@ -46,11 +47,8 @@ export class UsersController {
 
 	@ApiOperation({ summary: 'Get all users' })
 	@Get()
-	getUsers(
-		@Query('limit') limit?: string,
-		@Query('offset') offset?: string,
-	) {
-		return this.usersService.getUsers(limit, offset);
+	getUsers(@Query() query: GetUsersQueryDto) {
+		return this.usersService.getUsers(query);
 	}
 
   @ApiOperation({ summary: 'Get user by ID' })

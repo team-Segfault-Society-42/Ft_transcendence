@@ -41,15 +41,28 @@ export class UsersService {
 	};
 }
 
-	async getUsers(limit?: string, offset?: string) {
-		const parsedLimit = Math.min(Number(limit) || 20, 100);
-		const parsedOffset = Number(offset) || 0;
-
+	async getUsers(query: { limit?: number; offset?: number; search?: string }) {
+		const limit = Math.min(query.limit ?? 20, 100);
+		const offset = query.offset ?? 0;
+		const search = query.search?.trim();
+		if (query.search !== undefined && search === '') {
+			throw new BadRequestException('search cannot be empty or only spaces');
+		}
+		const where = search
+			? {
+					username: {
+						contains: search,
+						mode: 'insensitive' as const,
+					},
+				}
+			: {};
 		const users = await this.prisma.user.findMany({
+			where,
 			select: publicUserSelect,
-			take: parsedLimit,
-			skip: parsedOffset,
+			take: limit,
+			skip: offset,
 		});
+
 
 		return users.map(user => this.toPublicUser(user));
 	}
