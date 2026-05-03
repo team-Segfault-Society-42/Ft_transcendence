@@ -77,12 +77,12 @@
     },
 
     "leaderboard":{
-      "title": "Leaderboard",
-      "topXP": "Highest level",
-      "topWins": "Most wins",
-      "empty": "No players are listed in the rankings",
-      "xp": "{{value}} XP",
-      "wins": "{{value}} Wins"
+        "title": "Leaderboard",
+        "topXP": "Highest level",
+        "topWins": "Most wins",
+        "empty": "No players are listed in the rankings",
+        "xp": "{{value}} XP",
+        "wins": "{{value}} Wins"
     },
 
     "history": {
@@ -129,13 +129,15 @@
             "description": "Enter the 6-digit code from your authenticator app.",
             "enabled": "2FA is enabled on your account.",
             "enable": "Enable 2FA",
+            "placeholder": "Enter your code",
             "verifying": "Verifying...",
             "verify": "Verify code",
             "enterCode": "Enter 6-digit code",
             "regenerate": "Regenerate QR code",
             "loading": "Loading...",
             "setupStarted": "2FA setup started",
-            "success": "Two-factor login successful"
+            "success": "Two-factor login successful",
+            "back": "Back to home"
         }
     },
     "footer": {

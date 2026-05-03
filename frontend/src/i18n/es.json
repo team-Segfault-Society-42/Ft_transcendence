@@ -129,13 +129,15 @@
           "description": "Introduce el código de 6 dígitos de tu aplicación de autenticación.",
           "enabled": "La 2FA está activada en tu cuenta.",
           "enable": "Activar 2FA",
+          "placeholder": "Ingresa tu código",
           "verifying": "Verificando...",
           "verify": "Verificar código",
           "enterCode": "Introduce el código de 6 dígitos",
           "regenerate": "Regenerar código QR",
           "loading": "Cargando...",
           "setupStarted": "Configuración de 2FA iniciada",
-          "success": "Autenticación 2FA exitosa"
+          "success": "Autenticación 2FA exitosa",
+          "back": "Volver al inicio"
         }
     },
   
