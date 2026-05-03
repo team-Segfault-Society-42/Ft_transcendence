@@ -16,9 +16,6 @@ export default function Game() {
 
     useGameStore.getState().resetGameState();
 
-    console.log("useEffect de Game s'execute");
-    console.log("game page contruit avec gameId:", gameId);
-
     const client = io(window.location.origin, {
       path: "/socket.io/",
       transports: ["websocket"],
@@ -26,27 +23,25 @@ export default function Game() {
     });
 
     client.on("connect", () => {
-      console.log("client connected:", client.id);
       useGameStore.getState().setGameId(gameId);
       useGameStore.getState().setClient(client);
       client.emit("join_game", { gameId });
-      console.log("join_game sent with:", gameId);
     });
 
     client.on("joined_as", (payload) => {
       useGameStore.getState().setPlayerRole(payload.role);
-      console.log("joined as:", payload.role);
     });
 
     client.on("connect_error", (error) =>
       console.error("connexion error:", error.message, error),
     );
-    client.on("disconnect", (reason) =>
-      console.log("client disconnect. Raison:", reason),
-    );
 
     client.on("game_updated", (payload) => {
       useGameStore.getState().syncFromServer(payload);
+    });
+
+    client.on("role_updated", (payload) => {
+      useGameStore.getState().setPlayerRole(payload.role);
     });
 
     client.on("game_error", (payload) => {
@@ -61,7 +56,6 @@ export default function Game() {
     });
 
     return () => {
-      console.log("deconexion du socket");
       client.disconnect();
       useGameStore.getState().resetGameState();
     };

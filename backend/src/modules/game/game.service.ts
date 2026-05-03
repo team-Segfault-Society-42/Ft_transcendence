@@ -1,5 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { randomUUID } from 'crypto'; //generer des IDs uniques pour les matchs
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { GameState, PlayerRole, PublicPlayerProfile } from './game.types';
 import { MatchesService } from './matches.service';
 import {
@@ -26,9 +30,27 @@ export class GameService {
     return game;
   }
 
-  creatGame(): string {
+  private findActiveGameByUserId(userId: number): [string, GameState] | null {
+    for (const [gameId, game] of this.activeGame.entries()) {
+      if (game.status === 'finished') continue;
+
+      if (
+        game.players.X.ownerUserId === userId ||
+        game.players.O.ownerUserId === userId
+      ) {
+        return [gameId, game];
+      }
+    }
+
+    return null;
+  }
+
+  createGame(userId: number): string {
+    const active = this.findActiveGameByUserId(userId);
+    if (active) throw new ConflictException('User already has an active game');
     const gameId = randomUUID();
     const newGame = initGameState();
+    newGame.players.X.ownerUserId = userId;
     this.activeGame.set(gameId, newGame);
     return gameId;
   }
@@ -55,6 +77,23 @@ export class GameService {
     };
   }
 
+  getActiveGameByUserId(userId: number) {
+    const active = this.findActiveGameByUserId(userId);
+    if (!active) return null;
+
+    const [gameId, game] = active;
+    const role = getPlayerRoleByUserId(game, userId);
+    const opponent =
+      role === 'X' ? game.playerProfiles.O : game.playerProfiles.X;
+    return {
+      gameId,
+      status: game.status,
+      role,
+      currentPlayer: game.currentPlayer,
+      opponent,
+    };
+  }
+
   joinGame(
     gameId: string,
     socketId: string,
@@ -62,6 +101,10 @@ export class GameService {
     user?: PublicPlayerProfile,
   ): { game: GameState; role: PlayerRole } {
     const game = this.getMutableGameById(gameId);
+    const active = this.findActiveGameByUserId(userId);
+    if (active && active[0] !== gameId) {
+      throw new ConflictException('User already has an active game');
+    }
 
     const role = assignPlayerRole(game, userId, socketId);
 
@@ -99,13 +142,6 @@ export class GameService {
     c: number,
   ): Promise<GameState> {
     const game = this.getMutableGameById(gameId);
-    // debug
-    console.log('status =', game.status);
-    console.log('players =', game.players);
-    console.log('userId =', userId);
-    console.log('role =', getPlayerRoleByUserId(game, userId));
-    console.log('currentPlayer =', game.currentPlayer);
-    //
     if (game.status !== 'playing') throw new Error('Waiting for both players');
 
     const role = getPlayerRoleByUserId(game, userId);
@@ -171,7 +207,6 @@ export class GameService {
     };
 
     await this.matchService.recordMatch(data, game.movesGameHistory);
-    console.log('Save to DB successful');
   }
 
   async finalizeReconnectTimeout(
@@ -187,9 +222,6 @@ export class GameService {
     const other = role === 'X' ? 'O' : 'X';
     if (game.players[other].ownerUserId === null) return null;
     if (game.players[other].socketId == null) return null;
-    // if other player is not online maybe return state cancelled in the future
-
-    console.log(`[RECONNECT] finalize forfeit for ${role} in game ${gameId}`);
 
     game.status = 'finished';
     game.winner = other;
@@ -252,5 +284,23 @@ export class GameService {
         });
     }
     return { waiting, playing };
+  }
+
+  leaveGame(
+    gameId: string,
+    userId: number,
+  ): { deleted: boolean; game: GameState | null } {
+    const game = this.getMutableGameById(gameId);
+    const role = getPlayerRoleByUserId(game, userId);
+
+    if (game.status === 'waiting' && role === 'X') {
+      this.activeGame.delete(gameId);
+      return { deleted: true, game: null };
+    }
+
+    if (role === 'X' || role === 'O') game.playerLeft = role;
+
+    this.activeGame.set(gameId, game);
+    return { deleted: false, game };
   }
 }

@@ -1,7 +1,6 @@
 import {
   ConnectedSocket,
   MessageBody,
-  OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
@@ -9,14 +8,12 @@ import {
 } from '@nestjs/websockets';
 import { GameService, TURN_TIMEOUT_MS } from './game.service';
 import { PlayMoveDto } from './dto/play-move.dto';
-import { Server, Socket } from 'socket.io';
-import { GameState, PlayerRole } from './game.types';
+import { Server } from 'socket.io';
+import { GameState } from './game.types';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
-import { subscribe } from 'node:diagnostics_channel';
-import { error } from 'node:console';
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const parts = rawOrigins.split(',');
@@ -36,7 +33,7 @@ const allowedOrigins = trimmedOrigins.filter(function (origin) {
   },
 })
 @UseGuards(JwtAuthGuard) // TODO: verify if can delete (is no necessary bcz CALLED FOR APP)
-export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class GameGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
@@ -58,7 +55,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (timer) {
       clearTimeout(timer);
-      console.log(`[RECONNECT] cleared timer for ${role} in game ${gameId}`);
       this.timersForfeit.delete(timerKey);
     }
   }
@@ -66,8 +62,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private startReconnectTimer(gameId: string, role: 'X' | 'O') {
     const timerKey = this.getTimerKey(gameId, role);
     this.clearTimerForfeit(gameId, role);
-
-    console.log(`[RECONNECT] start grace period for ${role} in game ${gameId}`);
 
     const timer = setTimeout(() => {
       this.gameService
@@ -147,8 +141,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     try {
       game = this.gameService.getGameById(gameId);
-    } catch (error) {
-      console.log('Error getgamebyid:', error);
+    } catch {
       return;
     }
 
@@ -156,8 +149,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const room = this.server.sockets.adapter.rooms.get(gameId);
     if (room && room.size > 0) return;
-
-    console.log('cleanup Finished Game Empty', gameId);
 
     this.clearTurnTimer(gameId);
     this.clearTimerForfeit(gameId, 'X');
@@ -174,12 +165,17 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  handleConnection(client: Socket) {
-    console.log(`Client connected : ${client.id}`);
+  private emitUpdatedRoles(game: GameState) {
+    const socketId_X = game.players.X.socketId;
+    const socketId_O = game.players.O.socketId;
+
+    if (socketId_X)
+      this.server.to(socketId_X).emit('role_updated', { role: 'X' });
+    if (socketId_O)
+      this.server.to(socketId_O).emit('role_updated', { role: 'O' });
   }
 
   handleDisconnect(client: AuthSocket) {
-    console.log(`Client disconnected : ${client.id}`);
     const result = this.gameService.processPlayerDisconnection(client.id);
     if (result) {
       if (result.game.status === 'playing')
@@ -197,8 +193,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const game = this.gameService.getGameById(gameId);
       this.emitGameUpdate(gameId, game);
       this.cleanupFinishedGameIfEmpty(gameId);
-    } catch (error) {
-      console.log('disconnect refresh skipped:', error);
+    } catch {
+      return;
     }
   }
 
@@ -222,11 +218,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await client.join(body.gameId);
       client.data.currentGameId = body.gameId;
 
-      console.log(`Client ${client.id} joined room ${body.gameId} as ${role}`);
       this.emitGameUpdate(body.gameId, game);
       client.emit('joined_as', { role });
     } catch (error) {
-      console.log('join_game error:', error);
       client.emit('game_error', {
         message: error instanceof Error ? error.message : 'Unknown error',
       });
@@ -263,6 +257,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       const userId = client.data.user.sub;
       const updateGame = this.gameService.requestReplay(body.gameId, userId);
+
+      this.emitUpdatedRoles(updateGame);
       this.emitGameUpdate(body.gameId, updateGame);
       return updateGame;
     } catch (error) {
@@ -277,13 +273,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() body: { gameId: string },
     @ConnectedSocket() client: AuthSocket,
   ) {
-    console.log('LEAVE_GAME received from:', client.id);
-    console.log('gameId:', body.gameId);
     try {
       const userId = client.data.user.sub;
-      const game = this.gameService.setPlayerLeft(body.gameId, userId);
-      this.emitGameUpdate(body.gameId, game);
-      await client.leave(body.gameId);
+      const result = this.gameService.leaveGame(body.gameId, userId);
+
+      if (result.deleted) {
+        await client.leave(body.gameId);
+        if (client.data.currentGameId === body.gameId) {
+          delete client.data.currentGameId;
+        }
+        return;
+      }
+      if (result.game) {
+        this.emitGameUpdate(body.gameId, result.game);
+        await client.leave(body.gameId);
+        if (client.data.currentGameId === body.gameId) {
+          delete client.data.currentGameId;
+        }
+      }
     } catch (error) {
       client.emit('game_error', {
         message: error instanceof Error ? error.message : 'Unknown error',
