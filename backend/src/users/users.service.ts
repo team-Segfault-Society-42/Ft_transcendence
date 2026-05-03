@@ -45,6 +45,9 @@ export class UsersService {
 		const limit = Math.min(query.limit ?? 20, 100);
 		const offset = query.offset ?? 0;
 		const search = query.search?.trim();
+		if (query.search !== undefined && search === '') {
+			throw new BadRequestException('search cannot be empty or only spaces');
+		}
 		const where = search
 			? {
 					username: {
