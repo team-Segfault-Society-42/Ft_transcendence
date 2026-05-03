@@ -6,7 +6,6 @@ export class GetUsersQueryDto {
 	@Type(() => Number)
 	@IsInt()
 	@Min(0)
-	@Max(100)
 	limit?: number;
 
 	@IsOptional()
