@@ -33,10 +33,13 @@ export default function Home() {
   	};
 
   	useEffect(() => {
-    	if (!user) return
-
+    	if (!user) {
+			setMatches([]);
+			return;
+		}
     	userService.getUserHistory(user.id)
       	.then(setMatches)
+		.catch(() => setMatches([]))
   	}, [user])
 
   	return (
@@ -80,6 +83,7 @@ export default function Home() {
     <Link to="/history" className="h-full">
         <GameHistoryCard
         matches={matches}
+		user={user}
         />
     </Link>
 

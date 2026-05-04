@@ -10,12 +10,36 @@ type Props = {
     matches: Match[]
     className?: string
     title?: string
+    user: User | null
 }
 
-export function GameHistoryCard({ matches, className }: Props) {
+export function GameHistoryCard({ matches, className, user }: Props) {
     const { t } = useTranslation()
     const displayedMatches = matches
 
+    if (!user) {
+        return (
+            <Card className={cn("min-h-80 h-full relative flex flex-col bg-slate-900", className)}>
+                <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+                    {t("history.title")}
+                </CardTitle>
+            
+            <div className="flex-1 flex flex-col items-center justify-center text-center mt-10">
+                <p className="text-sm text-white">
+                    {t("history.empty")}
+                </p>
+
+            <div>
+
+                <Card className="h-full flex flex-col items-center justify-center mt-6">
+                    <GameHistoryEmpty />
+                </Card>
+
+            </div>
+            </div>
+            </Card>
+        )
+    }
 	return (
     <Card className={cn("min-h-80 h-full relative flex flex-col bg-slate-900", className)}>
 
