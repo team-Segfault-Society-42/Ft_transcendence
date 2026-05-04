@@ -39,6 +39,7 @@ export class RegisterDto {
 		})
 		@IsOptional()
 		@IsString()
+		@MaxLength(180)
 		bio?: string;
 
 		@ApiPropertyOptional({
