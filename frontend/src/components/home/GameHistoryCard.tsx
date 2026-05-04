@@ -4,7 +4,7 @@ import type { Match } from "@/lib/match"
 import { cn } from "@/lib/utils"
 import { CardTitle } from "@/components/ui/Card"
 import { useTranslation } from "react-i18next"
-import { GameHistoryEmpty } from "../ui/GameHistoryEmpty"
+import { GameHistoryEmpty } from "./GameHistoryEmpty"
 import { History } from "lucide-react"
 
 interface User {

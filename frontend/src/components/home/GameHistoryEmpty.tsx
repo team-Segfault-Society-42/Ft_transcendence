@@ -12,7 +12,7 @@ export function GameHistoryEmpty() {
             {t("history.title")}
         </CardTitle>
     
-    <div className="flex flex-col items-center justify-center text-center gap-4">
+    <div className="flex flex-col items-center justify-center text-center gap-4 pt-20 pb-20">
         <div className="w-14 h-14 rounded-full border border-cyan-400/40 flex items-center justify-center text-cyan-400">
 
             <span>

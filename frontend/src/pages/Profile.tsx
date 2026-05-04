@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useOutletContext } from "react-router";
-import { Spinner } from "@/components/ui/Spinner";
 import { toast } from "sonner";
 // import { zodResolver } from "@hookform/resolvers/zod";
 // import { useNavigate } from 'react-router-dom';
@@ -14,6 +13,7 @@ import type { Match } from "@/lib/match";
 import { Winrate } from "@/components/ui/Winrate";
 import { LevelProgress } from "@/components/ui/Level";
 import { Username } from "@/components/ui/Username";
+import { AboutEmpty } from "@/components/home/AboutEmpty";
 
 interface User {
   id: number;
@@ -69,9 +69,9 @@ export default function Profile() {
 
   if (!user || loading) {
     return (
-      <div className="flex justify-center mt-20">
-        <Spinner variant="cyan" size="lg" />
-      </div>
+      <section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
+        <AboutEmpty/>
+      </section>
     );
   }
 
