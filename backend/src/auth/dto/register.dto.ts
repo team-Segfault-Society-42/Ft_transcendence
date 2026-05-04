@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString, Matches, MinLength } from 'class-validator';
+import { IsEmail, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class RegisterDto {
 		@ApiProperty({
@@ -26,7 +26,11 @@ export class RegisterDto {
 				description: 'Unique username',
 		})
 		@IsString()
-		@MinLength(1)
+		@MinLength(3)
+		@MaxLength(20)
+		@Matches(/^[a-zA-Z0-9_]+$/, { 
+        	message: 'Username must not contain spaces' 
+    	})
 		username: string;
 
 		@ApiPropertyOptional({
@@ -35,6 +39,7 @@ export class RegisterDto {
 		})
 		@IsOptional()
 		@IsString()
+		@MaxLength(180)
 		bio?: string;
 
 		@ApiPropertyOptional({
