@@ -77,7 +77,7 @@ _setup-apply: # Generate .env.dev and .env.prod and create all secrets
 	@for pair in $(ENV_VARS); do \
 		key=$$(echo "$$pair" | cut -d= -f1); \
 		val=$$(echo "$$pair" | cut -d= -f2-); \
-		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env.dev; \
+		sed -i "s|^$${key}=.*|$${key}=$${val}|" .env.prod; \
 	done
 	@echo "$(GREEN)✓ Created .env.prod with defaults$(RES)"
 # ── Create Secret Files ──────────────────────────────────────────────────────
@@ -113,7 +113,7 @@ _domain-dev: # Prompt user and setup DOMAIN in .env.dev
 			echo "       Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'\n";; \
 	esac
 
-_domain-prod: # Prompt user and setup DOMAIN in .env.dev
+_domain-prod: # Prompt user and setup DOMAIN in .env.prod
 	@printf "$(RED)[PROD] $(CYAN)Set DOMAIN to local LAN?$(RES) [Y/n] "; read ans; \
 	case "$$ans" in \
 		y|Y|yes|Yes|YES|"") \
