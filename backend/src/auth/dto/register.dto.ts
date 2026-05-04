@@ -26,7 +26,7 @@ export class RegisterDto {
 				description: 'Unique username',
 		})
 		@IsString()
-		@MinLength(1)
+		@MinLength(3)
 		username: string;
 
 		@ApiPropertyOptional({
