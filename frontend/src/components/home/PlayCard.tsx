@@ -26,14 +26,14 @@ export function PlayCard({ onFindOpponent }: Props) {
           onClick={() => console.log("play local later")}
           size="lg"
           className="w-full">
-          {t("home.buttons.local")}
+          {t("home.buttons.create")}
         </Button>
 
         <Button
           onClick={onFindOpponent}
           size="lg"
           className="w-full">
-          {t("home.buttons.findOpp")}
+          {t("home.buttons.join")}
         </Button>
 
       </div>

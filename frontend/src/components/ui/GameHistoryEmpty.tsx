@@ -1,21 +1,35 @@
 import { useTranslation } from "react-i18next"
 import { History } from "lucide-react"
+import { Card, CardTitle } from "@/components/ui/Card"
 
 
 export function GameHistoryEmpty() {
     const { t } = useTranslation()
 
     return (
-    <div className="flex flex-col items-center justify-center text-center h-full gap-4">
-
+        <Card className="h-full relative flex items-center justify-center bg-slate-900">
+        <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+            {t("history.title")}
+        </CardTitle>
+    
+    <div className="flex flex-col items-center justify-center text-center gap-4">
         <div className="w-14 h-14 rounded-full border border-cyan-400/40 flex items-center justify-center text-cyan-400">
-            <History size={24} />
+
+            <span>
+                <History size={24} />
+            </span>
         </div>
 
-        <p className="text-sm text-white/60 max-w-xs">
-            {t("home.history.empty")}
+    <div>
+        <p className="text-white font-medium">
+            {t("history.empty")}
         </p>
 
+        <p className="text-sm text-white/40 mt-2">
+            {t("home.history.empty")}
+        </p>
     </div>
+    </div>
+    </Card>
   )
 }

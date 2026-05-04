@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { CardTitle } from "@/components/ui/Card"
 import { useTranslation } from "react-i18next"
 import { GameHistoryEmpty } from "../ui/GameHistoryEmpty"
+import { History } from "lucide-react"
 
 interface User {
     username: string
@@ -29,22 +30,27 @@ export function GameHistoryCard({ matches, className, user }: Props) {
 
     if (!user) {
         return (
-            <Card className={cn("min-h-80 h-full relative flex flex-col bg-slate-900", className)}>
+            <Card className={cn("h-full relative flex items-center justify-center bg-slate-900", className)}>
                 <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
                     {t("history.title")}
                 </CardTitle>
             
-            <div className="flex-1 flex flex-col items-center justify-center text-center mt-10">
-                <p className="text-sm text-white">
+            <div className="flex flex-col items-center justify-center text-center gap-4">
+                <div className="w-14 h-14 rounded-full border border-cyan-400/40 flex items-center justify-center text-cyan-400">
+
+                    <span>
+                        <History size={24} />
+                    </span>
+                </div>
+
+            <div>
+                <p className="text-white font-medium">
                     {t("history.empty")}
                 </p>
 
-            <div>
-
-                <Card className="h-full flex flex-col items-center justify-center mt-6">
-                    <GameHistoryEmpty />
-                </Card>
-
+                <p className="text-sm text-white/40 mt-2">
+                    {t("home.history.empty")}
+                </p>
             </div>
             </div>
             </Card>
@@ -132,14 +138,14 @@ export function GameHistoryCard({ matches, className, user }: Props) {
     )
     })
     ) : (
-    <div className="flex-1 flex flex-col items-center justify-center text-center mt-10">
+    <div className="flex-1 flex flex-col items-center justify-center text-center gap-4">
         <p className="text-sm text-white">
             {t("history.empty")}
         </p>
 
-        <Card className="h-full flex flex-col items-center justify-center mt-6">
+        <div className="w-14 h-14 rounded-full border border-cyan-400/40 flex items-center justify-center text-cyan-400">
             <GameHistoryEmpty />
-        </Card>
+        </div>
     </div>
 
     

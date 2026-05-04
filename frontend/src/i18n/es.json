@@ -15,8 +15,8 @@
         "login": "Ingresar",
         "start": "INICIAR PARTIDA",
         "hi": "Hola, ",
-        "local": "Jugar en local",
-        "findOpp": "Buscar un oponente"
+        "create": "Crear una partida",
+        "join": "Unirse a una partida"
       },
       "history":{
         "empty": "Tu historial de partidas se mostrará aquí."
@@ -26,7 +26,7 @@
     "sidebar": {
       "title": "Panel de control",
       "home": "Inicio",
-      "game": "Juego",
+      "game": "Jugar",
       "profile": "Perfil",
       "leaderboard": "Clasificación",
       "friends": "Amigos",

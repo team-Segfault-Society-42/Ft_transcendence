@@ -15,8 +15,8 @@
             "login": "Se connecter",
             "start": "LANCER LA PARTIE",
             "hi": "Salut, ",
-            "local": "Jeu local",
-            "findOpp": "Trouver un adversaire"
+            "create": "Créer une partie",
+            "join": "Rejoindre une partie"
         },
         "history":{
             "empty": "Votre historique de parties s’affichera ici."
@@ -26,7 +26,7 @@
     "sidebar": {
         "title": "Tableau de bord",
         "home": "Accueil",
-        "game": "Jeu",
+        "game": "Jouer",
         "profile": "Profil",
         "leaderboard": "Classement",
         "friends": "Amis",

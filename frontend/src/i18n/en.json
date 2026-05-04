@@ -15,8 +15,8 @@
             "login": "Login",
             "start": "START GAME",
             "hi": "Hi,",
-            "local": "Play local",
-            "findOpp": "Find an opponent"
+            "create": "Create a game",
+            "join": "Join a game"
         },
         "history":{
             "empty": "Your match history will appear here."
@@ -26,7 +26,7 @@
     "sidebar":{
         "title": "Dashboard",
         "home": "Home",
-        "game": "Game",
+        "game": "Play",
         "profile": "Profile",
         "leaderboard": "Leaderboard",
         "friends": "Friends",
