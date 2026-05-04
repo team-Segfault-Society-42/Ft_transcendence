@@ -15,6 +15,6 @@ export const ACHIEVEMENTS: Record<AchievementKey, { key: AchievementKey, display
   LOSE_BY_TIME: { key: 'LOSE_BY_TIME', displayName: 'Noob', description: 'Lose a game by time.', iconName: "LOSE_BY_TIME_TROPHY" },
   WIN_5: { key: 'WIN_5', displayName: 'High Five', description: 'Win a total of 5 matches.', iconName: "WIN_5_TROPHY" },
   WIN_10: { key: 'WIN_10', displayName: 'Double Digits', description: 'Win a total of 10 matches.', iconName: "WIN_10_TROPHY" },
-  WIN_50: { key: 'WIN_50', displayName: 'Veteram', description: 'Win a total of 50 matches.', iconName: "WIN_50_TROPHY" },
+  WIN_50: { key: 'WIN_50', displayName: 'Veteran', description: 'Win a total of 50 matches.', iconName: "WIN_50_TROPHY" },
 
 } as const;
