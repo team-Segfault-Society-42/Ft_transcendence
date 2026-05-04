@@ -6,6 +6,16 @@ import { CardTitle } from "@/components/ui/Card"
 import { useTranslation } from "react-i18next"
 import { GameHistoryEmpty } from "../ui/GameHistoryEmpty"
 
+interface User {
+    username: string
+    avatar?: string
+    bio?: string
+    wins?: number
+    losses?: number
+    draws?: number
+    xp?: number
+}
+
 type Props = {
     matches: Match[]
     className?: string
