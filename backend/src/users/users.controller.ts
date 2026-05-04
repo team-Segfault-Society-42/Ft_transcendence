@@ -13,6 +13,7 @@ import {
 	Post,
 	UploadedFile,
 	UseInterceptors,
+	UseFilters,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,6 +23,8 @@ import { AchievementsService } from 'src/modules/game/achievement/achievements.s
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { AuthRequest } from '../auth/jwt-auth.guard';
+import { AVATAR_MAX_FILE_SIZE } from './avatar.constants';
+import { AvatarUploadExceptionFilter } from './avatar-upload.exception-filter';
 
 
 type SortBy = 'xp' | 'wins' | 'totalGames';
@@ -72,7 +75,14 @@ export class UsersController {
 		},
 	})
 	@Post('me/avatar')
-	@UseInterceptors(FileInterceptor('avatar'))
+	@UseFilters(AvatarUploadExceptionFilter)
+	@UseInterceptors(
+		FileInterceptor('avatar', {
+			limits: {
+				fileSize: AVATAR_MAX_FILE_SIZE,
+			},
+		}),
+	)
 	uploadMyAvatar(
 		@UploadedFile() file: Express.Multer.File,
 		@Req() req: AuthRequest,

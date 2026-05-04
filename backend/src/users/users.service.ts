@@ -7,7 +7,11 @@ import {
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-// import { CreateUserDto } from './dto/create-user.dto';
+import { fileTypeFromBuffer } from 'file-type';
+import {
+	AVATAR_ALLOWED_MIME_TYPES,
+	AVATAR_MAX_FILE_SIZE,
+} from './avatar.constants';
 
 const publicUserSelect = {
 	id: true,
@@ -107,24 +111,35 @@ export class UsersService {
 			throw new BadRequestException('Failed to update user');
 		}
 	}
-	
-		async updateAvatar(userId: number, file: Express.Multer.File | undefined) {
-		const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/webp'];
-		const maxFileSize = 200 * 1024;
 
+	async updateAvatar(userId: number, file: Express.Multer.File | undefined) {
 		if (!file) {
 			throw new BadRequestException('Avatar file is required');
 		}
 
-		if (!allowedMimeTypes.includes(file.mimetype)) {
-			throw new BadRequestException('Avatar must be a PNG, JPEG, or WebP image');
+		const user = await this.prisma.user.findUnique({
+			where: { id: userId },
+			select: { id: true },
+		});
+
+		if (!user) {
+			throw new NotFoundException('User not found');
 		}
 
-		if (file.size > maxFileSize) {
+		if (file.size > AVATAR_MAX_FILE_SIZE) {
 			throw new BadRequestException('Avatar must be smaller than 200 KB');
 		}
 
-		const avatarDataUrl = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+		const detectedFileType = await fileTypeFromBuffer(file.buffer);
+
+		if (
+			!detectedFileType ||
+			!AVATAR_ALLOWED_MIME_TYPES.some((mime) => mime === detectedFileType.mime)
+		) {
+			throw new BadRequestException('Avatar must be a PNG, JPEG, or WebP image');
+		}
+
+		const avatarDataUrl = `data:${detectedFileType.mime};base64,${file.buffer.toString('base64')}`;
 
 		const updatedUser = await this.prisma.user.update({
 			where: { id: userId },
