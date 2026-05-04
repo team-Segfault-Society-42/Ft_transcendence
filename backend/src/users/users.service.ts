@@ -107,4 +107,32 @@ export class UsersService {
 			throw new BadRequestException('Failed to update user');
 		}
 	}
+	
+		async updateAvatar(userId: number, file: Express.Multer.File | undefined) {
+		const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/webp'];
+		const maxFileSize = 200 * 1024;
+
+		if (!file) {
+			throw new BadRequestException('Avatar file is required');
+		}
+
+		if (!allowedMimeTypes.includes(file.mimetype)) {
+			throw new BadRequestException('Avatar must be a PNG, JPEG, or WebP image');
+		}
+
+		if (file.size > maxFileSize) {
+			throw new BadRequestException('Avatar must be smaller than 200 KB');
+		}
+
+		const avatarDataUrl = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+
+		const updatedUser = await this.prisma.user.update({
+			where: { id: userId },
+			data: { avatar: avatarDataUrl },
+			select: publicUserSelect,
+		});
+
+		return this.toPublicUser(updatedUser);
+	}
+
 }
