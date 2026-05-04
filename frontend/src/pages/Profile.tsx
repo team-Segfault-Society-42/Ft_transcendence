@@ -13,7 +13,7 @@ import type { Match } from "@/lib/match";
 import { Winrate } from "@/components/ui/Winrate";
 import { LevelProgress } from "@/components/ui/Level";
 import { Username } from "@/components/ui/Username";
-import { AboutEmpty } from "@/components/home/AboutEmpty";
+import { EmptyStateCard } from "@/components/ui/EmptyCard"
 
 interface User {
   id: number;
@@ -70,7 +70,12 @@ export default function Profile() {
   if (!user || loading) {
     return (
       <section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
-        <AboutEmpty/>
+        <EmptyStateCard
+          title={t("profile.about.title")}
+          icon={<span className="text-xl font-bold">?</span>}
+          message={t("profile.about.notConnected")}
+          description={t("profile.about.login")}
+        />
       </section>
     );
   }

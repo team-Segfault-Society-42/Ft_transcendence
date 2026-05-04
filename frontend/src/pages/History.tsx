@@ -4,7 +4,8 @@ import { useOutletContext } from "react-router"
 import { userService } from "@/services/userService"
 import type { Match } from "@/lib/match"
 import { GameHistoryCard } from "@/components/home/GameHistoryCard"
-import { GameHistoryEmpty } from "@/components/home/GameHistoryEmpty";
+import { History as HistoryIcon } from "lucide-react"
+import { EmptyStateCard } from "@/components/ui/EmptyCard"
 
 interface User {
 	id: number
@@ -46,7 +47,12 @@ export default function History() {
   	if (!user || loading) {
     	return (
     		<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
-          		<GameHistoryEmpty/>
+          		<EmptyStateCard
+  					title={t("history.title")}
+  					icon={<HistoryIcon size={24} />}
+  					message={t("history.empty")}
+  					description={t("home.history.empty")}
+				/>
       		</section>
     	)
   	}
