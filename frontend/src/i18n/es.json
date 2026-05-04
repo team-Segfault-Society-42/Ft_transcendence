@@ -17,9 +17,6 @@
         "hi": "Hola, ",
         "create": "Crear una partida",
         "join": "Unirse a una partida"
-      },
-      "history":{
-        "empty": "Tu historial de partidas se mostrará aquí."
       }
     },
   
@@ -68,7 +65,7 @@
       "about": {
         "title": "Acerca de",
         "notConnected": "No conectado",
-        "loginHint": "Inicia sesión para ver tu perfil",
+        "login": "Inicia sesión para ver tu perfil",
         "guest": "Invitado",
         "viewProfile": "Ver perfil",
         "noBio": "Sin biografía"
@@ -84,12 +81,15 @@
       "empty": "No hay jugadores en la clasificación",
       "xp": "{{value}} XP",
       "wins": "{{value}} Victorias",
-      "totalGames": "{{value}} Partidas"
+      "totalGames": "{{value}} Partidas",
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para ver la clasificación"
     },
 
     "history": {
-        "title": "Historial de partidas",
-        "empty": "No hay partidas todavía"
+      "title": "Historial de partidas",
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para ver la clasificación"
     },
 
     "auth": {

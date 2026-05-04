@@ -17,9 +17,6 @@
             "hi": "Hi,",
             "create": "Create a game",
             "join": "Join a game"
-        },
-        "history":{
-            "empty": "Your match history will appear here."
         }
     },
 
@@ -77,20 +74,22 @@
     },
 
     "leaderboard":{
-      "title": "Leaderboard",
-      "topXP": "Highest level",
-      "topWins": "Most wins",
-      "topTotalGames": "Most games played",
-      "empty": "No players are listed in the rankings",
-      "xp": "{{value}} XP",
-      "wins": "{{value}} Wins",
-      "totalGames": "{{value}} Games"
-
+        "title": "Leaderboard",
+        "topXP": "Highest level",
+        "topWins": "Most wins",
+        "topTotalGames": "Most games played",
+        "empty": "No players are listed in the rankings",
+        "xp": "{{value}} XP",
+        "wins": "{{value}} Wins",
+        "totalGames": "{{value}} Games",
+        "notConnected": "Not connected",
+        "login": "Login to see the leaderboard"
     },
 
     "history": {
         "title": "Game History",
-        "empty": "No games yet"
+        "notConnected": "Not connected",
+        "login": "Login to see your history"
     },
 
     "auth": {

@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
 import { Username } from "@/components/ui/Username";
+import { useOutletContext } from "react-router";
+import { Trophy } from "lucide-react";
+import { EmptyStateCard } from "@/components/ui/EmptyCard";
 
 interface LeaderBoard {
   id: number;
@@ -16,6 +19,7 @@ export default function LeaderBoard() {
   const [leaderboard, setLeaderboard] = useState<LeaderBoard[]>([]);
   const [sortBy, setSortBy] = useState<"xp" | "totalGames" | "wins">("wins");
   const { t } = useTranslation();
+  const [user] = useOutletContext<any>();
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -28,6 +32,19 @@ export default function LeaderBoard() {
     }
     fetchLeaderboard();
   }, [sortBy]);
+
+  if (!user) {
+    return (
+      <div className="w-full max-w-3xl mx-auto px-6 py-10">
+        <EmptyStateCard
+          title={t("leaderboard.title")}
+          icon={<Trophy size={24} />}
+          message={t("leaderboard.notConnected")}
+          description={t("leaderboard.login")}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-3xl mx-auto text-white p-6">

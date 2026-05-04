@@ -17,9 +17,6 @@
             "hi": "Salut, ",
             "create": "Créer une partie",
             "join": "Rejoindre une partie"
-        },
-        "history":{
-            "empty": "Votre historique de parties s’affichera ici."
         }
     },
 
@@ -84,12 +81,15 @@
         "empty": "Aucun joueur dans le classement",
         "xp": "{{value}} XP",
         "wins": "{{value}} Victoires",
-        "totalGames": "{{value}} Parties"
+        "totalGames": "{{value}} Parties",
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour voir le classement"
     },
 
     "history": {
         "title": "Historique des parties",
-        "empty": "Aucune partie pour le moment"
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour voir ton historique"
     },
     
     "auth": {

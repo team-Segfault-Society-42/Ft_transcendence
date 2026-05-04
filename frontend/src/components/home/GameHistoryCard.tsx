@@ -4,8 +4,9 @@ import type { Match } from "@/lib/match"
 import { cn } from "@/lib/utils"
 import { CardTitle } from "@/components/ui/Card"
 import { useTranslation } from "react-i18next"
-import { GameHistoryEmpty } from "./GameHistoryEmpty"
 import { History } from "lucide-react"
+import { History as HistoryIcon } from "lucide-react"
+import { EmptyStateCard } from "@/components/ui/EmptyCard"
 
 interface User {
     username: string
@@ -45,11 +46,11 @@ export function GameHistoryCard({ matches, className, user }: Props) {
 
             <div>
                 <p className="text-white font-medium">
-                    {t("history.empty")}
+                    {t("history.notConnected")}
                 </p>
 
                 <p className="text-sm text-white/40 mt-2">
-                    {t("home.history.empty")}
+                    {t("history.login")}
                 </p>
             </div>
             </div>
@@ -144,7 +145,12 @@ export function GameHistoryCard({ matches, className, user }: Props) {
         </p>
 
         <div className="w-14 h-14 rounded-full border border-cyan-400/40 flex items-center justify-center text-cyan-400">
-            <GameHistoryEmpty />
+            <EmptyStateCard
+  				title={t("history.title")}
+  				icon={<HistoryIcon size={24} />}
+  				message={t("history.empty")}
+  				description={t("home.history.empty")}
+			/>
         </div>
     </div>
 

@@ -50,7 +50,7 @@ export default function History() {
           		<EmptyStateCard
   					title={t("history.title")}
   					icon={<HistoryIcon size={24} />}
-  					message={t("history.empty")}
+  					message={t("history.notConnected")}
   					description={t("home.history.empty")}
 				/>
       		</section>
