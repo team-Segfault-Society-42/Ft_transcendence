@@ -4,11 +4,13 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { userService } from "@/services/userService";
+import { useTranslation } from "react-i18next"
 
 export default function TwoFactorLogin() {
 	const [code, setCode] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
+	const { t } = useTranslation()
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
@@ -17,7 +19,7 @@ export default function TwoFactorLogin() {
 			setIsLoading(true);
 
 			await userService.completeTwoFactorLogin(code);
-			toast.success("Two-factor login successful");
+			toast.success(t("auth.twofa.success"));
 
 			navigate("/");
 			window.location.reload();
@@ -27,7 +29,7 @@ export default function TwoFactorLogin() {
 				? serverMessage[0]
 				: serverMessage;
 
-			toast.error("Authentication error: " + finalMessage);
+			toast.error(t("auth.twofa.error") + finalMessage);
 		} finally {
 			setIsLoading(false);
 		}
@@ -42,11 +44,11 @@ export default function TwoFactorLogin() {
 				<div className="relative flex flex-col gap-6">
 					<div className="text-center">
 						<h1 className="text-3xl font-bold bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-							Two-Factor Authentication
+							{t("auth.twofa.title")}
 						</h1>
 
 						<p className="text-white/70 mt-3">
-							Enter the 6-digit code from your authenticator app to finish login.
+							{t("auth.twofa.description")}
 						</p>
 					</div>
 
@@ -54,7 +56,7 @@ export default function TwoFactorLogin() {
 						<Input
 							value={code}
 							onChange={(e) => setCode(e.target.value)}
-							placeholder="123456"
+							placeholder={t("auth.twofa.placeholder")}
 							maxLength={6}
 						/>
 
@@ -63,7 +65,9 @@ export default function TwoFactorLogin() {
 							className="w-full"
 							disabled={isLoading || code.length !== 6}
 						>
-							{isLoading ? "Verifying..." : "Verify code"}
+							{isLoading 
+							? t("auth.twofa.verifying")
+							: t("auth.twofa.verify")}
 						</Button>
 					</form>
 
@@ -73,7 +77,7 @@ export default function TwoFactorLogin() {
 						className="w-full"
 						onClick={() => navigate("/")}
 					>
-						Back to home
+						{t("auth.twofa.back")}
 					</Button>
 				</div>
 			</div>

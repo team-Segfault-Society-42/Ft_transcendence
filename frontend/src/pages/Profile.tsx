@@ -100,7 +100,7 @@ export default function Profile() {
       setIsTwoFactorLoading(true);
       const result = await userService.enableTwoFactor();
       setQrCodeDataUrl(result.qrCodeDataUrl);
-      toast.success("2FA setup started");
+      toast.success(t("auth.twofa.setupStarted"));
     } catch (error: any) {
       const serverMessage = error.response?.data?.message || error.message;
       const finalMessage = Array.isArray(serverMessage)
@@ -213,13 +213,13 @@ export default function Profile() {
         {/* 2FA */}
         <div className="mt-8">
           <p className="text-white/50 text-sm mb-2">
-            Two-Factor Authentication
+            {t("auth.twofa.title")}
           </p>
 
           {user.isTwoFactorEnabled ? (
             <div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
               <p className="text-sm text-green-400 font-medium">
-                2FA is enabled on your account.
+                {t("auth.twofa.enabled")}
               </p>
             </div>
           ) : (
@@ -230,7 +230,9 @@ export default function Profile() {
                 disabled={isTwoFactorLoading}
                 className="w-full"
               >
-                {isTwoFactorLoading ? "Loading..." : "Enable 2FA"}
+                {isTwoFactorLoading
+                  ? t("auth.twofa.loading")
+                  : t("auth.twofa.enable")}
               </Button>
 
               {qrCodeDataUrl && (
@@ -244,7 +246,7 @@ export default function Profile() {
                   <Input
                     value={twoFactorCode}
                     onChange={(e) => setTwoFactorCode(e.target.value)}
-                    placeholder="Enter 6-digit code"
+                    placeholder={t("auth.twofa.enterCode")}
                     maxLength={6}
                   />
 
@@ -254,7 +256,9 @@ export default function Profile() {
                     disabled={isTwoFactorLoading || twoFactorCode.length !== 6}
                     className="w-full"
                   >
-                    {isTwoFactorLoading ? "Verifying..." : "Verify 2FA"}
+                    {isTwoFactorLoading
+                      ? t("auth.twofa.verifying")
+                      : t("auth.twofa.verify")}
                   </Button>
 
                   <Button
@@ -264,7 +268,7 @@ export default function Profile() {
                     disabled={isTwoFactorLoading}
                     className="w-full"
                   >
-                    Regenerate QR
+                    {t("auth.twofa.regenerate")}
                   </Button>
                 </div>
               )}
@@ -274,7 +278,9 @@ export default function Profile() {
 
         {/* BUTTON */}
         <Button onClick={handleSave} className="mt-8">
-          {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
+          {isEdit 
+            ? t("profile.buttons.save")
+            : t("profile.buttons.edit")}
         </Button>
       </div>
     </section>

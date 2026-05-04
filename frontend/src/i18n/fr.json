@@ -3,9 +3,11 @@
 
     "home": {
         "play": {
-            "title": "Jouer"
+            "title": "Jouer une partie",
+            "description": "Un jeu de stratégie intemporel. Soyez le premier à aligner 3 symboles pour remporter la victoire !"
         },
         "hero":{
+            "title": "Morpion",
             "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
         },
         "buttons":{
@@ -15,10 +17,14 @@
             "hi": "Salut, ",
             "local": "Jeu local",
             "findOpp": "Trouver un adversaire"
+        },
+        "history":{
+            "empty": "Votre historique de parties s’affichera ici."
         }
     },
 
     "sidebar": {
+        "title": "Tableau de bord",
         "home": "Accueil",
         "game": "Jeu",
         "profile": "Profil",
@@ -49,6 +55,7 @@
             "wins": "Victoires",
             "losses": "Défaites",
             "winrate": "Taux de victoires",
+            "games_zero": "Aucune partie jouée",
             "games_one": "{{count}} partie jouée",
             "games_other": "{{count}} parties jouées",
             "winrateValue": "{{value}}%"
@@ -122,10 +129,17 @@
         "twofa": {
             "title": "Authentification à deux facteurs",
             "description": "Entrez le code à 6 chiffres de votre application d’authentification.",
+            "enabled": "La 2FA est activée sur votre compte.",
+            "enable": "Activer la 2FA",
+            "placeholder": "Entrez votre code",
             "verifying": "Vérification...",
             "verify": "Vérifier le code",
-            "back": "Retour à la connexion",
-            "success": "Connexion 2FA réussie"
+            "enterCode": "Entrez le code à 6 chiffres",
+            "regenerate": "Régénérer le QR code",
+            "loading": "Chargement...",
+            "setupStarted": "Configuration 2FA démarrée",
+            "success": "Connexion 2FA réussie",
+            "back": "Retour à l'accueil"
         }
     },
 

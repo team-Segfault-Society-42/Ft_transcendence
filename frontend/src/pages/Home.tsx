@@ -1,6 +1,4 @@
-import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { Motion } from "@/components/ui/Motion";
 import { AboutCard } from "@/components/home/AboutCard"
 import { PlayCard } from "@/components/home/PlayCard"
 import { GameHistoryCard } from "@/components/home/GameHistoryCard"
@@ -8,14 +6,16 @@ import type { Match } from "@/lib/match"
 import { useEffect, useState } from "react"
 import { useOutletContext } from "react-router"
 import { userService } from "@/services/userService"
+import { Motion } from "@/components/ui/Motion"
+import { useTranslation } from "react-i18next"
 
 export default function Home() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const [user] = useOutletContext<any>()
-  const [matches, setMatches] = useState<Match[]>([])
+  	const navigate = useNavigate();
+  	const [user] = useOutletContext<any>()
+  	const [matches, setMatches] = useState<Match[]>([])
+  	const { t } = useTranslation()
 
-  const handleFindOpponent = async () => {
+ 	const handleFindOpponent = async () => {
     try {
     	const response = await fetch("/api/game/create", {
         	method: "POST",
@@ -40,43 +40,48 @@ export default function Home() {
   	}, [user])
 
   	return (
-    	<section className="w-full flex flex-col gap-10">
+
+	<section className="w-full flex flex-col gap-10">
 
     <Motion>
-      	<div className="text-center space-y-4">
-        	<h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-          	{t("title")}
-        	</h1>
+    	<div className="bg-slate-900 mx-6 mt-6 relative overflow-hidden rounded-2xl border border-white/10 h-62.5 md:h-75">
 
-        	<p className="bg-linear-to-r from-cyan-400 to-pink-500  bg-clip-text text-transparent max-w-md mx-auto text-lg">
-          		{t("home.hero.texte")}
-        	</p>
-      	</div>
+    		<img
+      		src="/tictactoe.png"
+      		className="absolute inset-0 w-full h-full object-cover object-center opacity-40"
+    		/>
+
+    		<div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
+      			<h2 className="text-3xl md:text-5xl font-extrabold bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+        			{t("home.hero.title")}
+      			</h2>
+      			<p className="text-white/70 max-w-xl mt-2">
+        			{t("home.hero.texte")}
+      			</p>
+    		</div>
+
+    	</div>
     </Motion>
 
-    <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
+    	<div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
 
-    	{/* CARDS */}
-    	<Link to="/profile">
-        	<div className="lg:col-span-1 flex h-full">
-            	<AboutCard user={user}
-            	className="flex-1"
-            	/>
-          	</div>
-        </Link>
+    <Link to="/profile" className="h-full">
+        <AboutCard user={user}
+        className="flex-1"
+        />
+    </Link>
 
-        <div className="lg:col-span-2 flex flex-col gap-6">
-        	<Link to="/game">
-            	<PlayCard
-              	onFindOpponent={handleFindOpponent}
-            	/>
-          	</Link>
-          	<Link to="/history">
-            	<GameHistoryCard
-              	matches={matches}
-            	/>
-          	</Link>
-        </div>
+    <Link to="/game">
+        <PlayCard
+        onFindOpponent={handleFindOpponent}
+        />
+    </Link>
+
+    <Link to="/history" className="h-full">
+        <GameHistoryCard
+        matches={matches}
+        />
+    </Link>
 
     </div>
     </section>

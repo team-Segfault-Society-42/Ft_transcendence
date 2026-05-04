@@ -3,6 +3,8 @@ import LanguageSwitcher from "../ui/LanguageSwitcher"
 import { Button } from "@/components/ui/Button"
 import { useTranslation } from "react-i18next"
 import { Username } from "@/components/ui/Username";
+import { Motion } from "@/components/ui/Motion";
+
 
 interface User {
   username: string
@@ -22,10 +24,18 @@ export function Topbar({ user, onLoginClick, onLogoutClick }: HeaderProps) {
   const { t } = useTranslation()
 
   return (
-    <header className="h-16 min-h-16 border-b border-white/10 flex items-center justify-between px-6 gap-6">
+    <header className="relative h-16 min-h-20 border-b border-white/10 flex items-center justify-between px-6">
 
     <div className="flex items-center gap-4">
       <LanguageSwitcher />
+    </div>
+
+    <div className="absolute left-1/2 -translate-x-1/2">
+      <Motion>
+        <h1 className="text-5xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+          {t("title")}
+        </h1>
+      </Motion>
     </div>
 
     <div className="flex items-center gap-4">

@@ -3,22 +3,28 @@
   
     "home": {
       "play": {
-        "title": "Jugar"
+        "title": "Jugar una partida",
+        "description": "Un juego de estrategia atemporal. ¡Sé el primero en conseguir 3 en línea y gana la partida!"
       },
       "hero": {
-            "texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
+        "title": "Tres En Raya",
+        "texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
       },
       "buttons": {
         "register": "Registrarse",
-        "login": "Conectar se",
+        "login": "Ingresar",
         "start": "INICIAR PARTIDA",
         "hi": "Hola, ",
         "local": "Jugar en local",
         "findOpp": "Buscar un oponente"
+      },
+      "history":{
+        "empty": "Tu historial de partidas se mostrará aquí."
       }
     },
   
     "sidebar": {
+      "title": "Panel de control",
       "home": "Inicio",
       "game": "Juego",
       "profile": "Perfil",
@@ -49,6 +55,7 @@
         "wins": "Victorias",
         "losses": "Derrotas",
         "winrate": "Porcentaje de victorias",
+        "games_zero": "Ninguna partida jugada",
         "games_one": "{{count}} partida jugadas",
         "games_other": "{{count}} partidas jugadas",
         "winrateValue": "{{value}}%"
@@ -103,7 +110,7 @@
             "register": "Registrarse",
             "loading": "Conectando al servidor...",
             "change_method": "Cambiar método",
-            "login": "Conectar se",
+            "login": "Ingresar",
             "no_account": "¿ No tienes cuenta ? Regístrate",
             "already_account": "¿ Ya tienes una cuenta ? Iniciar sesión",
             "logout": ": Cerrar sesión",
@@ -121,14 +128,21 @@
         },
         "logoutSuccess": "Desconexión exitosa",
         "errorWithMessage": "Ocurrió un error: {{message}}",
-        "loginWith42": "Iniciar sesión con 42",
+        "loginWith42": "Ingresar con 42",
         "twofa": {
           "title": "Autenticación de dos factores",
           "description": "Introduce el código de 6 dígitos de tu aplicación de autenticación.",
+          "enabled": "La 2FA está activada en tu cuenta.",
+          "enable": "Activar 2FA",
+          "placeholder": "Ingresa tu código",
           "verifying": "Verificando...",
           "verify": "Verificar código",
-          "back": "Volver al inicio de sesión",
-          "success": "Autenticación 2FA exitosa"
+          "enterCode": "Introduce el código de 6 dígitos",
+          "regenerate": "Regenerar código QR",
+          "loading": "Cargando...",
+          "setupStarted": "Configuración de 2FA iniciada",
+          "success": "Autenticación 2FA exitosa",
+          "back": "Volver al inicio"
         }
     },
   
