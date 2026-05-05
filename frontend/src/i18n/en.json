@@ -29,7 +29,8 @@
         "friends": "Friends",
         "chat": "Chat",
         "history": "History",
-        "spectate": "Spectate"
+        "spectate": "Spectate",
+        "rules": "How to Play"
     },
 
     "game": {
@@ -48,7 +49,26 @@
         },
         "notConnected": "Not connected",
         "login": "Login to play the game",
-        "liveLogin": "Login to see available games"
+        "liveLogin": "Login to see available games",
+        "howToPlay": "How to play",
+        "rules": {
+            "maxSymbols": {
+                "title": "Max 3 symbols per player",
+                "desc": "You can only have up to 3 symbols on the board"
+            },
+            "disappear": {
+                "title": "Oldest disappears",
+                "desc": "When placing a new symbol, your oldest one disappears"
+            },
+            "win": {
+                "title": "Align 3 to win",
+                "desc": "Get 3 symbols in a row (horizontal, vertical or diagonal)"
+            },
+            "strategy": {
+                "title": "Think ahead",
+                "desc": "Plan your moves and control the board"
+            }
+        }
     },
 
     "profile": {

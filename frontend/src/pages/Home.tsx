@@ -74,11 +74,15 @@ export default function Home() {
         />
     </Link>
 
-    <Link to="/lobby">
-        <PlayCard
-        createGame={createGame}
-        />
-    </Link>
+    {user ? (
+  		<Link to="/lobby">
+    		<PlayCard createGame={createGame} user={user} />
+  		</Link>
+	) : (
+		<Link to="/rules">
+			<PlayCard createGame={createGame} user={user} />
+		</Link>
+	)}
 
     <Link to="/history" className="h-full">
         <GameHistoryCard

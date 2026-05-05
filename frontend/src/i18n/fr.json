@@ -29,7 +29,8 @@
         "friends": "Amis",
         "chat": "Discussion",
         "history": "Historique",
-        "spectate": "Regarder"
+        "spectate": "Regarder",
+        "rules": "Comment jouer"
     },
 
     "game": {
@@ -48,7 +49,26 @@
         },
         "notConnected": "Non connecté",
         "login": "Connecte-toi pour accéder au jeu",
-        "liveLogin": "Connecte-toi pour regarder une partie"
+        "liveLogin": "Connecte-toi pour regarder une partie",
+        "howToPlay": "Comment jouer",
+        "rules": {
+            "maxSymbols": {
+                "title": "Maximum de 3 symboles par joueur",
+                "desc": "Vous pouvez avoir au maximum 3 symboles sur le plateau"
+            },
+            "disappear": {
+                "title": "Le plus ancien disparaît",
+                "desc": "Lorsque vous placez un nouveau symbole, le plus ancien disparaît"
+            },
+            "win": {
+                "title": "Alignez 3 pour gagner",
+                "desc": "Alignez 3 symboles (horizontalement, verticalement ou en diagonale)"
+            },
+            "strategy": {
+                "title": "Anticipez vos coups",
+                "desc": "Planifiez vos actions et contrôlez le plateau"
+            }
+        }
     },
 
     "profile": {

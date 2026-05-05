@@ -48,7 +48,26 @@
       },
       "notConnected": "No conectado",
       "login": "Inicia sesión para jugar",
-      "liveLogin": "Inicia sesión para ver las partidas disponibles"
+      "liveLogin": "Inicia sesión para ver las partidas disponibles",
+      "howToPlay": "Cómo jugar",
+      "rules": {
+        "maxSymbols": {
+          "title": "Máximo 3 símbolos por jugador",
+          "desc": "Solo puedes tener hasta 3 símbolos en el tablero"
+        },
+        "disappear": {
+          "title": "El más antiguo desaparece",
+          "desc": "Al colocar un nuevo símbolo, el más antiguo desaparece"
+        },
+        "win": {
+          "title": "Alinea 3 para ganar",
+          "desc": "Consigue 3 símbolos en línea (horizontal, vertical o diagonal)"
+        },
+        "strategy": {
+          "title": "Anticipa tus jugadas",
+          "desc": "Planifica tus movimientos y controla el tablero"
+        }
+      }
     },
   
     "profile": {

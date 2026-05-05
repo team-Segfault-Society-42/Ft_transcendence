@@ -13,6 +13,7 @@ import LiveGamesDisplay from "./pages/LiveGames";
 import Lobby from "./pages/Lobby";
 import Friends from "./pages/Friends";
 import Chat from "./pages/Chat";
+import Rules from "./pages/Rules";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/friends" element={<Friends/>} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/history" element={<History />} />
+          <Route path="/rules" element={<Rules />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/two-factor" element={<TwoFactorLogin />} />
