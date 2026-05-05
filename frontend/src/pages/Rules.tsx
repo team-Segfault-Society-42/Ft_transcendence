@@ -17,9 +17,9 @@ export default function Rules(){
                     {t("game.howToPlay")}
                 </CardTitle>
 
-                <div className="flex flex-col items-center justify-center text-center pt-20 pb-20 gap-6">
+                <div className="flex flex-col pt-20 pb-20 gap-6">
                     <GameRules />
-                    
+
                     <Button
                         onClick={() => navigate("/")}>
                         {t("buttons.backHome")}
