@@ -7,21 +7,25 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 
 interface User {
+  id: number;
+  email: string;
   username: string;
-  avatar?: string;
-  bio?: string;
-  wins?: number;
-  losses?: number;
-  draws?: number;
-  xp?: number;
+  bio: string | null;
+  avatar: string;
+  wins: number;
+  losses: number;
+  draws: number;
+  xp: number;
+  isTwoFactorEnabled: boolean;
 }
 
 export default function Chat() {
   const { t } = useTranslation();
-  const { user } = useOutletContext<{ user: User | null }>();
+  const [user] = useOutletContext<[user: User | null]>();
   const navigate = useNavigate();
 
   if (!user) {
+    console.log("user = ", user);
     return (
       <section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
         <EmptyStateCard
