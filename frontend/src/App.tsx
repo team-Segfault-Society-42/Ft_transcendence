@@ -10,6 +10,7 @@ import Dashboard from "./components/layout/Dashboard";
 import LeaderBoard from "@/pages/Leaderboard";
 import TwoFactorLogin from "./pages/TwoFactorLogin";
 import LiveGamesDisplay from "./pages/LiveGames";
+import Chat from "./pages/Chat";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/history" element={<History />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/chat" element={<Chat />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/two-factor" element={<TwoFactorLogin />} />
         </Route>
