@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { getEndGameMessage, truncateUserName } from "./boardHelpers";
+import { Gamepad2 } from "lucide-react"
+import { EmptyStateCard } from "@/components/ui/EmptyCard"
 
 const TURN_TIMEOUT_SECONDS = 30;
 
@@ -80,9 +82,14 @@ export default function Board() {
 
   if (!game) {
     return (
-      <div className="text-white text-center p-8">
-        {t("game.loading", { defaultValue: "Loading game..." })}
-      </div>
+      <section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
+        <EmptyStateCard
+        title={t("game.title")}
+        icon={<Gamepad2 size={24} />}
+        message={t("game.notConnected")}
+        description={t("game.login")}
+        />
+      </section>
     );
   }
 
