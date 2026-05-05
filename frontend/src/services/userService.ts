@@ -96,4 +96,18 @@ export const userService = {
     getUserHistory,
     getLeaderboard,
     getAchievements,
+	uploadAvatar,
+}
+
+export async function uploadAvatar(file: File) {
+	const formData = new FormData();
+	formData.append("avatar", file);
+
+	const response = await api.post("users/me/avatar", formData, {
+		headers: {
+			"Content-Type": "multipart/form-data",
+		},
+	});
+
+	return response.data;
 }

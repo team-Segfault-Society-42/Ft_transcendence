@@ -1,5 +1,5 @@
 // import avatarImg from "/avatar.png"
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { userService } from "../services/userService";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/Input";
@@ -44,6 +44,9 @@ export default function Profile() {
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false);
+
+	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
+	const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -136,6 +139,33 @@ export default function Profile() {
     }
   }
 
+	async function handleAvatarUpload(event: React.ChangeEvent<HTMLInputElement>) {
+		if (!user) return;
+
+		const file = event.target.files?.[0];
+
+		if (!file) return;
+
+		try {
+			setIsAvatarUploading(true);
+
+			const updatedUser = await userService.uploadAvatar(file);
+			setUser({ ...user, avatar: updatedUser.avatar });
+
+			toast.success("Avatar updated successfully");
+		} catch (error: any) {
+			const serverMessage = error.response?.data?.message || error.message;
+			const finalMessage = Array.isArray(serverMessage)
+				? serverMessage[0]
+				: serverMessage;
+
+			toast.error(t("auth.error") + finalMessage);
+		} finally {
+			setIsAvatarUploading(false);
+			event.target.value = "";
+		}
+	}
+
   return (
     <section className="w-full flex justify-center">
       <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8 overflow-hidden">
@@ -154,6 +184,28 @@ export default function Profile() {
               className="border border-white/20 z-10 relative"
             />
             <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
+			{isEdit && (
+				<div className="mt-3 flex justify-center">
+					<input
+						ref={avatarInputRef}
+						type="file"
+						accept="image/png,image/jpeg,image/webp"
+						onChange={handleAvatarUpload}
+						disabled={isAvatarUploading}
+						className="hidden"
+					/>
+
+					<Button
+						type="button"
+						variant="secondary"
+						onClick={() => avatarInputRef.current?.click()}
+						disabled={isAvatarUploading}
+						className="px-4 py-2 text-xs"
+					>
+						{isAvatarUploading ? "Uploading..." : "Change avatar"}
+					</Button>
+				</div>
+			)}
           </div>
 
           {/* USERNAME */}
