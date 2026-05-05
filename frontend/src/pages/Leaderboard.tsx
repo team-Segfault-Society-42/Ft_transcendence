@@ -2,17 +2,19 @@ import { userService } from "@/services/userService";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
+import { Username } from "@/components/ui/Username";
 
 interface LeaderBoard {
   id: number;
   username: string;
   xp: number;
   wins: number;
+  totalGames: number;
 }
 
 export default function LeaderBoard() {
   const [leaderboard, setLeaderboard] = useState<LeaderBoard[]>([]);
-  const [sortBy, setSortBy] = useState<"xp" | "wins">("wins");
+  const [sortBy, setSortBy] = useState<"xp" | "totalGames" | "wins">("wins");
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -54,6 +56,15 @@ export default function LeaderBoard() {
           >
             {t("leaderboard.topWins")}
           </Button>
+
+          <Button
+            onClick={() => setSortBy("totalGames")}
+            variant={sortBy === "totalGames"
+              ? "primary"
+              : "secondary"}
+          >
+            {t("leaderboard.topTotalGames")}
+          </Button>
         </div>
 
         {leaderboard.length === 0 ? (
@@ -67,18 +78,23 @@ export default function LeaderBoard() {
                 key={l.id}
                 className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl"
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 min-w-0 flex-1">
                   <span className="text-white/30 font-mono w-6">
                     #{index + 1}
                   </span>
-                  <p className="font-medium">{l.username}</p>
+                  <Username
+                    name={l.username}
+                    variant="profile"
+                    className="font-medium min-w-0"/>
                 </div>
 
                 <div className="text-right">
                   <p className="text-blue-400 font-bold">
                     {sortBy === "xp"
                       ? t("leaderboard.xp", { value: l.xp })
-                      : t("leaderboard.wins", { value: l.wins ?? 0 })}
+                      : sortBy === "totalGames"
+                        ? t("leaderboard.totalGames", { value: l.totalGames })
+                        : t("leaderboard.wins", { value: l.wins ?? 0 })}
                   </p>
                 </div>
               </div>

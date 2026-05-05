@@ -17,13 +17,13 @@ export function Sidebar() {
   ]
 
   return (
-    <aside className="w-64 bg-black/40 border-r border-white/10 flex flex-col p-4">
+    <aside className="w-64 bg-slate-900 border-r border-white/10 flex flex-col p-4">
 
-      <h1 className="text-xl font-bold mb-10">
-        {t("title")}
+      <h1 className="text-xl absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+        {t("sidebar.title")}
       </h1>
 
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-2 mt-20">
         {links.map(link => {
           const Icon = link.icon 
           return (

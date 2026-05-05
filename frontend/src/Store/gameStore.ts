@@ -8,7 +8,6 @@ type GameStore = {
   game: GameState | null;
   error: string | null;
   playerRole: PlayerRole | null;
-  playerLeft: "X" | "O" | null;
 
   setGameId: (gameId: string | null) => void;
   setClient: (client: Socket | null) => void;
@@ -27,7 +26,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
   game: null,
   error: null,
   playerRole: null,
-  playerLeft: null,
 
   setGameId: (gameId) => set({ gameId }),
   setClient: (client) => set({ client }),
@@ -67,7 +65,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const { client, gameId, game } = get();
 
     if (!client || !gameId || !game) {
-      console.warn("Missing socket, gameId or game");
       return;
     }
 

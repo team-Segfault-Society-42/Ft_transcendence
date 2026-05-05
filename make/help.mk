@@ -1,7 +1,7 @@
 # ══════════════════════════════════════════════════════
 #                      HELP
 # ══════════════════════════════════════════════════════
-##@ HELP
+## HELP
 
 PRINT_TAGS = \
 	if (index(comment, "[DEV]")) { \
@@ -14,13 +14,13 @@ PRINT_TAGS = \
 		tag = "$(MAGENTA)[BOTH]$(RES)  —  "; \
 		gsub(/\[BOTH\]/, "", comment); \
 	} else if (index(comment, "[UTIL]")) { \
-		tag = "$(GREY)[UTIL]$(RES)  —  "; \
+		tag = "$(PURPLE)[UTIL]$(RES)  —  "; \
 		gsub(/\[UTIL\]/, "", comment); \
 	} \
 	printf " ・$(CYAN)%-12s$(RES) %s %s\n", target, tag, comment; \
 
-help: ## Show help [UTIL]
-	@grep -hE '^[a-zA-Z_-]+:.*?##|^##@' $(MAKEFILE_LIST) | awk ' \
+help: # Show List of make targets [UTIL]
+	@grep -hE '^[a-zA-Z_-]+:.*[^#]## |^##@' $(MAKEFILE_LIST) | awk ' \
 		BEGIN { FS = ":.*?## " } \
 		/^##@/ { \
 			section = substr($$0, 5); \
