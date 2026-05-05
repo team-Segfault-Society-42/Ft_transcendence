@@ -1,13 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/Button";
-import { Input } from "./ui/Input";
 import { io } from "socket.io-client";
-
-const socket = io(window.location.origin, {
-  path: "/socket.io/",
-  transports: ["websocket"],
-  withCredentials: true,
-});
 
 type UserChat = {
   id: number;
@@ -24,11 +17,8 @@ type ChatMessage = {
 
 export function BasicChat() {
   const [content, setContent] = useState("");
-  const [messages, setMessage] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [connected, setConnected] = useState(false);
-
-  socket.on("connect", () => setConnected(true));
-  socket.on("disconnect", () => setConnected(false));
 
   function sendMessage() {
     const text = content.trim();
@@ -36,7 +26,8 @@ export function BasicChat() {
     if (text.length === 0) {
       return;
     }
-    setMessage((current) => [
+
+    setMessages((current) => [
       ...current,
       {
         id: Date.now(),
@@ -49,20 +40,42 @@ export function BasicChat() {
         },
       },
     ]);
+
     setContent("");
   }
+
+  useEffect(() => {
+    const socket = io(window.location.origin, {
+      path: "/socket.io/",
+      transports: ["websocket"],
+      withCredentials: true,
+    });
+
+    socket.on("connect", () => setConnected(true));
+    socket.on("disconnect", () => setConnected(false));
+
+    socket.on("connect_error", (error) => {
+      console.error("chat socket error:", error.message);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <section>
       <h1>Chat</h1>
+
       <div>
         <p>{connected ? "connected" : "disconnected"}</p>
       </div>
+
       <textarea
         value={content}
         onChange={(event) => setContent(event.target.value)}
         onKeyDown={(event) => {
-          if (event.key == "Enter" && !event.shiftKey) {
+          if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
             sendMessage();
           }
@@ -71,16 +84,19 @@ export function BasicChat() {
         rows={4}
         className="border p-2"
       />
+
       {messages.map((message) => (
         <div key={message.id}>
           <p>
-            {" "}
             <strong>{message.user.username}</strong>
           </p>
+
           <p>{message.content}</p>
-          <small>{message.createdAt}</small>
+
+          <small>{new Date(message.createdAt).toLocaleString()}</small>
         </div>
       ))}
+
       <Button onClick={sendMessage}>Send</Button>
     </section>
   );
