@@ -1,4 +1,4 @@
-import { ACHIEVEMENT_ICONS, IconKey } from "@/type/achievements.types";
+import { ACHIEVEMENT_ICONS, type IconKey } from "@/type/achievements.types";
 import { Info, Lock } from "lucide-react";
 
 interface AchievementIconProps {

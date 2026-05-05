@@ -84,7 +84,7 @@ export async function getAchievements(id: number) {
 }
 
 export async function getAllAchievements() {
-  const response = await api.get('allAchievements')
+  const response = await api.get('users/allAchievements')
   return response.data
 }
 
