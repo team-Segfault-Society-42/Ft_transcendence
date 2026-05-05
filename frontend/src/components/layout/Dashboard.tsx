@@ -62,7 +62,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="h-screen flex items-center justify-center ">
         <Spinner variant="cyan" size="lg" />
       </div>
     )

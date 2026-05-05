@@ -22,6 +22,7 @@ model User {
   losses              Int            @default(0)
   draws               Int            @default(0)
   xp                  Int            @default(0)
+  totalGames          Int            @default(0)
   isTwoFactorEnabled  Boolean        @default(false)
   twoFactorSecret     String?
   twoFactorTempSecret String?
@@ -72,26 +73,14 @@ model Move {
 
 }
 
-model Achievement {
-  id          Int      @id @default(autoincrement())
-  key         String   @unique
-  displayName String
-  description String
-  createdAt   DateTime @default(now())
-  icon        String?
-
-  user        UserAchievement[]
-}
-
 model UserAchievement {
   userId          Int
-  achievementId   Int
+  key             String
   unlockedAt      DateTime  @default(now())
   progress        Int?
 
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
 
-  @@id([userId, achievementId])
+  @@id([userId, key])
   
 }

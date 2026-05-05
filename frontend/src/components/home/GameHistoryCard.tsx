@@ -4,6 +4,7 @@ import type { Match } from "@/lib/match"
 import { cn } from "@/lib/utils"
 import { CardTitle } from "@/components/ui/Card"
 import { useTranslation } from "react-i18next"
+import { GameHistoryEmpty } from "../ui/GameHistoryEmpty"
 
 type Props = {
     matches: Match[]
@@ -13,24 +14,23 @@ type Props = {
 
 export function GameHistoryCard({ matches, className }: Props) {
     const { t } = useTranslation()
+    const displayedMatches = matches
 
 	return (
-    <Card className={cn("h-full flex flex-col", className)}>
+    <Card className={cn("min-h-80 h-full relative flex flex-col bg-slate-900", className)}>
 
     {/* HEADER */}
-    <div className="flex justify-between items-center mb-6">
-            <CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-                {t("history.title")}
-            </CardTitle>
-        <span className="text-xs text-white/50 top-left">
+        <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+            {t("history.title")}
+        </CardTitle>
+        <span className="text-xs text-white/50 absolute top-6 right-6 z-10">
             {t("profile.stats.games", { count: matches.length })}
         </span>
-    </div>
 
     {/* LIST */}
-    <div className="flex-1 flex flex-col">
-        {matches.length ? (
-        	matches.map((match) => {
+    <div className="flex-1 flex flex-col mt-16 px-4 overflow-y-auto gap-3 max-h-105">
+        {displayedMatches.length ? (
+        	displayedMatches.map((match) => {
 
             const result = match.result.toLowerCase()
 
@@ -98,15 +98,21 @@ export function GameHistoryCard({ matches, className }: Props) {
     )
     })
     ) : (
-    <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <p className="text-sm text-white/60 text-center">
+    <div className="flex-1 flex flex-col items-center justify-center text-center mt-10">
+        <p className="text-sm text-white">
             {t("history.empty")}
         </p>
+
+        <Card className="h-full flex flex-col items-center justify-center mt-6">
+            <GameHistoryEmpty />
+        </Card>
     </div>
+
+    
     )}
 
     </div>
-
+    
     </Card>
   )
 }
