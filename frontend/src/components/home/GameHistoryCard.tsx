@@ -4,18 +4,41 @@ import type { Match } from "@/lib/match"
 import { cn } from "@/lib/utils"
 import { CardTitle } from "@/components/ui/Card"
 import { useTranslation } from "react-i18next"
-import { GameHistoryEmpty } from "../ui/GameHistoryEmpty"
+import { History as HistoryIcon } from "lucide-react"
+import { EmptyStateCard } from "@/components/ui/EmptyCard"
+
+interface User {
+    username: string
+    avatar?: string
+    bio?: string
+    wins?: number
+    losses?: number
+    draws?: number
+    xp?: number
+}
 
 type Props = {
     matches: Match[]
     className?: string
     title?: string
+    user: User | null
 }
 
-export function GameHistoryCard({ matches, className }: Props) {
+export function GameHistoryCard({ matches, className, user }: Props) {
     const { t } = useTranslation()
     const displayedMatches = matches
 
+    if (!user) {
+        return (
+            <EmptyStateCard
+                title={t("history.title")}
+                icon={<HistoryIcon size={24} />}
+                message={t("history.notConnected")}
+                description={t("history.login")}
+                className={className}
+            />
+        )
+    }
 	return (
     <Card className={cn("min-h-80 h-full relative flex flex-col bg-slate-900", className)}>
 
@@ -98,14 +121,19 @@ export function GameHistoryCard({ matches, className }: Props) {
     )
     })
     ) : (
-    <div className="flex-1 flex flex-col items-center justify-center text-center mt-10">
+    <div className="flex-1 flex flex-col items-center justify-center text-center gap-4">
         <p className="text-sm text-white">
             {t("history.empty")}
         </p>
 
-        <Card className="h-full flex flex-col items-center justify-center mt-6">
-            <GameHistoryEmpty />
-        </Card>
+        <div className="w-14 h-14 rounded-full border border-cyan-400/40 flex items-center justify-center text-cyan-400">
+            <EmptyStateCard
+  				title={t("history.title")}
+  				icon={<HistoryIcon size={24} />}
+  				message={t("history.empty")}
+  				description={t("home.history.empty")}
+			/>
+        </div>
     </div>
 
     

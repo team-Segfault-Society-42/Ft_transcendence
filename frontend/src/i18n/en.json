@@ -15,26 +15,27 @@
             "login": "Login",
             "start": "START GAME",
             "hi": "Hi,",
-            "local": "Play local",
-            "findOpp": "Find an opponent"
-        },
-        "history":{
-            "empty": "Your match history will appear here."
+            "create": "Create a game",
+            "join": "Join a game"
         }
     },
 
     "sidebar":{
         "title": "Dashboard",
         "home": "Home",
-        "game": "Game",
+        "game": "Play",
         "profile": "Profile",
         "leaderboard": "Leaderboard",
         "friends": "Friends",
         "chat": "Chat",
-        "history": "History"
+        "history": "History",
+        "spectate": "Spectate",
+        "rules": "Game rules"
     },
 
     "game": {
+        "title": "Play",
+        "liveTitle": "Live Games",
         "turn": "{{player}}'s Turn {{symbol}}",
         "vs": "VS",
         "wins": "WINS!",
@@ -45,6 +46,28 @@
             "win": "Win",
             "loss": "Loss",
             "draw": "Draw"
+        },
+        "notConnected": "Not connected",
+        "login": "Login to play the game",
+        "liveLogin": "Login to see available games",
+        "howToPlay": "Game rules",
+        "rules": {
+            "maxSymbols": {
+                "title": "Max 3 symbols per player",
+                "desc": "You can only have up to 3 symbols on the board"
+            },
+            "disappear": {
+                "title": "Oldest disappears",
+                "desc": "When placing a new symbol, your oldest one disappears"
+            },
+            "win": {
+                "title": "Align 3 to win",
+                "desc": "Get 3 symbols in a row (horizontal, vertical or diagonal)"
+            },
+            "strategy": {
+                "title": "Think ahead",
+                "desc": "Plan your moves and control the board"
+            }
         }
     },
 
@@ -77,20 +100,38 @@
     },
 
     "leaderboard":{
-      "title": "Leaderboard",
-      "topXP": "Highest level",
-      "topWins": "Most wins",
-      "topTotalGames": "Most games played",
-      "empty": "No players are listed in the rankings",
-      "xp": "{{value}} XP",
-      "wins": "{{value}} Wins",
-      "totalGames": "{{value}} Games"
+        "title": "Leaderboard",
+        "topXP": "Highest level",
+        "topWins": "Most wins",
+        "topTotalGames": "Most games played",
+        "empty": "No players are listed in the rankings",
+        "xp": "{{value}} XP",
+        "wins": "{{value}} Wins",
+        "totalGames": "{{value}} Games",
+        "notConnected": "Not connected",
+        "login": "Login to see the leaderboard"
+    },
 
+    "friends":{
+        "title": "Friends",
+        "notConnected": "Not connected",
+        "login": "Login to see your friends"
+    },
+
+    "chat":{
+        "title": "Chat",
+        "notConnected": "Not connected",
+        "login": "Login to see the chat"
     },
 
     "history": {
         "title": "Game History",
-        "empty": "No games yet"
+        "notConnected": "Not connected",
+        "login": "Login to see your history"
+    },
+
+    "buttons": {
+        "backHome": "Back to home"
     },
 
     "auth": {

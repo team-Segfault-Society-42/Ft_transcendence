@@ -15,26 +15,27 @@
             "login": "Se connecter",
             "start": "LANCER LA PARTIE",
             "hi": "Salut, ",
-            "local": "Jeu local",
-            "findOpp": "Trouver un adversaire"
-        },
-        "history":{
-            "empty": "Votre historique de parties s’affichera ici."
+            "create": "Créer une partie",
+            "join": "Rejoindre une partie"
         }
     },
 
     "sidebar": {
         "title": "Tableau de bord",
         "home": "Accueil",
-        "game": "Jeu",
+        "game": "Jouer",
         "profile": "Profil",
         "leaderboard": "Classement",
         "friends": "Amis",
-        "chat": "Chat",
-        "history": "Historique"
+        "chat": "Discussion",
+        "history": "Historique",
+        "spectate": "Regarder",
+        "rules": "Règles du jeu"
     },
 
     "game": {
+        "title": "Jouer",
+        "liveTitle": "Regarder",
         "turn": "Au tour de {{player}} : {{symbol}}",
         "vs": "VS",
         "wins": "GAGNE !",
@@ -45,6 +46,28 @@
             "win": "Victoire",
             "loss": "Défaite",
             "draw": "Égalité"
+        },
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour accéder au jeu",
+        "liveLogin": "Connecte-toi pour regarder une partie",
+        "howToPlay": "Règles du jeu",
+        "rules": {
+            "maxSymbols": {
+                "title": "Maximum de 3 symboles par joueur",
+                "desc": "Vous pouvez avoir au maximum 3 symboles sur le plateau"
+            },
+            "disappear": {
+                "title": "Le plus ancien disparaît",
+                "desc": "Lorsque vous placez un nouveau symbole, le plus ancien disparaît"
+            },
+            "win": {
+                "title": "Alignez 3 pour gagner",
+                "desc": "Alignez 3 symboles (horizontalement, verticalement ou en diagonale)"
+            },
+            "strategy": {
+                "title": "Anticipez vos coups",
+                "desc": "Planifiez vos actions et contrôlez le plateau"
+            }
         }
     },
 
@@ -84,12 +107,31 @@
         "empty": "Aucun joueur dans le classement",
         "xp": "{{value}} XP",
         "wins": "{{value}} Victoires",
-        "totalGames": "{{value}} Parties"
+        "totalGames": "{{value}} Parties",
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour voir le classement"
+    },
+
+    "friends":{
+        "title": "Amis",
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour voir tes amis"
+    },
+
+    "chat":{
+        "title": "Discussion",
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour accéder à la discussion"
     },
 
     "history": {
         "title": "Historique des parties",
-        "empty": "Aucune partie pour le moment"
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour voir ton historique"
+    },
+
+    "buttons": {
+        "backHome": "Retour à l'accueil"
     },
     
     "auth": {

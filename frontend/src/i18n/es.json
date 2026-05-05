@@ -15,36 +15,59 @@
         "login": "Ingresar",
         "start": "INICIAR PARTIDA",
         "hi": "Hola, ",
-        "local": "Jugar en local",
-        "findOpp": "Buscar un oponente"
-      },
-      "history":{
-        "empty": "Tu historial de partidas se mostrará aquí."
+        "create": "Crear una partida",
+        "join": "Unirse a una partida"
       }
     },
   
     "sidebar": {
       "title": "Panel de control",
       "home": "Inicio",
-      "game": "Juego",
+      "game": "Jugar",
       "profile": "Perfil",
       "leaderboard": "Clasificación",
       "friends": "Amigos",
       "chat": "Chat",
-      "history": "Historial"
+      "history": "Historial",
+      "spectate": "Mirar",
+      "rules": "Reglas del juego"
     },
 
     "game": {
-        "turn": "Turno de {{player}} : {{symbol}}",
-        "vs": "VS",
-        "wins": "¡GANA!",
-        "replay": "Reiniciar",
-        "mode": "Modo 2 jugadores",
-        "reset": "Reiniciar sesión",
+      "title": "Jugar",
+      "liveTitle": "Partidas en directo",
+      "turn": "Turno de {{player}} : {{symbol}}",
+      "vs": "VS",
+      "wins": "¡GANA!",
+      "replay": "Reiniciar",
+      "mode": "Modo 2 jugadores",
+      "reset": "Reiniciar sesión",
       "result": {
           "win": "Victoria",
           "loss": "Derrota",
           "draw": "Empate"
+      },
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para jugar",
+      "liveLogin": "Inicia sesión para ver las partidas disponibles",
+      "howToPlay": "Reglas del juego",
+      "rules": {
+        "maxSymbols": {
+          "title": "Máximo 3 símbolos por jugador",
+          "desc": "Solo puedes tener hasta 3 símbolos en el tablero"
+        },
+        "disappear": {
+          "title": "El más antiguo desaparece",
+          "desc": "Al colocar un nuevo símbolo, el más antiguo desaparece"
+        },
+        "win": {
+          "title": "Alinea 3 para ganar",
+          "desc": "Consigue 3 símbolos en línea (horizontal, vertical o diagonal)"
+        },
+        "strategy": {
+          "title": "Anticipa tus jugadas",
+          "desc": "Planifica tus movimientos y controla el tablero"
+        }
       }
     },
   
@@ -68,7 +91,7 @@
       "about": {
         "title": "Acerca de",
         "notConnected": "No conectado",
-        "loginHint": "Inicia sesión para ver tu perfil",
+        "login": "Inicia sesión para ver tu perfil",
         "guest": "Invitado",
         "viewProfile": "Ver perfil",
         "noBio": "Sin biografía"
@@ -84,12 +107,31 @@
       "empty": "No hay jugadores en la clasificación",
       "xp": "{{value}} XP",
       "wins": "{{value}} Victorias",
-      "totalGames": "{{value}} Partidas"
+      "totalGames": "{{value}} Partidas",
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para ver la clasificación"
+    },
+
+    "friends":{
+      "title": "Amigos",
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para ver tus amigos"
+    },
+
+    "chat":{
+      "title": "Chat",
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para ver el chat"
     },
 
     "history": {
-        "title": "Historial de partidas",
-        "empty": "No hay partidas todavía"
+      "title": "Historial de partidas",
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para ver tu historial"
+    },
+
+    "buttons": {
+        "backHome": "Volver al inicio"
     },
 
     "auth": {

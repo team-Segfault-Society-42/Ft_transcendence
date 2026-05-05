@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useOutletContext } from "react-router";
-import { Spinner } from "@/components/ui/Spinner";
 import { toast } from "sonner";
 // import { zodResolver } from "@hookform/resolvers/zod";
 // import { useNavigate } from 'react-router-dom';
@@ -14,6 +13,8 @@ import type { Match } from "@/lib/match";
 import { Winrate } from "@/components/ui/Winrate";
 import { LevelProgress } from "@/components/ui/Level";
 import { Username } from "@/components/ui/Username";
+import { EmptyStateCard } from "@/components/ui/EmptyCard";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   id: number;
@@ -44,6 +45,7 @@ export default function Profile() {
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false);
+  const navigate = useNavigate()
 
 	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
 	const avatarInputRef = useRef<HTMLInputElement | null>(null);
@@ -72,9 +74,22 @@ export default function Profile() {
 
   if (!user || loading) {
     return (
-      <div className="flex justify-center mt-20">
-        <Spinner variant="cyan" size="lg" />
-      </div>
+      <section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
+        <EmptyStateCard
+          title={t("profile.about.title")}
+          icon={<span className="text-xl font-bold">?</span>}
+          message={t("profile.about.notConnected")}
+          description={t("profile.about.login")}
+          actions={
+            <>
+              <Button
+                onClick={() => navigate("/")}>
+                  {t("buttons.backHome")}
+              </Button>
+            </>
+        }
+        />
+      </section>
     );
   }
 

@@ -15,7 +15,7 @@ export default function Home() {
   	const [matches, setMatches] = useState<Match[]>([])
   	const { t } = useTranslation()
 
- 	const handleFindOpponent = async () => {
+ 	const createGame = async () => {
     try {
     	const response = await fetch("/api/game/create", {
         	method: "POST",
@@ -33,10 +33,13 @@ export default function Home() {
   	};
 
   	useEffect(() => {
-    	if (!user) return
-
+    	if (!user) {
+			setMatches([]);
+			return;
+		}
     	userService.getUserHistory(user.id)
       	.then(setMatches)
+		.catch(() => setMatches([]))
   	}, [user])
 
   	return (
@@ -71,15 +74,20 @@ export default function Home() {
         />
     </Link>
 
-    <Link to="/game">
-        <PlayCard
-        onFindOpponent={handleFindOpponent}
-        />
-    </Link>
+    {user ? (
+  		<Link to="/lobby">
+    		<PlayCard createGame={createGame} user={user} />
+  		</Link>
+	) : (
+		<Link to="/rules">
+			<PlayCard createGame={createGame} user={user} />
+		</Link>
+	)}
 
     <Link to="/history" className="h-full">
         <GameHistoryCard
         matches={matches}
+		user={user}
         />
     </Link>
 

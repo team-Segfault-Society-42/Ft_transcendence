@@ -10,7 +10,10 @@ import Dashboard from "./components/layout/Dashboard";
 import LeaderBoard from "@/pages/Leaderboard";
 import TwoFactorLogin from "./pages/TwoFactorLogin";
 import LiveGamesDisplay from "./pages/LiveGames";
+import Lobby from "./pages/Lobby";
+import Friends from "./pages/Friends";
 import Chat from "./pages/Chat";
+import Rules from "./pages/Rules";
 
 function App() {
   return (
@@ -18,13 +21,17 @@ function App() {
       <Routes>
         <Route element={<Dashboard />}>
           <Route path="/" element={<Home />} />
-          <Route path="/game" element={<LiveGamesDisplay />} />
+          <Route path="/lobby" element={<Lobby />} />
+          <Route path="/spectate" element={<LiveGamesDisplay />} />
           <Route path="/game/:gameId" element={<Game />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
+          <Route path="/friends" element={<Friends />} />
+          <Route path="/chat" element={<Chat />} />
           <Route path="/history" element={<History />} />
+          <Route path="/rules" element={<Rules />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
-          <Route path="/chat" element={<Chat />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/two-factor" element={<TwoFactorLogin />} />
         </Route>

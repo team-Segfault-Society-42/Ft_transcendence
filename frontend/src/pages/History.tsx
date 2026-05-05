@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useOutletContext } from "react-router"
-import { Spinner } from "@/components/ui/Spinner"
 import { userService } from "@/services/userService"
 import type { Match } from "@/lib/match"
 import { GameHistoryCard } from "@/components/home/GameHistoryCard"
+import { History as HistoryIcon } from "lucide-react"
+import { EmptyStateCard } from "@/components/ui/EmptyCard"
+import { Button } from "@/components/ui/Button"
+import { useNavigate } from "react-router-dom"
 
 interface User {
 	id: number
@@ -17,6 +20,7 @@ export default function History() {
 	const [user] = useOutletContext<[User | null, any]>()
 	const [matches, setMatches] = useState<Match[]>([])
 	const [loading, setLoading] = useState(true)
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		if (!user) return
@@ -45,9 +49,22 @@ export default function History() {
 
   	if (!user || loading) {
     	return (
-    		<div className="flex justify-center mt-20">
-        		<Spinner variant="cyan" size="lg" />
-      		</div>
+    		<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
+          		<EmptyStateCard
+  					title={t("history.title")}
+  					icon={<HistoryIcon size={24} />}
+  					message={t("history.notConnected")}
+  					description={t("history.login")}
+					actions={
+						<>
+							<Button
+								onClick={() => navigate("/")}>
+									{t("buttons.backHome")}
+							</Button>
+						</>
+					}
+				/>
+      		</section>
     	)
   	}
 
@@ -60,7 +77,10 @@ export default function History() {
 		</h1>
 
 		{/* CARD */}
-        <GameHistoryCard matches={matches} />
+        <GameHistoryCard
+		matches={matches}
+		user={user}
+		/>
 
 
     </section>
