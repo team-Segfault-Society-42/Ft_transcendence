@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Button } from "./ui/Button";
 import { Input } from "./ui/Input";
+import { io } from "socket.io-client";
+
+const socket = io(window.location.origin, {
+  path: "/socket.io/",
+  transports: ["websocket"],
+  withCredentials: true,
+});
 
 type UserChat = {
   id: number;
@@ -18,6 +25,10 @@ type ChatMessage = {
 export function BasicChat() {
   const [content, setContent] = useState("");
   const [messages, setMessage] = useState<ChatMessage[]>([]);
+  const [connected, setConnected] = useState(false);
+
+  socket.on("connect", () => setConnected(true));
+  socket.on("disconnect", () => setConnected(false));
 
   function sendMessage() {
     const text = content.trim();
@@ -44,7 +55,9 @@ export function BasicChat() {
   return (
     <section>
       <h1>Chat</h1>
-      <div></div>
+      <div>
+        <p>{connected ? "connected" : "disconnected"}</p>
+      </div>
       <textarea
         value={content}
         onChange={(event) => setContent(event.target.value)}
