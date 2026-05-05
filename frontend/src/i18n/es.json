@@ -30,7 +30,7 @@
       "chat": "Chat",
       "history": "Historial",
       "spectate": "Mirar",
-      "rules": "Cómo jugar"
+      "rules": "Reglas del juego"
     },
 
     "game": {
@@ -50,7 +50,7 @@
       "notConnected": "No conectado",
       "login": "Inicia sesión para jugar",
       "liveLogin": "Inicia sesión para ver las partidas disponibles",
-      "howToPlay": "Cómo jugar",
+      "howToPlay": "Reglas del juego",
       "rules": {
         "maxSymbols": {
           "title": "Máximo 3 símbolos por jugador",

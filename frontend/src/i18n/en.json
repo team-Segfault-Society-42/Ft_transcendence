@@ -30,7 +30,7 @@
         "chat": "Chat",
         "history": "History",
         "spectate": "Spectate",
-        "rules": "How to Play"
+        "rules": "Game rules"
     },
 
     "game": {
@@ -50,7 +50,7 @@
         "notConnected": "Not connected",
         "login": "Login to play the game",
         "liveLogin": "Login to see available games",
-        "howToPlay": "How to play",
+        "howToPlay": "Game rules",
         "rules": {
             "maxSymbols": {
                 "title": "Max 3 symbols per player",
