@@ -7,9 +7,10 @@ type Props = {
   message: string
   description?: string
   className?: string
+  actions?: React.ReactNode
 }
 
-export function EmptyStateCard({ title, icon, message, description, className } : Props) {
+export function EmptyStateCard({ title, icon, message, description, className, actions } : Props) {
     return (
         <Card className={cn("h-full relative flex items-center justify-center bg-slate-900", className)}>
       
@@ -33,6 +34,12 @@ export function EmptyStateCard({ title, icon, message, description, className } 
                     </p>
                 )}
                 </div>
+
+                {actions && (
+                    <div className="flex gap-3 mt-4">
+                        {actions}
+                    </div>
+                )}
             </div>
 
         </Card>

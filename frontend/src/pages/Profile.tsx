@@ -13,7 +13,8 @@ import type { Match } from "@/lib/match";
 import { Winrate } from "@/components/ui/Winrate";
 import { LevelProgress } from "@/components/ui/Level";
 import { Username } from "@/components/ui/Username";
-import { EmptyStateCard } from "@/components/ui/EmptyCard"
+import { EmptyStateCard } from "@/components/ui/EmptyCard";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   id: number;
@@ -44,6 +45,7 @@ export default function Profile() {
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
   const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (user) {
@@ -75,6 +77,14 @@ export default function Profile() {
           icon={<span className="text-xl font-bold">?</span>}
           message={t("profile.about.notConnected")}
           description={t("profile.about.login")}
+          actions={
+            <>
+              <Button
+                onClick={() => navigate("/")}>
+                  {t("buttons.backHome")}
+              </Button>
+            </>
+        }
         />
       </section>
     );

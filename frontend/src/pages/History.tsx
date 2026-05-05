@@ -6,6 +6,8 @@ import type { Match } from "@/lib/match"
 import { GameHistoryCard } from "@/components/home/GameHistoryCard"
 import { History as HistoryIcon } from "lucide-react"
 import { EmptyStateCard } from "@/components/ui/EmptyCard"
+import { Button } from "@/components/ui/Button"
+import { useNavigate } from "react-router-dom"
 
 interface User {
 	id: number
@@ -18,6 +20,7 @@ export default function History() {
 	const [user] = useOutletContext<[User | null, any]>()
 	const [matches, setMatches] = useState<Match[]>([])
 	const [loading, setLoading] = useState(true)
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		if (!user) return
@@ -51,7 +54,15 @@ export default function History() {
   					title={t("history.title")}
   					icon={<HistoryIcon size={24} />}
   					message={t("history.notConnected")}
-  					description={t("home.history.empty")}
+  					description={t("history.login")}
+					actions={
+						<>
+							<Button
+								onClick={() => navigate("/")}>
+									{t("buttons.backHome")}
+							</Button>
+						</>
+					}
 				/>
       		</section>
     	)

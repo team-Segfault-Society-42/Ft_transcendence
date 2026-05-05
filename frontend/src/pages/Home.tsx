@@ -15,7 +15,7 @@ export default function Home() {
   	const [matches, setMatches] = useState<Match[]>([])
   	const { t } = useTranslation()
 
- 	const handleFindOpponent = async () => {
+ 	const createGame = async () => {
     try {
     	const response = await fetch("/api/game/create", {
         	method: "POST",
@@ -74,9 +74,9 @@ export default function Home() {
         />
     </Link>
 
-    <Link to="/game">
+    <Link to="/lobby">
         <PlayCard
-        onFindOpponent={handleFindOpponent}
+        createGame={createGame}
         />
     </Link>
 

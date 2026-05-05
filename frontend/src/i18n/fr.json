@@ -27,11 +27,14 @@
         "profile": "Profil",
         "leaderboard": "Classement",
         "friends": "Amis",
-        "chat": "Chat",
-        "history": "Historique"
+        "chat": "Discussion",
+        "history": "Historique",
+        "spectate": "Regarder"
     },
 
     "game": {
+        "title": "Jouer",
+        "liveTitle": "Regarder",
         "turn": "Au tour de {{player}} : {{symbol}}",
         "vs": "VS",
         "wins": "GAGNE !",
@@ -42,7 +45,10 @@
             "win": "Victoire",
             "loss": "Défaite",
             "draw": "Égalité"
-        }
+        },
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour accéder au jeu",
+        "liveLogin": "Connecte-toi pour regarder une partie"
     },
 
     "profile": {
@@ -86,10 +92,26 @@
         "login": "Connecte-toi pour voir le classement"
     },
 
+    "friends":{
+        "title": "Amis",
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour voir tes amis"
+    },
+
+    "chat":{
+        "title": "Discussion",
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour accéder à la discussion"
+    },
+
     "history": {
         "title": "Historique des parties",
         "notConnected": "Non connecté",
         "login": "Connecte-toi pour voir ton historique"
+    },
+
+    "buttons": {
+        "backHome": "Retour à l'accueil"
     },
     
     "auth": {

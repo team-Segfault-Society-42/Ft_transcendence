@@ -28,10 +28,13 @@
         "leaderboard": "Leaderboard",
         "friends": "Friends",
         "chat": "Chat",
-        "history": "History"
+        "history": "History",
+        "spectate": "Spectate"
     },
 
     "game": {
+        "title": "Play",
+        "liveTitle": "Live Games",
         "turn": "{{player}}'s Turn {{symbol}}",
         "vs": "VS",
         "wins": "WINS!",
@@ -42,7 +45,10 @@
             "win": "Win",
             "loss": "Loss",
             "draw": "Draw"
-        }
+        },
+        "notConnected": "Not connected",
+        "login": "Login to play the game",
+        "liveLogin": "Login to see available games"
     },
 
     "profile": {
@@ -86,10 +92,26 @@
         "login": "Login to see the leaderboard"
     },
 
+    "friends":{
+        "title": "Friends",
+        "notConnected": "Not connected",
+        "login": "Login to see your friends"
+    },
+
+    "chat":{
+        "title": "Chat",
+        "notConnected": "Not connected",
+        "login": "Login to see the chat"
+    },
+
     "history": {
         "title": "Game History",
         "notConnected": "Not connected",
         "login": "Login to see your history"
+    },
+
+    "buttons": {
+        "backHome": "Back to home"
     },
 
     "auth": {

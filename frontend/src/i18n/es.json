@@ -28,21 +28,27 @@
       "leaderboard": "Clasificación",
       "friends": "Amigos",
       "chat": "Chat",
-      "history": "Historial"
+      "history": "Historial",
+      "spectate": "Mirar"
     },
 
     "game": {
-        "turn": "Turno de {{player}} : {{symbol}}",
-        "vs": "VS",
-        "wins": "¡GANA!",
-        "replay": "Reiniciar",
-        "mode": "Modo 2 jugadores",
-        "reset": "Reiniciar sesión",
+      "title": "Jugar",
+      "liveTitle": "Partidas en directo",
+      "turn": "Turno de {{player}} : {{symbol}}",
+      "vs": "VS",
+      "wins": "¡GANA!",
+      "replay": "Reiniciar",
+      "mode": "Modo 2 jugadores",
+      "reset": "Reiniciar sesión",
       "result": {
           "win": "Victoria",
           "loss": "Derrota",
           "draw": "Empate"
-      }
+      },
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para jugar",
+      "liveLogin": "Inicia sesión para ver las partidas disponibles"
     },
   
     "profile": {
@@ -86,10 +92,26 @@
       "login": "Inicia sesión para ver la clasificación"
     },
 
+    "friends":{
+      "title": "Amigos",
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para ver tus amigos"
+    },
+
+    "chat":{
+      "title": "Chat",
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para ver el chat"
+    },
+
     "history": {
       "title": "Historial de partidas",
       "notConnected": "No conectado",
-      "login": "Inicia sesión para ver la clasificación"
+      "login": "Inicia sesión para ver tu historial"
+    },
+
+    "buttons": {
+        "backHome": "Volver al inicio"
     },
 
     "auth": {

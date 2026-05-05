@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 import { GameInfo } from "../ui/GameInfo";
 
 type Props = {
-  onFindOpponent: () => void
+  createGame: () => void
 }
 
-export function PlayCard({ onFindOpponent }: Props) {
+export function PlayCard({ createGame: onCreateGame }: Props) {
     const { t } = useTranslation();
 
   return (
@@ -26,14 +26,22 @@ export function PlayCard({ onFindOpponent }: Props) {
           onClick={() => console.log("play local later")}
           size="lg"
           className="w-full">
-          {t("home.buttons.create")}
+          {t("home.buttons.join")}
         </Button>
 
         <Button
-          onClick={onFindOpponent}
+          variant="danger"
+          onClick={onCreateGame}
           size="lg"
           className="w-full">
-          {t("home.buttons.join")}
+          Watch a game
+        </Button>
+
+        <Button
+          onClick={onCreateGame}
+          size="lg"
+          className="w-full">
+          {t("home.buttons.create")}
         </Button>
 
       </div>
