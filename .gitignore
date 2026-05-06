@@ -1,8 +1,6 @@
 # Secrets
 /secrets
-.env*
-!.env.dev.example
-!.env.prod.example
+
 
 # compiled output
 node_modules/
@@ -46,11 +44,12 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # dotenv environment variable files
-# (Already covered by .env* in Secrets, but listed here for clarity)
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+.env*
+!.env.dev.example
+!.env.prod.example
+
+# 42 OAuth Credentials for `make setup`
+oauth-credentials.conf
 
 # temp directory
 .temp
