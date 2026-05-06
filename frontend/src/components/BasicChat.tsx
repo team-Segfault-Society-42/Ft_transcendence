@@ -3,6 +3,7 @@ import { Button } from "./ui/Button";
 import { io, type Socket } from "socket.io-client";
 import type { ChatMessage } from "@/type/user.types";
 
+// Basic UI only. Final design can be added later.
 export function BasicChat() {
   const [content, setContent] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -53,19 +54,6 @@ export function BasicChat() {
       return;
     }
 
-    // setMessages((current) => [
-    //   ...current,
-    //   {
-    //     id: Date.now(),
-    //     content: text,
-    //     createdAt: new Date().toISOString(),
-    //     user: {
-    //       id: 0,
-    //       username: "Me",
-    //       avatar: null,
-    //     },
-    //   },
-    // ]);
     clientRef.current.emit("chat_send", {
       content: text,
     });
@@ -97,13 +85,16 @@ export function BasicChat() {
 
       {messages.map((message) => (
         <div key={message.id}>
-          <p>
-            <strong>{message.user.username}</strong>
-          </p>
-
-          <p>{message.content}</p>
-
-          <small>{new Date(message.createdAt).toLocaleString()}</small>
+          <span className="text-gray-400 text-sm">
+            {new Date(message.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+          <span className="text-fuchsia-400 font-bold mx-1">
+            @{message.user.username}:
+          </span>
+          <span>{message.content}</span>
         </div>
       ))}
 
