@@ -1,4 +1,4 @@
-import { UsersRound } from "lucide-react"
+import { MessageCircle } from "lucide-react"
 import { EmptyStateCard } from "@/components/ui/EmptyCard"
 import { useTranslation } from "react-i18next"
 import { useOutletContext } from "react-router"
@@ -25,7 +25,7 @@ export default function Chat(){
             <section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
                 <EmptyStateCard
                     title={t("chat.title")}
-                    icon={<UsersRound size={24} />}
+                    icon={<MessageCircle size={24} />}
                     message={t("chat.notConnected")}
                     description={t("chat.login")}
                     actions={
