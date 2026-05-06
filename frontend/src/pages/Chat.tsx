@@ -5,19 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
-
-interface User {
-  id: number;
-  email: string;
-  username: string;
-  bio: string | null;
-  avatar: string;
-  wins: number;
-  losses: number;
-  draws: number;
-  xp: number;
-  isTwoFactorEnabled: boolean;
-}
+import type { User } from "@/type/user.types";
 
 export default function Chat() {
   const { t } = useTranslation();

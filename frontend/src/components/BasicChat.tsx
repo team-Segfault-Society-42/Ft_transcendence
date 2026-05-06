@@ -1,19 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/Button";
 import { io } from "socket.io-client";
-
-type UserChat = {
-  id: number;
-  username: string;
-  avatar: string | null;
-};
-
-type ChatMessage = {
-  id: number;
-  content: string;
-  createdAt: string;
-  user: UserChat;
-};
+import type { ChatMessage } from "@/type/user.types";
 
 export function BasicChat() {
   const [content, setContent] = useState("");
@@ -45,21 +33,28 @@ export function BasicChat() {
   }
 
   useEffect(() => {
-    const socket = io(window.location.origin, {
+    const client = io(window.location.origin, {
       path: "/socket.io/",
       transports: ["websocket"],
       withCredentials: true,
     });
 
-    socket.on("connect", () => setConnected(true));
-    socket.on("disconnect", () => setConnected(false));
+    client.on("connect", () => {
+      setConnected(true);
+      client.emit("join_chat");
+    });
+    client.on("disconnect", () => setConnected(false));
 
-    socket.on("connect_error", (error) => {
+    client.on("chat_ready", () => {
+      console.log("Chat ready");
+    });
+
+    client.on("connect_error", (error) => {
       console.error("chat socket error:", error.message);
     });
 
     return () => {
-      socket.disconnect();
+      client.disconnect();
     };
   }, []);
 
