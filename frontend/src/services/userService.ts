@@ -83,6 +83,11 @@ export async function getAchievements(id: number) {
   return response.data
 }
 
+export async function getAllAchievements() {
+  const response = await api.get('users/allAchievements')
+  return response.data
+}
+
 export const userService = {
     getUser,
     updateUser,
@@ -97,6 +102,7 @@ export const userService = {
     getLeaderboard,
     getAchievements,
 	uploadAvatar,
+  getAllAchievements,
 }
 
 export async function uploadAvatar(file: File) {

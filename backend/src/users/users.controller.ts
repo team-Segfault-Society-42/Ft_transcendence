@@ -39,11 +39,17 @@ export class UsersController {
 		private readonly achievementsService: AchievementsService,
 	) {}
 
-	@ApiOperation({ summary: 'Get all of achievements of users' })
-	@Get(':id/achievements')
-	getAchievements(@Param('id', ParseIntPipe) id: number) {
-		return this.achievementsService.getAchievements(id);
-	}
+  @ApiOperation({ summary: 'Get all existing achievements' })
+  @Get('allAchievements')
+  getAllAchievements() {
+    return this.achievementsService.getAllAchievements()
+  }
+
+  @ApiOperation({ summary: 'Get all of achievements of users' })
+  @Get(':id/achievements')
+  getAchievements(@Param('id', ParseIntPipe) id: number) {
+    return this.achievementsService.getAchievements(id);
+  }
 
 	@ApiOperation({ summary: 'Get leaderboard of users' })
 	@Get('leaderboard')
