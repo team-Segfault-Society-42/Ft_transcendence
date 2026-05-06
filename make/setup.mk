@@ -151,8 +151,29 @@ seed: ## Populates the DB with 10 dummy users (Requires the stack to be running)
 _oauth-credentials: # Reads values from oauth-credentials.conf and copies them to relevant secrets
 	@if [ ! -f "oauth-credentials.conf" ]; then \
 		echo "$(BOLD_ORANGE)△ Missing file for automatic setup: $(RES)oauth-credentials.conf"; \
-		echo "$(ORANGE)└─$(RES)Secrets $(MAGENTA)fortytwo_client_id.txt$(RES) and $(MAGENTA)fortytwo_client_secret.txt$(RES) must be set manually."; \
+		echo "$(ORANGE)└─$(RES) Secrets $(MAGENTA)fortytwo_client_id.txt$(RES) and $(MAGENTA)fortytwo_client_secret.txt$(RES) must be set manually."; \
+		echo "   Alternatively, refer to 'oauth-credentials.conf.example' for automatic setup instructions."; \
 	else \
-		
-	fi; \
+		missing=""; \
+		for pair in $(OAUTH_FIELDS); do \
+			field=$$(echo "$$pair" | cut -d= -f1); \
+			val=$$(grep "^$${field}=" oauth-credentials.conf | cut -d= -f2-); \
+			if [ -z "$$val" ]; then \
+				missing="$$missing $$field"; \
+			fi; \
+		done; \
+		if [ -n "$$missing" ]; then \
+			echo "$(BOLD_ORANGE)△ oauth-credentials.conf is misconfigured — missing:$(RES)$$missing"; \
+			echo "$(ORANGE)└─$(RES) Fix it or set the secrets manually."; \
+		else \
+			for pair in $(OAUTH_FIELDS); do \
+				field=$$(echo "$$pair" | cut -d= -f1); \
+				file=$$(echo "$$pair" | cut -d= -f2-); \
+				val=$$(grep "^$${field}=" oauth-credentials.conf | cut -d= -f2-); \
+				echo "$$val" > $(SECRETS_DIR)$$file; \
+				echo "$(GREEN)✓ $(SECRETS_DIR)$$file updated from oauth-credentials.conf$(RES)"; \
+			done; \
+		fi; \
+	fi
 
+.PHONY: _oauth-credentials
