@@ -4,6 +4,12 @@
 
 SECRETS_DIR = secrets/
 
+# ── 42 OAuth field → secret file mapping ─────────────────────────────────────
+# Format: CONF_KEY=secretfilename   (read from oauth-credentials.conf)
+OAUTH_FIELDS = \
+	FORTYTWO_CLIENT_ID=fortytwo_client_id.txt \
+	FORTYTWO_CLIENT_SECRET=fortytwo_client_secret.txt
+
 # ── Add new .env defaults here ────────────────────────────────────────────────
 # Format: KEY=value   (KEY must match KEYs in .env.dev.example and .env.prod.example)
 # Note: if POSTGRES_VERSION is changed, please update it in `make/clean.mk` too
@@ -63,6 +69,8 @@ _check-required-files: # Checks required files exist
 		$(MAKE) --no-print-directory _setup-apply ; \
 	fi; \
 
+.PHONY: setup _check-required-files
+
 # ══════════════════════════════════════════════════════
 #               AUTO BUILD DOTENV FILES
 # ══════════════════════════════════════════════════════
@@ -101,7 +109,10 @@ _setup-apply: # Generate .env.dev and .env.prod and create all secrets
 		*) \
 			exit 0 ;; \
 	esac
+# ── 42 OAuth Secrets ────────────────────────────────────────────────
+	@$(MAKE) --no-print-directory _oauth-credentials ;
 
+.PHONY: _setup-apply
 
 # ══════════════════════════════════════════════════════
 #             DOMAIN AUTOMATIC CONFIGURATION
@@ -131,4 +142,17 @@ _domain-prod: # Prompt user and setup DOMAIN in .env.prod
 seed: ## Populates the DB with 10 dummy users (Requires the stack to be running) [DEV]
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) exec backend npx prisma db seed
 
-.PHONY: setup _setup-apply _check-required-files seed _domain-dev _domain-prod
+.PHONY: _domain-dev _domain-prod
+
+# ══════════════════════════════════════════════════════
+#            42 OAUTH AUTOMATIC CONFIGURATION
+# ══════════════════════════════════════════════════════
+
+_oauth-credentials: # Reads values from oauth-credentials.conf and copies them to relevant secrets
+	@if [ ! -f "oauth-credentials.conf" ]; then \
+		echo "$(BOLD_ORANGE)△ Missing file for automatic setup: $(RES)oauth-credentials.conf"; \
+		echo "$(ORANGE)└─$(RES)Secrets $(MAGENTA)fortytwo_client_id.txt$(RES) and $(MAGENTA)fortytwo_client_secret.txt$(RES) must be set manually."; \
+	else \
+		
+	fi; \
+
