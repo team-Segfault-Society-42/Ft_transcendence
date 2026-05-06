@@ -74,6 +74,7 @@
     "profile": {
       "loading": "Cargando...",
       "level": "Nivel {{level}}",
+      "achievement": "Logros",
       "stats": {
         "wins": "Victorias",
         "losses": "Derrotas",
