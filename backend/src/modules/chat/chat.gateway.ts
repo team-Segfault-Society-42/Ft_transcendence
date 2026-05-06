@@ -42,6 +42,18 @@ export class ChatGateway {
     @MessageBody() body: { content: string },
     @ConnectedSocket() client: AuthSocket,
   ) {
+    const rawContent = typeof body.content === 'string' ? body.content : '';
+    const content = rawContent.trim();
+
+    if (content.length === 0) {
+      client.emit('chat_error', { error: 'Message cannot be empty' });
+      return;
+    }
+
+    if (content.length > 500) {
+      client.emit('chat_error', { error: 'Message too long (max 500!)' });
+      return;
+    }
     const message = {
       id: Date.now(),
       content: body.content,

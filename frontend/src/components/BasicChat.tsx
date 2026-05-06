@@ -36,6 +36,10 @@ export function BasicChat() {
       console.error("chat socket error:", error.message);
     });
 
+    client.on("chat_error", (error) => {
+      console.error("Error:", error.error);
+    });
+
     return () => {
       client.disconnect();
       clientRef.current = null;
