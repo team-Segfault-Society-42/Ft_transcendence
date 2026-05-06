@@ -97,7 +97,8 @@
             "viewProfile": "View profile",
             "noBio": "No bio yet"
         },
-        "xp": "{{current}} / {{max}} XP"
+        "xp": "{{current}} / {{max}} XP",
+        "emptyBio": "Click edit profile to add a biography"
     },
 
     "leaderboard":{
