@@ -74,6 +74,7 @@
     "profile": {
         "loading": "Loading...",
         "level": "Level {{level}}",
+        "achievement": "Achievements",
         "stats": {
             "wins": "Wins",
             "losses": "Losses",

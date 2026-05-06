@@ -15,6 +15,7 @@ import { LevelProgress } from "@/components/ui/Level";
 import { Username } from "@/components/ui/Username";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useNavigate } from "react-router-dom";
+import { AchievementIcon } from "@/components/ui/AchievementIcons";
 
 interface User {
   id: number;
@@ -26,6 +27,13 @@ interface User {
   avatar: string;
   xp: number;
   isTwoFactorEnabled: boolean;
+}
+
+interface Achievement {
+  key: string;
+  displayName: string;
+  description: string;
+  iconName: string;
 }
 
 export default function Profile() {
@@ -40,6 +48,9 @@ export default function Profile() {
   const [userName, setUserName] = useState(user?.username || "");
   const [bio, setBio] = useState(user?.bio || "");
   const [loading, setLoading] = useState(true);
+
+  const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([])
+  const [allAchievements, setAllAchievements] = useState<Achievement[]>([]);
   //   const navigate = useNavigate()
 
   const [twoFactorCode, setTwoFactorCode] = useState("");
@@ -54,6 +65,28 @@ export default function Profile() {
     if (user) {
       setUserName(user.username);
       setBio(user.bio);
+
+      async function fetchAllAchievments() {
+        try {
+          const data = await userService.getAllAchievements()
+          setAllAchievements(data)
+        } catch (error) {
+          console.error("Failed to fetch all achievements: ", error)
+        }
+      }
+      fetchAllAchievments()
+
+      async function fetchAchievements() {
+        try {
+          const data = await userService.getAchievements(user!.id)
+          if (Array.isArray(data)) {
+            setUnlockedAchievements(data.map((a: any) => a.achievementId || a));
+          }
+        } catch (error) {
+          console.error("Failed to fetch achievements: ", error)
+        }
+      }
+      fetchAchievements()
 
       async function fetchhistory() {
         try {
@@ -232,9 +265,7 @@ export default function Profile() {
             />
           ) : (
             <h1 className="text-2xl font-bold tracking-wide">
-              <Username
-                name={user.username}
-                variant="profile"/>
+              <Username name={user.username} variant="profile" />
             </h1>
           )}
         </div>
@@ -262,6 +293,43 @@ export default function Profile() {
         {/* Level */}
         <LevelProgress xp={user.xp} />
 
+        {/* Achievements */}
+        <div className="mt-8">
+          <p className="text-white/50 text-sm mb-4">
+            {t("profile.achievement")}
+          </p>
+          <div className="grid grid-cols-4 gap-4">
+            {allAchievements.map((ach) => {
+              const isUnlocked = unlockedAchievements.includes(ach.key);
+
+              return (
+                <div
+                  key={ach.key}
+                  className="group relative flex flex-col items-center"
+                >
+                  <div
+                    className={`p-3 rounded-xl border transition-all ${
+                      isUnlocked
+                        ? "bg-cyan-500/10 border-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.2)]"
+                        : "bg-white/5 border-white/10 opacity-30 grayscale"
+                    }`}
+                  >
+                    <AchievementIcon
+                      iconName={ach.iconName}
+                      isUnlocked={isUnlocked}
+                      size={24}
+                    />
+                  </div>
+
+                  <div className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-black/90 p-2 rounded text-[10px] z-50 pointer-events-none">
+                    <p className="font-bold text-cyan-400">{ach.displayName}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* BIO */}
         <div className="mt-8">
           <p className="text-white/50 text-sm mb-2">{t("profile.bio")}</p>
@@ -279,9 +347,7 @@ export default function Profile() {
         </div>
         {/* 2FA */}
         <div className="mt-8">
-          <p className="text-white/50 text-sm mb-2">
-            {t("auth.twofa.title")}
-          </p>
+          <p className="text-white/50 text-sm mb-2">{t("auth.twofa.title")}</p>
 
           {user.isTwoFactorEnabled ? (
             <div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
@@ -345,9 +411,7 @@ export default function Profile() {
 
         {/* BUTTON */}
         <Button onClick={handleSave} className="mt-8">
-          {isEdit 
-            ? t("profile.buttons.save")
-            : t("profile.buttons.edit")}
+          {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
         </Button>
       </div>
     </section>

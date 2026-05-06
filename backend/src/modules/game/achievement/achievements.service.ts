@@ -26,6 +26,10 @@ export class AchievementsService {
     });
   }
 
+  async getAllAchievements() {
+    return Object.values(ACHIEVEMENTS)
+  }
+
   async getAchievements(userId: number) {
     const userAchievement = await this.prismaService.userAchievement.findMany({
       where: { userId: userId },
