@@ -3,7 +3,7 @@
 
     "home": {
         "play":{
-            "title": "Play game",
+            "title": "Play Game",
             "description": "A timeless game of strategy. Be the first to get 3 in a row and claim victory!"
         },
         "hero":{
@@ -30,7 +30,7 @@
         "chat": "Chat",
         "history": "History",
         "spectate": "Spectate",
-        "rules": "Game rules"
+        "rules": "Game Rules"
     },
 
     "game": {
@@ -50,7 +50,7 @@
         "notConnected": "Not connected",
         "login": "Login to play the game",
         "liveLogin": "Login to see available games",
-        "howToPlay": "Game rules",
+        "howToPlay": "Game Rules",
         "rules": {
             "maxSymbols": {
                 "title": "Max 3 symbols per player",
