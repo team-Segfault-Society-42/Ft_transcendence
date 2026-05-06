@@ -123,6 +123,7 @@ _domain-dev: # Prompt user and setup DOMAIN in .env.dev
 		y|Y|yes|Yes|YES|"") \
 			ip=$$(ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($$i=="src") print $$(i+1)}'); \
 			sed -i "s|^DOMAIN=.*|DOMAIN=$$ip|" .env.dev; \
+			sed -i "s|http://[0-9.]*:1024|http://$$ip:1024|g" .env.dev; \
 			echo "       Using custom DOMAIN: '$(GOLD)$$ip$(RES)'\n";; \
 		*) \
 			echo "       Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'\n";; \
@@ -134,6 +135,7 @@ _domain-prod: # Prompt user and setup DOMAIN in .env.prod
 		y|Y|yes|Yes|YES|"") \
 			ip=$$(ip route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($$i=="src") print $$(i+1)}'); \
 			sed -i "s|^DOMAIN=.*|DOMAIN=$$ip|" .env.prod; \
+			sed -i "s|https://[0-9.]*:8443|https://$$ip:8443|g" .env.prod; \
 			echo "       Using custom DOMAIN: '$(GOLD)$$ip$(RES)'\n";; \
 		*) \
 			echo "       Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'\n";; \
