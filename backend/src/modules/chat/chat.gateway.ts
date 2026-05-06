@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -9,6 +9,7 @@ import {
 import { Server } from 'socket.io';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
+import { SendChatMessageDto } from './dto/chat.dto';
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const parts = rawOrigins.split(',');
@@ -28,6 +29,7 @@ const allowedOrigins = trimmedOrigins.filter(function (origin) {
   },
 })
 @UseGuards(JwtAuthGuard)
+@UsePipes(new ValidationPipe({ whitelist: true }))
 export class ChatGateway {
   @WebSocketServer()
   server!: Server;
@@ -39,21 +41,9 @@ export class ChatGateway {
 
   @SubscribeMessage('chat_send')
   handleChatSend(
-    @MessageBody() body: { content: string },
+    @MessageBody() body: SendChatMessageDto,
     @ConnectedSocket() client: AuthSocket,
   ) {
-    const rawContent = typeof body.content === 'string' ? body.content : '';
-    const content = rawContent.trim();
-
-    if (content.length === 0) {
-      client.emit('chat_error', { error: 'Message cannot be empty' });
-      return;
-    }
-
-    if (content.length > 500) {
-      client.emit('chat_error', { error: 'Message too long (max 500!)' });
-      return;
-    }
     const message = {
       id: Date.now(),
       content: body.content,
