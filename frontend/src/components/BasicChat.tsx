@@ -1,36 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/Button";
-import { io } from "socket.io-client";
+import { io, type Socket } from "socket.io-client";
 import type { ChatMessage } from "@/type/user.types";
 
 export function BasicChat() {
   const [content, setContent] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [connected, setConnected] = useState(false);
-
-  function sendMessage() {
-    const text = content.trim();
-
-    if (text.length === 0) {
-      return;
-    }
-
-    setMessages((current) => [
-      ...current,
-      {
-        id: Date.now(),
-        content: text,
-        createdAt: new Date().toISOString(),
-        user: {
-          id: 0,
-          username: "Me",
-          avatar: null,
-        },
-      },
-    ]);
-
-    setContent("");
-  }
+  const clientRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     const client = io(window.location.origin, {
@@ -38,6 +15,7 @@ export function BasicChat() {
       transports: ["websocket"],
       withCredentials: true,
     });
+    clientRef.current = client;
 
     client.on("connect", () => {
       setConnected(true);
@@ -49,14 +27,47 @@ export function BasicChat() {
       console.log("Chat ready");
     });
 
+    client.on("chat_message", (message) => {
+      console.log(message);
+      setMessages((prev) => [...prev, message]);
+    });
+
     client.on("connect_error", (error) => {
       console.error("chat socket error:", error.message);
     });
 
     return () => {
       client.disconnect();
+      clientRef.current = null;
     };
   }, []);
+
+  function sendMessage() {
+    const text = content.trim();
+
+    if (!clientRef.current || text.length === 0) {
+      return;
+    }
+
+    // setMessages((current) => [
+    //   ...current,
+    //   {
+    //     id: Date.now(),
+    //     content: text,
+    //     createdAt: new Date().toISOString(),
+    //     user: {
+    //       id: 0,
+    //       username: "Me",
+    //       avatar: null,
+    //     },
+    //   },
+    // ]);
+    clientRef.current.emit("chat_send", {
+      content: text,
+    });
+
+    setContent("");
+  }
 
   return (
     <section>

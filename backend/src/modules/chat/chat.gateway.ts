@@ -1,10 +1,13 @@
+import { UseGuards } from '@nestjs/common';
 import {
   ConnectedSocket,
+  MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
@@ -24,6 +27,7 @@ const allowedOrigins = trimmedOrigins.filter(function (origin) {
     credentials: true,
   },
 })
+@UseGuards(JwtAuthGuard)
 export class ChatGateway {
   @WebSocketServer()
   server!: Server;
@@ -31,5 +35,24 @@ export class ChatGateway {
   @SubscribeMessage('join_chat')
   handleJoinChat(@ConnectedSocket() client: AuthSocket) {
     client.emit('chat_ready');
+  }
+
+  @SubscribeMessage('chat_send')
+  handleChatSend(
+    @MessageBody() body: { content: string },
+    @ConnectedSocket() client: AuthSocket,
+  ) {
+    const message = {
+      id: Date.now(),
+      content: body.content,
+      createdAt: new Date().toISOString(),
+      user: {
+        id: client.data.user.sub,
+        username: 'User',
+        avatar: null,
+      },
+    };
+
+    this.server.emit('chat_message', message);
   }
 }
