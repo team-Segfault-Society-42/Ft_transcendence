@@ -10,6 +10,7 @@ import { Server } from 'socket.io';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
 import { SendChatMessageDto } from './dto/chat.dto';
+import { UsersService } from 'src/users/users.service';
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const parts = rawOrigins.split(',');
@@ -34,24 +35,27 @@ export class ChatGateway {
   @WebSocketServer()
   server!: Server;
 
+  constructor(private readonly usersService: UsersService) {}
+
   @SubscribeMessage('join_chat')
   handleJoinChat(@ConnectedSocket() client: AuthSocket) {
     client.emit('chat_ready');
   }
 
   @SubscribeMessage('chat_send')
-  handleChatSend(
+  async handleChatSend(
     @MessageBody() body: SendChatMessageDto,
     @ConnectedSocket() client: AuthSocket,
   ) {
+    const user = await this.usersService.getUser(client.data.user.sub);
     const message = {
       id: Date.now(),
       content: body.content,
       createdAt: new Date().toISOString(),
       user: {
         id: client.data.user.sub,
-        username: 'User',
-        avatar: null,
+        username: user?.username ?? 'Uknow_user',
+        avatar: user?.avatar ?? null,
       },
     };
 

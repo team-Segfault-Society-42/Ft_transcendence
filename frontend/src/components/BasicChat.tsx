@@ -29,7 +29,6 @@ export function BasicChat() {
     });
 
     client.on("chat_message", (message) => {
-      console.log(message);
       setMessages((prev) => [...prev, message]);
     });
 
