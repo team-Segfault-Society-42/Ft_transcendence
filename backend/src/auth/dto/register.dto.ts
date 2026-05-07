@@ -28,8 +28,8 @@ export class RegisterDto {
 		@IsString()
 		@MinLength(3)
 		@MaxLength(20)
-		@Matches(/^[a-zA-Z0-9_]+$/, { 
-        	message: 'Username must not contain spaces' 
+		@Matches(/^[a-zA-Z0-9_]+$/, {
+        	message: 'Username must not contain spaces'
     	})
 		username: string;
 
@@ -42,11 +42,5 @@ export class RegisterDto {
 		@MaxLength(180)
 		bio?: string;
 
-		@ApiPropertyOptional({
-				example: 'default.png',
-				description: 'Optional avatar filename or URL',
-		})
-		@IsOptional()
-		@IsString()
-		avatar?: string;
+
 }
