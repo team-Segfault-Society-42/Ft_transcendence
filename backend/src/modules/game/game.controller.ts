@@ -27,6 +27,11 @@ export class GameController {
     return this.gameService.getGameById(gameId);
   }
 
+  @Post(':id/leave')
+  leaveGame(@Param('id') gameId: string, @Req() req: AuthRequest,) {
+    return this.gameService.leaveGame(gameId, req.user.sub);
+  }
+
   @Get(':id/history')
   getFinishedGameHistory(@Param('id') gameId: string) {
     return this.gameService.getFinishedGamesHistory(gameId);
