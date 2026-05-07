@@ -17,7 +17,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiResponse  } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiResponse, ApiParam  } from '@nestjs/swagger';
 import { MatchesService } from 'src/modules/game/matches.service';
 import { AchievementsService } from 'src/modules/game/achievement/achievements.service';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
@@ -48,6 +48,8 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: 'Get all of achievements of users' })
+  @ApiParam({ name: 'id', description: 'User ID', example: 1 })
+  @ApiResponse({ status: 200, description: 'Return user achievements list' })
   @Get(':id/achievements')
   getAchievements(@Param('id', ParseIntPipe) id: number) {
     return this.achievementsService.getAchievements(id);
