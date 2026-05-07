@@ -1,63 +1,70 @@
-import { Outlet } from "react-router-dom"
-import { Sidebar } from "@/components/layout/Sidebar"
-import { Topbar } from "@/components/layout/Topbar"
-import Footer from "./Footer"
-import { AuthModal } from "@/components/auth/AuthModal"
-import { useEffect, useState } from "react"
-import { userService } from "@/services/userService"
-import { Spinner } from "@/components/ui/Spinner"
-import { useNavigate } from "react-router-dom"
-import { toast } from "sonner"
-import { useTranslation } from "react-i18next"
+import { Outlet } from "react-router-dom";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Topbar } from "@/components/layout/Topbar";
+import Footer from "./Footer";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { useEffect, useState } from "react";
+import { userService } from "@/services/userService";
+import { Spinner } from "@/components/ui/Spinner";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import { Chatbar } from "./Chatbar";
+import { Button } from "../ui/Button";
 
 export default function Dashboard() {
+  const { t } = useTranslation();
 
-  const { t } = useTranslation()
+  const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(
+    null,
+  );
+  const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isChat, setIsChat] = useState(false);
 
-  const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(null)
-  const [user, setUser] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
-
-  const openLogin = () => setActiveModal("login")
-  const closeModals = () => setActiveModal(null)
+  const openLogin = () => setActiveModal("login");
+  const closeModals = () => setActiveModal(null);
+  const handleChatClick = () => setIsChat((prev) => !prev);
 
   useEffect(() => {
     async function getCurrentUser() {
       try {
-        const result = await userService.getMe()
-        setUser(result)
+        const result = await userService.getMe();
+        setUser(result);
       } catch (error: any) {
         if (error.response?.status != 401) {
-          const serverMessage = error.response?.data?.message || error.message
-          const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
-          toast.error(t("auth.errorWithMessage", { message: finalMessage }))
+          const serverMessage = error.response?.data?.message || error.message;
+          const finalMessage = Array.isArray(serverMessage)
+            ? serverMessage[0]
+            : serverMessage;
+          toast.error(t("auth.errorWithMessage", { message: finalMessage }));
         }
-        setUser(null)
+        setUser(null);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
-    getCurrentUser()
-  }, [])
+    getCurrentUser();
+  }, []);
 
-	async function handleLogout() {
-			try {
-				const response = await userService.userLogout()
+  async function handleLogout() {
+    try {
+      const response = await userService.userLogout();
 
-				setUser(null)
-				toast.success(response.message ?? t("auth.logoutSuccess"))
-				navigate("/")
-			} catch {
-				setUser(null)
-			}
-		}
+      setUser(null);
+      toast.success(response.message ?? t("auth.logoutSuccess"));
+      navigate("/");
+    } catch {
+      setUser(null);
+    }
+  }
 
   async function handleLoginSuccess() {
-    const result = await userService.getMe()
-    setUser(result)
-    closeModals()
+    const result = await userService.getMe();
+    setUser(result);
+    closeModals();
   }
 
   if (isLoading) {
@@ -65,16 +72,14 @@ export default function Dashboard() {
       <div className="h-screen flex items-center justify-center ">
         <Spinner variant="cyan" size="lg" />
       </div>
-    )
+    );
   }
 
   return (
     <div className="flex h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white">
-
       <Sidebar />
 
       <div className="flex-1 flex flex-col">
-
         <Topbar
           user={user}
           onLoginClick={openLogin}
@@ -86,7 +91,6 @@ export default function Dashboard() {
         </main>
 
         <Footer />
-
       </div>
 
       {/* MODAL GLOBAL */}
@@ -100,6 +104,10 @@ export default function Dashboard() {
         onSuccess={handleLoginSuccess}
       />
 
+      <Button onClick={handleChatClick} className="fixed bottom-6 right-6 z-50">
+        {!isChat ? "Open chat" : "close chat"}
+      </Button>
+      {user && isChat && <Chatbar />}
     </div>
-  )
+  );
 }

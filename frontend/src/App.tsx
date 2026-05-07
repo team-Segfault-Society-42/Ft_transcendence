@@ -26,12 +26,13 @@ function App() {
           <Route path="/game/:gameId" element={<Game />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/friends" element={<Friends/>} />
+          <Route path="/friends" element={<Friends />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/history" element={<History />} />
           <Route path="/rules" element={<Rules />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/two-factor" element={<TwoFactorLogin />} />
         </Route>
       </Routes>
