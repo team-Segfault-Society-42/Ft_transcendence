@@ -18,7 +18,7 @@ interface User {
   	xp?: number;
 }
 
-export default function Lobby() {
+export default function Play() {
 	
   	const { t } = useTranslation();
   	const [user] = useOutletContext<[User | null]>();

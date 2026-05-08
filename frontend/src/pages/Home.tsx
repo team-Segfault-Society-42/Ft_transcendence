@@ -75,7 +75,7 @@ export default function Home() {
     </Link>
 
     {user ? (
-  		<Link to="/lobby">
+  		<Link to="/play">
     		<PlayCard createGame={createGame} user={user} />
   		</Link>
 	) : (

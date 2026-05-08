@@ -8,7 +8,7 @@ export function Sidebar() {
 
   const links = [
     { to: "/", label: "sidebar.home", icon: House },
-    { to: "/lobby", label: "sidebar.game", icon: Gamepad2 },
+    { to: "/play", label: "sidebar.game", icon: Gamepad2 },
     { to: "/spectate", label: "sidebar.spectate", icon: Binoculars },
     { to: "/profile", label: "sidebar.profile", icon: UserRound },
     { to: "/leaderboard", label: "sidebar.leaderboard", icon: Trophy },
