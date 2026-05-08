@@ -119,7 +119,7 @@ export default function Play() {
         {/* MY GAMES */}
         	<Card className="h-full relative flex items-center justify-center bg-slate-900">
           		<CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-            		My Games
+            		{t("play.title")}
           		</CardTitle>
 
           		<div className="mt-8 flex flex-col gap-6">
@@ -131,37 +131,37 @@ export default function Play() {
                     <Plus className="text-cyan-400" size={20} />
 
                     <p className="font-medium text-white">
-                      Create a new game
+                      {t("play.subtitle")}
                     </p>
                   </div>
 
                   <p className="text-sm text-white/50 mb-6">
-                    Create a lobby and invite another player.
+                    {t("play.desc")}
                   </p>
 
                   <Button
                     className="w-full"
                     onClick={handleCreateGame}
                   >
-                    Create Game
+                    {t("play.create")}
                   </Button>
                 </div>
 
                 {/* EMPTY */}
                 <div className="bg-white/5 border border-white/10 rounded-xl p-6">
                   <p className="text-white/30 text-sm italic text-center">
-                    No active games
+                    {t("play.empty")}
                   </p>
                 </div>
               </>
             ) : (
               <div className="bg-white/5 border border-cyan-500/20 rounded-xl p-6">
                 <p className="text-center text-white font-medium mb-2">
-                  Waiting for opponent to join...
+                  {t("play.waiting")}
                 </p>
 
                 <p className="text-center text-sm text-white/50 mb-6">
-                  Share this link to invite someone:
+                  {t("play.share")}
                 </p>
 
                 <div className="flex gap-4 mb-6">
@@ -172,7 +172,7 @@ export default function Play() {
                   />
 
                   <Button onClick={handleCopyLink}>
-                    Copy
+                    {t("play.copy")}
                   </Button>
                 </div>
 
@@ -181,7 +181,7 @@ export default function Play() {
                     variant="danger"
                     onClick={handleCancelGame}
                   >
-                    Cancel Game
+                    {t("play.cancel")}
                   </Button>
                 </div>
               </div>

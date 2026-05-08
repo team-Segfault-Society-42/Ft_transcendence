@@ -2,134 +2,146 @@
     "title": "ft_transcendence",
   
     "home": {
-      "play": {
-        "title": "Jugar una partida",
-        "description": "Un juego de estrategia atemporal. ¡Sé el primero en conseguir 3 en línea y gana la partida!"
-      },
-      "hero": {
-        "title": "Tres En Raya",
-        "texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
-      },
-      "buttons": {
-        "register": "Registrarse",
-        "login": "Ingresar",
-        "start": "INICIAR PARTIDA",
-        "hi": "Hola, ",
-        "create": "Crear una partida",
-        "join": "Unirse a una partida"
-      }
+      	"play": {
+        	"title": "Jugar una partida",
+        	"description": "Un juego de estrategia atemporal. ¡Sé el primero en conseguir 3 en línea y gana la partida!"
+      	},
+      	"hero": {
+        	"title": "Tres En Raya",
+        	"texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
+      	},
+		"buttons": {
+			"register": "Registrarse",
+			"login": "Ingresar",
+			"start": "INICIAR PARTIDA",
+			"hi": "Hola, ",
+			"create": "Crear una partida",
+			"join": "Unirse a una partida"
+		}
     },
   
     "sidebar": {
-      "title": "Panel de control",
-      "home": "Inicio",
-      "game": "Jugar",
-      "profile": "Perfil",
-      "leaderboard": "Clasificación",
-      "friends": "Amigos",
-      "chat": "Chat",
-      "history": "Historial",
-      "spectate": "Mirar",
-      "rules": "Reglas del juego"
+		"title": "Panel de control",
+		"home": "Inicio",
+		"game": "Jugar",
+		"profile": "Perfil",
+		"leaderboard": "Clasificación",
+		"friends": "Amigos",
+		"chat": "Chat",
+		"history": "Historial",
+		"spectate": "Mirar",
+		"rules": "Reglas del juego"
     },
 
     "game": {
-      "title": "Jugar",
-      "liveTitle": "Partidas en directo",
-      "turn": "Turno de {{player}} : {{symbol}}",
-      "vs": "VS",
-      "wins": "¡GANA!",
-      "replay": "Reiniciar",
-      "mode": "Modo 2 jugadores",
-      "reset": "Reiniciar sesión",
-      "result": {
-          "win": "Victoria",
-          "loss": "Derrota",
-          "draw": "Empate"
-      },
-      "notConnected": "No conectado",
-      "login": "Inicia sesión para jugar",
-      "liveLogin": "Inicia sesión para ver las partidas disponibles",
-      "howToPlay": "Reglas del juego",
-      "rules": {
-        "maxSymbols": {
-          "title": "Máximo 3 símbolos por jugador",
-          "desc": "Solo puedes tener hasta 3 símbolos en el tablero"
-        },
-        "disappear": {
-          "title": "El más antiguo desaparece",
-          "desc": "Al colocar un nuevo símbolo, el más antiguo desaparece"
-        },
-        "win": {
-          "title": "Alinea 3 para ganar",
-          "desc": "Consigue 3 símbolos en línea (horizontal, vertical o diagonal)"
-        },
-        "strategy": {
-          "title": "Anticipa tus jugadas",
-          "desc": "Planifica tus movimientos y controla el tablero"
-        }
-      }
+		"title": "Jugar",
+		"liveTitle": "Partidas en directo",
+		"turn": "Turno de {{player}} : {{symbol}}",
+		"vs": "VS",
+		"wins": "¡GANA!",
+		"replay": "Reiniciar",
+		"mode": "Modo 2 jugadores",
+		"reset": "Reiniciar sesión",
+		"result": {
+			"win": "Victoria",
+			"loss": "Derrota",
+			"draw": "Empate"
+      	},
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para jugar",
+		"liveLogin": "Inicia sesión para ver las partidas disponibles",
+		"howToPlay": "Reglas del juego",
+		"rules": {
+			"maxSymbols": {
+				"title": "Máximo 3 símbolos por jugador",
+				"desc": "Solo puedes tener hasta 3 símbolos en el tablero"
+        	},
+			"disappear": {
+				"title": "El más antiguo desaparece",
+				"desc": "Al colocar un nuevo símbolo, el más antiguo desaparece"
+        	},
+        	"win": {
+          		"title": "Alinea 3 para ganar",
+          		"desc": "Consigue 3 símbolos en línea (horizontal, vertical o diagonal)"
+        	},
+        	"strategy": {
+          		"title": "Anticipa tus jugadas",
+          		"desc": "Planifica tus movimientos y controla el tablero"
+        	}
+      	}
     },
   
-    "profile": {
-      "loading": "Cargando...",
-      "level": "Nivel {{level}}",
-      "achievement": "Logros",
-      "stats": {
-        "wins": "Victorias",
-        "losses": "Derrotas",
-        "winrate": "Porcentaje de victorias",
-        "games_zero": "Ninguna partida jugada",
-        "games_one": "{{count}} partida jugadas",
-        "games_other": "{{count}} partidas jugadas",
-        "winrateValue": "{{value}}%"
-      },
-      "bio": "Biografía",
-      "buttons": {
-        "edit": "Editar perfil",
-        "save": "Guardar cambios"
-      },
-      "about": {
-        "title": "Acerca de",
-        "notConnected": "No conectado",
-        "login": "Inicia sesión para ver tu perfil",
-        "guest": "Invitado",
-        "viewProfile": "Ver perfil",
-        "noBio": "Sin biografía"
-      },
-      "xp": "{{current}} / {{max}} XP",
-      "emptyBio": "Haz clic en editar perfil para añadir una biografía"
+    "play": {
+		"title": "Mis partidas",
+		"subtitle": "Crear una nueva partida",
+		"desc": "Crea un lobby e invita a otro jugador.",
+		"create": "Crear partida",
+		"empty": "No hay partidas activas",
+		"waiting": "Esperando a un oponente...",
+		"share": "Comparte este enlace para invitar a alguien:",
+		"copy": "Copiar",
+		"cancel": "Cancelar partida"
     },
 
+    "profile": {
+		"loading": "Cargando...",
+		"level": "Nivel {{level}}",
+		"achievement": "Logros",
+		"stats": {
+			"wins": "Victorias",
+			"losses": "Derrotas",
+			"winrate": "Porcentaje de victorias",
+			"games_zero": "Ninguna partida jugada",
+			"games_one": "{{count}} partida jugadas",
+			"games_other": "{{count}} partidas jugadas",
+			"winrateValue": "{{value}}%"
+		},
+		"bio": "Biografía",
+		"buttons": {
+			"edit": "Editar perfil",
+			"save": "Guardar cambios"
+      	},
+		"about": {
+			"title": "Acerca de",
+			"notConnected": "No conectado",
+			"login": "Inicia sesión para ver tu perfil",
+			"guest": "Invitado",
+			"viewProfile": "Ver perfil",
+			"noBio": "Sin biografía"
+		},
+		"xp": "{{current}} / {{max}} XP",
+		"emptyBio": "Haz clic en editar perfil para añadir una biografía"
+	},
+
     "leaderboard": {
-      "title": "Clasificación",
-      "topXP": "Nivel más alto",
-      "topWins": "Más victorias",
-      "topTotalGames": "Más partidas jugadas",
-      "empty": "No hay jugadores en la clasificación",
-      "xp": "{{value}} XP",
-      "wins": "{{value}} Victorias",
-      "totalGames": "{{value}} Partidas",
-      "notConnected": "No conectado",
-      "login": "Inicia sesión para ver la clasificación"
+		"title": "Clasificación",
+		"topXP": "Nivel más alto",
+		"topWins": "Más victorias",
+		"topTotalGames": "Más partidas jugadas",
+		"empty": "No hay jugadores en la clasificación",
+		"xp": "{{value}} XP",
+		"wins": "{{value}} Victorias",
+		"totalGames": "{{value}} Partidas",
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para ver la clasificación"
     },
 
     "friends":{
-      "title": "Amigos",
-      "notConnected": "No conectado",
-      "login": "Inicia sesión para ver tus amigos"
+		"title": "Amigos",
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para ver tus amigos"
     },
 
     "chat":{
-      "title": "Chat",
-      "notConnected": "No conectado",
-      "login": "Inicia sesión para ver el chat"
+		"title": "Chat",
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para ver el chat"
     },
 
     "history": {
-      "title": "Historial de partidas",
-      "notConnected": "No conectado",
-      "login": "Inicia sesión para ver tu historial"
+		"title": "Historial de partidas",
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para ver tu historial"
     },
 
     "buttons": {

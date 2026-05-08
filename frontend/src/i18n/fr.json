@@ -71,6 +71,18 @@
         }
     },
 
+    "play": {
+        "title": "Mes parties",
+        "subtitle": "Créer une nouvelle partie",
+        "desc": "Créez un lobby et invitez un autre joueur",
+        "create": "Créer une partie",
+        "empty": "Aucune partie active",
+        "waiting": "En attente d'un adversaire...",
+        "share": "Partagez ce lien pour inviter quelqu’un :",
+        "copy": "Copier",
+        "cancel": "Annuler la partie"
+    },
+
     "profile": {
         "loading": "Chargement...",
         "level": "Niveau {{level}}",
