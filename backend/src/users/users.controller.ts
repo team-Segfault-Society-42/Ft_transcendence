@@ -17,7 +17,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags, ApiOperation, ApiConsumes, ApiBody  } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiResponse, ApiParam, ApiQuery  } from '@nestjs/swagger';
 import { MatchesService } from 'src/modules/game/matches.service';
 import { AchievementsService } from 'src/modules/game/achievement/achievements.service';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
@@ -25,6 +25,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import type { AuthRequest } from '../auth/jwt-auth.guard';
 import { AVATAR_MAX_FILE_SIZE } from './avatar.constants';
 import { AvatarUploadExceptionFilter } from './avatar-upload.exception-filter';
+import { AchievementDto } from './dto/achievements.dto';
 
 
 type SortBy = 'xp' | 'wins' | 'totalGames';
@@ -40,18 +41,27 @@ export class UsersController {
 	) {}
 
   @ApiOperation({ summary: 'Get all existing achievements' })
+  @ApiResponse({ status: 200, type: [AchievementDto] })
   @Get('allAchievements')
   getAllAchievements() {
     return this.achievementsService.getAllAchievements()
   }
 
   @ApiOperation({ summary: 'Get all of achievements of users' })
+  @ApiParam({ name: 'id', description: 'User ID', example: 1 })
+  @ApiResponse({ status: 200, description: 'Return user achievements list' })
   @Get(':id/achievements')
   getAchievements(@Param('id', ParseIntPipe) id: number) {
     return this.achievementsService.getAchievements(id);
   }
 
 	@ApiOperation({ summary: 'Get leaderboard of users' })
+	@ApiQuery({
+		name: 'sortBy',
+		enum: ['xp', 'wins', 'totalGames'],
+		required: false,
+		description: 'Criteria to sort the leaderboard'
+	})
 	@Get('leaderboard')
 	getLeaderboard(@Query('sortBy') sortBy?: SortBy) {
 		const allowedSorts: SortBy[] = ['xp', 'wins', 'totalGames'];
