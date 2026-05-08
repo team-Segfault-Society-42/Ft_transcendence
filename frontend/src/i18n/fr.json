@@ -72,15 +72,26 @@
     },
 
     "play": {
-        "title": "Mes parties",
-        "subtitle": "Créer une nouvelle partie",
-        "desc": "Créez un lobby et invitez un autre joueur",
-        "create": "Créer une partie",
-        "empty": "Aucune partie active",
-        "waiting": "En attente d'un adversaire...",
-        "share": "Partagez ce lien pour inviter quelqu’un :",
-        "copy": "Copier",
-        "cancel": "Annuler la partie"
+        "myGames": {
+            "title": "Mes parties",
+            "subtitle": "Créer une nouvelle partie",
+            "desc": "Créez un lobby et invitez un autre joueur",
+            "create": "Créer une partie",
+            "empty": "Aucune partie active",
+            "waiting": "En attente d'un adversaire...",
+            "share": "Partagez ce lien pour inviter quelqu’un :",
+            "copy": "Copier",
+            "cancel": "Annuler la partie"
+        },
+        "availGames": {
+            "title": "Parties disponibles",
+            "subtitle": "Parties publiques",
+            "desc": "Rejoignez un lobby en attente créé par un autre joueur",
+            "refresh": "Rafraîchir les parties",
+            "empty": "Aucune partie disponible",
+            "waiting": "En attente d'un adversaire",
+            "join": "Rejoindre"
+        }
     },
 
     "profile": {

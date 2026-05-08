@@ -72,15 +72,26 @@
     },
 
     "play": {
-        "title": "My Games",
-        "subtitle": "Create a new game",
-        "desc": "Create a lobby and invite another player",
-        "create": "Create Game",
-        "empty": "No active games",
-        "waiting": "Waiting for an opponent to join...",
-        "share": "Share this link to invite someone :",
-        "copy": "Copy",
-        "cancel": "Cancel Game"
+        "myGames": {
+            "title": "My Games",
+            "subtitle": "Create a new game",
+            "desc": "Create a lobby and invite another player",
+            "create": "Create Game",
+            "empty": "No active games",
+            "waiting": "Waiting for an opponent to join...",
+            "share": "Share this link to invite someone :",
+            "copy": "Copy",
+            "cancel": "Cancel Game"
+        },
+        "availGames": {
+            "title": "Available Games",
+            "subtitle": "Public games",
+            "desc": "Join a waiting lobby created by another player",
+            "refresh": "Refresh Games",
+            "empty": "No available games",
+            "waiting": "Waiting for an opponent",
+            "join": "Join"
+        }
     },
 
     "profile": {
