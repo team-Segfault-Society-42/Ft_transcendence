@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  BadRequestException
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { GameState, PlayerRole, PublicPlayerProfile } from './game.types';
@@ -45,12 +46,13 @@ export class GameService {
     return null;
   }
 
-  createGame(userId: number): string {
-    const active = this.findActiveGameByUserId(userId);
+  createGame(user: PublicPlayerProfile): string {
+    const active = this.findActiveGameByUserId(user.id);
     if (active) throw new ConflictException('User already has an active game');
     const gameId = randomUUID();
     const newGame = initGameState();
-    newGame.players.X.ownerUserId = userId;
+    newGame.players.X.ownerUserId = user.id;
+    newGame.playerProfiles.X = user;
     this.activeGame.set(gameId, newGame);
     return gameId;
   }
@@ -264,7 +266,7 @@ export class GameService {
     return game;
   }
 
-  getLiveGames() {
+  getLiveGames(userId: number) {
     const waiting: { gameId: string; playerX: PublicPlayerProfile | null }[] =
       [];
     const playing: {
@@ -274,7 +276,7 @@ export class GameService {
     }[] = [];
     const allGames = [...this.activeGame.entries()];
     for (const [gameId, game] of allGames) {
-      if (game.status === 'waiting')
+      if (game.status === 'waiting' && game.players.X.ownerUserId !== userId)
         waiting.push({ gameId, playerX: game.playerProfiles.X });
       else if (game.status === 'playing')
         playing.push({
@@ -292,6 +294,10 @@ export class GameService {
   ): { deleted: boolean; game: GameState | null } {
     const game = this.getMutableGameById(gameId);
     const role = getPlayerRoleByUserId(game, userId);
+
+    // playing
+    if (game.status === 'playing')
+      throw new BadRequestException('Cant delete game pplaying');
 
     if (game.status === 'waiting' && role === 'X') {
       this.activeGame.delete(gameId);

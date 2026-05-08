@@ -1,14 +1,19 @@
 import { Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { GameService } from './game.service';
 import type { AuthRequest } from 'src/auth/jwt-auth.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('game')
 export class GameController {
-  constructor(private readonly gameService: GameService) {}
+  constructor(
+    private readonly gameService: GameService,
+    private readonly usersService: UsersService
+  ){}
 
   @Post('create')
-  createGame(@Req() req: AuthRequest) {
-    const gameId = this.gameService.createGame(req.user.sub);
+  async createGame(@Req() req: AuthRequest) {
+    const user = await this.usersService.getUser(req.user.sub);
+    const gameId = this.gameService.createGame(user);
     return { gameId };
   }
 
@@ -18,8 +23,8 @@ export class GameController {
   }
 
   @Get('liveGames')
-  getLiveGames() {
-    return this.gameService.getLiveGames();
+  getLiveGames(@Req() req: AuthRequest) {
+    return this.gameService.getLiveGames(req.user.sub);
   }
 
   @Get(':id')
