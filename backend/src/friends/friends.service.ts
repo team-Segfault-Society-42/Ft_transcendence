@@ -63,7 +63,7 @@ export class FriendsService {
 			},
 		});
 	}
-	
+
 	async getIncomingRequests(userId: number) {
 		const requests = await this.prisma.friend.findMany({
 			where: {
@@ -94,6 +94,40 @@ export class FriendsService {
 		return requests.map((request) => ({
 			requestId: request.id,
 			sender: request.sender,
+			createdAt: request.createdAt,
+		}));
+	}
+
+	async getOutgoingRequests(userId: number) {
+		const requests = await this.prisma.friend.findMany({
+			where: {
+				senderId: userId,
+				status: FriendStatus.PENDING,
+			},
+			select: {
+				id: true,
+				createdAt: true,
+				receiver: {
+					select: {
+						id: true,
+						username: true,
+						bio: true,
+						avatar: true,
+						wins: true,
+						losses: true,
+						draws: true,
+						xp: true,
+					},
+				},
+			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+		});
+
+		return requests.map((request) => ({
+			requestId: request.id,
+			receiver: request.receiver,
 			createdAt: request.createdAt,
 		}));
 	}

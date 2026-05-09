@@ -37,4 +37,10 @@ export class FriendsController {
 	getIncomingRequests(@Req() req: AuthRequest) {
 		return this.friendsService.getIncomingRequests(req.user.sub);
 	}
+
+	@ApiOperation({ summary: 'List outgoing friend requests' })
+	@Get('requests/outgoing')
+	getOutgoingRequests(@Req() req: AuthRequest) {
+		return this.friendsService.getOutgoingRequests(req.user.sub);
+	}
 }
