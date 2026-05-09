@@ -25,6 +25,14 @@ export class FriendsController {
 		description: 'Target user ID',
 		example: 2,
 	})
+	@ApiResponse({
+		status: 201,
+		description: 'Friend request sent successfully',
+	})
+	@ApiResponse({
+		status: 409,
+		description: 'Friend request already exists',
+	})
 	@Post('requests/:userId')
 	sendFriendRequest(
 		@Param('userId', ParseIntPipe) userId: number,
