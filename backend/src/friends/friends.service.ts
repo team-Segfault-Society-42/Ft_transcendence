@@ -5,7 +5,7 @@ import {
 	NotFoundException,
 	ForbiddenException,
 } from '@nestjs/common';
-import { FriendStatus } from '@prisma/client';
+import { FriendStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { FriendRequestAction } from './dto/respond-friend-request.dto';
 
@@ -55,26 +55,39 @@ export class FriendsService {
 			);
 		}
 
-		const request = await this.prisma.friend.create({
-			data: {
-				senderId,
-				receiverId,
-				userAId,
-				userBId,
-				status: FriendStatus.PENDING,
-			},
-			select: {
-				id: true,
-				status: true,
-				createdAt: true,
-			},
-		});
+		try {
+			const request = await this.prisma.friend.create({
+				data: {
+					senderId,
+					receiverId,
+					userAId,
+					userBId,
+					status: FriendStatus.PENDING,
+				},
+				select: {
+					id: true,
+					status: true,
+					createdAt: true,
+				},
+			});
 
-		return {
-			requestId: request.id,
-			status: request.status,
-			createdAt: request.createdAt,
-		};
+			return {
+				requestId: request.id,
+				status: request.status,
+				createdAt: request.createdAt,
+			};
+		} catch (error) {
+			if (
+				error instanceof Prisma.PrismaClientKnownRequestError &&
+				error.code === 'P2002'
+			) {
+				throw new ConflictException(
+					'Friend request or friendship already exists',
+				);
+			}
+
+			throw error;
+		}
 	}
 
 	async getIncomingRequests(userId: number) {
@@ -83,6 +96,7 @@ export class FriendsService {
 				receiverId: userId,
 				status: FriendStatus.PENDING,
 			},
+			take: 100,
 			select: {
 				id: true,
 				createdAt: true,
@@ -117,6 +131,7 @@ export class FriendsService {
 				senderId: userId,
 				status: FriendStatus.PENDING,
 			},
+			take: 100,
 			select: {
 				id: true,
 				createdAt: true,
@@ -211,6 +226,7 @@ export class FriendsService {
 					{ receiverId: userId },
 				],
 			},
+			take: 100,
 			select: {
 				id: true,
 				createdAt: true,
