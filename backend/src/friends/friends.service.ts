@@ -3,9 +3,11 @@ import {
 	ConflictException,
 	Injectable,
 	NotFoundException,
+	ForbiddenException,
 } from '@nestjs/common';
 import { FriendStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { FriendRequestAction } from './dto/respond-friend-request.dto';
 
 @Injectable()
 export class FriendsService {
@@ -130,5 +132,53 @@ export class FriendsService {
 			receiver: request.receiver,
 			createdAt: request.createdAt,
 		}));
+	}
+
+	async respondToFriendRequest(
+		userId: number,
+		requestId: number,
+		action: FriendRequestAction,
+	) {
+		const request = await this.prisma.friend.findUnique({
+			where: { id: requestId },
+			select: {
+				id: true,
+				receiverId: true,
+				status: true,
+			},
+		});
+
+		if (!request) {
+			throw new NotFoundException('Friend request not found');
+		}
+
+		if (request.receiverId !== userId) {
+			throw new ForbiddenException(
+				'You can only respond to friend requests sent to you',
+			);
+		}
+
+		if (request.status !== FriendStatus.PENDING) {
+			throw new ConflictException('Friend request is not pending');
+		}
+
+		if (action === FriendRequestAction.DECLINE) {
+			await this.prisma.friend.delete({
+				where: { id: requestId },
+			});
+
+			return {
+				message: 'Friend request declined',
+			};
+		}
+
+		const updatedRequest = await this.prisma.friend.update({
+			where: { id: requestId },
+			data: {
+				status: FriendStatus.ACCEPTED,
+			},
+		});
+
+		return updatedRequest;
 	}
 }
