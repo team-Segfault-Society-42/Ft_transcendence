@@ -1,0 +1,66 @@
+import {
+	BadRequestException,
+	ConflictException,
+	Injectable,
+	NotFoundException,
+} from '@nestjs/common';
+import { FriendStatus } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Injectable()
+export class FriendsService {
+	constructor(private readonly prisma: PrismaService) {}
+
+	async sendFriendRequest(senderId: number, receiverId: number) {
+		if (senderId === receiverId) {
+			throw new BadRequestException(
+				'You cannot send a friend request to yourself',
+			);
+		}
+
+		const receiver = await this.prisma.user.findUnique({
+			where: { id: receiverId },
+			select: { id: true },
+		});
+
+		if (!receiver) {
+			throw new NotFoundException('User not found');
+		}
+
+		const userAId = Math.min(senderId, receiverId);
+		const userBId = Math.max(senderId, receiverId);
+
+		const existingFriendship = await this.prisma.friend.findUnique({
+			where: {
+				userAId_userBId: {
+					userAId,
+					userBId,
+				},
+			},
+			select: {
+				id: true,
+				status: true,
+			},
+		});
+
+		if (existingFriendship) {
+			if (existingFriendship.status === FriendStatus.ACCEPTED) {
+				throw new ConflictException('Users are already friends');
+			}
+
+			throw new ConflictException(
+				'Friend request already exists',
+			);
+		}
+
+		return this.prisma.friend.create({
+			data: {
+				senderId,
+				receiverId,
+				userAId,
+				userBId,
+				status: FriendStatus.PENDING,
+			},
+		});
+	}
+}
