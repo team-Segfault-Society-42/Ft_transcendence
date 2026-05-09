@@ -63,4 +63,38 @@ export class FriendsService {
 			},
 		});
 	}
+	
+	async getIncomingRequests(userId: number) {
+		const requests = await this.prisma.friend.findMany({
+			where: {
+				receiverId: userId,
+				status: FriendStatus.PENDING,
+			},
+			select: {
+				id: true,
+				createdAt: true,
+				sender: {
+					select: {
+						id: true,
+						username: true,
+						bio: true,
+						avatar: true,
+						wins: true,
+						losses: true,
+						draws: true,
+						xp: true,
+					},
+				},
+			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+		});
+
+		return requests.map((request) => ({
+			requestId: request.id,
+			sender: request.sender,
+			createdAt: request.createdAt,
+		}));
+	}
 }

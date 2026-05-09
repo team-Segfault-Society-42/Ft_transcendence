@@ -1,6 +1,7 @@
 import {
 	Controller,
 	Post,
+	Get,
 	Param,
 	ParseIntPipe,
 	Req,
@@ -29,5 +30,11 @@ export class FriendsController {
 			req.user.sub,
 			userId,
 		);
+	}
+
+	@ApiOperation({ summary: 'List incoming friend requests' })
+	@Get('requests/incoming')
+	getIncomingRequests(@Req() req: AuthRequest) {
+		return this.friendsService.getIncomingRequests(req.user.sub);
 	}
 }
