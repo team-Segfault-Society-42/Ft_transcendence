@@ -55,7 +55,7 @@ export class FriendsService {
 			);
 		}
 
-		return this.prisma.friend.create({
+		const request = await this.prisma.friend.create({
 			data: {
 				senderId,
 				receiverId,
@@ -63,7 +63,18 @@ export class FriendsService {
 				userBId,
 				status: FriendStatus.PENDING,
 			},
+			select: {
+				id: true,
+				status: true,
+				createdAt: true,
+			},
 		});
+
+		return {
+			requestId: request.id,
+			status: request.status,
+			createdAt: request.createdAt,
+		};
 	}
 
 	async getIncomingRequests(userId: number) {
@@ -177,9 +188,18 @@ export class FriendsService {
 			data: {
 				status: FriendStatus.ACCEPTED,
 			},
+			select: {
+				id: true,
+				status: true,
+				updatedAt: true,
+			},
 		});
 
-		return updatedRequest;
+		return {
+			friendshipId: updatedRequest.id,
+			status: updatedRequest.status,
+			updatedAt: updatedRequest.updatedAt,
+		};
 	}
 
 	async getFriends(userId: number) {
