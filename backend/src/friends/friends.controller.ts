@@ -9,7 +9,7 @@ import {
 	Body,
 	Delete,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiTags, ApiResponse } from '@nestjs/swagger';
 import type { AuthRequest } from '../auth/jwt-auth.guard';
 import { FriendsService } from './friends.service';
 import { RespondFriendRequestDto } from './dto/respond-friend-request.dto';
