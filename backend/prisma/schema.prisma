@@ -12,26 +12,30 @@ datasource db {
 }
 
 model User {
-  id                  Int            @id @default(autoincrement())
-  email               String         @unique
-  passwordHash        String?
-  username            String         @unique
-  bio                 String?
-  avatar              String
-  wins                Int            @default(0)
-  losses              Int            @default(0)
-  draws               Int            @default(0)
-  xp                  Int            @default(0)
-  totalGames          Int            @default(0)
-  isTwoFactorEnabled  Boolean        @default(false)
-  twoFactorSecret     String?
-  twoFactorTempSecret String?
-  gameAsP1            Game[]         @relation("player1")
-  gameAsP2            Game[]         @relation("player2")
-  wonGamees           Game[]         @relation("asWinner")
-  moves               Move[]
-  oauthAccounts       OAuthAccount[]
-  achievements        UserAchievement[]
+  id                     Int               @id @default(autoincrement())
+  email                  String            @unique
+  passwordHash           String?
+  username               String            @unique
+  bio                    String?
+  avatar                 String
+  wins                   Int               @default(0)
+  losses                 Int               @default(0)
+  draws                  Int               @default(0)
+  xp                     Int               @default(0)
+  totalGames             Int               @default(0)
+  isTwoFactorEnabled     Boolean           @default(false)
+  twoFactorSecret        String?
+  twoFactorTempSecret    String?
+  gameAsP1               Game[]            @relation("player1")
+  gameAsP2               Game[]            @relation("player2")
+  wonGamees              Game[]            @relation("asWinner")
+  moves                  Move[]
+  oauthAccounts          OAuthAccount[]
+  achievements           UserAchievement[]
+  sentFriendRequests     Friend[]          @relation("FriendSender")
+  receivedFriendRequests Friend[]          @relation("FriendReceiver")
+  friendPairsAsA         Friend[]          @relation("FriendUserA")
+  friendPairsAsB         Friend[]          @relation("FriendUserB")
 }
 
 model OAuthAccount {
@@ -41,46 +45,74 @@ model OAuthAccount {
   userId         Int
   createdAt      DateTime @default(now())
 
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerUserId])
 }
 
 model Game {
-  id           Int      @id @default(autoincrement())
-  player1      User     @relation("player1", fields: [player1Id], references: [id])
-  player1Id    Int
-  player2      User     @relation("player2", fields: [player2Id], references: [id])
-  player2Id    Int
-  winner       User?    @relation("asWinner", fields: [winnerId], references: [id])
-  winnerId     Int?
-  scoresP1     Int      @default(0)
-  scoresP2     Int      @default(0)
-  date         DateTime @default(now())
-  endReason    String?
-  moves        Move[]
-
+  id        Int      @id @default(autoincrement())
+  player1   User     @relation("player1", fields: [player1Id], references: [id])
+  player1Id Int
+  player2   User     @relation("player2", fields: [player2Id], references: [id])
+  player2Id Int
+  winner    User?    @relation("asWinner", fields: [winnerId], references: [id])
+  winnerId  Int?
+  scoresP1  Int      @default(0)
+  scoresP2  Int      @default(0)
+  date      DateTime @default(now())
+  endReason String?
+  moves     Move[]
 }
 
 model Move {
-  id           Int     @id @default(autoincrement())
-  position     Int
-  moveOrder    Int
-  game         Game    @relation(fields: [gameId], references: [id])
-  gameId       Int
-  player       User    @relation(fields: [playerId], references: [id])
-  playerId     Int
-
+  id        Int  @id @default(autoincrement())
+  position  Int
+  moveOrder Int
+  game      Game @relation(fields: [gameId], references: [id])
+  gameId    Int
+  player    User @relation(fields: [playerId], references: [id])
+  playerId  Int
 }
 
 model UserAchievement {
-  userId          Int
-  key             String
-  unlockedAt      DateTime  @default(now())
-  progress        Int?
+  userId     Int
+  key        String
+  unlockedAt DateTime @default(now())
+  progress   Int?
 
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, key])
-  
+}
+
+enum FriendStatus {
+  PENDING
+  ACCEPTED
+}
+
+model Friend {
+  id Int @id @default(autoincrement())
+
+  senderId   Int
+  receiverId Int
+
+  userAId Int
+  userBId Int
+
+  status FriendStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sender   User @relation("FriendSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("FriendReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  userA User @relation("FriendUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB User @relation("FriendUserB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  @@unique([userAId, userBId])
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([status])
 }
