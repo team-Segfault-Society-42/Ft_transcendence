@@ -181,4 +181,58 @@ export class FriendsService {
 
 		return updatedRequest;
 	}
+
+	async getFriends(userId: number) {
+		const friendships = await this.prisma.friend.findMany({
+			where: {
+				status: FriendStatus.ACCEPTED,
+				OR: [
+					{ senderId: userId },
+					{ receiverId: userId },
+				],
+			},
+			select: {
+				id: true,
+				createdAt: true,
+				senderId: true,
+				receiverId: true,
+				sender: {
+					select: {
+						id: true,
+						username: true,
+						bio: true,
+						avatar: true,
+						wins: true,
+						losses: true,
+						draws: true,
+						xp: true,
+					},
+				},
+				receiver: {
+					select: {
+						id: true,
+						username: true,
+						bio: true,
+						avatar: true,
+						wins: true,
+						losses: true,
+						draws: true,
+						xp: true,
+					},
+				},
+			},
+			orderBy: {
+				updatedAt: 'desc',
+			},
+		});
+
+		return friendships.map((friendship) => ({
+			friendshipId: friendship.id,
+			friend:
+				friendship.senderId === userId
+					? friendship.receiver
+					: friendship.sender,
+			createdAt: friendship.createdAt,
+		}));
+	}
 }

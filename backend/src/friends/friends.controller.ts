@@ -65,4 +65,10 @@ export class FriendsController {
 			body.action,
 		);
 	}
+
+	@ApiOperation({ summary: 'List accepted friends' })
+	@Get()
+	getFriends(@Req() req: AuthRequest) {
+		return this.friendsService.getFriends(req.user.sub);
+	}
 }
