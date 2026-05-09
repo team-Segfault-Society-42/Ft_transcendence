@@ -8,6 +8,7 @@ import {
 import { FriendStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { FriendRequestAction } from './dto/respond-friend-request.dto';
+import { MAX_PENDING_FRIEND_REQUESTS, MAX_FRIEND_RESULTS} from './friends.constants';
 
 @Injectable()
 export class FriendsService {
@@ -55,6 +56,19 @@ export class FriendsService {
 			);
 		}
 
+		const pendingOutgoingCount = await this.prisma.friend.count({
+			where: {
+				senderId,
+				status: FriendStatus.PENDING,
+			},
+		});
+
+		if (pendingOutgoingCount >= MAX_PENDING_FRIEND_REQUESTS) {
+			throw new BadRequestException(
+				'You have too many pending friend requests',
+			);
+		}
+
 		try {
 			const request = await this.prisma.friend.create({
 				data: {
@@ -96,7 +110,7 @@ export class FriendsService {
 				receiverId: userId,
 				status: FriendStatus.PENDING,
 			},
-			take: 100,
+			take: MAX_FRIEND_RESULTS,
 			select: {
 				id: true,
 				createdAt: true,
@@ -131,7 +145,7 @@ export class FriendsService {
 				senderId: userId,
 				status: FriendStatus.PENDING,
 			},
-			take: 100,
+			take: MAX_FRIEND_RESULTS,
 			select: {
 				id: true,
 				createdAt: true,
@@ -226,7 +240,7 @@ export class FriendsService {
 					{ receiverId: userId },
 				],
 			},
-			take: 100,
+			take: MAX_FRIEND_RESULTS,
 			select: {
 				id: true,
 				createdAt: true,
