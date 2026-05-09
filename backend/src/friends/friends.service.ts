@@ -235,4 +235,41 @@ export class FriendsService {
 			createdAt: friendship.createdAt,
 		}));
 	}
+
+	async removeFriend(userId: number, friendshipId: number) {
+		const friendship = await this.prisma.friend.findUnique({
+			where: { id: friendshipId },
+			select: {
+				id: true,
+				senderId: true,
+				receiverId: true,
+				status: true,
+			},
+		});
+
+		if (!friendship) {
+			throw new NotFoundException('Friendship not found');
+		}
+
+		if (friendship.status !== FriendStatus.ACCEPTED) {
+			throw new BadRequestException('Only accepted friendships can be removed');
+		}
+
+		if (
+			friendship.senderId !== userId &&
+			friendship.receiverId !== userId
+		) {
+			throw new ForbiddenException(
+				'You can only remove your own friendships',
+			);
+		}
+
+		await this.prisma.friend.delete({
+			where: { id: friendshipId },
+		});
+
+		return {
+			message: 'Friend removed',
+		};
+	}
 }

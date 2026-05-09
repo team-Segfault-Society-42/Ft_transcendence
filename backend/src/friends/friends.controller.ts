@@ -7,6 +7,7 @@ import {
 	Req,
 	Patch,
 	Body,
+	Delete,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import type { AuthRequest } from '../auth/jwt-auth.guard';
@@ -70,5 +71,22 @@ export class FriendsController {
 	@Get()
 	getFriends(@Req() req: AuthRequest) {
 		return this.friendsService.getFriends(req.user.sub);
+	}
+
+	@ApiOperation({ summary: 'Remove accepted friend' })
+	@ApiParam({
+		name: 'friendshipId',
+		description: 'Accepted friendship ID',
+		example: 1,
+	})
+	@Delete(':friendshipId')
+	removeFriend(
+		@Param('friendshipId', ParseIntPipe) friendshipId: number,
+		@Req() req: AuthRequest,
+	) {
+		return this.friendsService.removeFriend(
+			req.user.sub,
+			friendshipId,
+		);
 	}
 }
