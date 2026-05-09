@@ -6,6 +6,8 @@ export type AchievementKey =
     |   'WIN_5'
     |   'WIN_10'
     |   'WIN_50'
+    |   'GET_ALL'
+    
 
 export const ACHIEVEMENTS: Record<AchievementKey, { key: AchievementKey, displayName: string, description: string, iconName: string }> = {
 
@@ -16,5 +18,6 @@ export const ACHIEVEMENTS: Record<AchievementKey, { key: AchievementKey, display
   WIN_5: { key: 'WIN_5', displayName: 'High Five', description: 'Win a total of 5 matches.', iconName: "WIN_5_TROPHY" },
   WIN_10: { key: 'WIN_10', displayName: 'Double Digits', description: 'Win a total of 10 matches.', iconName: "WIN_10_TROPHY" },
   WIN_50: { key: 'WIN_50', displayName: 'Veteran', description: 'Win a total of 50 matches.', iconName: "WIN_50_TROPHY" },
+  GET_ALL: { key: 'GET_ALL', displayName: 'End Game', description: 'Complete all achievements', iconName: "GET_ALL_TROPHY" },
 
 } as const;
