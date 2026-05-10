@@ -1,5 +1,13 @@
+import {
+	UsersRound,
+	UserPlus,
+	Inbox,
+	Send,
+	Trash2,
+	Check,
+	X,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { UsersRound, UserPlus, Inbox, Send, Trash2 } from "lucide-react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router";
@@ -330,27 +338,30 @@ export default function Friends() {
 								{incomingRequests.map((request) => (
 									<div
 										key={request.requestId}
-										className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white/5 border border-white/10 rounded-xl p-3"
+										className="flex flex-col gap-3 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
-										<div className="min-w-0">
-											<UserRow user={request.sender} />
-										</div>
+										<UserRow user={request.sender} />
 
-										<div className="flex gap-2 shrink-0">
+										<div className="flex gap-2 justify-center">
 											<Button
 												size="sm"
 												onClick={() => handleAcceptRequest(request.requestId)}
-												className="text-xs"
+												aria-label={t("friends.actions.accept")}
+												title={t("friends.actions.accept")}
+												className="px-10"
 											>
-												{t("friends.actions.accept")}
+												<Check size={16} />
 											</Button>
+
 											<Button
 												size="sm"
 												variant="secondary"
 												onClick={() => handleDeclineRequest(request.requestId)}
-												className="text-xs"
+												aria-label={t("friends.actions.decline")}
+												title={t("friends.actions.decline")}
+												className="px-10"
 											>
-												{t("friends.actions.decline")}
+												<X size={16} />
 											</Button>
 										</div>
 									</div>
