@@ -1,0 +1,2 @@
+export const MAX_PENDING_FRIEND_REQUESTS = 50;
+export const MAX_FRIEND_RESULTS = 100;
