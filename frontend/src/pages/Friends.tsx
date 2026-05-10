@@ -330,13 +330,17 @@ export default function Friends() {
 								{incomingRequests.map((request) => (
 									<div
 										key={request.requestId}
-										className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
+										className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
-										<UserRow user={request.sender} />
-										<div className="flex gap-2">
+										<div className="min-w-0">
+											<UserRow user={request.sender} />
+										</div>
+
+										<div className="flex gap-2 shrink-0">
 											<Button
 												size="sm"
 												onClick={() => handleAcceptRequest(request.requestId)}
+												className="text-xs"
 											>
 												{t("friends.actions.accept")}
 											</Button>
@@ -344,6 +348,7 @@ export default function Friends() {
 												size="sm"
 												variant="secondary"
 												onClick={() => handleDeclineRequest(request.requestId)}
+												className="text-xs"
 											>
 												{t("friends.actions.decline")}
 											</Button>
