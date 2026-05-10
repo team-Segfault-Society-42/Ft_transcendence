@@ -105,7 +105,9 @@ export function BasicChat({ onClose }: BasicChatProps) {
           className="border p-2"
         />
 
-        <Button onClick={sendMessage}>{">"}</Button>
+        <Button onClick={sendMessage} className="hover:scale-100">
+          {">"}
+        </Button>
       </div>
     </section>
   );
