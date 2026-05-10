@@ -1,5 +1,9 @@
 import { BasicChat } from "../BasicChat";
 
-export function Chatbar() {
-  return <BasicChat></BasicChat>;
+type ChatbarProps = {
+  onClose: () => void;
+};
+
+export function Chatbar({ onClose }: ChatbarProps) {
+  return <BasicChat onClose={onClose} />;
 }

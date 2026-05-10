@@ -104,10 +104,15 @@ export default function Dashboard() {
         onSuccess={handleLoginSuccess}
       />
 
-      <Button onClick={handleChatClick} className="fixed bottom-6 right-6 z-50">
-        {!isChat ? "Open chat" : "close chat"}
-      </Button>
-      {user && isChat && <Chatbar />}
+      {!isChat && (
+        <Button
+          onClick={handleChatClick}
+          className="fixed bottom-6 right-6 z-50"
+        >
+          Open chat
+        </Button>
+      )}
+      {user && isChat && <Chatbar onClose={handleChatClick} />}
     </div>
   );
 }
