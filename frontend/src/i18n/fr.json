@@ -158,7 +158,9 @@
     "history": {
         "title": "Historique des parties",
         "notConnected": "Non connecté",
-        "login": "Connecte-toi pour voir ton historique"
+        "login": "Connecte-toi pour voir ton historique",
+        "empty": "Aucune partie jouée pour le moment",
+        "emptyDesc": "Ton historique de parties apparaîtra ici"
     },
 
     "buttons": {

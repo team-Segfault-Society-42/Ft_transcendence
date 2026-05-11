@@ -4,10 +4,10 @@ import { Avatar } from "@/components/ui/Avatar";
 import { useLiveGamesStore } from "@/Store/liveGamesStore";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useOutletContext } from "react-router"
-import { useTranslation } from "react-i18next"
-import { EmptyStateCard } from "@/components/ui/EmptyCard"
-import { EyeOff, Binoculars } from "lucide-react"
+import { useOutletContext } from "react-router";
+import { useTranslation } from "react-i18next";
+import { EmptyStateCard } from "@/components/ui/EmptyCard";
+import { EyeOff, Binoculars } from "lucide-react";
 import { Spinner } from "@/components/ui/Spinner";
 
 interface User {
@@ -51,12 +51,10 @@ export default function LiveGamesDisplay() {
 			message={t("game.liveEmpty")}
 			description={t("game.liveDesc")}
 			actions={
-			<>
 				<Button
 				onClick={() => navigate("/")}>
 					{t("buttons.backHome")}
 				</Button>
-			</>
 			}
 			/>
 		)

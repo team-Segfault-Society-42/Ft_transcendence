@@ -158,7 +158,9 @@
     "history": {
 		"title": "Historial de partidas",
 		"notConnected": "No conectado",
-		"login": "Inicia sesión para ver tu historial"
+		"login": "Inicia sesión para ver tu historial",
+		"empty": "Aún no se han jugado partidas",
+        "emptyDesc": "Tu historial de juego aparecerá aquí."
     },
 
     "buttons": {

@@ -158,7 +158,9 @@
     "history": {
         "title": "Game History",
         "notConnected": "Not connected",
-        "login": "Login to see your history"
+        "login": "Login to see your history",
+        "empty": "No games played yet",
+        "emptyDesc": "Your match history will appear here"
     },
 
     "buttons": {
