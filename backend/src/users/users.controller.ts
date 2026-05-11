@@ -14,6 +14,7 @@ import {
 	UploadedFile,
 	UseInterceptors,
 	UseFilters,
+	UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -25,6 +26,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import type { AuthRequest } from '../auth/jwt-auth.guard';
 import { AVATAR_MAX_FILE_SIZE } from './avatar.constants';
 import { AvatarUploadExceptionFilter } from './avatar-upload.exception-filter';
+import { AvatarUploadRateLimitGuard } from './avatar-upload-rate-limit.guard';
 import { AchievementDto } from './dto/achievements.dto';
 
 
@@ -91,6 +93,7 @@ export class UsersController {
 		},
 	})
 	@Post('me/avatar')
+	@UseGuards(AvatarUploadRateLimitGuard)
 	@UseFilters(AvatarUploadExceptionFilter)
 	@UseInterceptors(
 		FileInterceptor('avatar', {

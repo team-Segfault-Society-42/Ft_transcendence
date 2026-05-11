@@ -3,11 +3,12 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { GameModule } from 'src/modules/game/game.module';
+import { AvatarUploadRateLimitGuard } from './avatar-upload-rate-limit.guard';
 
 @Module({
-  imports: [PrismaModule, forwardRef(() => GameModule)],
-  providers: [UsersService],
-  controllers: [UsersController],
-  exports: [UsersService],
+	imports: [PrismaModule, forwardRef(() => GameModule)],
+	providers: [UsersService, AvatarUploadRateLimitGuard],
+	controllers: [UsersController],
+	exports: [UsersService],
 })
 export class UsersModule {}
