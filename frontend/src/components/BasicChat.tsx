@@ -3,12 +3,16 @@ import { Button } from "./ui/Button";
 import { io, type Socket } from "socket.io-client";
 import type { ChatMessage } from "@/type/user.types";
 
-// Basic UI only. Final design can be added later.
-export function BasicChat() {
+type BasicChatProps = {
+  onClose: () => void;
+};
+
+export function BasicChat({ onClose }: BasicChatProps) {
   const [content, setContent] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [connected, setConnected] = useState(false);
   const clientRef = useRef<Socket | null>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const client = io(window.location.origin, {
@@ -20,13 +24,8 @@ export function BasicChat() {
 
     client.on("connect", () => {
       setConnected(true);
-      client.emit("join_chat");
     });
     client.on("disconnect", () => setConnected(false));
-
-    client.on("chat_ready", () => {
-      console.log("Chat ready");
-    });
 
     client.on("chat_message", (message) => {
       setMessages((prev) => [...prev, message]);
@@ -46,6 +45,10 @@ export function BasicChat() {
     };
   }, []);
 
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   function sendMessage() {
     const text = content.trim();
 
@@ -61,43 +64,72 @@ export function BasicChat() {
   }
 
   return (
-    <section>
-      <h1>Chat</h1>
-
-      <div>
-        <p>{connected ? "connected" : "disconnected"}</p>
+    <section className="flex flex-col h-full w-full max-w-[320px] overflow-hidden">
+      <div className="flex justify-between items-center p-2">
+        <div className="flex items-center gap-2">
+          <h1>Chat</h1>
+          <span className="relative flex size-3">
+            {connected ? (
+              <>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-700 opacity-75"></span>
+                <span className="relative inline-flex size-3 rounded-full bg-green-600"></span>
+              </>
+            ) : (
+              <span className="relative inline-flex size-3 rounded-full bg-red-500"></span>
+            )}
+          </span>
+        </div>
+        <button onClick={onClose} className="text-white hover:text-red-400">
+          ✕
+        </button>
       </div>
 
-      <textarea
-        value={content}
-        onChange={(event) => setContent(event.target.value)}
-        onKeyDown={(event) => {
-          if (event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault();
-            sendMessage();
-          }
-        }}
-        placeholder="Message"
-        rows={4}
-        className="border p-2"
-      />
+      <div className="flex-1 overflow-y-auto px-2">
+        {messages.map((message) => (
+          <div key={message.id} className="mb-2 w-full">
+            <div className="flex items-center gap-1">
+              <span className="text-gray-400 text-[10px] shrink-0">
+                {new Date(message.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+              <span className="text-fuchsia-400 font-bold text-sm truncate">
+                @{message.user.username}:
+              </span>
+            </div>
 
-      {messages.map((message) => (
-        <div key={message.id}>
-          <span className="text-gray-400 text-sm">
-            {new Date(message.createdAt).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </span>
-          <span className="text-fuchsia-400 font-bold mx-1">
-            @{message.user.username}:
-          </span>
-          <span>{message.content}</span>
-        </div>
-      ))}
+            <div className="text-white text-sm break-all leading-snug">
+              {message.content}
+            </div>
+          </div>
+        ))}
+        <div ref={bottomRef} />
+      </div>
 
-      <Button onClick={sendMessage}>Send</Button>
+      <div className="flex items-end gap-2 p-2">
+        <textarea
+          value={content}
+          onChange={(event) => setContent(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              sendMessage();
+            }
+          }}
+          placeholder="Message"
+          rows={4}
+          className="flex-1 border p-2 resize-none"
+        />
+
+        <Button
+          onClick={sendMessage}
+          disabled={!connected || content.trim().length === 0}
+          className="hover:scale-100 shrink-0"
+        >
+          {">"}
+        </Button>
+      </div>
     </section>
   );
 }

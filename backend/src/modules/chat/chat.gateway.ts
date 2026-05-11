@@ -37,11 +37,6 @@ export class ChatGateway {
 
   constructor(private readonly usersService: UsersService) {}
 
-  @SubscribeMessage('join_chat')
-  handleJoinChat(@ConnectedSocket() client: AuthSocket) {
-    client.emit('chat_ready');
-  }
-
   @SubscribeMessage('chat_send')
   async handleChatSend(
     @MessageBody() body: SendChatMessageDto,
