@@ -192,7 +192,7 @@
             "login": "Ingresar",
             "no_account": "¿ No tienes cuenta ? Regístrate",
             "already_account": "¿ Ya tienes una cuenta ? Iniciar sesión",
-            "logout": ": Cerrar sesión",
+            "logout": "Cerrar sesión",
             "edit": "Modificación completada con éxito"
         },
 
