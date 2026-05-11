@@ -2,6 +2,8 @@
 
 export DATABASE_URL=$(cat /run/secrets/database_url)
 export JWT_SECRET=$(cat /run/secrets/jwt_secret)
+export FORTYTWO_CLIENT_ID=$(cat /run/secrets/fortytwo_client_id)
+export FORTYTWO_CLIENT_SECRET=$(cat /run/secrets/fortytwo_client_secret)
 
 npx prisma db push
 

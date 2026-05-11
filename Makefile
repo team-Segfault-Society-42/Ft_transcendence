@@ -1,6 +1,4 @@
 include make/colours.mk make/help.mk make/clean.mk make/setup.mk
--include .env.dev
-export
 
 # ══════════════════════════════════════════════════════
 #                      VARIABLES
