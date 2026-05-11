@@ -142,7 +142,10 @@ _domain-prod: # Prompt user and setup DOMAIN in .env.prod
 	esac
 
 seed: ## Populates the DB with 10 dummy users (Requires the stack to be running) [DEV]
+	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
 	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) exec backend npx prisma db seed
+	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) exec backend node ./dist/prisma/seed.js
 
 .PHONY: _domain-dev _domain-prod
 
