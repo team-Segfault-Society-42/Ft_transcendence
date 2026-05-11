@@ -7,7 +7,7 @@ import { AvatarUploadRateLimitGuard } from './avatar-upload-rate-limit.guard';
 
 @Module({
 	imports: [PrismaModule, forwardRef(() => GameModule)],
-	providers: [UsersService, AvatarUploadRateLimitGuard, ],
+	providers: [UsersService, AvatarUploadRateLimitGuard],
 	controllers: [UsersController],
 	exports: [UsersService],
 })

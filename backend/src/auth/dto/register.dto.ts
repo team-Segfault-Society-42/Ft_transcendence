@@ -29,8 +29,8 @@ export class RegisterDto {
 		@MinLength(3)
 		@MaxLength(20)
 		@Matches(/^[a-zA-Z0-9_]+$/, {
-        	message: 'Username must not contain spaces'
-    	})
+			message: 'Username must not contain spaces'
+		})
 		username: string;
 
 		@ApiPropertyOptional({
@@ -41,6 +41,4 @@ export class RegisterDto {
 		@IsString()
 		@MaxLength(180)
 		bio?: string;
-
-
 }
