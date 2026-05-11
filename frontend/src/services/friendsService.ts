@@ -41,27 +41,38 @@ export interface FriendAcceptResponse {
 	updatedAt: string;
 }
 
-export async function getFriends(): Promise<FriendListItem[]> {
+async function getFriends(): Promise<FriendListItem[]> {
 	const response = await api.get("friends");
 	return response.data;
 }
 
-export async function getIncomingFriendRequests(): Promise<IncomingFriendRequest[]> {
+async function getIncomingFriendRequests(): Promise<IncomingFriendRequest[]> {
 	const response = await api.get("friends/requests/incoming");
 	return response.data;
 }
 
-export async function getOutgoingFriendRequests(): Promise<OutgoingFriendRequest[]> {
+async function getOutgoingFriendRequests(): Promise<OutgoingFriendRequest[]> {
 	const response = await api.get("friends/requests/outgoing");
 	return response.data;
 }
 
-export async function sendFriendRequest(userId: number): Promise<FriendRequestResponse> {
+async function searchUsers(query: string, limit = 10): Promise<PublicUser[]> {
+	const response = await api.get("users", {
+		params: {
+			search: query,
+			limit,
+		},
+	});
+
+	return response.data;
+}
+
+async function sendFriendRequest(userId: number): Promise<FriendRequestResponse> {
 	const response = await api.post(`friends/requests/${userId}`);
 	return response.data;
 }
 
-export async function acceptFriendRequest(
+async function acceptFriendRequest(
 	requestId: number,
 ): Promise<FriendAcceptResponse> {
 	const response = await api.patch(`friends/requests/${requestId}`, {
@@ -70,14 +81,14 @@ export async function acceptFriendRequest(
 	return response.data;
 }
 
-export async function declineFriendRequest(requestId: number): Promise<{ message: string }> {
+async function declineFriendRequest(requestId: number): Promise<{ message: string }> {
 	const response = await api.patch(`friends/requests/${requestId}`, {
 		action: "DECLINE",
 	});
 	return response.data;
 }
 
-export async function removeFriend(friendshipId: number): Promise<{ message: string }> {
+async function removeFriend(friendshipId: number): Promise<{ message: string }> {
 	const response = await api.delete(`friends/${friendshipId}`);
 	return response.data;
 }
@@ -86,6 +97,7 @@ export const friendsService = {
 	getFriends,
 	getIncomingFriendRequests,
 	getOutgoingFriendRequests,
+	searchUsers,
 	sendFriendRequest,
 	acceptFriendRequest,
 	declineFriendRequest,

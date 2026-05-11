@@ -160,9 +160,9 @@
 		},
 
 		"errors": {
-			"load": "Failed to load friends data: ",
-			"search": "Failed to search users: ",
-			"action": "Action failed: "
+			"load": "Failed to load friends data: {{error}}",
+			"search": "Failed to search users: {{error}}",
+			"action": "Action failed: {{error}}"
 		}
 	},
 

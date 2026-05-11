@@ -7,7 +7,7 @@ import {
 	Check,
 	X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router";
@@ -17,7 +17,6 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { api } from "@/services/api";
 import {
 	friendsService,
 	type FriendListItem,
@@ -57,7 +56,7 @@ export default function Friends() {
 	const [loading, setLoading] = useState(false);
 	const [searchLoading, setSearchLoading] = useState(false);
 
-	async function loadFriendsData() {
+	const loadFriendsData = useCallback(async () => {
 		if (!user) return;
 
 		try {
@@ -74,15 +73,15 @@ export default function Friends() {
 			setOutgoingRequests(outgoingData);
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.load") + message);
+			toast.error(t("friends.errors.load", { error: message }));
 		} finally {
 			setLoading(false);
 		}
-	}
+	}, [user, t]);
 
 	useEffect(() => {
 		loadFriendsData();
-	}, [user]);
+	}, [loadFriendsData]);
 
 	async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -96,18 +95,14 @@ export default function Friends() {
 
 		try {
 			setSearchLoading(true);
+			setSearchResults([]);
 
-			const response = await api.get("users", {
-				params: {
-					search: trimmedSearch,
-					limit: 10,
-				},
-			});
+			const results = await friendsService.searchUsers(trimmedSearch);
 
-			setSearchResults(response.data);
+			setSearchResults(results);
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.search") + message);
+			toast.error(t("friends.errors.search", { error: message }));
 		} finally {
 			setSearchLoading(false);
 		}
@@ -140,7 +135,7 @@ export default function Friends() {
 			await loadFriendsData();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action") + message);
+			toast.error(t("friends.errors.action", { error: message }));
 		}
 	}
 
@@ -151,7 +146,7 @@ export default function Friends() {
 			await loadFriendsData();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action") + message);
+			toast.error(t("friends.errors.action", { error: message }));
 		}
 	}
 
@@ -162,7 +157,7 @@ export default function Friends() {
 			await loadFriendsData();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action") + message);
+			toast.error(t("friends.errors.action", { error: message }));
 		}
 	}
 
@@ -173,7 +168,7 @@ export default function Friends() {
 			await loadFriendsData();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action") + message);
+			toast.error(t("friends.errors.action", { error: message }));
 		}
 	}
 
@@ -331,7 +326,9 @@ export default function Friends() {
 							{t("friends.requests.incoming")}
 						</CardTitle>
 
-						{incomingRequests.length === 0 ? (
+						{loading ? (
+							<p className="text-white/50">{t("friends.loading")}</p>
+						) : incomingRequests.length === 0 ? (
 							<p className="text-white/50">{t("friends.requests.noIncoming")}</p>
 						) : (
 							<div className="space-y-3">
@@ -376,7 +373,9 @@ export default function Friends() {
 							{t("friends.requests.outgoing")}
 						</CardTitle>
 
-						{outgoingRequests.length === 0 ? (
+						{loading ? (
+							<p className="text-white/50">{t("friends.loading")}</p>
+						) : outgoingRequests.length === 0 ? (
 							<p className="text-white/50">{t("friends.requests.noOutgoing")}</p>
 						) : (
 							<div className="space-y-3">

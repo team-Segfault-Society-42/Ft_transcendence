@@ -160,9 +160,9 @@
 		},
 
 		"errors": {
-			"load": "Error al cargar los amigos: ",
-			"search": "Error al buscar usuarios: ",
-			"action": "La acción falló: "
+			"load": "Error al cargar los amigos: {{error}}",
+			"search": "Error al buscar usuarios: {{error}}",
+			"action": "La acción falló: {{error}}"
 		}
 	},
 
