@@ -17,9 +17,6 @@ interface HeaderProps {
 	onLogoutClick: () => void
 }
 
-export function Sidebar() {
-  const { t } = useTranslation();
-
 export function Sidebar({user, onLoginClick, onLogoutClick} : HeaderProps) {
 
   	const { t } = useTranslation()
