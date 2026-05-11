@@ -1,10 +1,18 @@
-import { NavLink } from "react-router-dom"
-import { useTranslation } from "react-i18next"
-import { House, Gamepad2, UserRound, UsersRound, MessageCircle, History, Trophy, Binoculars, BookOpenText } from "lucide-react"
+import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import {
+  House,
+  Gamepad2,
+  UserRound,
+  UsersRound,
+  History,
+  Trophy,
+  Binoculars,
+  BookOpenText,
+} from "lucide-react";
 
 export function Sidebar() {
-
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const links = [
     { to: "/", label: "sidebar.home", icon: House },
@@ -13,36 +21,35 @@ export function Sidebar() {
     { to: "/profile", label: "sidebar.profile", icon: UserRound },
     { to: "/leaderboard", label: "sidebar.leaderboard", icon: Trophy },
     { to: "/friends", label: "sidebar.friends", icon: UsersRound },
-    { to: "/chat", label: "sidebar.chat", icon: MessageCircle },
-    { to: "/history", label: "sidebar.history", icon: History},
-    { to: "/Rules", label: "sidebar.rules", icon: BookOpenText}
-  ]
+    { to: "/history", label: "sidebar.history", icon: History },
+    { to: "/Rules", label: "sidebar.rules", icon: BookOpenText },
+  ];
 
   return (
     <aside className="w-64 bg-slate-900 border-r border-white/10 flex flex-col p-4">
-
       <h1 className="text-xl absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
         {t("sidebar.title")}
       </h1>
 
       <nav className="flex flex-col gap-2 mt-20">
-        {links.map(link => {
-          const Icon = link.icon 
+        {links.map((link) => {
+          const Icon = link.icon;
           return (
             <NavLink
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-2 rounded-lg transition ${
-                isActive ? "bg-white/10" : "hover:bg-white/5"}`
-            }
-          >
-            <Icon size={18} />
-            {t(`${link.label}`)}
-          </NavLink>
-        )})}
+                  isActive ? "bg-white/10" : "hover:bg-white/5"
+                }`
+              }
+            >
+              <Icon size={18} />
+              {t(`${link.label}`)}
+            </NavLink>
+          );
+        })}
       </nav>
-
     </aside>
-  )
+  );
 }
