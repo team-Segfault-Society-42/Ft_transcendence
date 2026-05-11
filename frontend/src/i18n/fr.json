@@ -113,11 +113,58 @@
         "login": "Connecte-toi pour voir le classement"
     },
 
-    "friends":{
-        "title": "Amis",
-        "notConnected": "Non connecté",
-        "login": "Connecte-toi pour voir tes amis"
-    },
+    "friends": {
+		"title": "Amis",
+		"description": "Gère tes amis et tes demandes",
+		"notConnected": "Non connecté",
+		"login": "Connecte-toi pour voir tes amis",
+
+		"loading": "Chargement des amis...",
+
+		"search": {
+			"title": "Rechercher des utilisateurs",
+			"placeholder": "Rechercher par nom d'utilisateur",
+			"button": "Rechercher"
+		},
+
+		"list": {
+			"title": "Liste d'amis",
+			"empty": "Tu n'as pas encore d'amis"
+		},
+
+		"requests": {
+			"incoming": "Demandes reçues",
+			"outgoing": "Demandes envoyées",
+			"noIncoming": "Aucune demande reçue",
+			"noOutgoing": "Aucune demande envoyée"
+		},
+
+		"actions": {
+			"add": "Ajouter",
+			"accept": "Accepter",
+			"decline": "Refuser",
+			"remove": "Retirer"
+		},
+
+		"states": {
+			"self": "Toi",
+			"friend": "Ami",
+			"pending": "En attente"
+		},
+
+		"success": {
+			"requestSent": "Demande envoyée",
+			"accepted": "Demande acceptée",
+			"declined": "Demande refusée",
+			"removed": "Ami supprimé"
+		},
+
+		"errors": {
+			"load": "Erreur lors du chargement des amis : {{error}}",
+			"search": "Erreur lors de la recherche : {{error}}",
+			"action": "L'action a échoué : {{error}}"
+		}
+	},
 
     "chat":{
         "title": "Discussion",
@@ -134,20 +181,20 @@
     "buttons": {
         "backHome": "Retour à l'accueil"
     },
-    
+
     "auth": {
         "description": "Crée ton compte",
         "description_login": "Connectez-vous",
         "username": "Nom d'utilisateur",
         "email": "Email",
         "password": "Mot de passe",
-      
+
         "placeholders": {
             "username": "Entre ton nom d'utilisateur",
             "email": "example@42.ch",
             "password": "Ton mot de passe sécurisé"
           },
-      
+
         "buttons": {
             "register": "S'inscrire",
             "loading": "Connection au serveur...",
@@ -157,7 +204,7 @@
             "already_account": "Déjà un compte ? Se connecter",
             "logout": ": Déconnexion",
             "edit": "Modification effectuée avec succès"
-          },   
+          },
           "success": "Utilisateur créé avec succès !",
           "error": "Une erreur est survenue : ",
           "errors": {
