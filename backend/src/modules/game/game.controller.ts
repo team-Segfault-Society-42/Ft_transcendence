@@ -33,6 +33,7 @@ export class GameController {
     return this.gameService.getActiveGameByUserId(req.user.sub);
   }
 
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Get all live games' })
   @ApiResponse({ status: 200, description: 'Returns list of live games' })
   @Get('liveGames')
@@ -40,6 +41,7 @@ export class GameController {
     return this.gameService.getLiveGames();
   }
 
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Get a game by ID' })
   @ApiParam({ name: 'id', description: 'Game ID', example: 'game_abc123' })
   @ApiResponse({ status: 200, description: 'Returns the game state' })
@@ -49,6 +51,7 @@ export class GameController {
     return this.gameService.getGameById(gameId);
   }
 
+  @ApiCookieAuth()
   @ApiOperation({ summary: 'Get finished game history by game ID' })
   @ApiParam({ name: 'id', description: 'Game ID', example: 'game_abc123' })
   @ApiResponse({ status: 200, description: 'Returns match history' })
