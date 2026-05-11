@@ -29,6 +29,8 @@ services:
       - backend_pw
       - jwt_secret
       - database_url
+      - fortytwo_client_id
+      - fortytwo_client_secret
     depends_on:
       db:
         condition: service_healthy
@@ -82,3 +84,7 @@ secrets:
     file: ./secrets/jwt_secret.txt
   database_url:
     file: ./secrets/database_url.txt
+  fortytwo_client_id:
+    file: ./secrets/fortytwo_client_id.txt
+  fortytwo_client_secret:
+    file: ./secrets/fortytwo_client_secret.txt
