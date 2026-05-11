@@ -238,6 +238,7 @@ export default function Profile() {
               className="border border-white/20 z-10 relative"
             />
             <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
+            </div>
 			{isEdit && (
 				<div className="mt-3 flex justify-center">
 					<input
@@ -260,7 +261,6 @@ export default function Profile() {
 					</Button>
 				</div>
 			)}
-          </div>
 
           {/* USERNAME */}
           {isEdit ? (
