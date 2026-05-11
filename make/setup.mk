@@ -141,11 +141,19 @@ _domain-prod: # Prompt user and setup DOMAIN in .env.prod
 			echo "       Using default DOMAIN: '$(GOLD)127.0.0.1$(RES)'\n";; \
 	esac
 
-seed: ## Populates the DB with 10 dummy users (Requires the stack to be running) [DEV]
+seed: ## Populates the DB with 10 dummy users (Requires the stack to be running) [BOTH]
 	@echo "$(GREEN)═════ DEV ═════════════════════════$(RES)"
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) exec backend npx prisma db seed
+	@if docker ps --filter "name=dev-backend" --filter "status=running" -q | grep -q .; then \
+		docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) exec backend npx prisma db seed; \
+	else \
+		echo "$(BOLD_ORANGE)[Skip]$(RES) dev stack not running. Run $(BOLD_CYAN)make up$(RES) first.\n"; \
+	fi
 	@echo "\n$(RED)═════ PROD ════════════════════════$(RES)"
-	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) exec backend node ./dist/prisma/seed.js
+	@if docker ps --filter "name=prod-backend" --filter "status=running" -q | grep -q .; then \
+		docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) exec backend node ./dist/prisma/seed.js; \
+	else \
+		echo "$(BOLD_ORANGE)[Skip]$(RES) prod stack not running. Run $(BOLD_CYAN)make prod$(RES) first.\n"; \
+	fi
 
 .PHONY: _domain-dev _domain-prod
 
