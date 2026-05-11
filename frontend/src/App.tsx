@@ -12,7 +12,7 @@ import TwoFactorLogin from "./pages/TwoFactorLogin";
 import LiveGamesDisplay from "./pages/LiveGames";
 import Play from "./pages/Play.tsx";
 import Friends from "./pages/Friends";
-import Chat from "./pages/Chat";
+// import Chat from "./pages/Chat";
 import Rules from "./pages/Rules";
 
 function App() {
@@ -26,12 +26,12 @@ function App() {
           <Route path="/game/:gameId" element={<Game />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/friends" element={<Friends/>} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/friends" element={<Friends />} />
           <Route path="/history" element={<History />} />
           <Route path="/rules" element={<Rules />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/two-factor" element={<TwoFactorLogin />} />
         </Route>
       </Routes>

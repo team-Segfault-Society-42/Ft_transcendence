@@ -147,11 +147,58 @@
         "login": "Login to see the leaderboard"
     },
 
-    "friends":{
-        "title": "Friends",
-        "notConnected": "Not connected",
-        "login": "Login to see your friends"
-    },
+    "friends": {
+		"title": "Friends",
+		"description": "Manage your friendships and requests",
+		"notConnected": "Not connected",
+		"login": "Login to see your friends",
+
+		"loading": "Loading friends...",
+
+		"search": {
+			"title": "Find users",
+			"placeholder": "Search by username",
+			"button": "Search"
+		},
+
+		"list": {
+			"title": "Friends list",
+			"empty": "You do not have any friends yet"
+		},
+
+		"requests": {
+			"incoming": "Incoming requests",
+			"outgoing": "Outgoing requests",
+			"noIncoming": "No incoming friend requests",
+			"noOutgoing": "No outgoing friend requests"
+		},
+
+		"actions": {
+			"add": "Add friend",
+			"accept": "Accept",
+			"decline": "Decline",
+			"remove": "Remove"
+		},
+
+		"states": {
+			"self": "You",
+			"friend": "Friend",
+			"pending": "Pending"
+		},
+
+		"success": {
+			"requestSent": "Friend request sent",
+			"accepted": "Friend request accepted",
+			"declined": "Friend request declined",
+			"removed": "Friend removed"
+		},
+
+		"errors": {
+			"load": "Failed to load friends data: {{error}}",
+			"search": "Failed to search users: {{error}}",
+			"action": "Action failed: {{error}}"
+		}
+	},
 
     "chat":{
         "title": "Chat",
@@ -177,13 +224,13 @@
         "username": "Username",
         "email": "Email",
         "password": "Password",
-      
+
         "placeholders": {
             "username": "Enter your username",
             "email": "example@42.ch",
             "password": "Your secure password"
           },
-      
+
         "buttons": {
             "register": "Register",
             "loading": "Connecting to server...",
@@ -193,7 +240,7 @@
             "already_account": "Already have an account ? Log in",
             "logout": "Logout",
             "edit": "Modification successfully completed"
-          },   
+          },
         "success": "User successfully created!",
         "error": "An error occurred: ",
         "errors": {

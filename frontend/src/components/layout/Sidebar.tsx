@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { House, Gamepad2, UserRound, UsersRound, MessageCircle, History, Trophy, Binoculars, BookOpenText } from "lucide-react";
+import { House, Gamepad2, UserRound, UsersRound, History, Trophy, Binoculars, BookOpenText } from "lucide-react";
 import LanguageSwitcher from "../ui/LanguageSwitcher";
 import { Button } from "@/components/ui/Button";
 
@@ -17,6 +17,9 @@ interface HeaderProps {
 	onLogoutClick: () => void
 }
 
+export function Sidebar() {
+  const { t } = useTranslation();
+
 export function Sidebar({user, onLoginClick, onLogoutClick} : HeaderProps) {
 
   	const { t } = useTranslation()
@@ -28,10 +31,9 @@ export function Sidebar({user, onLoginClick, onLogoutClick} : HeaderProps) {
     { to: "/profile", label: "sidebar.profile", icon: UserRound },
     { to: "/leaderboard", label: "sidebar.leaderboard", icon: Trophy },
     { to: "/friends", label: "sidebar.friends", icon: UsersRound },
-    { to: "/chat", label: "sidebar.chat", icon: MessageCircle },
-    { to: "/history", label: "sidebar.history", icon: History},
-    { to: "/Rules", label: "sidebar.rules", icon: BookOpenText}
-  ]
+    { to: "/history", label: "sidebar.history", icon: History },
+    { to: "/Rules", label: "sidebar.rules", icon: BookOpenText },
+  ];
 
   	return (
 	<aside className="w-64 bg-slate-900 border-r border-white/10 flex flex-col p-4">
@@ -83,5 +85,5 @@ export function Sidebar({user, onLoginClick, onLogoutClick} : HeaderProps) {
 			</div>
 		</div>
     </aside>
-  )
+  );
 }

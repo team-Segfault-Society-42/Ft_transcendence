@@ -1,6 +1,6 @@
 {
     "title": "ft_transcendence",
-  
+
     "home": {
       	"play": {
         	"title": "Jugar una partida",
@@ -19,7 +19,7 @@
 			"join": "Unirse a una partida"
 		}
     },
-  
+
     "sidebar": {
 		"title": "Panel de control",
 		"home": "Inicio",
@@ -101,8 +101,7 @@
     		"empty": "No hay partidas disponibles",
     		"waiting": "Esperando a un oponente",
     		"join": "Unirse"
-		}
-    },
+		},
 
     "profile": {
 		"loading": "Cargando...",
@@ -147,11 +146,58 @@
 		"login": "Inicia sesión para ver la clasificación"
     },
 
-    "friends":{
+    "friends": {
 		"title": "Amigos",
+		"description": "Gestiona tus amistades y solicitudes",
 		"notConnected": "No conectado",
-		"login": "Inicia sesión para ver tus amigos"
-    },
+		"login": "Inicia sesión para ver tus amigos",
+
+		"loading": "Cargando amigos...",
+
+		"search": {
+			"title": "Buscar usuarios",
+			"placeholder": "Buscar por nombre de usuario",
+			"button": "Buscar"
+		},
+
+		"list": {
+			"title": "Lista de amigos",
+			"empty": "Todavía no tienes amigos"
+		},
+
+		"requests": {
+			"incoming": "Solicitudes recibidas",
+			"outgoing": "Solicitudes enviadas",
+			"noIncoming": "No tienes solicitudes pendientes",
+			"noOutgoing": "No has enviado solicitudes"
+		},
+
+		"actions": {
+			"add": "Añadir amigo",
+			"accept": "Aceptar",
+			"decline": "Rechazar",
+			"remove": "Eliminar"
+		},
+
+		"states": {
+			"self": "Tú",
+			"friend": "Amigo",
+			"pending": "Pendiente"
+		},
+
+		"success": {
+			"requestSent": "Solicitud enviada",
+			"accepted": "Solicitud aceptada",
+			"declined": "Solicitud rechazada",
+			"removed": "Amigo eliminado"
+		},
+
+		"errors": {
+			"load": "Error al cargar los amigos: {{error}}",
+			"search": "Error al buscar usuarios: {{error}}",
+			"action": "La acción falló: {{error}}"
+		}
+	},
 
     "chat":{
 		"title": "Chat",
@@ -224,14 +270,14 @@
           "back": "Volver al inicio"
         }
     },
-  
+
     "footer": {
         "brand": "ft_transcendence",
         "privacy": "Privacidad",
         "terms": "Términos de uso",
         "copyright": "© {{year}}"
     },
-  
+
     "privacy": {
         "title": "Política de privacidad",
         "intro": "Esta aplicación recopila y procesa datos de los usuarios para proporcionar sus servicios.",
@@ -252,7 +298,7 @@
         "content": "Tomamos medidas adecuadas para proteger los datos de los usuarios."
       }
     },
-  
+
     "terms": {
         "title": "Términos de uso",
         "intro": "Al utilizar esta aplicación, aceptas los siguientes términos.",
@@ -270,3 +316,4 @@
       }
     }
   }
+}

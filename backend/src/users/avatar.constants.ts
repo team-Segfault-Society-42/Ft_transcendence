@@ -5,3 +5,7 @@ export const AVATAR_ALLOWED_MIME_TYPES = [
 	'image/jpeg',
 	'image/webp',
 ] as const;
+
+export const AVATAR_UPLOAD_RATE_LIMIT_WINDOW_MS = 60 * 1000;
+
+export const AVATAR_UPLOAD_RATE_LIMIT_MAX_REQUESTS = 10;
