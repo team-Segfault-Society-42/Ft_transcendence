@@ -73,6 +73,10 @@
             "strategy": {
                 "title": "Anticipez vos coups",
                 "desc": "Planifiez vos actions et contrôlez le plateau"
+            },
+            "draw": {
+                "title": "Règle d'égalité",
+                "desc": "Si aucun joueur ne gagne après 20 coups, la partie se termine par une égalité"
             }
         }
     },

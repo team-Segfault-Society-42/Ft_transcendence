@@ -73,7 +73,11 @@
         	"strategy": {
           		"title": "Anticipa tus jugadas",
           		"desc": "Planifica tus movimientos y controla el tablero"
-        	}
+        	},
+			"draw": {
+				"title": "Regla de empate",
+				"desc": "Si ningún jugador gana después de 20 movimientos, la partida termina en empate."
+			}
       	}
     },
   

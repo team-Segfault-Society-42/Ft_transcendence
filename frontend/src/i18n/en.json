@@ -73,6 +73,10 @@
             "strategy": {
                 "title": "Think ahead",
                 "desc": "Plan your moves and control the board"
+            },
+            "draw": {
+                "title": "Draw rule",
+                "desc": "If no player wins after 20 moves, the match ends in a draw"
             }
         }
     },

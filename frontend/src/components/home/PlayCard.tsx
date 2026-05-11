@@ -14,15 +14,15 @@ export function PlayCard({ createGame: onCreateGame, user }: Props) {
 
     if (!user) {
     return (
-      <Card className="min-h-120 relative flex flex-col items-center justify-center bg-slate-900">
+      	<Card className="min-h-120 relative flex flex-col bg-slate-900">
+        	<CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+          		{t("game.howToPlay")}
+        	</CardTitle>
 
-        <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-          {t("game.howToPlay")}
-        </CardTitle>
-
-        <GameRules/>
-      
-      </Card>
+        	<div className="flex justify-center pt-15 pb-8 px-6">
+          	<GameRules/>
+        	</div>
+      	</Card>
     )
   }
 
