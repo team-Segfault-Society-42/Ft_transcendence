@@ -36,6 +36,12 @@
     "game": {
 		"title": "Jugar",
 		"liveTitle": "Partidas en directo",
+		"liveEmpty": "No hay partidas para ver",
+		"liveDesc": "Las partidas en directo aparecerán aquí",
+		"liveCount_one": "{{count}} partida en directo",
+		"liveCount_other": "{{count}} partidas en directo",
+		"watch": "Mirar",
+		"playing": "En curso...",
 		"turn": "Turno de {{player}} : {{symbol}}",
 		"vs": "VS",
 		"wins": "¡GANA!",

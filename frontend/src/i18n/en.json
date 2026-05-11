@@ -36,6 +36,12 @@
     "game": {
         "title": "Play",
         "liveTitle": "Live Games",
+        "liveEmpty": "No games to spectate",
+        "liveDesc": "Live matches will appear here",
+        "liveCount_one": "{{count}} live game",
+        "liveCount_other": "{{count}} live games",
+        "watch": "Watch",
+        "playing": "Playing...",
         "turn": "{{player}}'s Turn {{symbol}}",
         "vs": "VS",
         "wins": "WINS!",
