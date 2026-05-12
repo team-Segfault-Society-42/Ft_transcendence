@@ -166,11 +166,6 @@ export default function Board() {
               {endGameMessage.subtitle}
             </p>
 
-            <div className="mt-4 text-gray-600 font-medium">
-              {t("game.score", { defaultValue: "Score" })} — X: {game.scores.X}{" "}
-              | O: {game.scores.O} | D: {game.scores.D}
-            </div>
-
             <p className="text-sm text-gray-500 text-center">
               {game.playerLeft
                 ? "Opponent left - replay unavailable"
