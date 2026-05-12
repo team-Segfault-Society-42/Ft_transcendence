@@ -36,6 +36,12 @@
     "game": {
         "title": "Jouer",
         "liveTitle": "Regarder",
+        "liveEmpty": "Aucune partie à regarder",
+        "liveDesc": "Les matchs en direct apparaîtront ici",
+        "liveCount_one": "{{count}} partie en direct",
+        "liveCount_other": "{{count}} parties en direct",
+        "watch": "Regarder",
+		"playing": "En cours...",
         "turn": "Au tour de {{player}} : {{symbol}}",
         "vs": "VS",
         "wins": "GAGNE !",
@@ -67,7 +73,34 @@
             "strategy": {
                 "title": "Anticipez vos coups",
                 "desc": "Planifiez vos actions et contrôlez le plateau"
+            },
+            "draw": {
+                "title": "Règle d'égalité",
+                "desc": "Si aucun joueur ne gagne après 20 coups, la partie se termine par une égalité"
             }
+        }
+    },
+
+    "play": {
+        "myGames": {
+            "title": "Mes parties",
+            "subtitle": "Créer une nouvelle partie",
+            "desc": "Créez un lobby et invitez un autre joueur",
+            "create": "Créer une partie",
+            "empty": "Aucune partie active",
+            "waiting": "En attente d'un adversaire...",
+            "share": "Partagez ce lien pour inviter quelqu’un :",
+            "copy": "Copier",
+            "cancel": "Annuler la partie"
+        },
+        "availGames": {
+            "title": "Parties disponibles",
+            "subtitle": "Parties publiques",
+            "desc": "Rejoignez un lobby en attente créé par un autre joueur",
+            "refresh": "Rafraîchir les parties",
+            "empty": "Aucune partie disponible",
+            "waiting": "En attente d'un adversaire",
+            "join": "Rejoindre"
         }
     },
 
@@ -97,7 +130,11 @@
             "viewProfile": "Voir le profil",
             "noBio": "Pas encore de bio"
         },
-        "xp": "{{current}} / {{max}} XP"
+        "xp": "{{current}} / {{max}} XP",
+        "emptyBio": "Cliquez sur modifier profil pour ajouter une biographie",
+        "uploading": "Téléchargement...",
+        "changeAvatar": "Changer l'avatar",
+        "avatarUpdated": "Avatar mis à jour avec succès"
     },
 
     "leaderboard": {
@@ -175,7 +212,9 @@
     "history": {
         "title": "Historique des parties",
         "notConnected": "Non connecté",
-        "login": "Connecte-toi pour voir ton historique"
+        "login": "Connecte-toi pour voir ton historique",
+        "empty": "Aucune partie jouée pour le moment",
+        "emptyDesc": "Ton historique de parties apparaîtra ici"
     },
 
     "buttons": {
@@ -202,7 +241,7 @@
             "login": "Se connecter",
             "no_account": "Pas encore de compte ? S'inscrire",
             "already_account": "Déjà un compte ? Se connecter",
-            "logout": ": Déconnexion",
+            "logout": "Déconnexion",
             "edit": "Modification effectuée avec succès"
           },
           "success": "Utilisateur créé avec succès !",

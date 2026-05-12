@@ -9,13 +9,13 @@ import { toast } from "sonner";
 // import { zodResolver } from "@hookform/resolvers/zod";
 // import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar";
-import type { Match } from "@/lib/match";
 import { Winrate } from "@/components/ui/Winrate";
 import { LevelProgress } from "@/components/ui/Level";
 import { Username } from "@/components/ui/Username";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useNavigate } from "react-router-dom";
 import { AchievementIcon } from "@/components/ui/AchievementIcons";
+import { CardTitle } from "@/components/ui/Card";
 
 interface User {
   id: number;
@@ -42,7 +42,6 @@ export default function Profile() {
     useOutletContext<
       [User | null, React.Dispatch<React.SetStateAction<User | null>>]
     >();
-  const [matches, setMatches] = useState<Match[]>([]);
 
   const [isEdit, isInEdit] = useState(false);
   const [userName, setUserName] = useState(user?.username || "");
@@ -51,7 +50,6 @@ export default function Profile() {
 
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([])
   const [allAchievements, setAllAchievements] = useState<Achievement[]>([]);
-  //   const navigate = useNavigate()
 
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
@@ -88,22 +86,9 @@ export default function Profile() {
       }
       fetchAchievements()
 
-      async function fetchhistory() {
-        try {
-          const data = await userService.getUserHistory(user!.id);
-          setMatches(data);
-        } catch (error) {
-          console.error("Failed to fetch history:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-      fetchhistory();
+      setLoading(false);
     }
   }, [user]);
-
-  // DEBUG
-  console.log(matches);
 
   if (!user || loading) {
     return (
@@ -200,7 +185,7 @@ export default function Profile() {
 			const updatedUser = await userService.uploadAvatar(file);
 			setUser({ ...user, avatar: updatedUser.avatar });
 
-			toast.success("Avatar updated successfully");
+			toast.success(t("profile.avatarUpdated"));
 		} catch (error: any) {
 			const serverMessage = error.response?.data?.message || error.message;
 			const finalMessage = Array.isArray(serverMessage)
@@ -215,14 +200,19 @@ export default function Profile() {
 	}
 
   return (
-    <section className="w-full flex justify-center">
-      <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8 overflow-hidden">
+    <section className="w-full max-w-3xl mx-auto px-6 py-10">
+      <div className="relative bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-8 overflow-hidden">
+        
+        <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+          {t("sidebar.profile")}
+        </CardTitle>
+
         {/* GLOW BACKGROUND */}
         <div className="absolute -top-20 -right-20 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl"></div>
 
         {/* HEADER */}
-        <div className="relative flex flex-col items-center gap-4">
+        <div className="relative flex flex-col items-center gap-4 pt-10">
           {/* AVATAR */}
           <div className="relative group">
             <Avatar
@@ -232,6 +222,7 @@ export default function Profile() {
               className="border border-white/20 z-10 relative"
             />
             <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
+            </div>
 			{isEdit && (
 				<div className="mt-3 flex justify-center">
 					<input
@@ -250,11 +241,12 @@ export default function Profile() {
 						disabled={isAvatarUploading}
 						className="px-4 py-2 text-xs"
 					>
-						{isAvatarUploading ? "Uploading..." : "Change avatar"}
+						{isAvatarUploading
+            ? t("profile.uploading")
+            : t("profile.changeAvatar")}
 					</Button>
 				</div>
 			)}
-          </div>
 
           {/* USERNAME */}
           {isEdit ? (
@@ -332,19 +324,34 @@ export default function Profile() {
 
         {/* BIO */}
         <div className="mt-8">
-          <p className="text-white/50 text-sm mb-2">{t("profile.bio")}</p>
+          <p className="text-white/50 text-sm mb-2">
+            {t("profile.bio")}
+          </p>
 
-          {isEdit ? (
+          <div className="w-full min-h-20 bg-white/5 border border-white/10 rounded-xl px-4 py-3 transition focus-within:border-cyan-400">
+            {isEdit ? (
             <textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="w-full bg-transparent border border-white/20 rounded px-3 py-2 focus:outline-none focus:border-cyan-400 transition resize-none"
-              rows={3}
+              className="w-full bg-transparent focus:outline-none resize-none text-sm text-white/80"
             />
+          ) : user.bio ? (
+                <p className="text-sm leading-relaxed text-white/80">
+                  {user.bio}
+                </p>
           ) : (
-            <p className="text-sm leading-relaxed text-white/80">{user.bio}</p>
+            <p className="text-sm text-white/30 italic">
+                {t("profile.emptyBio")}
+            </p>
           )}
+            </div>          
         </div>
+
+        {/* BUTTON */}
+        <Button onClick={handleSave} className="mt-8 w-full flex justify-center">
+          {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
+        </Button>
+
         {/* 2FA */}
         <div className="mt-8">
           <p className="text-white/50 text-sm mb-2">{t("auth.twofa.title")}</p>
@@ -409,10 +416,6 @@ export default function Profile() {
           )}
         </div>
 
-        {/* BUTTON */}
-        <Button onClick={handleSave} className="mt-8">
-          {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
-        </Button>
       </div>
     </section>
   );

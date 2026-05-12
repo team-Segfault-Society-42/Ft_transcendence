@@ -71,11 +71,6 @@ export default function History() {
   	return (
 	<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
 
-		{/* TITLE */}
-		<h1 className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent text-3xl mb-8 text-center">
-			{t("history.title")}
-		</h1>
-
 		{/* CARD */}
         <GameHistoryCard
 		matches={matches}

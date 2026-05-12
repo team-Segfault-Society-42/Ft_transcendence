@@ -3,7 +3,7 @@
 
     "home": {
         "play":{
-            "title": "Play game",
+            "title": "Play Game",
             "description": "A timeless game of strategy. Be the first to get 3 in a row and claim victory!"
         },
         "hero":{
@@ -30,12 +30,18 @@
         "chat": "Chat",
         "history": "History",
         "spectate": "Spectate",
-        "rules": "Game rules"
+        "rules": "Game Rules"
     },
 
     "game": {
         "title": "Play",
         "liveTitle": "Live Games",
+        "liveEmpty": "No games to spectate",
+        "liveDesc": "Live matches will appear here",
+        "liveCount_one": "{{count}} live game",
+        "liveCount_other": "{{count}} live games",
+        "watch": "Watch",
+        "playing": "Playing...",
         "turn": "{{player}}'s Turn {{symbol}}",
         "vs": "VS",
         "wins": "WINS!",
@@ -50,7 +56,7 @@
         "notConnected": "Not connected",
         "login": "Login to play the game",
         "liveLogin": "Login to see available games",
-        "howToPlay": "Game rules",
+        "howToPlay": "Game Rules",
         "rules": {
             "maxSymbols": {
                 "title": "Max 3 symbols per player",
@@ -67,12 +73,40 @@
             "strategy": {
                 "title": "Think ahead",
                 "desc": "Plan your moves and control the board"
+            },
+            "draw": {
+                "title": "Draw rule",
+                "desc": "If no player wins after 20 moves, the match ends in a draw"
             }
+        }
+    },
+
+    "play": {
+        "myGames": {
+            "title": "My Games",
+            "subtitle": "Create a new game",
+            "desc": "Create a lobby and invite another player",
+            "create": "Create Game",
+            "empty": "No active games",
+            "waiting": "Waiting for an opponent to join...",
+            "share": "Share this link to invite someone :",
+            "copy": "Copy",
+            "cancel": "Cancel Game"
+        },
+        "availGames": {
+            "title": "Available Games",
+            "subtitle": "Public games",
+            "desc": "Join a waiting lobby created by another player",
+            "refresh": "Refresh Games",
+            "empty": "No available games",
+            "waiting": "Waiting for an opponent",
+            "join": "Join"
         }
     },
 
     "profile": {
         "loading": "Loading...",
+        "uploading": "Uploading...",
         "level": "Level {{level}}",
         "achievement": "Achievements",
         "stats": {
@@ -97,7 +131,10 @@
             "viewProfile": "View profile",
             "noBio": "No bio yet"
         },
-        "xp": "{{current}} / {{max}} XP"
+        "xp": "{{current}} / {{max}} XP",
+        "emptyBio": "Click edit profile to add a biography",
+        "changeAvatar": "Change avatar",
+        "avatarUpdated": "Avatar updated successfully"
     },
 
     "leaderboard":{
@@ -175,7 +212,9 @@
     "history": {
         "title": "Game History",
         "notConnected": "Not connected",
-        "login": "Login to see your history"
+        "login": "Login to see your history",
+        "empty": "No games played yet",
+        "emptyDesc": "Your match history will appear here"
     },
 
     "buttons": {
@@ -202,7 +241,7 @@
             "login": "Login",
             "no_account": "Don't have an account ? Sign up",
             "already_account": "Already have an account ? Log in",
-            "logout": ": Logout",
+            "logout": "Logout",
             "edit": "Modification successfully completed"
           },
         "success": "User successfully created!",

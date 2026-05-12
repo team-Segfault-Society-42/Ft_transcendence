@@ -77,13 +77,17 @@ export default function Dashboard() {
 
   return (
     <div className="flex h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white">
-      <Sidebar />
+
+      <Sidebar 
+      user={user}
+      onLoginClick={openLogin}
+      onLogoutClick={handleLogout}
+      />
 
       <div className="flex-1 flex flex-col">
         <Topbar
           user={user}
           onLoginClick={openLogin}
-          onLogoutClick={handleLogout}
         />
 
         <main className="flex-1 overflow-y-auto p-6">

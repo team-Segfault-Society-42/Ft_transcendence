@@ -2,115 +2,152 @@
     "title": "ft_transcendence",
 
     "home": {
-      "play": {
-        "title": "Jugar una partida",
-        "description": "Un juego de estrategia atemporal. ¡Sé el primero en conseguir 3 en línea y gana la partida!"
-      },
-      "hero": {
-        "title": "Tres En Raya",
-        "texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
-      },
-      "buttons": {
-        "register": "Registrarse",
-        "login": "Ingresar",
-        "start": "INICIAR PARTIDA",
-        "hi": "Hola, ",
-        "create": "Crear una partida",
-        "join": "Unirse a una partida"
-      }
+      	"play": {
+        	"title": "Jugar una partida",
+        	"description": "Un juego de estrategia atemporal. ¡Sé el primero en conseguir 3 en línea y gana la partida!"
+      	},
+      	"hero": {
+        	"title": "Tres En Raya",
+        	"texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
+      	},
+		"buttons": {
+			"register": "Registrarse",
+			"login": "Ingresar",
+			"start": "INICIAR PARTIDA",
+			"hi": "Hola, ",
+			"create": "Crear una partida",
+			"join": "Unirse a una partida"
+		}
     },
 
     "sidebar": {
-      "title": "Panel de control",
-      "home": "Inicio",
-      "game": "Jugar",
-      "profile": "Perfil",
-      "leaderboard": "Clasificación",
-      "friends": "Amigos",
-      "chat": "Chat",
-      "history": "Historial",
-      "spectate": "Mirar",
-      "rules": "Reglas del juego"
+		"title": "Panel de control",
+		"home": "Inicio",
+		"game": "Jugar",
+		"profile": "Perfil",
+		"leaderboard": "Clasificación",
+		"friends": "Amigos",
+		"chat": "Chat",
+		"history": "Historial",
+		"spectate": "Mirar",
+		"rules": "Reglas del juego"
     },
 
     "game": {
-      "title": "Jugar",
-      "liveTitle": "Partidas en directo",
-      "turn": "Turno de {{player}} : {{symbol}}",
-      "vs": "VS",
-      "wins": "¡GANA!",
-      "replay": "Reiniciar",
-      "mode": "Modo 2 jugadores",
-      "reset": "Reiniciar sesión",
-      "result": {
-          "win": "Victoria",
-          "loss": "Derrota",
-          "draw": "Empate"
-      },
-      "notConnected": "No conectado",
-      "login": "Inicia sesión para jugar",
-      "liveLogin": "Inicia sesión para ver las partidas disponibles",
-      "howToPlay": "Reglas del juego",
-      "rules": {
-        "maxSymbols": {
-          "title": "Máximo 3 símbolos por jugador",
-          "desc": "Solo puedes tener hasta 3 símbolos en el tablero"
-        },
-        "disappear": {
-          "title": "El más antiguo desaparece",
-          "desc": "Al colocar un nuevo símbolo, el más antiguo desaparece"
-        },
-        "win": {
-          "title": "Alinea 3 para ganar",
-          "desc": "Consigue 3 símbolos en línea (horizontal, vertical o diagonal)"
-        },
-        "strategy": {
-          "title": "Anticipa tus jugadas",
-          "desc": "Planifica tus movimientos y controla el tablero"
-        }
-      }
+		"title": "Jugar",
+		"liveTitle": "Partidas en directo",
+		"liveEmpty": "No hay partidas para ver",
+		"liveDesc": "Las partidas en directo aparecerán aquí",
+		"liveCount_one": "{{count}} partida en directo",
+		"liveCount_other": "{{count}} partidas en directo",
+		"watch": "Mirar",
+		"playing": "En curso...",
+		"turn": "Turno de {{player}} : {{symbol}}",
+		"vs": "VS",
+		"wins": "¡GANA!",
+		"replay": "Reiniciar",
+		"mode": "Modo 2 jugadores",
+		"reset": "Reiniciar sesión",
+		"result": {
+			"win": "Victoria",
+			"loss": "Derrota",
+			"draw": "Empate"
+      	},
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para jugar",
+		"liveLogin": "Inicia sesión para ver las partidas disponibles",
+		"howToPlay": "Reglas del juego",
+		"rules": {
+			"maxSymbols": {
+				"title": "Máximo 3 símbolos por jugador",
+				"desc": "Solo puedes tener hasta 3 símbolos en el tablero"
+        	},
+			"disappear": {
+				"title": "El más antiguo desaparece",
+				"desc": "Al colocar un nuevo símbolo, el más antiguo desaparece"
+        	},
+        	"win": {
+          		"title": "Alinea 3 para ganar",
+          		"desc": "Consigue 3 símbolos en línea (horizontal, vertical o diagonal)"
+        	},
+        	"strategy": {
+          		"title": "Anticipa tus jugadas",
+          		"desc": "Planifica tus movimientos y controla el tablero"
+        	},
+			"draw": {
+				"title": "Regla de empate",
+				"desc": "Si ningún jugador gana después de 20 movimientos, la partida termina en empate."
+			}
+      	}
     },
+  
+    "play": {
+		"myGames": {
+			"title": "Mis partidas",
+			"subtitle": "Crear una nueva partida",
+			"desc": "Crea un lobby e invita a otro jugador.",
+			"create": "Crear partida",
+			"empty": "No hay partidas activas",
+			"waiting": "Esperando a un oponente...",
+			"share": "Comparte este enlace para invitar a alguien:",
+			"copy": "Copiar",
+			"cancel": "Cancelar partida"
+		},
+		"availGames": {
+    		"title": "Partidas disponibles",
+    		"subtitle": "Partidas públicas",
+    		"desc": "Únete a una sala en espera creada por otro jugador",
+    		"refresh": "Actualizar partidas",
+    		"empty": "No hay partidas disponibles",
+    		"waiting": "Esperando a un oponente",
+    		"join": "Unirse"
+		}
+	},
 
     "profile": {
-      "loading": "Cargando...",
-      "level": "Nivel {{level}}",
-      "achievement": "Logros",
-      "stats": {
-        "wins": "Victorias",
-        "losses": "Derrotas",
-        "winrate": "Porcentaje de victorias",
-        "games_zero": "Ninguna partida jugada",
-        "games_one": "{{count}} partida jugadas",
-        "games_other": "{{count}} partidas jugadas",
-        "winrateValue": "{{value}}%"
-      },
-      "bio": "Biografía",
-      "buttons": {
-        "edit": "Editar perfil",
-        "save": "Guardar cambios"
-      },
-      "about": {
-        "title": "Acerca de",
-        "notConnected": "No conectado",
-        "login": "Inicia sesión para ver tu perfil",
-        "guest": "Invitado",
-        "viewProfile": "Ver perfil",
-        "noBio": "Sin biografía"
-      },
-      "xp": "{{current}} / {{max}} XP"
-    },
+		"loading": "Cargando...",
+		"level": "Nivel {{level}}",
+		"achievement": "Logros",
+		"stats": {
+			"wins": "Victorias",
+			"losses": "Derrotas",
+			"winrate": "Porcentaje de victorias",
+			"games_zero": "Ninguna partida jugada",
+			"games_one": "{{count}} partida jugadas",
+			"games_other": "{{count}} partidas jugadas",
+			"winrateValue": "{{value}}%"
+		},
+		"bio": "Biografía",
+		"buttons": {
+			"edit": "Editar perfil",
+			"save": "Guardar cambios"
+      	},
+		"about": {
+			"title": "Acerca de",
+			"notConnected": "No conectado",
+			"login": "Inicia sesión para ver tu perfil",
+			"guest": "Invitado",
+			"viewProfile": "Ver perfil",
+			"noBio": "Sin biografía"
+		},
+		"xp": "{{current}} / {{max}} XP",
+		"emptyBio": "Haz clic en editar perfil para añadir una biografía",
+		"uploading": "Subiendo...",
+  		"changeAvatar": "Cambiar avatar",
+  		"avatarUpdated": "Avatar actualizado correctamente"
+	},
 
     "leaderboard": {
-      "title": "Clasificación",
-      "topXP": "Nivel más alto",
-      "topWins": "Más victorias",
-      "topTotalGames": "Más partidas jugadas",
-      "empty": "No hay jugadores en la clasificación",
-      "xp": "{{value}} XP",
-      "wins": "{{value}} Victorias",
-      "totalGames": "{{value}} Partidas",
-      "notConnected": "No conectado",
-      "login": "Inicia sesión para ver la clasificación"
+		"title": "Clasificación",
+		"topXP": "Nivel más alto",
+		"topWins": "Más victorias",
+		"topTotalGames": "Más partidas jugadas",
+		"empty": "No hay jugadores en la clasificación",
+		"xp": "{{value}} XP",
+		"wins": "{{value}} Victorias",
+		"totalGames": "{{value}} Partidas",
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para ver la clasificación"
     },
 
     "friends": {
@@ -167,15 +204,17 @@
 	},
 
     "chat":{
-      "title": "Chat",
-      "notConnected": "No conectado",
-      "login": "Inicia sesión para ver el chat"
+		"title": "Chat",
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para ver el chat"
     },
 
     "history": {
-      "title": "Historial de partidas",
-      "notConnected": "No conectado",
-      "login": "Inicia sesión para ver tu historial"
+		"title": "Historial de partidas",
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para ver tu historial",
+		"empty": "Aún no se han jugado partidas",
+        "emptyDesc": "Tu historial de juego aparecerá aquí."
     },
 
     "buttons": {
@@ -185,7 +224,6 @@
     "auth": {
         "description": "Crea tu cuenta",
         "description_login": "Acceso",
-
         "username": "Nombre de usuario",
         "email": "Correo electrónico",
         "password": "Contraseña",
@@ -203,13 +241,11 @@
             "login": "Ingresar",
             "no_account": "¿ No tienes cuenta ? Regístrate",
             "already_account": "¿ Ya tienes una cuenta ? Iniciar sesión",
-            "logout": ": Cerrar sesión",
+            "logout": "Cerrar sesión",
             "edit": "Modificación completada con éxito"
         },
-
         "success": "¡Usuario creado con éxito!",
         "error": "Ocurrió un error: ",
-
         "errors": {
             "username": "El nombre de usuario debe tener al menos 3 caracteres.",
             "email": "Dirección de correo inválida.",
@@ -235,7 +271,6 @@
           "back": "Volver al inicio"
         }
     },
-
     "footer": {
         "brand": "ft_transcendence",
         "privacy": "Privacidad",
@@ -248,20 +283,16 @@
         "intro": "Esta aplicación recopila y procesa datos de los usuarios para proporcionar sus servicios.",
         "data": {
             "title": "Datos recopilados",
-            "items": [
-                "Nombre de usuario",
-                "Estadísticas de juego",
-                "Información de perfil"
-            ]
-      },
+            "items": ["Nombre de usuario", "Estadísticas de juego", "Información de perfil"]
+      	},
         "usage": {
             "title": "Uso",
             "content": "Los datos se utilizan únicamente para el funcionamiento de la aplicación y no se comparten con terceros."
-      },
-    "security": {
-        "title": "Seguridad",
-        "content": "Tomamos medidas adecuadas para proteger los datos de los usuarios."
-      }
+      	},
+    	"security": {
+        	"title": "Seguridad",
+        	"content": "Tomamos medidas adecuadas para proteger los datos de los usuarios."
+      	}
     },
 
     "terms": {
@@ -270,14 +301,14 @@
         "usage": {
             "title": "Uso",
             "content": "Los usuarios deben utilizar la aplicación de forma respetuosa y no intentar explotarla."
-      },
-    "account": {
-        "title": "Cuentas",
-        "content": "Los usuarios son responsables de sus cuentas y su actividad."
-      },
-    "limitation": {
-        "title": "Limitación",
-        "content": "La aplicación se proporciona \"tal cual\" sin garantías."
-      }
+      	},
+    	"account": {
+       		"title": "Cuentas",
+        	"content": "Los usuarios son responsables de sus cuentas y su actividad."
+      	},
+    	"limitation": {
+        	"title": "Limitación",
+        	"content": "La aplicación se proporciona \"tal cual\" sin garantías."
+      	}
     }
-  }
+}

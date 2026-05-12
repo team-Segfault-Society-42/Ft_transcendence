@@ -10,7 +10,7 @@ import Dashboard from "./components/layout/Dashboard";
 import LeaderBoard from "@/pages/Leaderboard";
 import TwoFactorLogin from "./pages/TwoFactorLogin";
 import LiveGamesDisplay from "./pages/LiveGames";
-import Lobby from "./pages/Lobby";
+import Play from "./pages/Play.tsx";
 import Friends from "./pages/Friends";
 // import Chat from "./pages/Chat";
 import Rules from "./pages/Rules";
@@ -22,7 +22,7 @@ function App() {
       <Routes>
         <Route element={<Dashboard />}>
           <Route path="/" element={<Home />} />
-          <Route path="/lobby" element={<Lobby />} />
+          <Route path="/play" element={<Play />} />
           <Route path="/spectate" element={<LiveGamesDisplay />} />
           <Route path="/game/:gameId" element={<Game />} />
           <Route path="/profile" element={<Profile />} />
