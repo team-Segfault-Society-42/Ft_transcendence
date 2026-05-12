@@ -55,6 +55,7 @@ export class GameController {
   @ApiOperation({ summary: 'Get finished game history by game ID' })
   @ApiParam({ name: 'id', description: 'Game ID', example: 'game_abc123' })
   @ApiResponse({ status: 200, description: 'Returns match history' })
+  @ApiResponse({ status: 400, description: 'Game is not finished yet' })
   @ApiResponse({ status: 404, description: 'Game not found' })
   @Get(':id/history')
   getFinishedGameHistory(@Param('id') gameId: string) {
