@@ -13,6 +13,7 @@ import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useGameTimer } from "../hooks/useGameTimer";
 import { PlayerCards } from "./PlayerCards";
 import { GameStatusBanner } from "./GameStatusBanner";
+import { EndGamePopup } from "./EndGamePopup";
 
 export default function Board() {
   const {
@@ -130,66 +131,18 @@ export default function Board() {
         opponentDisconnect={opponentDisconnect}
       ></GameStatusBanner>
 
+      {/* ShowPopop */}
       {showPopup && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/80 rounded-xl z-40">
-          <div className="bg-white p-8 rounded-xl shadow-xl flex flex-col items-center gap-4 min-w-[320px] max-w-[90vw]">
-            <h2
-              className={`text-2xl font-bold text-center wrap-break-word ${endGameMessage.color}`}
-            >
-              {endGameMessage.title}
-            </h2>
-
-            <p className="text-sm text-gray-600 font-medium text-center">
-              {endGameMessage.subtitle}
-            </p>
-
-            <p className="text-sm text-gray-500 text-center">
-              {game.playerLeft
-                ? "Opponent left - replay unavailable"
-                : playerRole === "X" || playerRole === "O"
-                  ? "You can request a replay"
-                  : "Players try to decide whether to replay"}
-            </p>
-
-            {(playerRole === "X" || playerRole === "O") && !game.playerLeft && (
-              <>
-                <button
-                  className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-                  onClick={requestReplay}
-                >
-                  {t("game.replay", { defaultValue: "REPLAY" })}
-                </button>
-
-                <p className="text-sm text-gray-600">
-                  {t("game.replayVotes", {
-                    defaultValue: "Replay votes",
-                  })}{" "}
-                  — X: {game.replayVotes.X ? "✓" : "…"} | O:{" "}
-                  {game.replayVotes.O ? "✓" : "…"}
-                </p>
-
-                {waitingReplayOtherPlayer && (
-                  <div className="text-sm text-fuchsia-500 font-medium text-center">
-                    {t("game.waitingReplayOther", {
-                      defaultValue:
-                        "Replay requested. Waiting for the other player...",
-                    })}
-                  </div>
-                )}
-              </>
-            )}
-
-            <button
-              className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-              onClick={() => {
-                leaveGame();
-                navigate("/");
-              }}
-            >
-              {t("game.backHome", { defaultValue: "Back to home" })}
-            </button>
-          </div>
-        </div>
+        <EndGamePopup
+          endGameMessage={endGameMessage}
+          playerRole={playerRole}
+          playerLeft={game.playerLeft}
+          replayVotes={game.replayVotes}
+          waitingReplayOtherPlayer={waitingReplayOtherPlayer}
+          requestReplay={requestReplay}
+          leaveGame={leaveGame}
+          navigate={navigate}
+        ></EndGamePopup>
       )}
 
       <div className="grid grid-cols-3 gap-3">
