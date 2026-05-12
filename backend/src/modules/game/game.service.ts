@@ -4,7 +4,6 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  BadRequestException
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { GameState, PlayerRole, PublicPlayerProfile } from './game.types';
