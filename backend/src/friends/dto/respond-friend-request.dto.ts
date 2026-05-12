@@ -11,6 +11,6 @@ export class RespondFriendRequestDto {
 		enum: FriendRequestAction,
 		example: FriendRequestAction.ACCEPT,
 	})
-	@IsEnum(FriendRequestAction)
+	@IsEnum(FriendRequestAction, { message: 'ERR_FRIEND_ACTION_INVALID' })
 	action: FriendRequestAction;
 }
