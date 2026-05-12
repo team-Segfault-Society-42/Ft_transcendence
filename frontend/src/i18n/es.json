@@ -131,7 +131,10 @@
 			"noBio": "Sin biografía"
 		},
 		"xp": "{{current}} / {{max}} XP",
-		"emptyBio": "Haz clic en editar perfil para añadir una biografía"
+		"emptyBio": "Haz clic en editar perfil para añadir una biografía",
+		"uploading": "Subiendo...",
+  		"changeAvatar": "Cambiar avatar",
+  		"avatarUpdated": "Avatar actualizado correctamente"
 	},
 
     "leaderboard": {

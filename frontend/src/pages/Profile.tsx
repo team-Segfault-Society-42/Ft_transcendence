@@ -185,7 +185,7 @@ export default function Profile() {
 			const updatedUser = await userService.uploadAvatar(file);
 			setUser({ ...user, avatar: updatedUser.avatar });
 
-			toast.success("Avatar updated successfully");
+			toast.success(t("profile.avatarUpdated"));
 		} catch (error: any) {
 			const serverMessage = error.response?.data?.message || error.message;
 			const finalMessage = Array.isArray(serverMessage)
@@ -241,7 +241,9 @@ export default function Profile() {
 						disabled={isAvatarUploading}
 						className="px-4 py-2 text-xs"
 					>
-						{isAvatarUploading ? "Uploading..." : "Change avatar"}
+						{isAvatarUploading
+            ? t("profile.uploading")
+            : t("profile.changeAvatar")}
 					</Button>
 				</div>
 			)}

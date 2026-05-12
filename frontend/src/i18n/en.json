@@ -106,6 +106,7 @@
 
     "profile": {
         "loading": "Loading...",
+        "uploading": "Uploading...",
         "level": "Level {{level}}",
         "achievement": "Achievements",
         "stats": {
@@ -131,7 +132,9 @@
             "noBio": "No bio yet"
         },
         "xp": "{{current}} / {{max}} XP",
-        "emptyBio": "Click edit profile to add a biography"
+        "emptyBio": "Click edit profile to add a biography",
+        "changeAvatar": "Change avatar",
+        "avatarUpdated": "Avatar updated successfully"
     },
 
     "leaderboard":{
