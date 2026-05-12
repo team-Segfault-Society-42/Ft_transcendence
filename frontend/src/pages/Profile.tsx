@@ -9,7 +9,6 @@ import { toast } from "sonner";
 // import { zodResolver } from "@hookform/resolvers/zod";
 // import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar";
-import type { Match } from "@/lib/match";
 import { Winrate } from "@/components/ui/Winrate";
 import { LevelProgress } from "@/components/ui/Level";
 import { Username } from "@/components/ui/Username";
@@ -43,7 +42,6 @@ export default function Profile() {
     useOutletContext<
       [User | null, React.Dispatch<React.SetStateAction<User | null>>]
     >();
-  const [matches, setMatches] = useState<Match[]>([]);
 
   const [isEdit, isInEdit] = useState(false);
   const [userName, setUserName] = useState(user?.username || "");
@@ -52,7 +50,6 @@ export default function Profile() {
 
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([])
   const [allAchievements, setAllAchievements] = useState<Achievement[]>([]);
-  //   const navigate = useNavigate()
 
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
@@ -89,22 +86,9 @@ export default function Profile() {
       }
       fetchAchievements()
 
-      async function fetchhistory() {
-        try {
-          const data = await userService.getUserHistory(user!.id);
-          setMatches(data);
-        } catch (error) {
-          console.error("Failed to fetch history:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-      fetchhistory();
+      setLoading(false);
     }
   }, [user]);
-
-  // DEBUG
-  console.log(matches);
 
   if (!user || loading) {
     return (
