@@ -9,10 +9,13 @@ import { FriendStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { FriendRequestAction } from './dto/respond-friend-request.dto';
 import { MAX_PENDING_FRIEND_REQUESTS, MAX_FRIEND_RESULTS} from './friends.constants';
+import { PresenceService } from '../presence/presence.service';
 
 @Injectable()
 export class FriendsService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(private readonly prisma: PrismaService,
+		private readonly presenceService: PresenceService,
+	) {}
 
 	async sendFriendRequest(senderId: number, receiverId: number) {
 		if (senderId === receiverId) {
@@ -321,5 +324,35 @@ export class FriendsService {
 		return {
 			message: 'FRIEND_REMOVED_SUCCESS',
 		};
+	}
+
+	async getFriendsStatus(userId: number) {
+		const friendships = await this.prisma.friend.findMany({
+			where: {
+				status: FriendStatus.ACCEPTED,
+				OR: [
+					{ senderId: userId },
+					{ receiverId: userId },
+				],
+			},
+			take: MAX_FRIEND_RESULTS,
+			select: {
+				senderId: true,
+				receiverId: true,
+			},
+		});
+
+		return friendships.map((friendship) => {
+			const friendId =
+				friendship.senderId === userId
+					? friendship.receiverId
+					: friendship.senderId;
+
+			return {
+				userId: friendId,
+				online: this.presenceService.isUserOnline(friendId),
+				inGame: false,
+			};
+		});
 	}
 }
