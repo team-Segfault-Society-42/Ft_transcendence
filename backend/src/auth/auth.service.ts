@@ -76,7 +76,7 @@ export class AuthService {
 				passwordHash,
 				username: registerDto.username,
 				bio: registerDto.bio ?? '',
-				avatar: registerDto.avatar ?? '/default.png',
+				avatar: '/default.png',
 				wins: 0,
 				losses: 0,
 				draws: 0,

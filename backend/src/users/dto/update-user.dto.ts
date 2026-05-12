@@ -5,8 +5,8 @@ export class UpdateUserDto {
 	@IsString()
 	@MinLength(3, { message: 'Username is too short' })
 	@MaxLength(20, { message: 'Username is too long' })
-	@Matches(/^[a-zA-Z0-9_]+$/, { 
-        message: 'Username must not contain spaces' 
+	@Matches(/^[a-zA-Z0-9_]+$/, {
+        message: 'Username must not contain spaces'
     })
 	username?: string;
 
@@ -15,7 +15,4 @@ export class UpdateUserDto {
 	@MaxLength(180, { message: 'Bio is too long' })
 	bio?: string;
 
-	@IsOptional()
-	@IsString()
-	avatar?: string;
 }

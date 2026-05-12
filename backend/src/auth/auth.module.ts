@@ -10,16 +10,16 @@ import { OAuthService } from './oauth.service';
 import { TwoFactorService } from './twofa.service';
 
 @Module({
-	imports: [
-		JwtModule.register({
-			secret: process.env.JWT_SECRET,
-			signOptions: { expiresIn: '8h' },
-		}),
-		PrismaModule,
-		HttpModule,
-	],
-	controllers: [AuthController, OAuthController],
-	providers: [AuthService, OAuthService, TwoFactorService, JwtAuthGuard],
-	exports: [JwtAuthGuard],
+  imports: [
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '8h' },
+    }),
+    PrismaModule,
+    HttpModule,
+  ],
+  controllers: [AuthController, OAuthController],
+  providers: [AuthService, OAuthService, TwoFactorService, JwtAuthGuard],
+  exports: [JwtAuthGuard, JwtModule],
 })
 export class AuthModule {}
