@@ -27,7 +27,7 @@ export class AchievementsService {
   }
 
   async getAllAchievements() {
-    return Object.values(ACHIEVEMENTS)
+    return Object.values(ACHIEVEMENTS);
   }
 
   async getAchievements(userId: number) {
@@ -53,6 +53,22 @@ export class AchievementsService {
       };
     });
     return getInfoFromAchievements;
+  }
+
+  async checkAllAchievementsUnlocked(userId: number, tx?: Prisma.TransactionClient) {
+    const prisma = tx || this.prismaService;
+
+    const userAchievement = await prisma.userAchievement.count({
+      where: {
+        userId,
+        key: {
+          not: 'GET_ALL',
+        },
+      },
+    });
+    if (userAchievement >= Object.keys(ACHIEVEMENTS).length - 1) {
+      await this.unlockAchievement(userId, 'GET_ALL', tx);
+    }
   }
 
   async handleMatchAchievements(
@@ -96,5 +112,8 @@ export class AchievementsService {
           : result.player1Id;
       await this.unlockAchievement(loserId, 'LOSE_BY_TIME', tx);
     }
+
+    await this.checkAllAchievementsUnlocked(result.player1Id, tx);
+    await this.checkAllAchievementsUnlocked(result.player2Id, tx);
   }
 }

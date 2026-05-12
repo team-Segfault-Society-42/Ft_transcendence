@@ -1,5 +1,7 @@
 import {
+  BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   BadRequestException
@@ -69,7 +71,8 @@ export class GameService {
   getFinishedGamesHistory(gameId: string) {
     const game = this.getMutableGameById(gameId);
 
-    if (game.status !== 'finished') throw new Error('Game not finished yet');
+    if (game.status !== 'finished')
+      throw new BadRequestException('Game not finished yet');
 
     return {
       gameId,
@@ -122,12 +125,12 @@ export class GameService {
     const game = this.getMutableGameById(gameId);
 
     if (game.status !== 'finished')
-      throw new Error('Replay is only available after game end');
+      throw new BadRequestException('Replay is only available after game end');
 
     const role = getPlayerRoleByUserId(game, userId);
 
     if (role !== 'X' && role !== 'O')
-      throw new Error('Spectators cannot request replay');
+      throw new ForbiddenException('Spectators cannot request replay');
 
     game.replayVotes[role] = true;
 
@@ -144,11 +147,14 @@ export class GameService {
     c: number,
   ): Promise<GameState> {
     const game = this.getMutableGameById(gameId);
-    if (game.status !== 'playing') throw new Error('Waiting for both players');
+    if (game.status !== 'playing')
+      throw new BadRequestException('Waiting for both players');
 
     const role = getPlayerRoleByUserId(game, userId);
-    if (role === 'spectator') throw new Error('Spectators cannot play');
-    if (role !== game.currentPlayer) throw new Error('It is not your turn');
+    if (role === 'spectator')
+      throw new ForbiddenException('Spectators cannot play');
+    if (role !== game.currentPlayer)
+      throw new BadRequestException('It is not your turn');
 
     const now = Date.now();
     const timeOnClick = now - game.lastMove;

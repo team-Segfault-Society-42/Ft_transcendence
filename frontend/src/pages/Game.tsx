@@ -9,11 +9,7 @@ export default function Game() {
   const { gameId } = useParams<{ gameId: string }>();
 
   useEffect(() => {
-    if (!gameId) {
-      console.error("No gameId found in URL");
-      return;
-    }
-
+    if (!gameId) return;
     useGameStore.getState().resetGameState();
 
     const client = io(window.location.origin, {
