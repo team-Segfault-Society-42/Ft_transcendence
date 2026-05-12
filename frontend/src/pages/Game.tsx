@@ -58,7 +58,7 @@ export default function Game() {
   }, [gameId]);
 
   return (
-    <div>
+    <div className="flex justify-center items-start min-h-screen pt-8">
       <Board />
     </div>
   );
