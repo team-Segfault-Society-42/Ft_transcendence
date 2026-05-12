@@ -11,7 +11,7 @@ type Props = {
   currentPlayer: string;
 };
 
-export default function PlayerCards({
+export function PlayerCards({
   playerXName,
   playerOName,
   playerXAvatar,
