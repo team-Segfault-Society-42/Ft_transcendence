@@ -5,8 +5,8 @@ export class PlayMoveDto {
     example: 'c384eb42-8126-4ae9-9649-eacf67cff9dd',
     description: 'ID of the game',
   })
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'ERR_GAME_ID_INVALID' })
+  @IsNotEmpty({ message: 'ERR_GAME_ID_REQUIRED' })
   gameId!: string;
 
   @ApiProperty({
@@ -15,9 +15,9 @@ export class PlayMoveDto {
     minimum: 0,
     maximum: 2,
   })
-  @IsNumber()
-  @Min(0)
-  @Max(2)
+  @IsNumber({}, { message: 'ERR_GAME_MOVE_COORD_INVALID' })
+  @Min(0, { message: 'ERR_GAME_MOVE_COORD_INVALID' })
+  @Max(2, { message: 'ERR_GAME_MOVE_COORD_INVALID' })
   r!: number;
 
   @ApiProperty({
@@ -26,8 +26,8 @@ export class PlayMoveDto {
     minimum: 0,
     maximum: 2,
   })
-  @IsNumber()
-  @Min(0)
-  @Max(2)
+  @IsNumber({}, { message: 'ERR_GAME_MOVE_COORD_INVALID' })
+  @Min(0, { message: 'ERR_GAME_MOVE_COORD_INVALID' })
+  @Max(2, { message: 'ERR_GAME_MOVE_COORD_INVALID' })
   c!: number;
 }
