@@ -11,13 +11,13 @@ export type AchievementKey =
 
 export const ACHIEVEMENTS: Record<AchievementKey, { key: AchievementKey, displayName: string, description: string, iconName: string }> = {
 
-  FIRST_GAME: { key: 'FIRST_GAME', displayName: 'First of all', description: 'Play your first game.', iconName: "FIRST_GAME_TROPHY" },
-  FIRST_WIN: { key: 'FIRST_WIN', displayName: 'First Blood', description: 'Win your first game.', iconName: "FIRST_WIN_TROPHY" },
-  DRAW_GAME: { key: 'DRAW_GAME', displayName: 'Boring', description: 'Draw a game.', iconName: "DRAW_GAME_TROPHY" },
-  LOSE_BY_TIME: { key: 'LOSE_BY_TIME', displayName: 'Noob', description: 'Lose a game by time.', iconName: "LOSE_BY_TIME_TROPHY" },
-  WIN_5: { key: 'WIN_5', displayName: 'High Five', description: 'Win a total of 5 matches.', iconName: "WIN_5_TROPHY" },
-  WIN_10: { key: 'WIN_10', displayName: 'Double Digits', description: 'Win a total of 10 matches.', iconName: "WIN_10_TROPHY" },
-  WIN_50: { key: 'WIN_50', displayName: 'Veteran', description: 'Win a total of 50 matches.', iconName: "WIN_50_TROPHY" },
-  GET_ALL: { key: 'GET_ALL', displayName: 'End Game', description: 'Complete all achievements', iconName: "GET_ALL_TROPHY" },
+  FIRST_GAME: { key: 'FIRST_GAME', displayName: 'ACH_FIRST_GAME_TITLE', description: 'ACH_FIRST_GAME_DESC', iconName: "FIRST_GAME_TROPHY" },
+  FIRST_WIN: { key: 'FIRST_WIN', displayName: 'ACH_FIRST_WIN_TITLE', description: 'ACH_FIRST_WIN_DESC', iconName: "FIRST_WIN_TROPHY" },
+  DRAW_GAME: { key: 'DRAW_GAME', displayName: 'ACH_DRAW_GAME_TITLE', description: 'ACH_DRAW_GAME_DESC', iconName: "DRAW_GAME_TROPHY" },
+  LOSE_BY_TIME: { key: 'LOSE_BY_TIME', displayName: 'ACH_LOSE_TIME_TITLE', description: 'ACH_LOSE_TIME_DESC', iconName: "LOSE_BY_TIME_TROPHY" },
+  WIN_5: { key: 'WIN_5', displayName: 'ACH_WIN_5_TITLE', description: 'ACH_WIN_10_DESC', iconName: "WIN_5_TROPHY" },
+  WIN_10: { key: 'WIN_10', displayName: 'ACH_WIN_10_TITLE', description: 'ACH_WIN_10_DESC', iconName: "WIN_10_TROPHY" },
+  WIN_50: { key: 'WIN_50', displayName: 'ACH_WIN_50_TITLE', description: 'ACH_WIN_50_DESC', iconName: "WIN_50_TROPHY" },
+  GET_ALL: { key: 'GET_ALL', displayName: 'ACH_GET_ALL_TITLE', description: 'ACH_GET_ALL_DESC', iconName: "GET_ALL_TROPHY" },
 
 } as const;
