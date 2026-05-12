@@ -24,6 +24,10 @@ import {
 	type OutgoingFriendRequest,
 	type PublicUser,
 } from "@/services/friendsService";
+import {
+	connectPresenceSocket,
+	disconnectPresenceSocket,
+} from "@/services/presenceSocket";
 
 interface CurrentUser {
 	id: number;
@@ -82,6 +86,32 @@ export default function Friends() {
 	useEffect(() => {
 		loadFriendsData();
 	}, [loadFriendsData]);
+	useEffect(() => {
+		if (!user) {
+			disconnectPresenceSocket();
+			return;
+		}
+
+		const socket = connectPresenceSocket();
+
+		socket.on("connect", () => {
+			console.log("[PresenceSocket] connected", socket.id);
+		});
+
+		socket.on("disconnect", () => {
+			console.log("[PresenceSocket] disconnected");
+		});
+
+		socket.on("connect_error", (error: Error) => {
+			console.error("[PresenceSocket] connection error:", error.message);
+		});
+
+		return () => {
+			socket.off("connect");
+			socket.off("disconnect");
+			socket.off("connect_error");
+		};
+	}, [user]);
 
 	async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
