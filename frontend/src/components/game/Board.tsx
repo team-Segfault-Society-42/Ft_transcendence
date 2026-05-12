@@ -11,6 +11,7 @@ import { getEndGameMessage, truncateUserName } from "./boardHelpers";
 import { Gamepad2 } from "lucide-react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useGameTimer } from "../hooks/useGameTimer";
+import PlayerCards from "./PlayerCards";
 
 export default function Board() {
   const {
@@ -81,8 +82,8 @@ export default function Board() {
 
   const playerXName = game.playerProfiles?.X?.username || "Player X";
   const playerOName = game.playerProfiles?.O?.username || "Player O";
-  const playerXAvatar = game.playerProfiles?.X?.avatar;
-  const playerOAvatar = game.playerProfiles?.O?.avatar;
+  const playerXAvatar = game.playerProfiles?.X?.avatar ?? undefined;
+  const playerOAvatar = game.playerProfiles?.O?.avatar ?? undefined;
 
   const flatBoard: CellValue[] = board.flat();
   const showPopup = status === "finished" && game.endReason !== null;
@@ -111,50 +112,13 @@ export default function Board() {
 
   return (
     <div className="relative inline-block text-center p-4">
-      <div className="grid grid-cols-3 gap-4 mb-8 text-white">
-        <div
-          className={`bg-gray-800 p-4 rounded flex flex-col items-center ${currentPlayer === "X" ? "ring-2 ring-cyan-400" : ""}`}
-        >
-          <p>X</p>
-          <div className="mt-4 text-white/80 font-medium">{game.scores.X}</div>
-          {playerXAvatar ? (
-            <img
-              src={playerXAvatar}
-              className="w-12 h-12 rounded-full mb-2"
-              alt="player X"
-            />
-          ) : (
-            <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mb-2">
-              {playerXName[0]}
-            </div>
-          )}
-          <p className="font-bold">{playerXNameTrunc}</p>
-        </div>
-
-        <div className="bg-gray-700 p-4 rounded flex flex-col items-center justify-center">
-          <p className="text-sm">{t("game.vs", { defaultValue: "VS" })}</p>
-          <div className="mt-4 text-white/80 font-medium">{game.scores.D}</div>
-        </div>
-
-        <div
-          className={`bg-gray-800 p-4 rounded flex flex-col items-center ${currentPlayer === "O" ? "ring-2 ring-cyan-400" : ""}`}
-        >
-          <p>O</p>
-          <div className="mt-4 text-white/80 font-medium">{game.scores.O}</div>
-          {playerOAvatar ? (
-            <img
-              src={playerOAvatar}
-              className="w-12 h-12 rounded-full mb-2"
-              alt="player O"
-            />
-          ) : (
-            <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center mb-2">
-              {playerOName[0]}
-            </div>
-          )}
-          <p className="font-bold">{playerONameTrunc}</p>
-        </div>
-      </div>
+      <PlayerCards
+        playerXName={playerXNameTrunc}
+        playerOName={playerONameTrunc}
+        playerXAvatar={playerXAvatar}
+        playerOAvatar={playerOAvatar}
+        currentPlayer={currentPlayer}
+      />
 
       {error && (
         <div className="mb-4 rounded-lg border border-red-400 bg-red-500/20 px-4 py-3 text-red-200">
