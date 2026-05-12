@@ -25,10 +25,7 @@ import {
 	type PublicUser,
 	type FriendStatus,
 } from "@/services/friendsService";
-import {
-	connectPresenceSocket,
-	disconnectPresenceSocket,
-} from "@/services/presenceSocket";
+import { usePresenceStore } from "@/Store/presenceStore";
 
 interface CurrentUser {
 	id: number;
@@ -60,7 +57,9 @@ export default function Friends() {
 	const [searchResults, setSearchResults] = useState<PublicUser[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [searchLoading, setSearchLoading] = useState(false);
-	const [friendStatus, setFriendStatus] = useState<Record<number, FriendStatus>>({});
+	const friendStatus = usePresenceStore(
+		(state) => state.friendStatus,
+	);
 
 	const loadFriendsData = useCallback(async () => {
 		if (!user) return;
@@ -68,21 +67,15 @@ export default function Friends() {
 		try {
 			setLoading(true);
 
-			const [friendsData, incomingData, outgoingData, statusData] = await Promise.all([
+			const [friendsData, incomingData, outgoingData] = await Promise.all([
 				friendsService.getFriends(),
 				friendsService.getIncomingFriendRequests(),
 				friendsService.getOutgoingFriendRequests(),
-				friendsService.getFriendsStatus(),
 			]);
 
 			setFriends(friendsData);
 			setIncomingRequests(incomingData);
 			setOutgoingRequests(outgoingData);
-			setFriendStatus(
-				Object.fromEntries(
-					statusData.map((status) => [status.userId, status]),
-				),
-			);
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.load", { error: message }));
@@ -94,42 +87,7 @@ export default function Friends() {
 	useEffect(() => {
 		loadFriendsData();
 	}, [loadFriendsData]);
-	useEffect(() => {
-		if (!user) {
-			disconnectPresenceSocket();
-			return;
-		}
 
-		const socket = connectPresenceSocket();
-
-		socket.on("connect", () => {
-			console.log("[PresenceSocket] connected", socket.id);
-		});
-
-		socket.on("disconnect", () => {
-			console.log("[PresenceSocket] disconnected");
-		});
-
-		socket.on("connect_error", (error: Error) => {
-			console.error("[PresenceSocket] connection error:", error.message);
-		});
-
-		socket.on("friend_status_changed", (status: FriendStatus) => {
-			console.log("[PresenceSocket] friend status changed", status);
-
-			setFriendStatus((previous) => ({
-				...previous,
-				[status.userId]: status,
-			}));
-		});
-
-		return () => {
-			socket.off("connect");
-			socket.off("disconnect");
-			socket.off("connect_error");
-			socket.off("friend_status_changed");
-		};
-	}, [user]);
 
 	async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();

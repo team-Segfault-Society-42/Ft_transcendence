@@ -11,6 +11,16 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Chatbar } from "./Chatbar";
 import { Button } from "../ui/Button";
+import {
+	connectPresenceSocket,
+	disconnectPresenceSocket,
+} from "@/services/presenceSocket";
+
+import { friendsService } from "@/services/friendsService";
+
+import { usePresenceStore } from "@/Store/presenceStore";
+
+import type { FriendStatus } from "@/services/friendsService";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -23,6 +33,18 @@ export default function Dashboard() {
   const [isChat, setIsChat] = useState(false);
 
   const navigate = useNavigate();
+
+	const setFriendStatus = usePresenceStore(
+		(state) => state.setFriendStatus,
+	);
+
+	const updateFriendStatus = usePresenceStore(
+		(state) => state.updateFriendStatus,
+	);
+
+	const clearFriendStatus = usePresenceStore(
+		(state) => state.clearFriendStatus,
+	);
 
   const openLogin = () => setActiveModal("login");
   const closeModals = () => setActiveModal(null);
@@ -48,6 +70,57 @@ export default function Dashboard() {
     }
     getCurrentUser();
   }, []);
+
+	useEffect(() => {
+		if (!user) {
+			clearFriendStatus();
+			disconnectPresenceSocket();
+			return;
+		}
+
+		const socket = connectPresenceSocket();
+
+		async function loadFriendStatuses() {
+			try {
+				const statuses = await friendsService.getFriendsStatus();
+				setFriendStatus(statuses);
+			} catch (error) {
+				console.error("[PresenceSocket] failed to load statuses", error);
+			}
+		}
+
+		loadFriendStatuses();
+
+		socket.on("connect", () => {
+			console.log("[PresenceSocket] connected", socket.id);
+		});
+
+		socket.on("disconnect", () => {
+			console.log("[PresenceSocket] disconnected");
+		});
+
+		socket.on("friend_status_changed", (status: FriendStatus) => {
+			console.log("[PresenceSocket] friend status changed", status);
+
+			updateFriendStatus(status);
+		});
+
+		socket.on("connect_error", (error: Error) => {
+			console.error("[PresenceSocket] connection error:", error.message);
+		});
+
+		return () => {
+			socket.off("connect");
+			socket.off("disconnect");
+			socket.off("friend_status_changed");
+			socket.off("connect_error");
+		};
+	}, [
+		user,
+		setFriendStatus,
+		updateFriendStatus,
+		clearFriendStatus,
+	]);
 
   async function handleLogout() {
     try {
@@ -82,7 +155,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen bg-linear-to-br from-slate-900 via-slate-800 to-black text-white">
 
-      <Sidebar 
+      <Sidebar
       user={user}
       onLoginClick={openLogin}
       onLogoutClick={handleLogout}
