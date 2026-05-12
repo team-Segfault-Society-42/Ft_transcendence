@@ -6,12 +6,6 @@ export type EndGameMessage = {
   color: string;
 };
 
-export function truncateUserName(username: string, maxLength = 12): string {
-  if (!username) return "";
-  if (username.length <= maxLength) return username;
-  return username.slice(0, maxLength) + "…";
-}
-
 export function getEndGameMessage(
   endReason: EndReason,
   winner: CellValue,

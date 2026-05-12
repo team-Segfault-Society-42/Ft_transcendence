@@ -3,34 +3,26 @@ import { useGameStore } from "../../Store/gameStore";
 import type { CellValue } from "../../type/game.types";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { getEndGameMessage, truncateUserName } from "./boardHelpers";
+import { getEndGameMessage } from "./boardHelpers";
 import { Gamepad2 } from "lucide-react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useGameTimer } from "../hooks/useGameTimer";
 import { PlayerCards } from "./PlayerCards";
 import { GameStatusBanner } from "./GameStatusBanner";
 import { EndGamePopup } from "./EndGamePopup";
+import { SpectatorCount } from "./SpectatorCount";
+import { Button } from "@/components/ui/Button";
 
 export default function Board() {
-  const {
-    gameId,
-    game,
-    error,
-    playMove,
-    playerRole,
-    requestReplay,
-    leaveGame,
-  } = useGameStore();
+  const { game, error, playMove, playerRole, requestReplay, leaveGame } =
+    useGameStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const timeLeft = useGameTimer(game);
 
-  const playerLeftToast = useRef(false);
   const oldOppDiscnct = useRef(false);
 
   const xDisconnect =
@@ -43,7 +35,6 @@ export default function Board() {
   useEffect(() => {
     if (game?.playerLeft) {
       toast.warning("Opponent left - no replay!");
-      playerLeftToast.current = true;
     }
   }, [game?.playerLeft]);
 
@@ -53,16 +44,12 @@ export default function Board() {
     }
     oldOppDiscnct.current = opponentDisconnect;
   }, [opponentDisconnect]);
+
   if (error && !game) {
     return (
       <div className="text-white text-center p-8">
         <div className="mb-4">{error}</div>
-        <button
-          className="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded-lg transition-colors"
-          onClick={() => navigate("/")}
-        >
-          Back to home
-        </button>
+        <Button onClick={() => navigate("/")}>Back to home</Button>
       </div>
     );
   }
@@ -103,20 +90,18 @@ export default function Board() {
     ((playerRole === "X" && game.replayVotes.X && !game.replayVotes.O) ||
       (playerRole === "O" && game.replayVotes.O && !game.replayVotes.X));
 
-  const playerXNameTrunc = truncateUserName(playerXName);
-  const playerONameTrunc = truncateUserName(playerOName);
   const endGameMessage = getEndGameMessage(
     game.endReason,
     winner,
-    playerXNameTrunc,
-    playerONameTrunc,
+    playerXName,
+    playerOName,
   );
 
   return (
     <div className="relative inline-block text-center p-4">
       <PlayerCards
-        playerXName={playerXNameTrunc}
-        playerOName={playerONameTrunc}
+        playerXName={playerXName}
+        playerOName={playerOName}
         playerXAvatar={playerXAvatar}
         playerOAvatar={playerOAvatar}
         currentPlayer={currentPlayer}
@@ -129,7 +114,7 @@ export default function Board() {
         canPlay={canPlay}
         hasReplayRole={hasReplayRole}
         opponentDisconnect={opponentDisconnect}
-      ></GameStatusBanner>
+      />
 
       {/* ShowPopop */}
       {showPopup && (
@@ -142,7 +127,7 @@ export default function Board() {
           requestReplay={requestReplay}
           leaveGame={leaveGame}
           navigate={navigate}
-        ></EndGamePopup>
+        />
       )}
 
       <div className="grid grid-cols-3 gap-3">
@@ -166,14 +151,7 @@ export default function Board() {
         })}
       </div>
 
-      <div>
-        {typeof game.spectatCnt === "number" && game.spectatCnt > 0 && (
-          <div className="mb-2 text-xs text-white/60">
-            {"Spectating this game: "}
-            {game.spectatCnt}{" "}
-          </div>
-        )}{" "}
-      </div>
+      <SpectatorCount count={game.spectatCnt} />
     </div>
   );
 }
