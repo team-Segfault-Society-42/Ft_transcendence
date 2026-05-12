@@ -10,6 +10,11 @@ import Dashboard from "./components/layout/Dashboard";
 import LeaderBoard from "@/pages/Leaderboard";
 import TwoFactorLogin from "./pages/TwoFactorLogin";
 import LiveGamesDisplay from "./pages/LiveGames";
+import Play from "./pages/Play.tsx";
+import Friends from "./pages/Friends";
+// import Chat from "./pages/Chat";
+import Rules from "./pages/Rules";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -17,14 +22,18 @@ function App() {
       <Routes>
         <Route element={<Dashboard />}>
           <Route path="/" element={<Home />} />
-          <Route path="/game" element={<LiveGamesDisplay />} />
+          <Route path="/play" element={<Play />} />
+          <Route path="/spectate" element={<LiveGamesDisplay />} />
           <Route path="/game/:gameId" element={<Game />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/leaderboard" element={<LeaderBoard />} />
+          <Route path="/friends" element={<Friends />} />
           <Route path="/history" element={<History />} />
+          <Route path="/rules" element={<Rules />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
-          <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/two-factor" element={<TwoFactorLogin />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
       <Toaster richColors theme="dark" position="bottom-right" />

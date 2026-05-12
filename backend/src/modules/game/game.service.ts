@@ -1,5 +1,7 @@
 import {
+  BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -45,12 +47,13 @@ export class GameService {
     return null;
   }
 
-  createGame(userId: number): string {
-    const active = this.findActiveGameByUserId(userId);
+  createGame(user: PublicPlayerProfile): string {
+    const active = this.findActiveGameByUserId(user.id);
     if (active) throw new ConflictException('User already has an active game');
     const gameId = randomUUID();
     const newGame = initGameState();
-    newGame.players.X.ownerUserId = userId;
+    newGame.players.X.ownerUserId = user.id;
+    newGame.playerProfiles.X = user;
     this.activeGame.set(gameId, newGame);
     return gameId;
   }
@@ -67,7 +70,8 @@ export class GameService {
   getFinishedGamesHistory(gameId: string) {
     const game = this.getMutableGameById(gameId);
 
-    if (game.status !== 'finished') throw new Error('Game not finished yet');
+    if (game.status !== 'finished')
+      throw new BadRequestException('Game not finished yet');
 
     return {
       gameId,
@@ -120,12 +124,12 @@ export class GameService {
     const game = this.getMutableGameById(gameId);
 
     if (game.status !== 'finished')
-      throw new Error('Replay is only available after game end');
+      throw new BadRequestException('Replay is only available after game end');
 
     const role = getPlayerRoleByUserId(game, userId);
 
     if (role !== 'X' && role !== 'O')
-      throw new Error('Spectators cannot request replay');
+      throw new ForbiddenException('Spectators cannot request replay');
 
     game.replayVotes[role] = true;
 
@@ -142,11 +146,14 @@ export class GameService {
     c: number,
   ): Promise<GameState> {
     const game = this.getMutableGameById(gameId);
-    if (game.status !== 'playing') throw new Error('Waiting for both players');
+    if (game.status !== 'playing')
+      throw new BadRequestException('Waiting for both players');
 
     const role = getPlayerRoleByUserId(game, userId);
-    if (role === 'spectator') throw new Error('Spectators cannot play');
-    if (role !== game.currentPlayer) throw new Error('It is not your turn');
+    if (role === 'spectator')
+      throw new ForbiddenException('Spectators cannot play');
+    if (role !== game.currentPlayer)
+      throw new BadRequestException('It is not your turn');
 
     const now = Date.now();
     const timeOnClick = now - game.lastMove;
@@ -264,7 +271,7 @@ export class GameService {
     return game;
   }
 
-  getLiveGames() {
+  getLiveGames(userId: number) {
     const waiting: { gameId: string; playerX: PublicPlayerProfile | null }[] =
       [];
     const playing: {
@@ -274,7 +281,7 @@ export class GameService {
     }[] = [];
     const allGames = [...this.activeGame.entries()];
     for (const [gameId, game] of allGames) {
-      if (game.status === 'waiting')
+      if (game.status === 'waiting' && game.players.X.ownerUserId !== userId)
         waiting.push({ gameId, playerX: game.playerProfiles.X });
       else if (game.status === 'playing')
         playing.push({
@@ -292,6 +299,10 @@ export class GameService {
   ): { deleted: boolean; game: GameState | null } {
     const game = this.getMutableGameById(gameId);
     const role = getPlayerRoleByUserId(game, userId);
+
+    // playing
+    if (game.status === 'playing')
+      throw new BadRequestException('Cant delete game pplaying');
 
     if (game.status === 'waiting' && role === 'X') {
       this.activeGame.delete(gameId);

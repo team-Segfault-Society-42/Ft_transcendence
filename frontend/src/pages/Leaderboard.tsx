@@ -3,6 +3,11 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
 import { Username } from "@/components/ui/Username";
+import { useOutletContext } from "react-router";
+import { Trophy } from "lucide-react";
+import { EmptyStateCard } from "@/components/ui/EmptyCard";
+import { useNavigate } from "react-router-dom";
+import { Card, CardTitle } from "@/components/ui/Card"
 
 interface LeaderBoard {
   id: number;
@@ -16,6 +21,8 @@ export default function LeaderBoard() {
   const [leaderboard, setLeaderboard] = useState<LeaderBoard[]>([]);
   const [sortBy, setSortBy] = useState<"xp" | "totalGames" | "wins">("wins");
   const { t } = useTranslation();
+  const [user] = useOutletContext<any>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchLeaderboard() {
@@ -29,14 +36,37 @@ export default function LeaderBoard() {
     fetchLeaderboard();
   }, [sortBy]);
 
-  return (
-    <div className="max-w-3xl mx-auto text-white p-6">
+  if (!user) {
+    return (
+      <div className="w-full max-w-3xl mx-auto px-6 py-10">
+        <EmptyStateCard
+          title={t("leaderboard.title")}
+          icon={<Trophy size={24} />}
+          message={t("leaderboard.notConnected")}
+          description={t("leaderboard.login")}
+          actions={
+            <>
+              <Button
+                  onClick={() => navigate("/")}>
+                    {t("buttons.backHome")}
+              </Button>
+            </>
+          }
+        />
+      </div>
+    )
+  }
 
-        <h1 className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent text-3xl mb-8 text-center">
+  return (
+    <section className="w-full max-w-3xl mx-auto px-6 py-10">
+
+      <Card className="h-full relative flex items-center justify-center bg-slate-900">
+
+        <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           {t("leaderboard.title")}
-        </h1>
+        </CardTitle>
       
-      <div className="mt-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6">
+      <div className="flex flex-col pt-20 pb-20 gap-6">
         <div className="flex gap-4 justify-center mb-8">
           <Button
             onClick={() => setSortBy("xp")}
@@ -102,6 +132,7 @@ export default function LeaderBoard() {
           </div>
         )}
       </div>
-    </div>
+      </Card>
+    </section>
   );
 }

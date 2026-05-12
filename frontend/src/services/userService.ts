@@ -83,6 +83,11 @@ export async function getAchievements(id: number) {
   return response.data
 }
 
+export async function getAllAchievements() {
+  const response = await api.get('users/allAchievements')
+  return response.data
+}
+
 export const userService = {
     getUser,
     updateUser,
@@ -96,4 +101,19 @@ export const userService = {
     getUserHistory,
     getLeaderboard,
     getAchievements,
+	uploadAvatar,
+  getAllAchievements,
+}
+
+export async function uploadAvatar(file: File) {
+	const formData = new FormData();
+	formData.append("avatar", file);
+
+	const response = await api.post("users/me/avatar", formData, {
+		headers: {
+			"Content-Type": "multipart/form-data",
+		},
+	});
+
+	return response.data;
 }
