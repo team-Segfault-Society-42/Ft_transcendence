@@ -35,19 +35,19 @@ export default function Play() {
 
   	async function handleCreateGame() {
     	try {
-      	const response = await fetch("/api/game/create", {
+      		const response = await fetch("/api/game/create", {
         	method: "POST",
-      	});
+      		});
 
-      	if (!response.ok) {
-        	throw new Error(`HTTP error ${response.status}`);
-      	}
+      		if (!response.ok) {
+        		throw new Error(`HTTP error ${response.status}`);
+      		}
 
-      	const data: { gameId: string } = await response.json();
+      		const data: { gameId: string } = await response.json();
 
-      	setCreatedGameId(data.gameId);
+      		setCreatedGameId(data.gameId);
 
-      	await fetchGames();
+      		await fetchGames();
     	} catch (error) {
       		console.error("Failed to create game:", error);
     	}
@@ -66,9 +66,13 @@ export default function Play() {
 			return;
 
   		try {
-    		await fetch(`/api/game/${createdGameId}/leave`, {
+    		const response = await fetch(`/api/game/${createdGameId}/leave`, {
       			method: "POST",
     		});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error ${response.status}`);
+			}
     		setCreatedGameId(null);
    			await fetchGames();
   		} catch (error) {
