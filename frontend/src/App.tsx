@@ -14,6 +14,7 @@ import Lobby from "./pages/Lobby";
 import Friends from "./pages/Friends";
 // import Chat from "./pages/Chat";
 import Rules from "./pages/Rules";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -31,8 +32,8 @@ function App() {
           <Route path="/rules" element={<Rules />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
-          <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/two-factor" element={<TwoFactorLogin />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
       <Toaster richColors theme="dark" position="bottom-right" />
