@@ -76,7 +76,7 @@ export class AuthController {
 			});
 
 			return {
-				message: 'Two-factor authentication required',
+				message: 'AUTH_2FA_REQUIRED',
 				twoFactorRequired: true,
 			};
 		}
@@ -97,7 +97,7 @@ export class AuthController {
 		});
 
 		return {
-			message: 'Login successful',
+			message: 'AUTH_LOGIN_SUCCESS',
 			twoFactorRequired: false,
 		};
 	}
@@ -124,7 +124,7 @@ export class AuthController {
 			path: '/',
 		});
 
-		return { message: 'Logout successful' };
+		return { message: 'AUTH_LOGOUT_SUCCESS' };
 	}
 
 	@ApiOperation({ summary: 'Get the currently authenticated user' })
@@ -237,7 +237,7 @@ export class AuthController {
 		});
 
 		return {
-			message: 'Two-factor login successful',
+			message: 'AUTH_2FA_LOGIN_SUCCESS',
 		};
 	}
 }
