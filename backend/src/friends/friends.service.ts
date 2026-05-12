@@ -355,4 +355,26 @@ export class FriendsService {
 			};
 		});
 	}
+
+	async getAcceptedFriendIds(userId: number): Promise<number[]> {
+		const friendships = await this.prisma.friend.findMany({
+			where: {
+				status: FriendStatus.ACCEPTED,
+				OR: [
+					{ senderId: userId },
+					{ receiverId: userId },
+				],
+			},
+			select: {
+				senderId: true,
+				receiverId: true,
+			},
+		});
+
+		return friendships.map((friendship) =>
+			friendship.senderId === userId
+				? friendship.receiverId
+				: friendship.senderId,
+		);
+	}
 }
