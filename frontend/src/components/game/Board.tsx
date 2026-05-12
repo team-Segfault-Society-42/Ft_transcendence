@@ -10,8 +10,7 @@ import { toast } from "sonner";
 import { getEndGameMessage, truncateUserName } from "./boardHelpers";
 import { Gamepad2 } from "lucide-react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
-
-const TURN_TIMEOUT_SECONDS = 30;
+import { useGameTimer } from "../hooks/useGameTimer";
 
 export default function Board() {
   const {
@@ -26,7 +25,8 @@ export default function Board() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [timeLeft, setTimeLeft] = useState(TURN_TIMEOUT_SECONDS);
+  const timeLeft = useGameTimer(game);
+
   const playerLeftToast = useRef(false);
   const oldOppDiscnct = useRef(false);
 
@@ -43,22 +43,6 @@ export default function Board() {
       playerLeftToast.current = true;
     }
   }, [game?.playerLeft]);
-
-  useEffect(() => {
-    if (!game || game.status !== "playing") {
-      const timer = setTimeout(() => setTimeLeft(TURN_TIMEOUT_SECONDS), 0);
-      return () => clearTimeout(timer);
-    }
-    const updateTimeLeft = () => {
-      const seconds = Math.floor((Date.now() - game.lastMove) / 1000);
-      const remainSecond = Math.max(0, TURN_TIMEOUT_SECONDS - seconds);
-      setTimeLeft(remainSecond);
-    };
-
-    updateTimeLeft();
-    const interval = setInterval(updateTimeLeft, 1000);
-    return () => clearInterval(interval);
-  }, [game]);
 
   useEffect(() => {
     if (oldOppDiscnct.current && !opponentDisconnect) {
