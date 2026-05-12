@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import Board from "../components/Board";
+import Board from "../components/game/Board";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import { useGameStore } from "../Store/gameStore";

@@ -1,6 +1,6 @@
 import Square from "./Square";
-import { useGameStore } from "../Store/gameStore";
-import type { CellValue } from "../type/game.types";
+import { useGameStore } from "../../Store/gameStore";
+import type { CellValue } from "../../type/game.types";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
