@@ -23,6 +23,7 @@ import {
 	type IncomingFriendRequest,
 	type OutgoingFriendRequest,
 	type PublicUser,
+	type FriendStatus,
 } from "@/services/friendsService";
 import {
 	connectPresenceSocket,
@@ -59,6 +60,7 @@ export default function Friends() {
 	const [searchResults, setSearchResults] = useState<PublicUser[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [searchLoading, setSearchLoading] = useState(false);
+	const [friendStatus, setFriendStatus] = useState<Record<number, FriendStatus>>({});
 
 	const loadFriendsData = useCallback(async () => {
 		if (!user) return;
@@ -66,15 +68,21 @@ export default function Friends() {
 		try {
 			setLoading(true);
 
-			const [friendsData, incomingData, outgoingData] = await Promise.all([
+			const [friendsData, incomingData, outgoingData, statusData] = await Promise.all([
 				friendsService.getFriends(),
 				friendsService.getIncomingFriendRequests(),
 				friendsService.getOutgoingFriendRequests(),
+				friendsService.getFriendsStatus(),
 			]);
 
 			setFriends(friendsData);
 			setIncomingRequests(incomingData);
 			setOutgoingRequests(outgoingData);
+			setFriendStatus(
+				Object.fromEntries(
+					statusData.map((status) => [status.userId, status]),
+				),
+			);
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.load", { error: message }));
@@ -225,7 +233,6 @@ export default function Friends() {
 			</section>
 		);
 	}
-
 	return (
 		<section className="w-full max-w-5xl mx-auto px-6 py-10 text-white">
 			<div className="mb-8 text-center">
@@ -329,22 +336,38 @@ export default function Friends() {
 						<p className="text-white/50">{t("friends.list.empty")}</p>
 					) : (
 						<div className="space-y-3">
-							{friends.map((item) => (
-								<div
-									key={item.friendshipId}
-									className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
-								>
-									<UserRow user={item.friend} />
-									<Button
-										size="sm"
-										variant="danger"
-										onClick={() => handleRemoveFriend(item.friendshipId)}
+							{friends.map((item) => {
+								const status = friendStatus[item.friend.id];
+
+								return (
+									<div
+										key={item.friendshipId}
+										className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
-										<Trash2 size={16} />
-										{t("friends.actions.remove")}
-									</Button>
-								</div>
-							))}
+										<div>
+											<UserRow user={item.friend} />
+											<p className="text-xs text-white/40 mt-1">
+												{status?.online ? "Online" : "Offline"}
+												{status?.online && (
+													<>
+														{" · "}
+														{status.inGame ? "In game" : "Available"}
+													</>
+												)}
+											</p>
+										</div>
+
+										<Button
+											size="sm"
+											variant="danger"
+											onClick={() => handleRemoveFriend(item.friendshipId)}
+										>
+											<Trash2 size={16} />
+											{t("friends.actions.remove")}
+										</Button>
+									</div>
+								);
+							})}
 						</div>
 					)}
 				</Card>

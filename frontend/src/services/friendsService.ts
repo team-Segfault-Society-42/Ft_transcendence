@@ -41,6 +41,17 @@ export interface FriendAcceptResponse {
 	updatedAt: string;
 }
 
+export interface FriendStatus {
+	userId: number;
+	online: boolean;
+	inGame: boolean;
+}
+
+async function getFriendsStatus(): Promise<FriendStatus[]> {
+	const response = await api.get("friends/status");
+	return response.data;
+}
+
 async function getFriends(): Promise<FriendListItem[]> {
 	const response = await api.get("friends");
 	return response.data;
@@ -97,9 +108,10 @@ export const friendsService = {
 	getFriends,
 	getIncomingFriendRequests,
 	getOutgoingFriendRequests,
-	searchUsers,
+	getFriendsStatus,
 	sendFriendRequest,
 	acceptFriendRequest,
 	declineFriendRequest,
 	removeFriend,
+	searchUsers,
 };
