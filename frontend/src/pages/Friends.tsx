@@ -114,10 +114,20 @@ export default function Friends() {
 			console.error("[PresenceSocket] connection error:", error.message);
 		});
 
+		socket.on("friend_status_changed", (status: FriendStatus) => {
+			console.log("[PresenceSocket] friend status changed", status);
+
+			setFriendStatus((previous) => ({
+				...previous,
+				[status.userId]: status,
+			}));
+		});
+
 		return () => {
 			socket.off("connect");
 			socket.off("disconnect");
 			socket.off("connect_error");
+			socket.off("friend_status_changed");
 		};
 	}, [user]);
 
