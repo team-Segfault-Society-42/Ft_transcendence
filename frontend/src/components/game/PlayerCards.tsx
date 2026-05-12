@@ -3,6 +3,13 @@ import { Avatar } from "../ui/Avatar";
 import { Username } from "../ui/Username";
 import { Card } from "../ui/Card";
 
+type PlayerCardProps = {
+  symbol: "X" | "O";
+  name: string;
+  avatar: string | undefined;
+  isActive: boolean;
+};
+
 type Props = {
   playerXName: string;
   playerOName: string;
@@ -10,6 +17,20 @@ type Props = {
   playerOAvatar: string | undefined;
   currentPlayer: string;
 };
+
+function PlayerCard({ symbol, name, avatar, isActive }: PlayerCardProps) {
+  return (
+    <Card
+      className={`relative overflow-hidden flex flex-col items-center ${isActive ? "ring-2 ring-cyan-400" : ""}`}
+    >
+      <span className="absolute text-[8rem] font-black text-white/10 select-none pointer-events-none leading-none">
+        {symbol}
+      </span>
+      <Avatar src={avatar} alt={`player ${symbol}`} fallback={name[0]} />
+      <Username name={name} variant="card" className="font-bold" />
+    </Card>
+  );
+}
 
 export function PlayerCards({
   playerXName,
@@ -21,28 +42,23 @@ export function PlayerCards({
   const { t } = useTranslation();
   return (
     <div className="grid grid-cols-3 gap-4 mb-8 text-white">
-      {/* PLAYER CARD X */}
-      <Card
-        className={`flex flex-col items-center ${currentPlayer === "X" ? "ring-2 ring-cyan-400" : ""}`}
-      >
-        <p>X</p>
-        <Avatar src={playerXAvatar} alt="player X" fallback={playerXName[0]} />
-        <Username name={playerXName} variant="card" className="font-bold" />
-      </Card>
+      <PlayerCard
+        symbol="X"
+        name={playerXName}
+        avatar={playerXAvatar}
+        isActive={currentPlayer === "X"}
+      />
 
-      {/* VS CARD */}
-      <Card className="bg-gray-700 p-4 rounded flex flex-col items-center justify-center">
+      <Card className="flex flex-col items-center justify-center">
         <p className="text-sm">{t("game.vs", { defaultValue: "VS" })}</p>
       </Card>
 
-      {/* PLAYER CARD O */}
-      <Card
-        className={`flex flex-col items-center ${currentPlayer === "O" ? "ring-2 ring-cyan-400" : ""}`}
-      >
-        <p>O</p>
-        <Avatar src={playerOAvatar} alt="player O" fallback={playerOName[0]} />
-        <Username name={playerOName} variant="card" className="font-bold" />
-      </Card>
+      <PlayerCard
+        symbol="O"
+        name={playerOName}
+        avatar={playerOAvatar}
+        isActive={currentPlayer === "O"}
+      />
     </div>
   );
 }
