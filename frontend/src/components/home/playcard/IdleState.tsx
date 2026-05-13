@@ -26,8 +26,8 @@ export function IdleState({ createGame }: Props) {
 				className="mx-auto text-cyan-400"
 				/>
 
-				<p className="text-white/60 text-sm text-center max-w-sm leading-relaxed mb-6">
-					Jump into competitive matches or spectate games live.
+				<p className="text-white/80 text-sm text-center max-w-sm leading-relaxed mb-6">
+					Jump into competitive matches or spectate games live
 				</p>
 
 

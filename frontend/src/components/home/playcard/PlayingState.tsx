@@ -2,6 +2,7 @@ import { Card, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 import { useNavigate } from "react-router-dom";
+import { Swords } from "lucide-react";
 
 interface Props {
 	gameId: string;
@@ -30,6 +31,15 @@ export function PlayingState({ gameId, playerX, playerO }: Props) {
 
 			<div className="flex flex-col items-center justify-center gap-8 w-full px-6">
 
+				<Swords
+				size={72}
+				className="mx-auto text-cyan-400 animate-ping"
+				/>
+
+				<p className="text-white/80 text-sm text-center max-w-sm leading-relaxed mb-6">
+					Enter the arena and fight for victory !
+				</p>
+
 				<div className="flex items-center justify-center gap-6">
 
 					<div className="flex flex-col items-center gap-3">
@@ -50,8 +60,6 @@ export function PlayingState({ gameId, playerX, playerO }: Props) {
 						<p className="text-3xl font-black bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
 							VS
 						</p>
-
-						<div className="w-16 h-px bg-white/10 mt-2" />
 					</div>
 
 					<div className="flex flex-col items-center gap-3">
@@ -78,14 +86,6 @@ export function PlayingState({ gameId, playerX, playerO }: Props) {
 						}
 					>
 						Resume Match
-					</Button>
-
-					<Button
-						variant="secondary"
-						className="w-full"
-						onClick={() => navigate("/spectate")}
-					>
-						Watch Games
 					</Button>
 				</div>
 			</div>

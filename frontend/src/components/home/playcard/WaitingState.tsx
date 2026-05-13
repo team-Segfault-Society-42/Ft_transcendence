@@ -27,7 +27,7 @@ export function WaitingState({ gameId, onCancel }: Props) {
 				/>
 
 				<div className="flex items-center gap-2">
-					<div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
+					<div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
 
 					<p className="text-white/80">
 						Waiting for an opponent to join...
