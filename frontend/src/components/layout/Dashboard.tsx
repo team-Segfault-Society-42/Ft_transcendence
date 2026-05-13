@@ -54,7 +54,11 @@ export default function Dashboard() {
       const response = await userService.userLogout();
 
       setUser(null);
-      toast.success(response.message ?? t("auth.logoutSuccess"));
+
+      const message = response.message 
+      ? t(`backend.${response.message}`) 
+      : t("auth.logoutSuccess");
+      toast.success(message);
       navigate("/");
     } catch {
       setUser(null);
