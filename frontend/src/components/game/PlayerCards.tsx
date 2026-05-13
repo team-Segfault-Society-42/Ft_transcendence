@@ -55,9 +55,8 @@ export function PlayerCards({
 					className="grid size-24 place-items-center rounded-full text-xl font-bold"
 					style={{
 						background: `radial-gradient(#111827 65%, #0000 0), 
-               conic-gradient(#22d300 ${percentage}%, #0000 0)`,
+               conic-gradient(${percentage > 30 ? `#22d300` : '#ef4444'} ${percentage}%, #0000 0)`,
 					}}
-					role="progressbar"
 				>
 					{timeLeft}s
 				</div>
