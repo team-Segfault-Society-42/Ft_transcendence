@@ -1,6 +1,7 @@
 import { Avatar } from '../ui/Avatar';
 import { Username } from '../ui/Username';
 import { Card } from '../ui/Card';
+import { Circle, X } from 'lucide-react';
 
 type PlayerCardProps = {
 	symbol: 'X' | 'O';
@@ -21,13 +22,17 @@ type Props = {
 function PlayerCard({ symbol, name, avatar, isActive }: PlayerCardProps) {
 	return (
 		<Card
-			className={`relative overflow-hidden flex flex-col items-center ${isActive ? 'ring-2 ring-cyan-400' : ''}`}
+			className={`relative flex w-24 shrink-0 flex-col items-center gap-1 overflow-hidden p-3 sm:w-28 sm:p-4 ${isActive ? 'ring-2 ring-cyan-400' : ''}`}
 		>
-			<span className="absolute text-[8rem] font-black text-white/10 select-none pointer-events-none leading-none">
-				{symbol}
-			</span>
 			<Avatar src={avatar} alt={`player ${symbol}`} fallback={name[0]} />
-			<Username name={name} variant="card" className="font-bold" />
+			<div className="flex items-center gap-1 font-bold">
+				{symbol === 'X' ? (
+					<X className="w-5 h-5 text-red-500 stroke-3" />
+				) : (
+					<Circle className="w-5 h-5 text-yellow-400 stroke-3" />
+				)}
+				<Username name={name} variant="card" className="font-bold" />
+			</div>
 		</Card>
 	);
 }
@@ -40,9 +45,10 @@ export function PlayerCards({
 	currentPlayer,
 	timeLeft,
 }: Props) {
-	const percentage = (timeLeft / 30) * 100;
+	const percentage = Math.max(0, Math.min(100, (timeLeft / 30) * 100));
+
 	return (
-		<div className="grid grid-cols-3 gap-4 mb-8 text-white">
+		<div className="mb-8 flex w-96 max-w-full items-center justify-between text-white">
 			<PlayerCard
 				symbol="X"
 				name={playerXName}
@@ -50,16 +56,14 @@ export function PlayerCards({
 				isActive={currentPlayer === 'X'}
 			/>
 
-			<div className="flex items-center justify-center">
-				<div
-					className="grid size-24 place-items-center rounded-full text-xl font-bold"
-					style={{
-						background: `radial-gradient(#111827 65%, #0000 0), 
+			<div
+				className="grid size-16 place-items-center rounded-full text-sm font-bold"
+				style={{
+					background: `radial-gradient(#111827 65%, #0000 0), 
                conic-gradient(${percentage > 30 ? `#22d300` : '#ef4444'} ${percentage}%, #0000 0)`,
-					}}
-				>
-					{timeLeft}s
-				</div>
+				}}
+			>
+				{timeLeft}s
 			</div>
 
 			<PlayerCard
