@@ -378,6 +378,8 @@
         "ACH_WIN_10_DESC": "Gagnez 10 matchs au total.",
         "ACH_WIN_50_TITLE": "Vétéran",
         "ACH_WIN_50_DESC": "Gagnez 50 matchs au total.",
+        "ACH_GET_ALL_TITLE": "Fin du jeu",
+        "ACH_GET_ALL_DESC": "Obtenez tous les succès.",
         "ERR_GAME_PLAYER_ID_INVALID": "L'identifiant du joueur est invalide.",
         "ERR_GAME_SCORE_INVALID": "Le score doit être un nombre positif.",
         "ERR_GAME_END_REASON_REQUIRED": "La raison de fin de match est requise.",

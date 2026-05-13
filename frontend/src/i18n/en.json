@@ -377,6 +377,8 @@
         "ACH_WIN_10_DESC": "Win 10 matches total.",
         "ACH_WIN_50_TITLE": "Veteran",
         "ACH_WIN_50_DESC": "Win 50 matches total.",
+        "ACH_GET_ALL_TITLE": "End Game",
+        "ACH_GET_ALL_DESC": "Complete all achievements.",
         "ERR_GAME_PLAYER_ID_INVALID": "Invalid player ID.",
         "ERR_GAME_SCORE_INVALID": "Score must be a positive number.",
         "ERR_GAME_END_REASON_REQUIRED": "Game end reason is required.",

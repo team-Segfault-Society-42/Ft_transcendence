@@ -377,6 +377,8 @@
         "ACH_WIN_10_DESC": "Gana 10 partidas en total.",
         "ACH_WIN_50_TITLE": "Veterano",
         "ACH_WIN_50_DESC": "Gana 50 partidas en total.",
+        "ACH_GET_ALL_TITLE": "Fin de partida",
+        "ACH_GET_ALL_DESC": "Completa todos los logros.",
         "ERR_GAME_PLAYER_ID_INVALID": "ID de jugador inválido.",
         "ERR_GAME_SCORE_INVALID": "La puntuación debe ser un nombre positivo.",
         "ERR_GAME_END_REASON_REQUIRED": "Se requiere la razón del fin del juego.",
