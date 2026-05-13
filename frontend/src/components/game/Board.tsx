@@ -98,60 +98,67 @@ export default function Board() {
   );
 
   return (
-    <div className="relative inline-block text-center p-4">
-      <PlayerCards
-        playerXName={playerXName}
-        playerOName={playerOName}
-        playerXAvatar={playerXAvatar}
-        playerOAvatar={playerOAvatar}
-        currentPlayer={currentPlayer}
-      />
-
-      <GameStatusBanner
-        error={error}
-        status={status}
-        playerRole={playerRole}
-        canPlay={canPlay}
-        hasReplayRole={hasReplayRole}
-        opponentDisconnect={opponentDisconnect}
-      />
-
-      {/* ShowPopop */}
-      {showPopup && (
-        <EndGamePopup
-          endGameMessage={endGameMessage}
-          playerRole={playerRole}
-          playerLeft={game.playerLeft}
-          replayVotes={game.replayVotes}
-          waitingReplayOtherPlayer={waitingReplayOtherPlayer}
-          requestReplay={requestReplay}
-          leaveGame={leaveGame}
-          navigate={navigate}
-        />
-      )}
-
-      <div className="grid grid-cols-3 gap-3">
-        {flatBoard.map((value, i) => (
-          <Square
-            key={i}
-            value={value}
-            isWarning={i === toDisapear}
-            onSquareClick={() => {
-              if (!canPlay) return;
-              playMove(i);
-            }}
+    <div className="inline-block text-center p-4">
+      <div className="flex flex-col lg:flex-row items-start justify-center gap-6">
+        {/* Colonne gauche : toute la zone de jeu */}
+        <div className="flex flex-col items-center">
+          <PlayerCards
+            playerXName={playerXName}
+            playerOName={playerOName}
+            playerXAvatar={playerXAvatar}
+            playerOAvatar={playerOAvatar}
+            currentPlayer={currentPlayer}
           />
-        ))}
-      </div>
 
-      <div className="mt-6 text-white/60 font-medium">
-        {t("game.timer", {
-          defaultValue: "Time left: {{seconds}}s",
-          seconds: timeLeft,
-        })}
-      </div>
+          <GameStatusBanner
+            error={error}
+            status={status}
+            playerRole={playerRole}
+            canPlay={canPlay}
+            hasReplayRole={hasReplayRole}
+            opponentDisconnect={opponentDisconnect}
+          />
 
-      <SpectatorCount count={game.spectatCnt} />
+          <div className="grid w-96 max-w-full grid-cols-3 gap-3">
+            {flatBoard.map((value, i) => (
+              <Square
+                key={i}
+                value={value}
+                isWarning={i === toDisapear}
+                onSquareClick={() => {
+                  if (!canPlay) return;
+                  playMove(i);
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="mt-6 text-white/60 font-medium">
+            {t("game.timer", {
+              defaultValue: "Time left: {{seconds}}s",
+              seconds: timeLeft,
+            })}
+          </div>
+
+          <SpectatorCount count={game.spectatCnt} />
+        </div>
+
+        {/* Colonne droite : popup isolée */}
+        {showPopup && (
+          <div className="shrink-0">
+            <EndGamePopup
+              endGameMessage={endGameMessage}
+              playerRole={playerRole}
+              playerLeft={game.playerLeft}
+              replayVotes={game.replayVotes}
+              waitingReplayOtherPlayer={waitingReplayOtherPlayer}
+              requestReplay={requestReplay}
+              leaveGame={leaveGame}
+              navigate={navigate}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
