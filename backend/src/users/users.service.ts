@@ -50,7 +50,7 @@ export class UsersService {
 		const offset = query.offset ?? 0;
 		const search = query.search?.trim();
 		if (query.search !== undefined && search === '') {
-			throw new BadRequestException('search cannot be empty or only spaces');
+			throw new BadRequestException('ERR_QUERY_SEARCH_EMPTY');
 		}
 		const where = search
 			? {
@@ -78,7 +78,7 @@ export class UsersService {
 		});
 
 		if (!user)
-			throw new NotFoundException('User not found');
+			throw new NotFoundException('ERR_USER_NOT_FOUND');
 
 		return this.toPublicUser(user);
 	}
@@ -90,7 +90,7 @@ export class UsersService {
 		});
 
 		if (!user) {
-			throw new NotFoundException('User not found');
+			throw new NotFoundException('ERR_USER_NOT_FOUND');
 		}
 
 		try {
@@ -105,16 +105,16 @@ export class UsersService {
 				error instanceof Prisma.PrismaClientKnownRequestError &&
 				error.code === 'P2002'
 			) {
-				throw new ConflictException('Username already exists');
+				throw new ConflictException('ERR_AUTH_ALREADY_EXISTS');
 			}
 
-			throw new BadRequestException('Failed to update user');
+			throw new BadRequestException('ERR_USER_UPDATE_FAILED');
 		}
 	}
 
 	async updateAvatar(userId: number, file: Express.Multer.File | undefined) {
 		if (!file) {
-			throw new BadRequestException('Avatar file is required');
+			throw new BadRequestException('ERR_USER_AVATAR_REQUIRED');
 		}
 
 		const user = await this.prisma.user.findUnique({
@@ -123,11 +123,11 @@ export class UsersService {
 		});
 
 		if (!user) {
-			throw new NotFoundException('User not found');
+			throw new NotFoundException('ERR_USER_NOT_FOUND');
 		}
 
 		if (file.size > AVATAR_MAX_FILE_SIZE) {
-			throw new BadRequestException('Avatar must be smaller than 200 KB');
+			throw new BadRequestException('ERR_USER_AVATAR_TOO_LARGE');
 		}
 
 		const detectedFileType = await fileTypeFromBuffer(file.buffer);
@@ -136,7 +136,7 @@ export class UsersService {
 			!detectedFileType ||
 			!AVATAR_ALLOWED_MIME_TYPES.some((mime) => mime === detectedFileType.mime)
 		) {
-			throw new BadRequestException('Avatar must be a PNG, JPEG, or WebP image');
+			throw new BadRequestException('ERR_USER_AVATAR_INVALID_TYPE');
 		}
 
 		const avatarDataUrl = `data:${detectedFileType.mime};base64,${file.buffer.toString('base64')}`;
