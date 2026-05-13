@@ -17,7 +17,7 @@ export class MatchesService {
 
   async recordMatch(result: GameResultDto, history: MovesGameHistory) {
     if (result.player1Id === result.player2Id) {
-      throw new BadRequestException('A player cannot play against himself.');
+      throw new BadRequestException('ERR_MATCH_SELF_PLAY');
     }
 
     if (
@@ -26,7 +26,7 @@ export class MatchesService {
       result.winnerId !== result.player2Id
     ) {
       throw new BadRequestException(
-        'The winner must be one of the two players.',
+        'ERR_MATCH_INVALID_WINNER',
       );
     }
 
@@ -116,7 +116,7 @@ export class MatchesService {
       });
     } catch (error) {
       console.error(`Error saving match: ${error.message}`);
-      throw new InternalServerErrorException('Unable to save match result.');
+      throw new InternalServerErrorException('ERR_MATCH_SAVE_FAILED');
     }
   }
 
@@ -152,11 +152,11 @@ export class MatchesService {
       let resultStatus: string;
 
       if (m.winnerId === null) {
-        resultStatus = 'DRAW';
+        resultStatus = 'STATUS_MATCH_DRAW';
       } else if (m.winnerId === userId) {
-        resultStatus = 'WIN';
+        resultStatus = 'STATUS_MATCH_WIN';
       } else {
-        resultStatus = 'LOSS';
+        resultStatus = 'STATUS_MATCH_LOSS';
       }
 
       const myScore = isPLayer1 ? m.scoresP1 : m.scoresP2;
