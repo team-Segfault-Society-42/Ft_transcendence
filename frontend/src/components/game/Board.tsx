@@ -100,7 +100,7 @@ export default function Board() {
 	return (
 		<div className="inline-block text-center p-4">
 			<div className="flex flex-col lg:flex-row items-start justify-center gap-6">
-				{/* Colonne gauche : toute la zone de jeu */}
+				{/* play area*/}
 				<div className="flex flex-col items-center">
 					<PlayerCards
 						playerXName={playerXName}
@@ -108,6 +108,7 @@ export default function Board() {
 						playerXAvatar={playerXAvatar}
 						playerOAvatar={playerOAvatar}
 						currentPlayer={currentPlayer}
+						timeLeft={timeLeft}
 					/>
 
 					<GameStatusBanner
@@ -134,16 +135,11 @@ export default function Board() {
 					</div>
 
 					<div className="mt-6 text-white/60 font-medium">
-						{t('game.timer', {
-							defaultValue: 'Time left: {{seconds}}s',
-							seconds: timeLeft,
-						})}
+						<SpectatorCount count={game.spectatCnt} />
 					</div>
-
-					<SpectatorCount count={game.spectatCnt} />
 				</div>
 
-				{/* Colonne droite : popup isolée */}
+				{/* Popup Replay */}
 				{showPopup && (
 					<div className="shrink-0">
 						<EndGamePopup
