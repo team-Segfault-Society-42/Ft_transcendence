@@ -1,5 +1,7 @@
 import { Card, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { Loader } from "lucide-react";
+
 
 interface Props {
 	gameId: string;
@@ -19,11 +21,16 @@ export function WaitingState({ gameId, onCancel }: Props) {
 
 			<div className="flex flex-col items-center gap-6 w-full px-6">
 
+                <Loader
+				size={72}
+				className="mx-auto text-cyan-400 animate-pulse"
+				/>
+
 				<div className="flex items-center gap-2">
 					<div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
 
 					<p className="text-white/80">
-						Waiting for opponent...
+						Waiting for an opponent to join...
 					</p>
 				</div>
 
