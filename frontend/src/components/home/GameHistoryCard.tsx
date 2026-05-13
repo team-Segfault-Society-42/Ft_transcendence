@@ -129,7 +129,7 @@ export function GameHistoryCard({ matches, className, user }: Props) {
     {/* RIGHT */}
     <div className="text-right">
         <p className={cn("font-semibold uppercase", resultColor)}>
-            {t(`game.result.${result}`)}
+            {t(`backend.${result.toUpperCase()}`)}
         </p>
 
         <p className="text-xs text-white/50">
