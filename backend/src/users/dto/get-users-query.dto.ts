@@ -9,8 +9,8 @@ export class GetUsersQueryDto {
 	})
 	@IsOptional()
 	@Type(() => Number)
-	@IsInt()
-	@Min(0)
+	@IsInt({ message: 'ERR_QUERY_LIMIT_INVALID' })
+    @Min(0, { message: 'ERR_QUERY_LIMIT_INVALID' })
 	limit?: number;
 
 	@ApiPropertyOptional({
@@ -19,8 +19,8 @@ export class GetUsersQueryDto {
 	})
 	@IsOptional()
 	@Type(() => Number)
-	@IsInt()
-	@Min(0)
+	@IsInt({ message: 'ERR_QUERY_LIMIT_INVALID' })
+    @Min(0, { message: 'ERR_QUERY_LIMIT_INVALID' })
 	offset?: number;
 
 	@ApiPropertyOptional({
@@ -30,8 +30,8 @@ export class GetUsersQueryDto {
 		maxLength: 50,
 	})
 	@IsOptional()
-	@IsString()
-	@MinLength(1)
-	@MaxLength(50)
+	@IsString({ message: 'ERR_QUERY_SEARCH_INVALID' })
+    @MinLength(1, { message: 'ERR_QUERY_SEARCH_INVALID' })
+    @MaxLength(50, { message: 'ERR_QUERY_SEARCH_INVALID' })
 	search?: string;
 }
