@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Chatbar } from "./Chatbar";
 import { Button } from "../ui/Button";
+import { useActiveGameStore } from "@/Store/activeGameStore";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -27,6 +28,10 @@ export default function Dashboard() {
   const openLogin = () => setActiveModal("login");
   const closeModals = () => setActiveModal(null);
   const handleChatClick = () => setIsChat((prev) => !prev);
+
+  const fetchActiveGame = useActiveGameStore(
+    (state) => state.fetchActiveGame,
+  );
 
   useEffect(() => {
     async function getCurrentUser() {
@@ -48,6 +53,16 @@ export default function Dashboard() {
     }
     getCurrentUser();
   }, []);
+
+  useEffect(() => {
+    fetchActiveGame();
+  
+    const interval = setInterval(() => {
+      fetchActiveGame();
+    }, 2000);
+  
+    return () => clearInterval(interval);
+  }, [fetchActiveGame]);
 
   async function handleLogout() {
     try {

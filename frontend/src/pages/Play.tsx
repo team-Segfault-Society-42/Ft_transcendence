@@ -5,10 +5,12 @@ import { useOutletContext } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { Card, CardTitle } from "@/components/ui/Card";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLiveGamesStore } from "@/Store/liveGamesStore";
 import { Avatar } from "@/components/ui/Avatar";
 import { Spinner } from "@/components/ui/Spinner";
+import { useActiveGameStore } from "@/Store/activeGameStore";
+import { gameApi } from "@/services/gameApi";
 
 interface User {
   	username: string;
@@ -26,27 +28,20 @@ export default function Play() {
   	const [user] = useOutletContext<[User | null]>();
   	const navigate = useNavigate();
   	const fetchGames = useLiveGamesStore((state) => state.fetchGames);
-  	const [createdGameId, setCreatedGameId] = useState<string | null>(null);
 	const { games, loading } = useLiveGamesStore();
+	const activeGame = useActiveGameStore((state) => state.activeGame);
 
+	const createdGameId = activeGame?.status === "waiting"
+		? activeGame.gameId
+		: null;
+	
   	const inviteLink = createdGameId
     	? `${window.location.origin}/game/${createdGameId}`
     	: "";
 
   	async function handleCreateGame() {
     	try {
-      		const response = await fetch("/api/game/create", {
-        	method: "POST",
-      		});
-
-      		if (!response.ok) {
-        		throw new Error(`HTTP error ${response.status}`);
-      		}
-
-      		const data: { gameId: string } = await response.json();
-
-      		setCreatedGameId(data.gameId);
-
+			await gameApi.createGame();
       		await fetchGames();
     	} catch (error) {
       		console.error("Failed to create game:", error);
@@ -66,59 +61,12 @@ export default function Play() {
 			return;
 
   		try {
-    		const response = await fetch(`/api/game/${createdGameId}/leave`, {
-      			method: "POST",
-    		});
-
-			if (!response.ok) {
-				throw new Error(`HTTP error ${response.status}`);
-			}
-    		setCreatedGameId(null);
+    		await gameApi.leaveGame(createdGameId);
    			await fetchGames();
   		} catch (error) {
     		console.error("Failed to cancel game:", error);
   		}
   	}
-
-	useEffect(() => {
-		async function fetchActiveGame() {
-			try {
-				const response = await fetch("/api/game/active");
-				if (!response.ok){
-					return;
-				}
-	  
-				const text = await response.text();
-				if (!text) {
-  					return;
-				}
-				const data = JSON.parse(text);
-				if (!data) {
-					return;
-				}
-
-				if (data?.gameId && data.status === "waiting") {
-			  		setCreatedGameId(data.gameId);
-				}
-
-				if (data.status === "playing") {
-        			clearInterval(interval);
-					navigate(`/game/${data.gameId}`);
-				}
-			} catch (error) {
-				console.error("Failed to fetch active game:", error);
-			}
-		}
-	  
-		fetchActiveGame();
-
-		const interval = setInterval(
-			fetchActiveGame,
-			1500
-		  );	
-		  return () => clearInterval(interval);
-
-	}, [navigate]);
 	
 	useEffect(() => {
 		fetchGames();

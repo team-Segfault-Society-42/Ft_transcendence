@@ -11,7 +11,19 @@ export async function getLiveGames() {
   return response.data;
 }
 
+export async function getActiveGame() {
+	const response = await api.get("game/active");
+	return response.data;
+}
+
+export async function leaveGame(gameId: string) {
+	const response = await api.post(`game/${gameId}/leave`);
+	return response.data;
+}
+
 export const gameApi = {
   createGame,
   getLiveGames,
+  getActiveGame,
+  leaveGame,
 };

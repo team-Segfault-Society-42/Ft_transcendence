@@ -4,8 +4,6 @@ import type { CellValue } from "../type/game.types";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { getEndGameMessage, truncateUserName } from "./boardHelpers";
 import { Gamepad2 } from "lucide-react";
@@ -15,7 +13,6 @@ const TURN_TIMEOUT_SECONDS = 30;
 
 export default function Board() {
   const {
-    gameId,
     game,
     error,
     playMove,
@@ -94,31 +91,6 @@ export default function Board() {
   }
 
   const { board, currentPlayer, status, winner, toDisapear } = game;
-
-  if (status === "waiting" && playerRole === "X") {
-    const urlInvit = `${window.location.origin}/game/${gameId}`;
-    return (
-      <div className="text-center p-10">
-        <h2> Waiting for oppenent...</h2>
-        <p>Share this link to invite someone:</p>
-        <div className="flex gap-2 justify-center mt-4">
-          <Input readOnly value={urlInvit} className="..."></Input>
-          <Button onClick={() => navigator.clipboard.writeText(urlInvit)}>
-            Copy
-          </Button>
-        </div>
-        <Button
-          onClick={() => {
-            leaveGame();
-            navigate("/");
-          }}
-        >
-          leave the game
-        </Button>
-      </div>
-    );
-  }
-
   const playerXName = game.playerProfiles?.X?.username || "Player X";
   const playerOName = game.playerProfiles?.O?.username || "Player O";
   const playerXAvatar = game.playerProfiles?.X?.avatar;
