@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AchievementDto {
-  @ApiProperty({ example: 'FIRST_WIM' })
+  @ApiProperty({ example: 'FIRST_WIN' })
   key: string;
 
   @ApiProperty({ example: 'Frist Blood' })

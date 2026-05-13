@@ -47,8 +47,8 @@ export class AchievementsService {
         unlockedAt: m.unlockedAt,
         achievement: {
           key: m.key,
-          displayName: metaData?.displayName || 'Unknown success',
-          description: metaData?.description || 'Description not available',
+          displayName: metaData?.displayName || 'ACH_UNKNOWN_NAME',
+          description: metaData?.description || 'ACH_UNKNOWN_DESC',
         },
       };
     });

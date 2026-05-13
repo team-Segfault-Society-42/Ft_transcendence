@@ -123,7 +123,7 @@ export class UsersController {
 		@Req() req,
 	) {
 		if (req.user.sub !== id) {
-			throw new ForbiddenException('You can only update your own profile');
+			throw new ForbiddenException('ERR_USER_UPDATE_FORBIDDEN');
 		}
 		return this.usersService.updateUser(id, updateUserDto);
 	}

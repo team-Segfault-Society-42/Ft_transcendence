@@ -43,7 +43,7 @@ export class OAuthController {
 
 		if (!clientId || !redirectUri) {
 			throw new InternalServerErrorException(
-				'42 OAuth is not configured on the backend',
+				'ERR_OAUTH_42_CONFIG',
 			);
 		}
 
@@ -79,21 +79,21 @@ export class OAuthController {
 		@Res({ passthrough: true }) res?: Response,
 	) {
 		if (!code) {
-			throw new BadRequestException('Missing OAuth authorization code');
+			throw new BadRequestException('ERR_OAUTH_MISSING_CODE');
 		}
 
 		if (!state) {
-			throw new BadRequestException('Missing OAuth state');
+			throw new BadRequestException('ERR_OAUTH_MISSING_STATE');
 		}
 
 		const storedState = req?.cookies?.oauth_state;
 
 		if (!storedState) {
-			throw new UnauthorizedException('Missing stored OAuth state');
+			throw new UnauthorizedException('ERR_OAUTH_MISSING_STORED_STATE');
 		}
 
 		if (state !== storedState) {
-			throw new UnauthorizedException('Invalid OAuth state');
+			throw new UnauthorizedException('ERR_OAUTH_INVALID_STATE');
 		}
 
 		const user = await this.oauthService.handleFortyTwoCallback(code);
@@ -150,7 +150,7 @@ export class OAuthController {
 
 		if (!clientId || !redirectUri) {
 			throw new InternalServerErrorException(
-				'Google OAuth is not configured on the backend',
+				'ERR_OAUTH_GOOGLE_CONFIG',
 			);
 		}
 
@@ -173,7 +173,7 @@ export class OAuthController {
 		@Res({ passthrough: true }) res?: Response,
 	) {
 		if (!code) {
-			throw new BadRequestException('Missing OAuth authorization code');
+			throw new BadRequestException('ERR_OAUTH_MISSING_CODE');
 		}
 
 		const user = await this.oauthService.handleGoogleCallback(code);

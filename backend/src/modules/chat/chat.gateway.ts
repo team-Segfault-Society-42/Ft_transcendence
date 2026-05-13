@@ -49,7 +49,7 @@ export class ChatGateway {
       createdAt: new Date().toISOString(),
       user: {
         id: client.data.user.sub,
-        username: user?.username ?? 'Uknow_user',
+        username: user?.username ?? 'CHAT_UNKNOWN_USER',
         avatar: user?.avatar ?? null,
       },
     };

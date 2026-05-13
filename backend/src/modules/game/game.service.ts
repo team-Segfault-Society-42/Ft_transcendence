@@ -49,7 +49,7 @@ export class GameService {
 
   createGame(user: PublicPlayerProfile): string {
     const active = this.findActiveGameByUserId(user.id);
-    if (active) throw new ConflictException('User already has an active game');
+    if (active) throw new ConflictException('ERR_GAME_ALREADY_ACTIVE');
     const gameId = randomUUID();
     const newGame = initGameState();
     newGame.players.X.ownerUserId = user.id;
@@ -71,7 +71,7 @@ export class GameService {
     const game = this.getMutableGameById(gameId);
 
     if (game.status !== 'finished')
-      throw new BadRequestException('Game not finished yet');
+      throw new BadRequestException('ERR_GAME_NOT_FINISHED');
 
     return {
       gameId,
@@ -107,7 +107,7 @@ export class GameService {
     const game = this.getMutableGameById(gameId);
     const active = this.findActiveGameByUserId(userId);
     if (active && active[0] !== gameId) {
-      throw new ConflictException('User already has an active game');
+      throw new ConflictException('ERR_GAME_ALREADY_ACTIVE');
     }
 
     const role = assignPlayerRole(game, userId, socketId);
@@ -124,12 +124,12 @@ export class GameService {
     const game = this.getMutableGameById(gameId);
 
     if (game.status !== 'finished')
-      throw new BadRequestException('Replay is only available after game end');
+      throw new BadRequestException('ERR_GAME_REPLAY_NOT_AVAILABLE');
 
     const role = getPlayerRoleByUserId(game, userId);
 
     if (role !== 'X' && role !== 'O')
-      throw new ForbiddenException('Spectators cannot request replay');
+      throw new ForbiddenException('ERR_GAME_SPECTATOR_REPLAY');
 
     game.replayVotes[role] = true;
 
@@ -147,13 +147,13 @@ export class GameService {
   ): Promise<GameState> {
     const game = this.getMutableGameById(gameId);
     if (game.status !== 'playing')
-      throw new BadRequestException('Waiting for both players');
+      throw new BadRequestException('ERR_GAME_WAITING_PLAYERS');
 
     const role = getPlayerRoleByUserId(game, userId);
     if (role === 'spectator')
-      throw new ForbiddenException('Spectators cannot play');
+      throw new ForbiddenException('ERR_GAME_SPECTATOR_MOVE');
     if (role !== game.currentPlayer)
-      throw new BadRequestException('It is not your turn');
+      throw new BadRequestException('ERR_GAME_NOT_YOUR_TURN');
 
     const now = Date.now();
     const timeOnClick = now - game.lastMove;
