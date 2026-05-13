@@ -19,13 +19,13 @@ export class AvatarUploadExceptionFilter implements ExceptionFilter {
 			(error instanceof MulterError && error.code === 'LIMIT_FILE_SIZE')
 		) {
 			return response.status(413).json({
-				message: 'Avatar must be smaller than 200 KB',
+				message: 'ERR_USER_AVATAR_TOO_LARGE',
 				error: 'Payload Too Large',
 				statusCode: 413,
 			});
 		}
 
-		const exception = new BadRequestException('Invalid avatar upload');
+		const exception = new BadRequestException('ERR_USER_AVATAR_INVALID');
 
 		return response.status(exception.getStatus()).json(exception.getResponse());
 	}
