@@ -45,12 +45,17 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 		}
 
 		client.data.user = user;
-		const becameOnline = this.presenceService.connectUser(
+		const connection = this.presenceService.connectUser(
 			user.sub,
 			client.id,
 		);
 
-		if (becameOnline) {
+		if (!connection.connected) {
+			client.disconnect();
+			return;
+		}
+
+		if (connection.wasOffline) {
 			await this.emitFriendStatusChange(user.sub, true);
 		}
 

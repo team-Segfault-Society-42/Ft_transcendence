@@ -201,7 +201,7 @@
 			"search": "Failed to search users: {{error}}",
 			"action": "Action failed: {{error}}"
 		},
-		
+
 		"status": {
 			"online": "Online",
 			"offline": "Offline",
