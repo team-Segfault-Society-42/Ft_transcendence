@@ -19,6 +19,12 @@
                 "description": "En attente qu'un adversaire rejoigne...",
                 "copy": "Copier le lien",
                 "cancel": "Annuler"
+            },
+            "playing":{
+                "title": "Match en cours",
+                "description": "Entrez dans l'arène et combattez pour la victoire !",
+                "vs": "VS",
+                "resume": "Reprendre la partie"
             }
         },
         "buttons":{

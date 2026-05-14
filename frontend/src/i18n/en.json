@@ -19,6 +19,12 @@
                 "description": "Waiting for an opponent to join...",
                 "copy": "Copy Link",
                 "cancel": "Cancel"
+            },
+            "playing":{
+                "title": "Current match",
+                "description": "Enter the arena and fight for victory !",
+                "vs": "VS",
+                "resume": "Resume Match"
             }
         },
         "buttons":{

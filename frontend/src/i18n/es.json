@@ -19,7 +19,13 @@
 				"description": "Esperando a que un oponente se una...",
 				"copy": "Copiar enlace",
 				"cancel": "Cancelar"
-  			}
+  			},
+			"playing": {
+				"title": "Partida en curso",
+				"description": "¡Entra en la arena y lucha por la victoria!",
+				"vs": "VS",
+				"resume": "Reanudar partida"
+			}
 		},
 		"buttons": {
 			"login": "Ingresar",

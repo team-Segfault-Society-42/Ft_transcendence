@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 import { useNavigate } from "react-router-dom";
 import { Swords } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
 	gameId: string;
@@ -21,23 +22,24 @@ interface Props {
 export function PlayingState({ gameId, playerX, playerO }: Props) {
 
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	return (
 		<Card className="h-full relative flex items-center justify-center bg-slate-900 overflow-hidden">
 
 			<CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-				Current Match
+				{t("home.play.playing.title")}
 			</CardTitle>
 
 			<div className="flex flex-col items-center justify-center gap-8 w-full px-6">
 
 				<Swords
 				size={72}
-				className="mx-auto text-cyan-400 animate-ping"
+				className="mx-auto text-cyan-400 animate-ping animation-duration-[3s]"
 				/>
 
 				<p className="text-white/80 text-sm text-center max-w-sm leading-relaxed mb-6">
-					Enter the arena and fight for victory !
+					{t("home.play.playing.description")}
 				</p>
 
 				<div className="flex items-center justify-center gap-6">
@@ -58,7 +60,7 @@ export function PlayingState({ gameId, playerX, playerO }: Props) {
 
 					<div className="flex flex-col items-center">
 						<p className="text-3xl font-black bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-							VS
+							{t("home.play.playing.vs")}
 						</p>
 					</div>
 
@@ -85,7 +87,7 @@ export function PlayingState({ gameId, playerX, playerO }: Props) {
 							navigate(`/game/${gameId}`)
 						}
 					>
-						Resume Match
+						{t("home.play.playing.resume")}
 					</Button>
 				</div>
 			</div>
