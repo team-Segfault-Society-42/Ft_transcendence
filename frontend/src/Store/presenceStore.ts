@@ -9,6 +9,8 @@ interface PresenceState {
 	updateFriendStatus: (status: FriendStatus) => void;
 
 	clearFriendStatus: () => void;
+
+	mergeFriendStatus: (statuses: FriendStatus[]) => void;
 }
 
 export const usePresenceStore = create<PresenceState>((set) => ({
@@ -33,4 +35,14 @@ export const usePresenceStore = create<PresenceState>((set) => ({
 		set({
 			friendStatus: {},
 		}),
+
+	mergeFriendStatus: (statuses) =>
+	set((state) => ({
+		friendStatus: {
+			...state.friendStatus,
+			...Object.fromEntries(
+				statuses.map((status) => [status.userId, status]),
+			),
+		},
+	})),
 }));

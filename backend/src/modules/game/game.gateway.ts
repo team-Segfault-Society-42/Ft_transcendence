@@ -245,6 +245,13 @@ export class GameGateway implements OnGatewayDisconnect {
         body.c,
       );
       this.emitGameUpdate(body.gameId, newGameState);
+      if (newGameState.playerProfiles.X?.id) {
+            await this.presenceService.emitFriendStatusChange(newGameState.playerProfiles.X.id);
+        }
+
+        if (newGameState.playerProfiles.O?.id) {
+            await this.presenceService.emitFriendStatusChange(newGameState.playerProfiles.O.id);
+        }
       return newGameState;
     } catch (error) {
       client.emit('game_error', {

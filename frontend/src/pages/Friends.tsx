@@ -84,6 +84,11 @@ export default function Friends() {
 		}
 	}, [user, t]);
 
+	const mergeFriendStatus = usePresenceStore(
+		(state) => state.mergeFriendStatus,
+	);
+
+
 	useEffect(() => {
 		loadFriendsData();
 	}, [loadFriendsData]);
@@ -139,6 +144,7 @@ export default function Friends() {
 			await friendsService.sendFriendRequest(userId);
 			toast.success(t("friends.success.requestSent"));
 			await loadFriendsData();
+			await refreshFriendStatuses();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -150,6 +156,7 @@ export default function Friends() {
 			await friendsService.acceptFriendRequest(requestId);
 			toast.success(t("friends.success.accepted"));
 			await loadFriendsData();
+			await refreshFriendStatuses();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -161,6 +168,7 @@ export default function Friends() {
 			await friendsService.declineFriendRequest(requestId);
 			toast.success(t("friends.success.declined"));
 			await loadFriendsData();
+			await refreshFriendStatuses();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -172,10 +180,16 @@ export default function Friends() {
 			await friendsService.removeFriend(friendshipId);
 			toast.success(t("friends.success.removed"));
 			await loadFriendsData();
+			await refreshFriendStatuses();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
 		}
+	}
+
+	async function refreshFriendStatuses() {
+		const statuses = await friendsService.getFriendsStatus();
+		mergeFriendStatus(statuses);
 	}
 
 	const incomingRequestBySenderId = useMemo(() => {
