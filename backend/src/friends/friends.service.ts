@@ -351,10 +351,15 @@ export class FriendsService {
 					? friendship.receiverId
 					: friendship.senderId;
 
+			const online = this.presenceService.isUserOnline(friendId);
+
 			return {
 				userId: friendId,
-				online: this.presenceService.isUserOnline(friendId),
-				inGame: this.gameService.isUserInGame(friendId),
+				online,
+				inGame: online && this.gameService.isUserInGame(friendId),
+				activity: online
+					? this.gameService.getUserGameActivity(friendId)
+					: 'offline',
 			};
 		});
 	}

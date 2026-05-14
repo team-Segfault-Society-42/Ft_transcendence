@@ -324,16 +324,29 @@ export default function Friends() {
 															: "text-red-400/80"
 													}
 												>
-													{status?.online
-														? t("friends.status.online")
-														: t("friends.status.offline")}
+													{status?.activity === "offline" && t("friends.status.offline")}
 
-													{status?.online && (
+													{status?.activity === "available" && (
 														<>
+															{t("friends.status.online")}
 															{" · "}
-															{status.inGame
-																? t("friends.status.inGame")
-																: t("friends.status.available")}
+															{t("friends.status.available")}
+														</>
+													)}
+
+													{status?.activity === "waiting" && (
+														<>
+															{t("friends.status.online")}
+															{" · "}
+															{t("friends.status.waiting")}
+														</>
+													)}
+
+													{status?.activity === "playing" && (
+														<>
+															{t("friends.status.online")}
+															{" · "}
+															{t("friends.status.inGame")}
 														</>
 													)}
 												</span>

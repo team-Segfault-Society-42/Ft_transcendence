@@ -124,10 +124,15 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 	}
 
 	private buildFriendStatus(userId: number) {
+		const online = this.presenceService.isUserOnline(userId);
+
 		return {
 			userId,
-			online: this.presenceService.isUserOnline(userId),
-			inGame: this.gameService.isUserInGame(userId),
+			online,
+			inGame: online && this.gameService.isUserInGame(userId),
+			activity: online
+				? this.gameService.getUserGameActivity(userId)
+				: 'offline',
 		};
 	}
 }

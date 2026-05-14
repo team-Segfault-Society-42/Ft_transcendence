@@ -110,6 +110,26 @@ export class GameService {
     return game.status === 'playing';
   }
 
+  getUserGameActivity(userId: number): 'available' | 'waiting' | 'playing' {
+    const active = this.findActiveGameByUserId(userId);
+
+    if (!active) {
+        return 'available';
+    }
+
+    const [, game] = active;
+
+    if (game.status === 'waiting') {
+        return 'waiting';
+    }
+
+    if (game.status === 'playing') {
+        return 'playing';
+    }
+
+    return 'available';
+}
+
 
   joinGame(
     gameId: string,

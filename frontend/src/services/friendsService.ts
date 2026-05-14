@@ -41,10 +41,13 @@ export interface FriendAcceptResponse {
 	updatedAt: string;
 }
 
+export type FriendActivity = "offline" | "available" | "waiting" | "playing";
+
 export interface FriendStatus {
 	userId: number;
 	online: boolean;
 	inGame: boolean;
+	activity: FriendActivity;
 }
 
 async function getFriendsStatus(): Promise<FriendStatus[]> {

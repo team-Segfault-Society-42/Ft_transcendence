@@ -206,7 +206,8 @@
 			"online": "Online",
 			"offline": "Offline",
 			"available": "Available",
-			"inGame": "In game"
+			"inGame": "In game",
+			"waiting": "Waiting"
 			}
 	},
 

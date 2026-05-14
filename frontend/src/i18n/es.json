@@ -206,7 +206,8 @@
 			"online": "En línea",
 			"offline": "Desconectado",
 			"available": "Disponible",
-			"inGame": "En partida"
+			"inGame": "En partida",
+			"waiting": "Esperando"
 			}
 	},
 
