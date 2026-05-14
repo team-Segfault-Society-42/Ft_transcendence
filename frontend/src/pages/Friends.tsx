@@ -314,10 +314,16 @@ export default function Friends() {
 									>
 										<div>
 											<UserRow user={item.friend} />
-											<p className="text-xs text-white/40 mt-1 flex items-center gap-2">
+											<p className="text-xs mt-1 flex items-center gap-2">
 												<StatusDot online={status?.online ?? false} />
 
-												<span>
+												<span
+													className={
+														status?.online
+															? "text-green-400"
+															: "text-red-400/80"
+													}
+												>
 													{status?.online
 														? t("friends.status.online")
 														: t("friends.status.offline")}
@@ -451,7 +457,7 @@ function UserRow({ user }: { user: PublicUser }) {
 function StatusDot({ online }: { online: boolean }) {
 	if (!online) {
 		return (
-			<span className="inline-flex size-2.5 rounded-full bg-white/30" />
+			<span className="inline-flex size-2.5 rounded-full bg-red-400/70" />
 		);
 	}
 
