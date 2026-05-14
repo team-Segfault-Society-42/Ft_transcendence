@@ -17,6 +17,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AchievementIcon } from "@/components/ui/AchievementIcons";
 import { CardTitle } from "@/components/ui/Card";
 import { friendsService, type FriendListItem, type IncomingFriendRequest, type OutgoingFriendRequest } from "@/services/friendsService";
+import { type RelationshipState } from "./Friends";
 
 interface User {
   id: number;
@@ -105,6 +106,26 @@ export default function Profile() {
     }
     loadProfile()
   }, [username, user, isMe])
+
+  function getRelationshipState() {
+    if (user && profileData?.id === user.id) {
+      return "SELF";
+    }
+
+    if (friends.some((item) => item.friend.id === profileData?.id)) {
+      return "FRIEND";
+    }
+
+    if (outgoingRequests.some((request) => request.receiver.id === profileData?.id)) {
+      return "PENDING_SENT";
+    }
+
+    if (incomingRequests.some((request) => request.sender.id === profileData?.id)) {
+      return "PENDING_RECEIVED";
+    }
+
+    return "NONE";
+	}
 
   useEffect(() => {
     if (!profileData) return;
