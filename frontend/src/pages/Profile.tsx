@@ -13,7 +13,7 @@ import { Winrate } from "@/components/ui/Winrate";
 import { LevelProgress } from "@/components/ui/Level";
 import { Username } from "@/components/ui/Username";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AchievementIcon } from "@/components/ui/AchievementIcons";
 import { CardTitle } from "@/components/ui/Card";
 
@@ -43,6 +43,10 @@ export default function Profile() {
       [User | null, React.Dispatch<React.SetStateAction<User | null>>]
     >();
 
+  const { username } = useParams<{ username: string }>()
+  const isMe = !username || username === user?.username
+  const [profileData, setProfileData] = useState<User | null>(isMe ? user : null)
+  
   const [isEdit, isInEdit] = useState(false);
   const [userName, setUserName] = useState(user?.username || "");
   const [bio, setBio] = useState(user?.bio || "");
@@ -59,10 +63,36 @@ export default function Profile() {
 	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
 	const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
+ 
   useEffect(() => {
-    if (user) {
+    async function loadProfile() {
+      if (isMe) {
+        setProfileData(user)
+        setLoading(false)
+      }
+      else if (username) {
+        try {
+          setLoading(true)
+          const data = await userService.getUserByUsername(username)
+          setProfileData(data)
+          setLoading(false)
+        } 
+        catch (error) {
+          toast.error(t("backend.ERR_USER_NOT_FOUND"));
+          navigate("/dashboard");
+        }
+      }
+    }
+    loadProfile()
+  }, [username, user, isMe])
+
+  useEffect(() => {
+    if (!profileData) return;
+
+    if (isMe && user) {
       setUserName(user.username);
       setBio(user.bio);
+    }
 
       async function fetchAllAchievments() {
         try {
@@ -76,7 +106,7 @@ export default function Profile() {
 
       async function fetchAchievements() {
         try {
-          const data = await userService.getAchievements(user!.id)
+          const data = await userService.getAchievements(profileData!.id)
           if (Array.isArray(data)) {
             setUnlockedAchievements(data.map((a: any) => a.achievementId || a));
           }
@@ -87,8 +117,8 @@ export default function Profile() {
       fetchAchievements()
 
       setLoading(false);
-    }
-  }, [user]);
+    
+  }, [profileData?.id, isMe, user]);
 
   if (!user || loading) {
     return (
@@ -216,14 +246,14 @@ export default function Profile() {
           {/* AVATAR */}
           <div className="relative group">
             <Avatar
-              src={user.avatar}
-              alt={user.username}
+              src={profileData?.avatar}
+              alt={profileData?.username}
               size="lg"
               className="border border-white/20 z-10 relative"
             />
             <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
             </div>
-			{isEdit && (
+			{isMe && isEdit && (
 				<div className="mt-3 flex justify-center">
 					<input
 						ref={avatarInputRef}
@@ -257,7 +287,7 @@ export default function Profile() {
             />
           ) : (
             <h1 className="text-2xl font-bold tracking-wide">
-              <Username name={user.username} variant="profile" />
+              <Username name={profileData?.username} variant="profile" />
             </h1>
           )}
         </div>
@@ -265,8 +295,8 @@ export default function Profile() {
         {/* STATS */}
         <div className="mt-8 grid grid-cols-2 gap-4 text-center">
           {[
-            { label: t("profile.stats.wins"), value: user.wins },
-            { label: t("profile.stats.losses"), value: user.losses },
+            { label: t("profile.stats.wins"), value: profileData?.wins },
+            { label: t("profile.stats.losses"), value: profileData?.losses },
           ].map((stat, i) => (
             <div
               key={i}
@@ -280,10 +310,10 @@ export default function Profile() {
         </div>
 
         {/* WINRATE */}
-        <Winrate wins={user.wins} losses={user.losses} draws={user.draws} />
+        <Winrate wins={profileData?.wins} losses={profileData?.losses} draws={profileData?.draws} />
 
         {/* Level */}
-        <LevelProgress xp={user.xp} />
+        <LevelProgress xp={profileData?.xp} />
 
         {/* Achievements */}
         <div className="mt-8">
@@ -335,9 +365,9 @@ export default function Profile() {
               onChange={(e) => setBio(e.target.value)}
               className="w-full bg-transparent focus:outline-none resize-none text-sm text-white/80"
             />
-          ) : user.bio ? (
+          ) : profileData?.bio ? (
                 <p className="text-sm leading-relaxed text-white/80">
-                  {user.bio}
+                  {profileData?.bio}
                 </p>
           ) : (
             <p className="text-sm text-white/30 italic">
@@ -348,15 +378,15 @@ export default function Profile() {
         </div>
 
         {/* BUTTON */}
-        <Button onClick={handleSave} className="mt-8 w-full flex justify-center">
+        {isMe && ( <Button onClick={handleSave} className="mt-8 w-full flex justify-center">
           {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
-        </Button>
+        </Button> )}
 
         {/* 2FA */}
-        <div className="mt-8">
+        {isMe && ( <div className="mt-8">
           <p className="text-white/50 text-sm mb-2">{t("auth.twofa.title")}</p>
 
-          {user.isTwoFactorEnabled ? (
+          {profileData?.isTwoFactorEnabled ? (
             <div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
               <p className="text-sm text-green-400 font-medium">
                 {t("auth.twofa.enabled")}
@@ -410,12 +440,15 @@ export default function Profile() {
                   >
                     {t("auth.twofa.regenerate")}
                   </Button>
-                </div>
+                </div> 
+                
               )}
+              
             </div>
+            
           )}
         </div>
-
+        )}
       </div>
     </section>
   );
