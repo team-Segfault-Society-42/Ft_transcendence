@@ -1,15 +1,15 @@
 import {
+	OnGatewayInit,
 	OnGatewayConnection,
 	OnGatewayDisconnect,
 	WebSocketGateway,
+	WebSocketServer,
 } from '@nestjs/websockets';
 import { JwtService } from '@nestjs/jwt';
 import type { AuthSocket, JwtPayload } from '../auth/jwt-auth.guard';
 import { PresenceService } from './presence.service';
-import { FriendsService } from '../friends/friends.service';
 import { Server } from 'socket.io';
-import { WebSocketServer } from '@nestjs/websockets';
-import { GameService } from '../modules/game/game.service';
+
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const allowedOrigins = rawOrigins
@@ -23,16 +23,20 @@ const allowedOrigins = rawOrigins
 		credentials: true,
 	},
 })
-export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class PresenceGateway
+	implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
 	constructor(
 		private readonly presenceService: PresenceService,
 		private readonly jwtService: JwtService,
-		private readonly friendsService: FriendsService,
-		private readonly gameService: GameService,
 	) {}
 
 	@WebSocketServer()
 	server: Server;
+
+	afterInit() {
+		this.presenceService.setServer(this.server);
+	}
 
 	async handleConnection(client: AuthSocket) {
 		const user = await this.getUserFromSocket(client);
@@ -55,7 +59,7 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 		}
 
 		if (connection.wasOffline) {
-			await this.emitFriendStatusChange(user.sub);
+			await this.presenceService.emitFriendStatusChange(user.sub);
 		}
 
 	}
@@ -68,7 +72,7 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 			return;
 		}
 
-		await this.emitFriendStatusChange(result.userId);
+		await this.presenceService.emitFriendStatusChange(result.userId);
 	}
 
 	private async getUserFromSocket(client: AuthSocket): Promise<JwtPayload | null> {
@@ -108,31 +112,4 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 		return null;
 	}
 
-	private async emitFriendStatusChange(userId: number) {
-		const friendIds = await this.friendsService.getAcceptedFriendIds(userId);
-
-		for (const friendId of friendIds) {
-			const socketIds = this.presenceService.getUserSocketIds(friendId);
-
-			for (const socketId of socketIds) {
-				this.server.to(socketId).emit(
-					'friend_status_changed',
-					this.buildFriendStatus(userId),
-				);
-			}
-		}
-	}
-
-	private buildFriendStatus(userId: number) {
-		const online = this.presenceService.isUserOnline(userId);
-
-		return {
-			userId,
-			online,
-			inGame: online && this.gameService.isUserInGame(userId),
-			activity: online
-				? this.gameService.getUserGameActivity(userId)
-				: 'offline',
-		};
-	}
 }

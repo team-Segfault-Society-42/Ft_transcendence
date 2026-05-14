@@ -1,12 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Server } from 'socket.io';
+import { FriendsService } from '../friends/friends.service';
+import { GameService } from '../modules/game/game.service';
 
 const MAX_PRESENCE_SOCKETS_PER_USER = 20;
 
 @Injectable()
 export class PresenceService {
+	constructor(
+		@Inject(forwardRef(() => FriendsService))
+		private readonly friendsService: FriendsService,
+
+		private readonly gameService: GameService,
+	) {}
 	private readonly onlineUsers = new Map<number, Set<string>>();
 	private readonly usersBySocket = new Map<string, number>();
+	private server: Server | null = null;
 
+	setServer(server: Server) {
+		this.server = server;
+	}
 	connectUser(userId: number, socketId: string): { connected: boolean; wasOffline: boolean } {
 		const sockets = this.onlineUsers.get(userId) ?? new Set<string>();
 
@@ -76,5 +89,36 @@ export class PresenceService {
 		}
 
 		return [...sockets];
+	}
+
+	async emitFriendStatusChange(userId: number) {
+		const friendIds = await this.friendsService.getAcceptedFriendIds(userId);
+
+		for (const friendId of friendIds) {
+			const socketIds = this.getUserSocketIds(friendId)
+
+			for (const socketId of socketIds) {
+				if (!this.server) {
+					return;
+				}
+				this.server.to(socketId).emit(
+					'friend_status_changed',
+					this.buildFriendStatus(userId),
+				);
+			}
+		}
+	}
+
+	private buildFriendStatus(userId: number) {
+		const online = this.isUserOnline(userId)
+
+		return {
+			userId,
+			online,
+			inGame: online && this.gameService.isUserInGame(userId),
+			activity: online
+				? this.gameService.getUserGameActivity(userId)
+				: 'offline',
+		};
 	}
 }
