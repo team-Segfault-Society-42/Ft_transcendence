@@ -2,10 +2,10 @@ import { Avatar } from '../ui/Avatar';
 import { Username } from '../ui/Username';
 import { Card } from '../ui/Card';
 import { Circle, X } from 'lucide-react';
-import type { PlayerRole } from '@/type/game.types';
+import type { PlayerRole, PlayerSymbol } from '@/type/game.types';
 
 type PlayerCardProps = {
-	symbol: 'X' | 'O';
+	symbol: PlayerSymbol;
 	name: string;
 	avatar: string | undefined;
 	isActive: boolean;
@@ -17,7 +17,7 @@ type Props = {
 	playerOName: string;
 	playerXAvatar: string | undefined;
 	playerOAvatar: string | undefined;
-	currentPlayer: string;
+	currentPlayer: PlayerSymbol;
 	timeLeft: number;
 	playerRole: PlayerRole | null;
 };
@@ -32,7 +32,7 @@ function PlayerCard({
 	return (
 		<div className="relative mt-4">
 			{isYou && (
-				<span className="text-3xl font-black bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+				<span className="absolute inset-x-0 -top-9 text-center text-3xl font-black text-cyan-400">
 					You
 				</span>
 			)}
