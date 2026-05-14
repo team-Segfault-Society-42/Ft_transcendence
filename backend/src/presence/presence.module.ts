@@ -6,7 +6,11 @@ import { FriendsModule } from '../friends/friends.module';
 import { GameModule } from '../modules/game/game.module';
 
 @Module({
-	imports: [AuthModule, forwardRef(() => FriendsModule), GameModule],
+	imports: [
+		AuthModule,
+		forwardRef(() => FriendsModule),
+		forwardRef(() => GameModule),
+	],
 	providers: [PresenceGateway, PresenceService],
 	exports: [PresenceService],
 })

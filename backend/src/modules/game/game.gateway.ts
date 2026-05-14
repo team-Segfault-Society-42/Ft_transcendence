@@ -14,6 +14,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
+import { PresenceService } from '../../presence/presence.service';
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const parts = rawOrigins.split(',');
@@ -43,6 +44,7 @@ export class GameGateway implements OnGatewayDisconnect {
   constructor(
     private readonly gameService: GameService,
     private readonly usersService: UsersService,
+    private readonly presenceService: PresenceService,
   ) {}
 
   private getTimerKey(gameId: string, role: 'X' | 'O') {
@@ -219,12 +221,14 @@ export class GameGateway implements OnGatewayDisconnect {
       client.data.currentGameId = body.gameId;
 
       this.emitGameUpdate(body.gameId, game);
+	  await this.presenceService.emitFriendStatusChange(userId);
       client.emit('joined_as', { role });
     } catch (error) {
       client.emit('game_error', {
         message: error instanceof Error ? error.message : 'Unknown error',
       });
     }
+
   }
 
   @SubscribeMessage('play_move')

@@ -2,6 +2,8 @@ import {
 	BadRequestException,
 	ConflictException,
 	Injectable,
+	Inject,
+	forwardRef,
 	NotFoundException,
 	ForbiddenException,
 } from '@nestjs/common';
@@ -16,6 +18,7 @@ import { GameService } from '../modules/game/game.service';
 export class FriendsService {
 	constructor(
 		private readonly prisma: PrismaService,
+		@Inject(forwardRef(() => PresenceService))
 		private readonly presenceService: PresenceService,
 		private readonly gameService: GameService,
 	) {}

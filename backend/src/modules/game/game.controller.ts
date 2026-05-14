@@ -9,13 +9,15 @@ import {
   	ApiResponse,
   	ApiCookieAuth,
 } from '@nestjs/swagger';
+import { PresenceService } from 'src/presence/presence.service';
 
 @ApiTags('Game')
 @Controller('game')
 export class GameController {
   	constructor(
     	private readonly gameService: GameService,
-    	private readonly usersService: UsersService
+    	private readonly usersService: UsersService,
+    	private readonly presenceService: PresenceService,
   	) {}
 
 @ApiCookieAuth()
@@ -26,6 +28,7 @@ export class GameController {
 async createGame(@Req() req: AuthRequest) {
     const user = await this.usersService.getUser(req.user.sub);
     const gameId = this.gameService.createGame(user);
+    await this.presenceService.emitFriendStatusChange(req.user.sub);
     return { gameId };
 	}
 
@@ -63,9 +66,13 @@ getGame(@Param('id') gameId: string) {
 @ApiResponse({ status: 401, description: 'Not authenticated' })
 @ApiResponse({ status: 404, description: 'Game not found' })
 @Post(':id/leave')
-leaveGame(@Param('id') gameId: string, @Req() req: AuthRequest) {
-    return this.gameService.leaveGame(gameId, req.user.sub);
-	}
+async leaveGame(@Param('id') gameId: string, @Req() req: AuthRequest) {
+	const result = this.gameService.leaveGame(gameId, req.user.sub);
+
+	await this.presenceService.emitFriendStatusChange(req.user.sub);
+
+	return result;
+}
 
 @ApiCookieAuth()
 @ApiOperation({ summary: 'Get finished game history by game ID' })

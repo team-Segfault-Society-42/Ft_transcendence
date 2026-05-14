@@ -6,7 +6,7 @@ import { PresenceModule } from '../presence/presence.module';
 import { GameModule } from '../modules/game/game.module';
 
 @Module({
-	imports: [PrismaModule, forwardRef(() =>PresenceModule), GameModule],
+	imports: [PrismaModule, forwardRef(() =>PresenceModule),forwardRef(() => GameModule)],
 	controllers: [FriendsController],
 	providers: [FriendsService],
 	exports: [FriendsService],
