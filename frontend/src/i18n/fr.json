@@ -200,7 +200,15 @@
 			"load": "Erreur lors du chargement des amis : {{error}}",
 			"search": "Erreur lors de la recherche : {{error}}",
 			"action": "L'action a échoué : {{error}}"
-		}
+		},
+
+		"status": {
+			"online": "En ligne",
+			"offline": "Hors ligne",
+			"available": "Disponible",
+			"inGame": "En partie",
+			"waiting": "En attente"
+			}
 	},
 
     "chat":{
@@ -394,6 +402,7 @@
         "ERR_GAME_WAITING_PLAYERS": "En attente des deux joueurs.",
         "ERR_GAME_SPECTATOR_MOVE": "Les spectateurs ne peuvent pas jouer.",
         "ERR_GAME_NOT_YOUR_TURN": "Ce n'est pas votre tour.",
+        "ERR_GAME_CANT_LEAVE_PLAYING": "Impossible de quitter une partie en cours",
         "ERR_MATCH_SELF_PLAY": "Un joueur ne peut pas jouer contre lui-même.",
         "ERR_MATCH_INVALID_WINNER": "Le vainqueur doit être l'un des deux participants.",
         "ERR_MATCH_SAVE_FAILED": "Impossible d'enregistrer le résultat du match.",

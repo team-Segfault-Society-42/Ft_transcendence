@@ -2,6 +2,8 @@ import {
 	BadRequestException,
 	ConflictException,
 	Injectable,
+	Inject,
+	forwardRef,
 	NotFoundException,
 	ForbiddenException,
 } from '@nestjs/common';
@@ -9,10 +11,17 @@ import { FriendStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { FriendRequestAction } from './dto/respond-friend-request.dto';
 import { MAX_PENDING_FRIEND_REQUESTS, MAX_FRIEND_RESULTS} from './friends.constants';
+import { PresenceService } from '../presence/presence.service';
+import { GameService } from '../modules/game/game.service';
 
 @Injectable()
 export class FriendsService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		@Inject(forwardRef(() => PresenceService))
+		private readonly presenceService: PresenceService,
+		private readonly gameService: GameService,
+	) {}
 
 	async sendFriendRequest(senderId: number, receiverId: number) {
 		if (senderId === receiverId) {
@@ -84,6 +93,8 @@ export class FriendsService {
 					createdAt: true,
 				},
 			});
+
+			this.presenceService.emitFriendsUpdated([senderId, receiverId]);
 
 			return {
 				requestId: request.id,
@@ -183,6 +194,7 @@ export class FriendsService {
 			where: { id: requestId },
 			select: {
 				id: true,
+				senderId: true,
 				receiverId: true,
 				status: true,
 			},
@@ -207,6 +219,8 @@ export class FriendsService {
 				where: { id: requestId },
 			});
 
+			this.presenceService.emitFriendsUpdated([userId, request.senderId]);
+
 			return {
 				message: 'FRIEND_REQUEST_DECLINED',
 			};
@@ -223,6 +237,8 @@ export class FriendsService {
 				updatedAt: true,
 			},
 		});
+
+		this.presenceService.emitFriendsUpdated([userId, request.senderId]);
 
 		return {
 			friendshipId: updatedRequest.id,
@@ -318,8 +334,70 @@ export class FriendsService {
 			where: { id: friendshipId },
 		});
 
+		this.presenceService.emitFriendsUpdated([
+			friendship.senderId,
+			friendship.receiverId,
+		]);
+
 		return {
 			message: 'FRIEND_REMOVED_SUCCESS',
 		};
+	}
+
+	async getFriendsStatus(userId: number) {
+		const friendships = await this.prisma.friend.findMany({
+			where: {
+				status: FriendStatus.ACCEPTED,
+				OR: [
+					{ senderId: userId },
+					{ receiverId: userId },
+				],
+			},
+			take: MAX_FRIEND_RESULTS,
+			select: {
+				senderId: true,
+				receiverId: true,
+			},
+		});
+
+		return friendships.map((friendship) => {
+			const friendId =
+				friendship.senderId === userId
+					? friendship.receiverId
+					: friendship.senderId;
+
+			const online = this.presenceService.isUserOnline(friendId);
+
+			return {
+				userId: friendId,
+				online,
+				inGame: online && this.gameService.isUserInGame(friendId),
+				activity: online
+					? this.gameService.getUserGameActivity(friendId)
+					: 'offline',
+			};
+		});
+	}
+
+	async getAcceptedFriendIds(userId: number): Promise<number[]> {
+		const friendships = await this.prisma.friend.findMany({
+			where: {
+				status: FriendStatus.ACCEPTED,
+				OR: [
+					{ senderId: userId },
+					{ receiverId: userId },
+				],
+			},
+			select: {
+				senderId: true,
+				receiverId: true,
+			},
+		});
+
+		return friendships.map((friendship) =>
+			friendship.senderId === userId
+				? friendship.receiverId
+				: friendship.senderId,
+		);
 	}
 }

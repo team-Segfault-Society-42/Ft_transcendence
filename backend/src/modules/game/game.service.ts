@@ -98,6 +98,39 @@ export class GameService {
     };
   }
 
+  isUserInGame(userId: number): boolean {
+    const active = this.findActiveGameByUserId(userId);
+
+      if (!active) {
+        return false;
+      }
+
+    const [, game] = active;
+
+    return game.status === 'playing';
+  }
+
+  getUserGameActivity(userId: number): 'available' | 'waiting' | 'playing' {
+    const active = this.findActiveGameByUserId(userId);
+
+    if (!active) {
+        return 'available';
+    }
+
+    const [, game] = active;
+
+    if (game.status === 'waiting') {
+        return 'waiting';
+    }
+
+    if (game.status === 'playing') {
+        return 'playing';
+    }
+
+    return 'available';
+}
+
+
   joinGame(
     gameId: string,
     socketId: string,
@@ -302,7 +335,7 @@ export class GameService {
 
     // playing
     if (game.status === 'playing')
-      throw new BadRequestException('Cant delete game pplaying');
+      throw new BadRequestException('ERR_GAME_CANT_LEAVE_PLAYING');
 
     if (game.status === 'waiting' && role === 'X') {
       this.activeGame.delete(gameId);

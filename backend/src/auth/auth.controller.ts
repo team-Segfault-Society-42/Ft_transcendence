@@ -16,6 +16,9 @@ import { Public } from './public.decorator';
 import type { AuthRequest } from './jwt-auth.guard';
 import { TwoFactorService } from './twofa.service';
 import { TwoFactorCodeDto } from './dto/twofa-code.dto';
+import { JwtService } from '@nestjs/jwt';
+import { PresenceService } from '../presence/presence.service';
+import type { JwtPayload } from './jwt-auth.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -23,6 +26,8 @@ export class AuthController {
 	constructor(
 		private readonly authService: AuthService,
 		private readonly twoFactorService: TwoFactorService,
+		private readonly jwtService: JwtService,
+		private readonly presenceService: PresenceService,
 	) {}
 
 	@Public()
@@ -109,7 +114,21 @@ export class AuthController {
 		description: 'Logout successful',
 	})
 	@Post('logout')
-	logout(@Res({ passthrough: true }) res: Response) {
+	async logout(
+		@Req() req: Request,
+		@Res({ passthrough: true }) res: Response,
+	) {
+		const token = req.cookies?.['access_token'];
+		let userId: number | null = null;
+
+		if (token) {
+			try {
+				const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+				userId = payload.sub;
+			} catch {
+				userId = null;
+			}
+		}
 		res.clearCookie('access_token', {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
@@ -123,6 +142,9 @@ export class AuthController {
 			sameSite: 'lax',
 			path: '/',
 		});
+		if (userId !== null) {
+			this.presenceService.disconnectUserSockets(userId);
+		}
 
 		return { message: 'AUTH_LOGOUT_SUCCESS' };
 	}

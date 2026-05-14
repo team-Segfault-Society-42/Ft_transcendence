@@ -97,4 +97,9 @@ export class FriendsController {
 			friendshipId,
 		);
 	}
+	@ApiOperation({ summary: 'List accepted friends statuses' })
+	@Get('status')
+	getFriendsStatus(@Req() req: AuthRequest) {
+		return this.friendsService.getFriendsStatus(req.user.sub);
+	}
 }
