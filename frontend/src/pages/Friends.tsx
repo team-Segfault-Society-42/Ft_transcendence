@@ -329,13 +329,17 @@ export default function Friends() {
 										<div>
 											<UserRow user={item.friend} />
 											<p className="text-xs mt-1 flex items-center gap-2">
-												<StatusDot online={status?.online ?? false} />
+												<StatusDot activity={status?.activity ?? "offline"} />
 
 												<span
 													className={
-														status?.online
-															? "text-green-400"
-															: "text-red-400/80"
+														status?.activity === "offline"
+															? "text-red-400/80"
+															: status?.activity === "waiting"
+																? "text-yellow-300"
+																: status?.activity === "playing"
+																	? "text-cyan-300"
+																	: "text-green-400"
 													}
 												>
 													{status?.activity === "offline" && t("friends.status.offline")}
@@ -481,10 +485,29 @@ function UserRow({ user }: { user: PublicUser }) {
 	);
 }
 
-function StatusDot({ online }: { online: boolean }) {
-	if (!online) {
+function StatusDot({
+	activity,
+}: {
+	activity: FriendStatus["activity"];
+}) {
+	if (activity === "offline") {
 		return (
 			<span className="inline-flex size-2.5 rounded-full bg-red-400/70" />
+		);
+	}
+
+	if (activity === "waiting") {
+		return (
+			<span className="inline-flex size-2.5 rounded-full bg-yellow-400" />
+		);
+	}
+
+	if (activity === "playing") {
+		return (
+			<span className="relative flex size-2.5">
+				<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
+				<span className="relative inline-flex size-2.5 rounded-full bg-cyan-400" />
+			</span>
 		);
 	}
 
