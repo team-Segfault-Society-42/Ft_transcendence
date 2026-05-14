@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-const MAX_PRESENCE_SOCKETS_PER_USER = 5;
+const MAX_PRESENCE_SOCKETS_PER_USER = 20;
 
 @Injectable()
 export class PresenceService {
