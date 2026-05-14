@@ -152,11 +152,11 @@ export class MatchesService {
       let resultStatus: string;
 
       if (m.winnerId === null) {
-        resultStatus = 'STATUS_MATCH_DRAW';
+        resultStatus = 'draw';
       } else if (m.winnerId === userId) {
-        resultStatus = 'STATUS_MATCH_WIN';
+        resultStatus = 'win';
       } else {
-        resultStatus = 'STATUS_MATCH_LOSS';
+        resultStatus = 'loss';
       }
 
       const myScore = isPLayer1 ? m.scoresP1 : m.scoresP2;

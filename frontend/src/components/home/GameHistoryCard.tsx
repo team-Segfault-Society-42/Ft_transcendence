@@ -77,6 +77,7 @@ export function GameHistoryCard({ matches, className, user }: Props) {
         {displayedMatches.map((match) => {
 
             const result = match.result.toLowerCase()
+            console.log(result)
 
             const resultColor =
             	result === "win"
@@ -131,7 +132,7 @@ export function GameHistoryCard({ matches, className, user }: Props) {
     {/* RIGHT */}
     <div className="text-right">
         <p className={cn("font-semibold uppercase", resultColor)}>
-            {t(`backend.${result.toUpperCase()}`)}
+            {t(`backend.STATUS_MATCH_${result.toUpperCase()}`)}
         </p>
 
         <p className="text-xs text-white/50">

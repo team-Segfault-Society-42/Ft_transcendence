@@ -60,7 +60,7 @@ export class UsersController {
 	@ApiOperation({ summary: 'Get user by username', description: 'Retrieves a users public profile from their exact username.' })
 	@ApiParam({
 		name: 'username',
-		decription: 'The unique username of the user being searched for',
+		description: 'The unique username of the user being searched for',
 		example: 'dummy5'
 	})
 	@ApiResponse({
