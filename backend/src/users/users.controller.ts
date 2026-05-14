@@ -42,20 +42,28 @@ export class UsersController {
 		private readonly achievementsService: AchievementsService,
 	) {}
 
-  @ApiOperation({ summary: 'Get all existing achievements' })
-  @ApiResponse({ status: 200, type: [AchievementDto] })
-  @Get('allAchievements')
-  getAllAchievements() {
-    return this.achievementsService.getAllAchievements()
-  }
+	@ApiOperation({ summary: 'Get all existing achievements' })
+	@ApiResponse({ status: 200, type: [AchievementDto] })
+	@Get('allAchievements')
+	getAllAchievements() {
+		return this.achievementsService.getAllAchievements()
+	}
 
-  @ApiOperation({ summary: 'Get all of achievements of users' })
-  @ApiParam({ name: 'id', description: 'User ID', example: 1 })
-  @ApiResponse({ status: 200, description: 'Return user achievements list' })
-  @Get(':id/achievements')
-  getAchievements(@Param('id', ParseIntPipe) id: number) {
-    return this.achievementsService.getAchievements(id);
-  }
+	@ApiOperation({ summary: 'Get all of achievements of users' })
+	@ApiParam({ name: 'id', description: 'User ID', example: 1 })
+	@ApiResponse({ status: 200, description: 'Return user achievements list' })
+	@Get(':id/achievements')
+	getAchievements(@Param('id', ParseIntPipe) id: number) {
+		return this.achievementsService.getAchievements(id);
+	}
+
+	@ApiOperation({ summary: 'Get user by username' })
+	@Get('by-username/:username')
+	getUserByUsername(username: string) {
+		return this.usersService.getUserByUsername(username)
+	}
+
+
 
 	@ApiOperation({ summary: 'Get leaderboard of users' })
 	@ApiQuery({
