@@ -2,20 +2,28 @@
     "title": "ft_transcendence",
 
     "home": {
-        "play":{
-            "title": "Play Game",
-            "description": "Jump into competitive matches or spectate games live"
-        },
         "hero":{
             "title": "Tic-Tac-Toe",
             "texte": "Play. Compete. Improve. Challenge players and become the best."
         },
+        "play":{
+            "idle":{
+                "title": "Play Game",
+                "description": "Jump into competitive matches or spectate games live",
+                "create": "Create Lobby",
+                "join": "Join Game",
+                "watch": "Watch Games"
+            },
+            "waiting":{
+                "title": "Waiting Lobby",
+                "description": "Waiting for an opponent to join...",
+                "copy": "Copy Link",
+                "cancel": "Cancel"
+            }
+        },
         "buttons":{
             "login": "Login",
-            "hi": "Hi,",
-            "create": "Create Lobby",
-            "join": "Join Game",
-            "watch": "Watch Games"
+            "hi": "Hi,"
         }
     },
 

@@ -2,20 +2,28 @@
     "title": "ft_transcendence",
 
     "home": {
-      	"play": {
-        	"title": "Jugar una partida",
-        	"description": "Únete a partidas competitivas o mira juegos en directo"
-      	},
-      	"hero": {
-        	"title": "Tres En Raya",
+		"hero": {
+			"title": "Tres En Raya",
         	"texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
-      	},
+		},
+		"play": {
+			"idle":{
+				"title": "Jugar una partida",
+				"description": "Únete a partidas competitivas o mira juegos en directo",
+				"create": "Crear una partida",
+				"join": "Unirse a una partida",
+				"watch": "Ver partidas"
+			},
+			"waiting": {
+				"title": "Lobby en espera",
+				"description": "Esperando a que un oponente se una...",
+				"copy": "Copiar enlace",
+				"cancel": "Cancelar"
+  			}
+		},
 		"buttons": {
 			"login": "Ingresar",
-			"hi": "Hola, ",
-			"create": "Crear una partida",
-			"join": "Unirse a una partida",
-			"watch": "Ver partidas"
+			"hi": "Hola, "
 		}
     },
 

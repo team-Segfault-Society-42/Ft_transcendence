@@ -1,7 +1,7 @@
 import { Card, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Loader } from "lucide-react";
-
+import { useTranslation } from "react-i18next";
 
 interface Props {
 	gameId: string;
@@ -11,12 +11,13 @@ interface Props {
 export function WaitingState({ gameId, onCancel }: Props) {
 
 	const inviteLink = `${window.location.origin}/game/${gameId}`;
+	const { t } = useTranslation();
 
 	return (
 		<Card className="h-full relative flex items-center justify-center bg-slate-900">
 
 			<CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-				Waiting Lobby
+				{t("home.play.waiting.title")}
 			</CardTitle>
 
 			<div className="flex flex-col items-center gap-6 w-full px-6">
@@ -30,7 +31,7 @@ export function WaitingState({ gameId, onCancel }: Props) {
 					<div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
 
 					<p className="text-white/80">
-						Waiting for an opponent to join...
+						{t("home.play.waiting.description")}
 					</p>
 				</div>
 
@@ -48,7 +49,7 @@ export function WaitingState({ gameId, onCancel }: Props) {
 							navigator.clipboard.writeText(inviteLink)
 						}
 					>
-						Copy Link
+						{t("home.play.waiting.copy")}
 					</Button>
 
 					<Button
@@ -56,7 +57,7 @@ export function WaitingState({ gameId, onCancel }: Props) {
 						className="flex-1"
                         onClick={onCancel}
 					>
-						Cancel
+						{t("home.play.waiting.cancel")}
 					</Button>
 				</div>
 			</div>

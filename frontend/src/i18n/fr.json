@@ -2,20 +2,28 @@
     "title": "ft_transcendence",
 
     "home": {
-        "play": {
-            "title": "Jouer une partie",
-            "description": "Lancez des parties compétitives ou regardez des matchs en direct"
-        },
         "hero":{
             "title": "Morpion",
             "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
         },
+        "play":{
+            "idle":{
+                "title": "Jouer",
+                "description": "Lancez des parties compétitives ou regardez des matchs en direct",
+                "create": "Créer une partie",
+                "join": "Rejoindre une partie",
+                "watch": "Regarder des matchs"
+            },
+            "waiting":{
+                "title": "Salle d'attente",
+                "description": "En attente qu'un adversaire rejoigne...",
+                "copy": "Copier le lien",
+                "cancel": "Annuler"
+            }
+        },
         "buttons":{
             "login": "Se connecter",
-            "hi": "Salut, ",
-            "create": "Créer une partie",
-            "join": "Rejoindre une partie",
-            "watch": "Regarder des matchs"
+            "hi": "Salut, "
         }
     },
 
