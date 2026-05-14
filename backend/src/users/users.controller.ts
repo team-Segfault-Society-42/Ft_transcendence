@@ -57,9 +57,22 @@ export class UsersController {
 		return this.achievementsService.getAchievements(id);
 	}
 
-	@ApiOperation({ summary: 'Get user by username' })
+	@ApiOperation({ summary: 'Get user by username', description: 'Retrieves a users public profile from their exact username.' })
+	@ApiParam({
+		name: 'username',
+		decription: 'The unique username of the user being searched for',
+		example: 'dummy5'
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'User successfully found.'
+	})
+	@ApiResponse({ 
+        status: 404, 
+        description: 'No users were found with this username.' 
+    })
 	@Get('by-username/:username')
-	getUserByUsername(username: string) {
+	getUserByUsername(@Param('username') username: string) {
 		return this.usersService.getUserByUsername(username)
 	}
 

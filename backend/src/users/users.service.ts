@@ -150,4 +150,16 @@ export class UsersService {
 		return this.toPublicUser(updatedUser);
 	}
 
+	async getUserByUsername(username: string) {
+		const user = await this.prisma.user.findUnique({
+			where: { username },
+			select: publicUserSelect
+		})
+
+		if (!user)
+			throw new NotFoundException('ERR_USER_NOT_FOUND');
+
+		return this.toPublicUser(user);
+	}
+
 }
