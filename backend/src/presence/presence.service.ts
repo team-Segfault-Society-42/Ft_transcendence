@@ -91,6 +91,19 @@ export class PresenceService {
 		return [...sockets];
 	}
 
+	disconnectUserSockets(userId: number): void {
+		if (!this.server) {
+			return;
+		}
+
+		const socketIds = this.getUserSocketIds(userId);
+
+		for (const socketId of socketIds) {
+			const socket = this.server.sockets.sockets.get(socketId);
+			socket?.disconnect(true);
+		}
+	}
+
 	async emitFriendStatusChange(userId: number) {
 		const friendIds = await this.friendsService.getAcceptedFriendIds(userId);
 

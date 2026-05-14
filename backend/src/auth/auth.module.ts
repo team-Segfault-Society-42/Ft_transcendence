@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { HttpModule } from '@nestjs/axios';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -8,6 +8,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { OAuthController } from './oauth.controller';
 import { OAuthService } from './oauth.service';
 import { TwoFactorService } from './twofa.service';
+import { PresenceModule } from '../presence/presence.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TwoFactorService } from './twofa.service';
     }),
     PrismaModule,
     HttpModule,
+	forwardRef(() => PresenceModule)
   ],
   controllers: [AuthController, OAuthController],
   providers: [AuthService, OAuthService, TwoFactorService, JwtAuthGuard],

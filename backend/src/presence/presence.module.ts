@@ -10,6 +10,7 @@ import { GameModule } from '../modules/game/game.module';
 		AuthModule,
 		forwardRef(() => FriendsModule),
 		forwardRef(() => GameModule),
+		forwardRef(() => AuthModule)
 	],
 	providers: [PresenceGateway, PresenceService],
 	exports: [PresenceService],
