@@ -335,7 +335,7 @@ export class GameService {
 
     // playing
     if (game.status === 'playing')
-      throw new BadRequestException('Cant delete game pplaying');
+      throw new BadRequestException('ERR_GAME_CANT_LEAVE_PLAYING');
 
     if (game.status === 'waiting' && role === 'X') {
       this.activeGame.delete(gameId);

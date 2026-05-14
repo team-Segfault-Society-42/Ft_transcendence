@@ -401,6 +401,7 @@
         "ERR_GAME_WAITING_PLAYERS": "Esperando a ambos jugadores.",
         "ERR_GAME_SPECTATOR_MOVE": "Los espectadores no pueden jugar.",
         "ERR_GAME_NOT_YOUR_TURN": "No es tu turno.",
+        "ERR_GAME_CANT_LEAVE_PLAYING": "No se puede salir de una partida en curso",
         "ERR_MATCH_SELF_PLAY": "Un jugador no puede jugar contra sí mismo.",
         "ERR_MATCH_INVALID_WINNER": "El ganador debe ser uno de los dos jugadores.",
         "ERR_MATCH_SAVE_FAILED": "No se pudo guardar el resultado del partido.",
