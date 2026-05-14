@@ -35,11 +35,8 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 	async handleConnection(client: AuthSocket) {
 		const user = await this.getUserFromSocket(client);
 
-		console.log('[PresenceGateway] socket connected:', client.id);
-		console.log('[PresenceGateway] authenticated user:', user?.sub);
 
 		if (!user) {
-			console.log('[PresenceGateway] missing authenticated user');
 			client.disconnect();
 			return;
 		}
@@ -59,11 +56,9 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 			await this.emitFriendStatusChange(user.sub, true);
 		}
 
-		console.log('[PresenceGateway] user connected to presence service');
 	}
 
 	async handleDisconnect(client: AuthSocket) {
-		console.log('[PresenceGateway] socket disconnected:', client.id);
 
 		const result = this.presenceService.disconnectSocket(client.id);
 

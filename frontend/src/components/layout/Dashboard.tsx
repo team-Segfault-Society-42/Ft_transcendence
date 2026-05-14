@@ -91,16 +91,8 @@ export default function Dashboard() {
 
 		loadFriendStatuses();
 
-		socket.on("connect", () => {
-			console.log("[PresenceSocket] connected", socket.id);
-		});
-
-		socket.on("disconnect", () => {
-			console.log("[PresenceSocket] disconnected");
-		});
 
 		socket.on("friend_status_changed", (status: FriendStatus) => {
-			console.log("[PresenceSocket] friend status changed", status);
 
 			updateFriendStatus(status);
 		});
@@ -110,8 +102,6 @@ export default function Dashboard() {
 		});
 
 		return () => {
-			socket.off("connect");
-			socket.off("disconnect");
 			socket.off("friend_status_changed");
 			socket.off("connect_error");
 		};
@@ -128,8 +118,8 @@ export default function Dashboard() {
 
       setUser(null);
 
-      const message = response.message 
-      ? t(`backend.${response.message}`) 
+      const message = response.message
+      ? t(`backend.${response.message}`)
       : t("auth.logoutSuccess");
       toast.success(message);
       navigate("/");

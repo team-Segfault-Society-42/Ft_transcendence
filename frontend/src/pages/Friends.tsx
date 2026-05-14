@@ -314,18 +314,23 @@ export default function Friends() {
 									>
 										<div>
 											<UserRow user={item.friend} />
-											<p className="text-xs text-white/40 mt-1">
-												{status?.online
-													? t("friends.status.online")
-													: t("friends.status.offline")}
-												{status?.online && (
-													<>
-														{" · "}
-														{status.inGame
-															? t("friends.status.inGame")
-															: t("friends.status.available")}
-													</>
-												)}
+											<p className="text-xs text-white/40 mt-1 flex items-center gap-2">
+												<StatusDot online={status?.online ?? false} />
+
+												<span>
+													{status?.online
+														? t("friends.status.online")
+														: t("friends.status.offline")}
+
+													{status?.online && (
+														<>
+															{" · "}
+															{status.inGame
+																? t("friends.status.inGame")
+																: t("friends.status.available")}
+														</>
+													)}
+												</span>
 											</p>
 										</div>
 
@@ -440,5 +445,20 @@ function UserRow({ user }: { user: PublicUser }) {
 				</p>
 			</div>
 		</div>
+	);
+}
+
+function StatusDot({ online }: { online: boolean }) {
+	if (!online) {
+		return (
+			<span className="inline-flex size-2.5 rounded-full bg-white/30" />
+		);
+	}
+
+	return (
+		<span className="relative flex size-2.5">
+			<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+			<span className="relative inline-flex size-2.5 rounded-full bg-green-400" />
+		</span>
 	);
 }
