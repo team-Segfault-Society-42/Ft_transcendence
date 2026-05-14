@@ -18,6 +18,6 @@ import { AchievementsService } from './achievement/achievements.service';
   ],
   providers: [GameService, GameGateway, MatchesService, AchievementsService],
   controllers: [GameController],
-  exports: [MatchesService, AchievementsService],
+  exports: [MatchesService, AchievementsService, GameService],
 })
 export class GameModule {}

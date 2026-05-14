@@ -98,6 +98,19 @@ export class GameService {
     };
   }
 
+  isUserInGame(userId: number): boolean {
+    const active = this.findActiveGameByUserId(userId);
+
+      if (!active) {
+        return false;
+      }
+
+    const [, game] = active;
+
+    return game.status === 'playing';
+  }
+
+
   joinGame(
     gameId: string,
     socketId: string,

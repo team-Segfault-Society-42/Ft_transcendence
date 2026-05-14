@@ -9,6 +9,7 @@ import { PresenceService } from './presence.service';
 import { FriendsService } from '../friends/friends.service';
 import { Server } from 'socket.io';
 import { WebSocketServer } from '@nestjs/websockets';
+import { GameService } from '../modules/game/game.service';
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const allowedOrigins = rawOrigins
@@ -27,6 +28,7 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 		private readonly presenceService: PresenceService,
 		private readonly jwtService: JwtService,
 		private readonly friendsService: FriendsService,
+		private readonly gameService: GameService,
 	) {}
 
 	@WebSocketServer()
@@ -53,7 +55,7 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 		}
 
 		if (connection.wasOffline) {
-			await this.emitFriendStatusChange(user.sub, true);
+			await this.emitFriendStatusChange(user.sub);
 		}
 
 	}
@@ -66,7 +68,7 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 			return;
 		}
 
-		await this.emitFriendStatusChange(result.userId, false);
+		await this.emitFriendStatusChange(result.userId);
 	}
 
 	private async getUserFromSocket(client: AuthSocket): Promise<JwtPayload | null> {
@@ -106,22 +108,26 @@ export class PresenceGateway implements OnGatewayConnection, OnGatewayDisconnect
 		return null;
 	}
 
-	private async emitFriendStatusChange(
-		userId: number,
-		online: boolean,
-	) {
+	private async emitFriendStatusChange(userId: number) {
 		const friendIds = await this.friendsService.getAcceptedFriendIds(userId);
 
 		for (const friendId of friendIds) {
 			const socketIds = this.presenceService.getUserSocketIds(friendId);
 
 			for (const socketId of socketIds) {
-				this.server.to(socketId).emit('friend_status_changed', {
-					userId,
-					online,
-					inGame: false,
-				});
+				this.server.to(socketId).emit(
+					'friend_status_changed',
+					this.buildFriendStatus(userId),
+				);
 			}
 		}
+	}
+
+	private buildFriendStatus(userId: number) {
+		return {
+			userId,
+			online: this.presenceService.isUserOnline(userId),
+			inGame: this.gameService.isUserInGame(userId),
+		};
 	}
 }

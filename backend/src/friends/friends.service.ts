@@ -10,11 +10,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { FriendRequestAction } from './dto/respond-friend-request.dto';
 import { MAX_PENDING_FRIEND_REQUESTS, MAX_FRIEND_RESULTS} from './friends.constants';
 import { PresenceService } from '../presence/presence.service';
+import { GameService } from '../modules/game/game.service';
 
 @Injectable()
 export class FriendsService {
-	constructor(private readonly prisma: PrismaService,
+	constructor(
+		private readonly prisma: PrismaService,
 		private readonly presenceService: PresenceService,
+		private readonly gameService: GameService,
 	) {}
 
 	async sendFriendRequest(senderId: number, receiverId: number) {
@@ -351,7 +354,7 @@ export class FriendsService {
 			return {
 				userId: friendId,
 				online: this.presenceService.isUserOnline(friendId),
-				inGame: false,
+				inGame: this.gameService.isUserInGame(friendId),
 			};
 		});
 	}
