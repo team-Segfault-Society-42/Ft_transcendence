@@ -14,10 +14,18 @@ import { GameStatusBanner } from './GameStatusBanner';
 import { EndGamePopup } from './EndGamePopup';
 import { SpectatorCount } from './SpectatorCount';
 import { Button } from '@/components/ui/Button';
+import { Input } from '../ui/Input';
 
 export default function Board() {
-	const { game, error, playMove, playerRole, requestReplay, leaveGame } =
-		useGameStore();
+	const {
+		gameId,
+		game,
+		error,
+		playMove,
+		playerRole,
+		requestReplay,
+		leaveGame,
+	} = useGameStore();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
@@ -67,6 +75,9 @@ export default function Board() {
 		);
 	}
 
+	if (game.status === 'waiting' && playerRole === 'X') {
+		navigate('/play');
+	}
 	const { board, currentPlayer, status, winner, toDisapear } = game;
 
 	const playerXName = game.playerProfiles?.X?.username || 'Player X';

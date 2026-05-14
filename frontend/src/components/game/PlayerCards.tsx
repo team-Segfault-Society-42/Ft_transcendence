@@ -22,7 +22,8 @@ type Props = {
 function PlayerCard({ symbol, name, avatar, isActive }: PlayerCardProps) {
 	return (
 		<Card
-			className={`relative flex w-24 shrink-0 flex-col items-center gap-1 overflow-hidden p-3 sm:w-28 sm:p-4 ${isActive ? 'ring-2 ring-cyan-400' : ''}`}
+			className={`relative flex w-24 shrink-0 flex-col items-center gap-1 overflow-hidden p-3 sm:w-28 sm:p-4 
+        ${isActive ? 'ring-2 ring-cyan-400' : ''}`}
 		>
 			<Avatar src={avatar} alt={`player ${symbol}`} fallback={name[0]} />
 			<div className="flex items-center gap-1 font-bold">
