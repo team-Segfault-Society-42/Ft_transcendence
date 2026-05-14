@@ -78,7 +78,6 @@ export default function Profile() {
           setLoading(false)
         } 
         catch (error) {
-          toast.error(t("backend.ERR_USER_NOT_FOUND"));
           navigate("/dashboard");
         }
       }
