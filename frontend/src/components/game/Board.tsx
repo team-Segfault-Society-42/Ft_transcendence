@@ -133,7 +133,7 @@ export default function Board() {
 							opponentDisconnect={opponentDisconnect}
 						/>
 
-						<div className="grid w-96 max-w-full grid-cols-3 gap-3">
+						<div className="grid w-96 max-w-full grid-cols-3 gap-3 rounded-2xl border border-white/10 bg-black/20 p-8">
 							{flatBoard.map((value, i) => (
 								<Square
 									key={i}
@@ -153,8 +153,8 @@ export default function Board() {
 					</div>
 
 					{/* Popup Replay */}
-					{showPopup && (
-						<div className="shrink-0">
+					<div className="w-80 shrink-0">
+						{showPopup && (
 							<EndGamePopup
 								endGameMessage={endGameMessage}
 								playerRole={playerRole}
@@ -165,8 +165,8 @@ export default function Board() {
 								leaveGame={leaveGame}
 								navigate={navigate}
 							/>
-						</div>
-					)}
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

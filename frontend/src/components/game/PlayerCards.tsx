@@ -32,7 +32,10 @@ function PlayerCard({
 	return (
 		<div className="relative mt-4">
 			{isYou && (
-				<span className="absolute inset-x-0 -top-9 text-center text-3xl font-black text-cyan-400">
+				<span
+					className="absolute inset-x-0 -top-6 text-center text-s font-bold uppercase text-cyan-400
+"
+				>
 					You
 				</span>
 			)}
