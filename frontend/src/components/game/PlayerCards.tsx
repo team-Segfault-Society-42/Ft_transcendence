@@ -28,9 +28,9 @@ function PlayerCard({ symbol, name, avatar, isActive }: PlayerCardProps) {
 			<Avatar src={avatar} alt={`player ${symbol}`} fallback={name[0]} />
 			<div className="flex items-center gap-1 font-bold">
 				{symbol === 'X' ? (
-					<X className="w-5 h-5 text-red-500 stroke-3" />
+					<X className="w-5 h-5 text-cyan-400 stroke-3" />
 				) : (
-					<Circle className="w-5 h-5 text-yellow-400 stroke-3" />
+					<Circle className="w-5 h-5 text-fuchsia-400 stroke-3" />
 				)}
 				<Username name={name} variant="card" className="font-bold" />
 			</div>
@@ -38,6 +38,8 @@ function PlayerCard({ symbol, name, avatar, isActive }: PlayerCardProps) {
 	);
 }
 
+// 	<X className="w-5 h-5 text-cyan-400 stroke-3" />
+// 	<Circle className="w-5 h-5 text-fuchsia-400 stroke-3" />
 export function PlayerCards({
 	playerXName,
 	playerOName,
