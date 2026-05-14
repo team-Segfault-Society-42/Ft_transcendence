@@ -23,7 +23,7 @@ export function WaitingState({ gameId, onCancel }: Props) {
 
                 <Loader
 				size={72}
-				className="mx-auto text-cyan-400 animate-pulse"
+				className="mx-auto text-cyan-400 animate-spin animation-duration-[4s]"
 				/>
 
 				<div className="flex items-center gap-2">

@@ -95,6 +95,8 @@ export class GameService {
       role,
       currentPlayer: game.currentPlayer,
       opponent,
+      playerX: game.playerProfiles.X,
+	    playerO: game.playerProfiles.O,
     };
   }
 
