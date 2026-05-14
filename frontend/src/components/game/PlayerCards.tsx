@@ -2,12 +2,14 @@ import { Avatar } from '../ui/Avatar';
 import { Username } from '../ui/Username';
 import { Card } from '../ui/Card';
 import { Circle, X } from 'lucide-react';
+import type { PlayerRole } from '@/type/game.types';
 
 type PlayerCardProps = {
 	symbol: 'X' | 'O';
 	name: string;
 	avatar: string | undefined;
 	isActive: boolean;
+	isYou: boolean;
 };
 
 type Props = {
@@ -17,29 +19,41 @@ type Props = {
 	playerOAvatar: string | undefined;
 	currentPlayer: string;
 	timeLeft: number;
+	playerRole: PlayerRole | null;
 };
 
-function PlayerCard({ symbol, name, avatar, isActive }: PlayerCardProps) {
+function PlayerCard({
+	symbol,
+	name,
+	avatar,
+	isActive,
+	isYou,
+}: PlayerCardProps) {
 	return (
-		<Card
-			className={`relative flex w-24 shrink-0 flex-col items-center gap-1 overflow-hidden p-3 sm:w-28 sm:p-4 
+		<div className="relative mt-4">
+			{isYou && (
+				<span className="text-3xl font-black bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+					You
+				</span>
+			)}
+			<Card
+				className={`flex w-28 flex-col items-center
         ${isActive ? 'ring-2 ring-cyan-400' : ''}`}
-		>
-			<Avatar src={avatar} alt={`player ${symbol}`} fallback={name[0]} />
-			<div className="flex items-center gap-1 font-bold">
-				{symbol === 'X' ? (
-					<X className="w-5 h-5 text-cyan-400 stroke-3" />
-				) : (
-					<Circle className="w-5 h-5 text-fuchsia-400 stroke-3" />
-				)}
-				<Username name={name} variant="card" className="font-bold" />
-			</div>
-		</Card>
+			>
+				<Avatar src={avatar} alt={`player ${symbol}`} fallback={name[0]} />
+				<div className="flex items-center gap-2 font-bold  mt-3">
+					{symbol === 'X' ? (
+						<X className="w-5 h-5 text-cyan-400 stroke-3" />
+					) : (
+						<Circle className="w-5 h-5 text-fuchsia-400 stroke-3" />
+					)}
+					<Username name={name} variant="card" className="font-bold" />
+				</div>
+			</Card>
+		</div>
 	);
 }
 
-// 	<X className="w-5 h-5 text-cyan-400 stroke-3" />
-// 	<Circle className="w-5 h-5 text-fuchsia-400 stroke-3" />
 export function PlayerCards({
 	playerXName,
 	playerOName,
@@ -47,6 +61,7 @@ export function PlayerCards({
 	playerOAvatar,
 	currentPlayer,
 	timeLeft,
+	playerRole,
 }: Props) {
 	const percentage = Math.max(0, Math.min(100, (timeLeft / 30) * 100));
 
@@ -57,6 +72,7 @@ export function PlayerCards({
 				name={playerXName}
 				avatar={playerXAvatar}
 				isActive={currentPlayer === 'X'}
+				isYou={playerRole === 'X'}
 			/>
 
 			<div
@@ -74,6 +90,7 @@ export function PlayerCards({
 				name={playerOName}
 				avatar={playerOAvatar}
 				isActive={currentPlayer === 'O'}
+				isYou={playerRole === 'O'}
 			/>
 		</div>
 	);

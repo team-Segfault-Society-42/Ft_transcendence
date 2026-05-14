@@ -120,6 +120,7 @@ export default function Board() {
 						playerOAvatar={playerOAvatar}
 						currentPlayer={currentPlayer}
 						timeLeft={timeLeft}
+						playerRole={playerRole}
 					/>
 
 					<GameStatusBanner
