@@ -28,7 +28,7 @@ export class AvatarUploadRateLimitGuard implements CanActivate {
 
 		if (recentAttempts.length >= AVATAR_UPLOAD_RATE_LIMIT_MAX_REQUESTS) {
 			throw new HttpException(
-				'Too many avatar upload attempts. Please try again later.',
+				'ERR_USER_AVATAR_RATE_LIMIT',
 				HttpStatus.TOO_MANY_REQUESTS,
 			);
 		}

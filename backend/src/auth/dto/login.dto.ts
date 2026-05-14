@@ -6,7 +6,7 @@ export class LoginDto {
 				example: 'nico@example.com',
 				description: 'User email address',
 		})
-		@IsEmail()
+		@IsEmail({}, { message: 'ERR_AUTH_EMAIL_INVALID' } )
 		email: string;
 
 		@ApiProperty({
@@ -15,9 +15,9 @@ export class LoginDto {
 			minLength: 8,
 		})
 		@IsString()
-		@MinLength(8)
+		@MinLength(8, { message: 'ERR_AUTH_PWD_MIN_LENGTH' })
 		@Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, {
-			message: 'password must contain at least one lowercase letter, one uppercase letter, and one number',
+			message: 'ERR_AUTH_PWD_COMPLEXITY',
 		})
 		password: string;
 }

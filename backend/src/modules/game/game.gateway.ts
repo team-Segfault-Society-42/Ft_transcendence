@@ -14,6 +14,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
+import { PresenceService } from '../../presence/presence.service';
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const parts = rawOrigins.split(',');
@@ -43,6 +44,7 @@ export class GameGateway implements OnGatewayDisconnect {
   constructor(
     private readonly gameService: GameService,
     private readonly usersService: UsersService,
+    private readonly presenceService: PresenceService,
   ) {}
 
   private getTimerKey(gameId: string, role: 'X' | 'O') {
@@ -69,6 +71,17 @@ export class GameGateway implements OnGatewayDisconnect {
         .then((result) => {
           if (result) {
             this.emitGameUpdate(gameId, result.game);
+            if (result.game.playerProfiles.X?.id) {
+                this.presenceService.emitFriendStatusChange(
+                    result.game.playerProfiles.X.id,
+                );
+            }
+
+            if (result.game.playerProfiles.O?.id) {
+                this.presenceService.emitFriendStatusChange(
+                    result.game.playerProfiles.O.id,
+                );
+            }
           }
         })
         .catch((error) => {
@@ -106,6 +119,17 @@ export class GameGateway implements OnGatewayDisconnect {
         .then((result) => {
           if (result) {
             this.emitGameUpdate(gameId, result);
+            if (result.playerProfiles.X?.id) {
+                this.presenceService.emitFriendStatusChange(
+                    result.playerProfiles.X.id,
+                );
+            }
+
+            if (result.playerProfiles.O?.id) {
+                this.presenceService.emitFriendStatusChange(
+                    result.playerProfiles.O.id,
+                );
+            }
           }
         })
         .catch((error) => {
@@ -219,12 +243,24 @@ export class GameGateway implements OnGatewayDisconnect {
       client.data.currentGameId = body.gameId;
 
       this.emitGameUpdate(body.gameId, game);
+      if (game.playerProfiles.X?.id) {
+        await this.presenceService.emitFriendStatusChange(
+            game.playerProfiles.X.id,
+        );
+    }
+
+    if (game.playerProfiles.O?.id) {
+        await this.presenceService.emitFriendStatusChange(
+            game.playerProfiles.O.id,
+        );
+    }
       client.emit('joined_as', { role });
     } catch (error) {
       client.emit('game_error', {
         message: error instanceof Error ? error.message : 'Unknown error',
       });
     }
+
   }
 
   @SubscribeMessage('play_move')
@@ -241,6 +277,13 @@ export class GameGateway implements OnGatewayDisconnect {
         body.c,
       );
       this.emitGameUpdate(body.gameId, newGameState);
+      if (newGameState.playerProfiles.X?.id) {
+            await this.presenceService.emitFriendStatusChange(newGameState.playerProfiles.X.id);
+        }
+
+        if (newGameState.playerProfiles.O?.id) {
+            await this.presenceService.emitFriendStatusChange(newGameState.playerProfiles.O.id);
+        }
       return newGameState;
     } catch (error) {
       client.emit('game_error', {
@@ -281,6 +324,7 @@ export class GameGateway implements OnGatewayDisconnect {
         await client.leave(body.gameId);
         if (client.data.currentGameId === body.gameId) {
           delete client.data.currentGameId;
+          await this.presenceService.emitFriendStatusChange(userId);
         }
         return;
       }
@@ -289,6 +333,7 @@ export class GameGateway implements OnGatewayDisconnect {
         await client.leave(body.gameId);
         if (client.data.currentGameId === body.gameId) {
           delete client.data.currentGameId;
+          await this.presenceService.emitFriendStatusChange(userId);
         }
       }
     } catch (error) {

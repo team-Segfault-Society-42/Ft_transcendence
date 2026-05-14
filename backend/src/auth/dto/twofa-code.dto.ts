@@ -6,7 +6,7 @@ export class TwoFactorCodeDto {
 		example: '123456',
 		description: '6-digit TOTP code from the authenticator app',
 	})
-	@IsString()
-	@Length(6, 6)
+	@IsString({ message: 'ERR_AUTH_2FA_CODE_STRING' })
+	@Length(6, 6, { message: 'ERR_AUTH_2FA_CODE_LENGTH' })
 	code: string;
 }

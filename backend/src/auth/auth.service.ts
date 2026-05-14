@@ -92,7 +92,7 @@ export class AuthService {
 				'code' in error &&
 				error.code === 'P2002'
 				) {
-			throw new ConflictException('Email or username already exists');
+			throw new ConflictException('ERR_AUTH_ALREADY_EXISTS');
 			}
 
 			throw error;
@@ -139,7 +139,7 @@ export class AuthService {
 		});
 
 		if (!user || !user.passwordHash) {
-			throw new UnauthorizedException('Invalid credentials');
+			throw new UnauthorizedException('ERR_AUTH_INVALID_CREDENTIALS');
 		}
 
 		const passwordMatches = await bcrypt.compare(
@@ -148,7 +148,7 @@ export class AuthService {
 		);
 
 		if (!passwordMatches) {
-			throw new UnauthorizedException('Invalid credentials');
+			throw new UnauthorizedException('ERR_AUTH_INVALID_CREDENTIALS');
 		}
 
 		return this.createLoginResultForUser(user);
@@ -161,7 +161,7 @@ export class AuthService {
 			});
 
 		if (!user) {
-			throw new NotFoundException('User not found');
+			throw new NotFoundException('ERR_USER_NOT_FOUND');
 			}
 
 		return this.toPrivateUser(user);

@@ -2,6 +2,8 @@ import {
 	BadRequestException,
 	ConflictException,
 	Injectable,
+	Inject,
+	forwardRef,
 	NotFoundException,
 	ForbiddenException,
 } from '@nestjs/common';
@@ -9,15 +11,22 @@ import { FriendStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { FriendRequestAction } from './dto/respond-friend-request.dto';
 import { MAX_PENDING_FRIEND_REQUESTS, MAX_FRIEND_RESULTS} from './friends.constants';
+import { PresenceService } from '../presence/presence.service';
+import { GameService } from '../modules/game/game.service';
 
 @Injectable()
 export class FriendsService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		@Inject(forwardRef(() => PresenceService))
+		private readonly presenceService: PresenceService,
+		private readonly gameService: GameService,
+	) {}
 
 	async sendFriendRequest(senderId: number, receiverId: number) {
 		if (senderId === receiverId) {
 			throw new BadRequestException(
-				'You cannot send a friend request to yourself',
+				'ERR_FRIEND_SELF_REQUEST',
 			);
 		}
 
@@ -27,7 +36,7 @@ export class FriendsService {
 		});
 
 		if (!receiver) {
-			throw new NotFoundException('User not found');
+			throw new NotFoundException('ERR_USER_NOT_FOUND');
 		}
 
 		const userAId = Math.min(senderId, receiverId);
@@ -48,11 +57,11 @@ export class FriendsService {
 
 		if (existingFriendship) {
 			if (existingFriendship.status === FriendStatus.ACCEPTED) {
-				throw new ConflictException('Users are already friends');
+				throw new ConflictException('ERR_FRIEND_ALREADY_FRIENDS');
 			}
 
 			throw new ConflictException(
-				'Friend request already exists',
+				'ERR_FRIEND_REQUEST_EXISTS',
 			);
 		}
 
@@ -65,7 +74,7 @@ export class FriendsService {
 
 		if (pendingOutgoingCount >= MAX_PENDING_FRIEND_REQUESTS) {
 			throw new BadRequestException(
-				'You have too many pending friend requests',
+				'ERR_FRIEND_TOO_MANY_REQUESTS',
 			);
 		}
 
@@ -85,6 +94,8 @@ export class FriendsService {
 				},
 			});
 
+			this.presenceService.emitFriendsUpdated([senderId, receiverId]);
+
 			return {
 				requestId: request.id,
 				status: request.status,
@@ -96,7 +107,7 @@ export class FriendsService {
 				error.code === 'P2002'
 			) {
 				throw new ConflictException(
-					'Friend request or friendship already exists',
+					'ERR_FRIEND_REQUEST_EXISTS',
 				);
 			}
 
@@ -183,23 +194,24 @@ export class FriendsService {
 			where: { id: requestId },
 			select: {
 				id: true,
+				senderId: true,
 				receiverId: true,
 				status: true,
 			},
 		});
 
 		if (!request) {
-			throw new NotFoundException('Friend request not found');
+			throw new NotFoundException('ERR_FRIEND_REQUEST_NOT_FOUND');
 		}
 
 		if (request.receiverId !== userId) {
 			throw new ForbiddenException(
-				'You can only respond to friend requests sent to you',
+				'ERR_FRIEND_RESPONSE_FORBIDDEN',
 			);
 		}
 
 		if (request.status !== FriendStatus.PENDING) {
-			throw new ConflictException('Friend request is not pending');
+			throw new ConflictException('ERR_FRIEND_NOT_PENDING');
 		}
 
 		if (action === FriendRequestAction.DECLINE) {
@@ -207,8 +219,10 @@ export class FriendsService {
 				where: { id: requestId },
 			});
 
+			this.presenceService.emitFriendsUpdated([userId, request.senderId]);
+
 			return {
-				message: 'Friend request declined',
+				message: 'FRIEND_REQUEST_DECLINED',
 			};
 		}
 
@@ -223,6 +237,8 @@ export class FriendsService {
 				updatedAt: true,
 			},
 		});
+
+		this.presenceService.emitFriendsUpdated([userId, request.senderId]);
 
 		return {
 			friendshipId: updatedRequest.id,
@@ -298,11 +314,11 @@ export class FriendsService {
 		});
 
 		if (!friendship) {
-			throw new NotFoundException('Friendship not found');
+			throw new NotFoundException('ERR_FRIENDSHIP_NOT_FOUND');
 		}
 
 		if (friendship.status !== FriendStatus.ACCEPTED) {
-			throw new BadRequestException('Only accepted friendships can be removed');
+			throw new BadRequestException('ERR_FRIEND_REMOVE_NOT_ACCEPTED');
 		}
 
 		if (
@@ -310,7 +326,7 @@ export class FriendsService {
 			friendship.receiverId !== userId
 		) {
 			throw new ForbiddenException(
-				'You can only remove your own friendships',
+				'ERR_FRIEND_REMOVE_FORBIDDEN',
 			);
 		}
 
@@ -318,8 +334,70 @@ export class FriendsService {
 			where: { id: friendshipId },
 		});
 
+		this.presenceService.emitFriendsUpdated([
+			friendship.senderId,
+			friendship.receiverId,
+		]);
+
 		return {
-			message: 'Friend removed',
+			message: 'FRIEND_REMOVED_SUCCESS',
 		};
+	}
+
+	async getFriendsStatus(userId: number) {
+		const friendships = await this.prisma.friend.findMany({
+			where: {
+				status: FriendStatus.ACCEPTED,
+				OR: [
+					{ senderId: userId },
+					{ receiverId: userId },
+				],
+			},
+			take: MAX_FRIEND_RESULTS,
+			select: {
+				senderId: true,
+				receiverId: true,
+			},
+		});
+
+		return friendships.map((friendship) => {
+			const friendId =
+				friendship.senderId === userId
+					? friendship.receiverId
+					: friendship.senderId;
+
+			const online = this.presenceService.isUserOnline(friendId);
+
+			return {
+				userId: friendId,
+				online,
+				inGame: online && this.gameService.isUserInGame(friendId),
+				activity: online
+					? this.gameService.getUserGameActivity(friendId)
+					: 'offline',
+			};
+		});
+	}
+
+	async getAcceptedFriendIds(userId: number): Promise<number[]> {
+		const friendships = await this.prisma.friend.findMany({
+			where: {
+				status: FriendStatus.ACCEPTED,
+				OR: [
+					{ senderId: userId },
+					{ receiverId: userId },
+				],
+			},
+			select: {
+				senderId: true,
+				receiverId: true,
+			},
+		});
+
+		return friendships.map((friendship) =>
+			friendship.senderId === userId
+				? friendship.receiverId
+				: friendship.senderId,
+		);
 	}
 }

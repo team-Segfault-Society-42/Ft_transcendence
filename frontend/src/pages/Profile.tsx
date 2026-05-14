@@ -315,7 +315,7 @@ export default function Profile() {
                   </div>
 
                   <div className="absolute -top-10 scale-0 group-hover:scale-110 transition-all bg-black/90 p-2 rounded text-[10px] z-50 pointer-events-none">
-                    <p className="font-bold text-cyan-400">{ach.description}</p>
+                    <p className="font-bold text-cyan-400">{t(`backend.ACH_${ach.key}_DESC`)}</p>
                   </div>
                 </div>
               );

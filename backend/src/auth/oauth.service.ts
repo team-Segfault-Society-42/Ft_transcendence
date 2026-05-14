@@ -182,7 +182,7 @@ export class OAuthService {
 
 		if (!clientId || !clientSecret || !redirectUri) {
 			throw new InternalServerErrorException(
-				'42 OAuth is not configured on the backend',
+				'ERR_OAUTH_42_CONFIG',
 			);
 		}
 
@@ -242,7 +242,7 @@ export class OAuthService {
 
 		if (!clientId || !clientSecret || !redirectUri) {
 			throw new InternalServerErrorException(
-				'Google OAuth is not configured on the backend',
+				'ERR_OAUTH_GOOGLE_CONFIG',
 			);
 		}
 		const tokenResponse = await firstValueFrom(

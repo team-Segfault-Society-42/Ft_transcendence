@@ -93,7 +93,7 @@
 			}
       	}
     },
-  
+
     "play": {
 		"myGames": {
 			"title": "Mis partidas",
@@ -213,7 +213,15 @@
 			"load": "Error al cargar los amigos: {{error}}",
 			"search": "Error al buscar usuarios: {{error}}",
 			"action": "La acción falló: {{error}}"
-		}
+		},
+
+		"status": {
+			"online": "En línea",
+			"offline": "Desconectado",
+			"available": "Disponible",
+			"inGame": "En partida",
+			"waiting": "Esperando"
+			}
 	},
 
     "chat":{
@@ -314,14 +322,115 @@
         "usage": {
             "title": "Uso",
             "content": "Los usuarios deben utilizar la aplicación de forma respetuosa y no intentar explotarla."
-      	},
-    	"account": {
-       		"title": "Cuentas",
-        	"content": "Los usuarios son responsables de sus cuentas y su actividad."
-      	},
-    	"limitation": {
-        	"title": "Limitación",
-        	"content": "La aplicación se proporciona \"tal cual\" sin garantías."
-      	}
+      },
+    "account": {
+        "title": "Cuentas",
+        "content": "Los usuarios son responsables de sus cuentas y su actividad."
+      },
+    "limitation": {
+        "title": "Limitación",
+        "content": "La aplicación se proporciona \"tal cual\" sin garantías."
+      }
+    },
+
+    "backend": {
+        "ERR_AUTH_EMAIL_INVALID": "El correo electrónico no es válido.",
+        "ERR_AUTH_PWD_MIN_LENGTH": "La contraseña debe tener al menos 8 caracteres.",
+        "ERR_AUTH_PWD_COMPLEXITY": "La contraseña debe tener una minúscula, una majúscula y un número.",
+        "ERR_USER_USERNAME_MIN_LENGTH": "El nombre de usuario es demasiado corto.",
+        "ERR_USER_USERNAME_MAX_LENGTH": "El nombre de usuario es demasiado largo.",
+        "ERR_USER_USERNAME_NO_SPACES": "El nombre de usuario no debe contener espacios.",
+        "ERR_USER_BIO_MAX_LENGTH": "La biografía es demasiado larga.",
+        "ERR_AUTH_2FA_CODE_STRING": "El código debe ser una cadena de caracteres.",
+        "ERR_AUTH_2FA_CODE_LENGTH": "El código debe tener exactamente 6 caracteres.",
+        "AUTH_2FA_REQUIRED": "Se requiere autenticación de dos factores.",
+        "AUTH_LOGIN_SUCCESS": "Inicio de sesión exitoso.",
+        "AUTH_LOGOUT_SUCCESS": "Cierre de sesión exitoso.",
+        "ERR_AUTH_MISSING_2FA_TOKEN": "Falta el token de espera de 2FA.",
+        "AUTH_2FA_LOGIN_SUCCESS": "Inicio de sesión 2FA exitoso.",
+        "ERR_AUTH_ALREADY_EXISTS": "El nombre de usuario ya existe.",
+        "ERR_AUTH_INVALID_CREDENTIALS": "Credenciales inválidas.",
+        "ERR_USER_NOT_FOUND": "Usuario no encontrado.",
+        "ERR_AUTH_MISSING_TOKEN": "Falta el token de autenticación.",
+        "ERR_AUTH_INVALID_TOKEN": "Token inválido o expirado.",
+        "ERR_OAUTH_42_CONFIG": "42 OAuth no está configurado en el servidor.",
+        "ERR_OAUTH_MISSING_CODE": "Falta el código de autorización OAuth.",
+        "ERR_OAUTH_MISSING_STATE": "Falta el estado de OAuth.",
+        "ERR_OAUTH_MISSING_STORED_STATE": "Falta el estado de OAuth almacenado.",
+        "ERR_OAUTH_INVALID_STATE": "Estado de OAuth inválido.",
+        "ERR_OAUTH_GOOGLE_CONFIG": "Google OAuth no está configurado en el servidor.",
+        "ERR_AUTH_2FA_ALREADY_ENABLED": "La 2FA ya está activada.",
+        "ERR_AUTH_2FA_NO_SETUP": "No hay configuración de 2FA en curso.",
+        "ERR_AUTH_2FA_INVALID_CODE": "Código de seguridad inválido.",
+        "AUTH_2FA_ENABLED_SUCCESS": "¡2FA activada con éxito!",
+        "ERR_AUTH_2FA_INVALID_TOKEN": "Token de 2FA inválido.",
+        "ERR_AUTH_2FA_NOT_ENABLED": "La 2FA no está activada.",
+        "ERR_FRIEND_ACTION_INVALID": "La acción seleccionada no es válida.",
+        "ERR_FRIEND_SELF_REQUEST": "No puedes agregarte a ti mismo.",
+        "ERR_FRIEND_ALREADY_FRIENDS": "Ya sois amigos.",
+        "ERR_FRIEND_REQUEST_EXISTS": "Ya existe una solicitud pendiente.",
+        "ERR_FRIEND_TOO_MANY_REQUESTS": "Demasiadas solicitudes pendientes.",
+        "ERR_FRIEND_REQUEST_NOT_FOUND": "Solicitud de amistad no encontrada.",
+        "ERR_FRIEND_RESPONSE_FORBIDDEN": "Acción no autorizada.",
+        "ERR_FRIEND_NOT_PENDING": "La solicitud ya no está pendiente.",
+        "ERR_FRIENDSHIP_NOT_FOUND": "Amistad no encontrada.",
+        "FRIEND_REQUEST_DECLINED": "Solicitud de amistad rechazada.",
+        "ERR_FRIEND_REMOVE_NOT_ACCEPTED": "No se puede eliminar: no sois amigos.",
+        "ERR_FRIEND_REMOVE_FORBIDDEN": "No puedes hacer esto.",
+        "FRIEND_REMOVED_SUCCESS": "Amigo eliminado de tu lista.",
+        "ERR_CHAT_MSG_STRING": "El mensaje debe ser texto.",
+        "ERR_CHAT_MSG_EMPTY": "No puedes enviar un mensaje vacío.",
+        "ERR_CHAT_MSG_TOO_LONG": "El mensaje es demasiado largo (máx. 500 car.).",
+        "CHAT_UNKNOWN_USER": "Usuario desconocido",
+        "ACH_UNKNOWN_NAME": "Éxito desconocido",
+        "ACH_UNKNOWN_DESC": "Descripción no disponible",
+        "ACH_FIRST_GAME_TITLE": "Todo comienza aquí",
+        "ACH_FIRST_GAME_DESC": "Juega tu primera partida.",
+        "ACH_FIRST_WIN_TITLE": "Primera Sangre",
+        "ACH_FIRST_WIN_DESC": "Gana tu primera partida.",
+        "ACH_DRAW_GAME_TITLE": "Empate",
+        "ACH_DRAW_GAME_DESC": "Haz un empate.",
+        "ACH_LOSE_BY_TIME_TITLE": "Demasiado lento",
+        "ACH_LOSE_BY_TIME_DESC": "Pierde por tiempo.",
+        "ACH_WIN_5_TITLE": "Choca esos cinco",
+        "ACH_WIN_5_DESC": "Gana 5 partidas en total.",
+        "ACH_WIN_10_TITLE": "Doble dígito",
+        "ACH_WIN_10_DESC": "Gana 10 partidas en total.",
+        "ACH_WIN_50_TITLE": "Veterano",
+        "ACH_WIN_50_DESC": "Gana 50 partidas en total.",
+        "ACH_GET_ALL_TITLE": "Fin de partida",
+        "ACH_GET_ALL_DESC": "Completa todos los logros.",
+        "ERR_GAME_PLAYER_ID_INVALID": "ID de jugador inválido.",
+        "ERR_GAME_SCORE_INVALID": "La puntuación debe ser un nombre positivo.",
+        "ERR_GAME_END_REASON_REQUIRED": "Se requiere la razón del fin del juego.",
+        "ERR_GAME_ID_REQUIRED": "Se requiere el ID del juego.",
+        "ERR_GAME_ID_INVALID": "ID de juego inválido.",
+        "ERR_GAME_MOVE_COORD_INVALID": "Coordenadas inválidas (deben estar entre 0 et 2).",
+        "ERR_GAME_NOT_FOUND": "Partida no encontrada.",
+        "ERR_GAME_ALREADY_ACTIVE": "Ya tienes una partida activa.",
+        "ERR_GAME_NOT_FINISHED": "La partida aún no ha terminado.",
+        "ERR_GAME_REPLAY_NOT_AVAILABLE": "La revancha solo está disponible al final.",
+        "ERR_GAME_SPECTATOR_REPLAY": "Los espectadores no pueden pedir revancha.",
+        "ERR_GAME_WAITING_PLAYERS": "Esperando a ambos jugadores.",
+        "ERR_GAME_SPECTATOR_MOVE": "Los espectadores no pueden jugar.",
+        "ERR_GAME_NOT_YOUR_TURN": "No es tu turno.",
+        "ERR_GAME_CANT_LEAVE_PLAYING": "No se puede salir de una partida en curso",
+        "ERR_MATCH_SELF_PLAY": "Un jugador no puede jugar contra sí mismo.",
+        "ERR_MATCH_INVALID_WINNER": "El ganador debe ser uno de los dos jugadores.",
+        "ERR_MATCH_SAVE_FAILED": "No se pudo guardar el resultado del partido.",
+        "STATUS_MATCH_DRAW": "EMPATE",
+        "STATUS_MATCH_WIN": "VICTORIA",
+        "STATUS_MATCH_LOSS": "DERROTA",
+        "ERR_QUERY_LIMIT_INVALID": "El límite debe ser un nombre entero positivo.",
+        "ERR_QUERY_OFFSET_INVALID": "El desplazamiento debe ser un nombre entero positivo.",
+        "ERR_QUERY_SEARCH_INVALID": "El término de búsqueda no es válido (máx. 50 car.).",
+        "ERR_USER_AVATAR_RATE_LIMIT": "Demasiados intentos de subida de avatar. Inténtelo más tarde.",
+        "ERR_USER_AVATAR_TOO_LARGE": "La imagen debe pesar menos de 200 KB.",
+        "ERR_USER_AVATAR_INVALID": "Subida de avatar no válida.",
+        "ERR_USER_UPDATE_FORBIDDEN": "Solo puedes actualizar tu propio perfil.",
+        "ERR_QUERY_SEARCH_EMPTY": "La búsqueda no puede estar vacía.",
+        "ERR_USER_UPDATE_FAILED": "Error al actualizar el usuario.",
+        "ERR_USER_AVATAR_REQUIRED": "El archivo del avatar es obligatorio.",
+        "ERR_USER_AVATAR_INVALID_TYPE": "Formato de imagen no válido (PNG, JPEG, WebP)."
     }
 }

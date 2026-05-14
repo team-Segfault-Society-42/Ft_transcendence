@@ -32,11 +32,11 @@ export class TwoFactorService {
 		});
 
 		if (!user) {
-			throw new UnauthorizedException('User not found');
+			throw new UnauthorizedException('ERR_USER_NOT_FOUND');
 		}
 
 		if (user.isTwoFactorEnabled) {
-			throw new BadRequestException('Two-factor authentication is already enabled');
+			throw new BadRequestException('ERR_AUTH_2FA_ALREADY_ENABLED');
 		}
 
 		const secret = authenticator.generateSecret();
@@ -65,21 +65,21 @@ export class TwoFactorService {
 		});
 
 		if (!user) {
-			throw new UnauthorizedException('User not found');
+			throw new UnauthorizedException('ERR_USER_NOT_FOUND');
 		}
 
 		if (user.isTwoFactorEnabled) {
-			throw new BadRequestException('Two-factor authentication is already enabled');
+			throw new BadRequestException('ERR_AUTH_2FA_ALREADY_ENABLED');
 		}
 
 		if (!user.twoFactorTempSecret) {
-			throw new BadRequestException('No two-factor setup is in progress');
+			throw new BadRequestException('ERR_AUTH_2FA_NO_SETUP');
 		}
 
 		const isCodeValid = this.verifyTotpCode(user.twoFactorTempSecret, code);
 
 		if (!isCodeValid) {
-			throw new BadRequestException('Invalid two-factor authentication code');
+			throw new BadRequestException('ERR_AUTH_2FA_INVALID_CODE');
 		}
 
 		await this.prisma.user.update({
@@ -92,7 +92,7 @@ export class TwoFactorService {
 		});
 
 		return {
-			message: 'Two-factor authentication enabled successfully',
+			message: 'AUTH_2FA_ENABLED_SUCCESS',
 		};
 	}
 
@@ -118,7 +118,7 @@ export class TwoFactorService {
 			await this.jwtService.verifyAsync<TwoFactorPendingPayload>(token);
 
 		if (payload.type !== '2fa_pending') {
-			throw new UnauthorizedException('Invalid two-factor pending token');
+			throw new UnauthorizedException('ERR_AUTH_2FA_INVALID_TOKEN');
 		}
 
 		return payload;
@@ -131,17 +131,17 @@ export class TwoFactorService {
 		});
 
 		if (!user) {
-			throw new UnauthorizedException('User not found');
+			throw new UnauthorizedException('ERR_USER_NOT_FOUND');
 		}
 
 		if (!user.isTwoFactorEnabled || !user.twoFactorSecret) {
-			throw new BadRequestException('Two-factor authentication is not enabled');
+			throw new BadRequestException('ERR_AUTH_2FA_NOT_ENABLED');
 		}
 
 		const isCodeValid = this.verifyTotpCode(user.twoFactorSecret, code);
 
 		if (!isCodeValid) {
-			throw new BadRequestException('Invalid two-factor authentication code');
+			throw new BadRequestException('ERR_AUTH_2FA_INVALID_CODE');
 		}
 	}
 

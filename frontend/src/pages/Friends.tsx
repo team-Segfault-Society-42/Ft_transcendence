@@ -23,7 +23,9 @@ import {
 	type IncomingFriendRequest,
 	type OutgoingFriendRequest,
 	type PublicUser,
+	type FriendStatus,
 } from "@/services/friendsService";
+import { usePresenceStore } from "@/Store/presenceStore";
 
 interface CurrentUser {
 	id: number;
@@ -55,6 +57,9 @@ export default function Friends() {
 	const [searchResults, setSearchResults] = useState<PublicUser[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [searchLoading, setSearchLoading] = useState(false);
+	const friendStatus = usePresenceStore(
+		(state) => state.friendStatus,
+	);
 
 	const loadFriendsData = useCallback(async () => {
 		if (!user) return;
@@ -79,9 +84,28 @@ export default function Friends() {
 		}
 	}, [user, t]);
 
+	const mergeFriendStatus = usePresenceStore(
+		(state) => state.mergeFriendStatus,
+	);
+
+
 	useEffect(() => {
 		loadFriendsData();
 	}, [loadFriendsData]);
+
+	useEffect(() => {
+		async function handleFriendsUpdated() {
+			await loadFriendsData();
+			await refreshFriendStatuses();
+		}
+
+		window.addEventListener("friends_updated", handleFriendsUpdated);
+
+		return () => {
+			window.removeEventListener("friends_updated", handleFriendsUpdated);
+		};
+	}, [loadFriendsData]);
+
 
 	async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -133,6 +157,7 @@ export default function Friends() {
 			await friendsService.sendFriendRequest(userId);
 			toast.success(t("friends.success.requestSent"));
 			await loadFriendsData();
+			await refreshFriendStatuses();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -144,6 +169,7 @@ export default function Friends() {
 			await friendsService.acceptFriendRequest(requestId);
 			toast.success(t("friends.success.accepted"));
 			await loadFriendsData();
+			await refreshFriendStatuses();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -155,6 +181,7 @@ export default function Friends() {
 			await friendsService.declineFriendRequest(requestId);
 			toast.success(t("friends.success.declined"));
 			await loadFriendsData();
+			await refreshFriendStatuses();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -166,10 +193,16 @@ export default function Friends() {
 			await friendsService.removeFriend(friendshipId);
 			toast.success(t("friends.success.removed"));
 			await loadFriendsData();
+			await refreshFriendStatuses();
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
 		}
+	}
+
+	async function refreshFriendStatuses() {
+		const statuses = await friendsService.getFriendsStatus();
+		mergeFriendStatus(statuses);
 	}
 
 	const incomingRequestBySenderId = useMemo(() => {
@@ -195,7 +228,6 @@ export default function Friends() {
 			</section>
 		);
 	}
-
 	return (
 		<section className="w-full max-w-5xl mx-auto px-6 py-10 text-white">
 			<div className="mb-8 text-center">
@@ -299,22 +331,70 @@ export default function Friends() {
 						<p className="text-white/50">{t("friends.list.empty")}</p>
 					) : (
 						<div className="space-y-3">
-							{friends.map((item) => (
-								<div
-									key={item.friendshipId}
-									className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
-								>
-									<UserRow user={item.friend} />
-									<Button
-										size="sm"
-										variant="danger"
-										onClick={() => handleRemoveFriend(item.friendshipId)}
+							{friends.map((item) => {
+								const status = friendStatus[item.friend.id];
+
+								return (
+									<div
+										key={item.friendshipId}
+										className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
-										<Trash2 size={16} />
-										{t("friends.actions.remove")}
-									</Button>
-								</div>
-							))}
+										<div>
+											<UserRow user={item.friend} />
+											<p className="text-xs mt-1 flex items-center gap-2">
+												<StatusDot activity={status?.activity ?? "offline"} />
+
+												<span
+													className={
+														status?.activity === "offline"
+															? "text-red-400/80"
+															: status?.activity === "waiting"
+																? "text-yellow-300"
+																: status?.activity === "playing"
+																	? "text-cyan-300"
+																	: "text-green-400"
+													}
+												>
+													{status?.activity === "offline" && t("friends.status.offline")}
+
+													{status?.activity === "available" && (
+														<>
+															{t("friends.status.online")}
+															{" · "}
+															{t("friends.status.available")}
+														</>
+													)}
+
+													{status?.activity === "waiting" && (
+														<>
+															{t("friends.status.online")}
+															{" · "}
+															{t("friends.status.waiting")}
+														</>
+													)}
+
+													{status?.activity === "playing" && (
+														<>
+															{t("friends.status.online")}
+															{" · "}
+															{t("friends.status.inGame")}
+														</>
+													)}
+												</span>
+											</p>
+										</div>
+
+										<Button
+											size="sm"
+											variant="danger"
+											onClick={() => handleRemoveFriend(item.friendshipId)}
+										>
+											<Trash2 size={16} />
+											{t("friends.actions.remove")}
+										</Button>
+									</div>
+								);
+							})}
 						</div>
 					)}
 				</Card>
@@ -415,5 +495,39 @@ function UserRow({ user }: { user: PublicUser }) {
 				</p>
 			</div>
 		</div>
+	);
+}
+
+function StatusDot({
+	activity,
+}: {
+	activity: FriendStatus["activity"];
+}) {
+	if (activity === "offline") {
+		return (
+			<span className="inline-flex size-2.5 rounded-full bg-red-400/70" />
+		);
+	}
+
+	if (activity === "waiting") {
+		return (
+			<span className="inline-flex size-2.5 rounded-full bg-yellow-400" />
+		);
+	}
+
+	if (activity === "playing") {
+		return (
+			<span className="relative flex size-2.5">
+				<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
+				<span className="relative inline-flex size-2.5 rounded-full bg-cyan-400" />
+			</span>
+		);
+	}
+
+	return (
+		<span className="relative flex size-2.5">
+			<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+			<span className="relative inline-flex size-2.5 rounded-full bg-green-400" />
+		</span>
 	);
 }
