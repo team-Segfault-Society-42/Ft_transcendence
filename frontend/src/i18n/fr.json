@@ -200,7 +200,14 @@
 			"load": "Erreur lors du chargement des amis : {{error}}",
 			"search": "Erreur lors de la recherche : {{error}}",
 			"action": "L'action a échoué : {{error}}"
-		}
+		},
+
+		"status": {
+			"online": "En ligne",
+			"offline": "Hors ligne",
+			"available": "Disponible",
+			"inGame": "En partie"
+			}
 	},
 
     "chat":{

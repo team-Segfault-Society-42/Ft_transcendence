@@ -315,11 +315,15 @@ export default function Friends() {
 										<div>
 											<UserRow user={item.friend} />
 											<p className="text-xs text-white/40 mt-1">
-												{status?.online ? "Online" : "Offline"}
+												{status?.online
+													? t("friends.status.online")
+													: t("friends.status.offline")}
 												{status?.online && (
 													<>
 														{" · "}
-														{status.inGame ? "In game" : "Available"}
+														{status.inGame
+															? t("friends.status.inGame")
+															: t("friends.status.available")}
 													</>
 												)}
 											</p>

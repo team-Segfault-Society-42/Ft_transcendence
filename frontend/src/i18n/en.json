@@ -200,7 +200,14 @@
 			"load": "Failed to load friends data: {{error}}",
 			"search": "Failed to search users: {{error}}",
 			"action": "Action failed: {{error}}"
-		}
+		},
+		
+		"status": {
+			"online": "Online",
+			"offline": "Offline",
+			"available": "Available",
+			"inGame": "In game"
+			}
 	},
 
     "chat":{

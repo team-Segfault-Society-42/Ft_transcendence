@@ -80,7 +80,7 @@
 			}
       	}
     },
-  
+
     "play": {
 		"myGames": {
 			"title": "Mis partidas",
@@ -200,7 +200,14 @@
 			"load": "Error al cargar los amigos: {{error}}",
 			"search": "Error al buscar usuarios: {{error}}",
 			"action": "La acción falló: {{error}}"
-		}
+		},
+
+		"status": {
+			"online": "En línea",
+			"offline": "Desconectado",
+			"available": "Disponible",
+			"inGame": "En partida"
+			}
 	},
 
     "chat":{
