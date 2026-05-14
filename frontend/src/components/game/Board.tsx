@@ -109,63 +109,65 @@ export default function Board() {
 	);
 
 	return (
-		<div className="inline-block text-center p-4">
-			<div className="flex flex-col lg:flex-row items-start justify-center gap-6">
-				{/* play area*/}
-				<div className="flex flex-col items-center">
-					<PlayerCards
-						playerXName={playerXName}
-						playerOName={playerOName}
-						playerXAvatar={playerXAvatar}
-						playerOAvatar={playerOAvatar}
-						currentPlayer={currentPlayer}
-						timeLeft={timeLeft}
-						playerRole={playerRole}
-					/>
-
-					<GameStatusBanner
-						error={error}
-						status={status}
-						playerRole={playerRole}
-						canPlay={canPlay}
-						hasReplayRole={hasReplayRole}
-						opponentDisconnect={opponentDisconnect}
-					/>
-
-					<div className="grid w-96 max-w-full grid-cols-3 gap-3">
-						{flatBoard.map((value, i) => (
-							<Square
-								key={i}
-								value={value}
-								isWarning={i === toDisapear}
-								onSquareClick={() => {
-									if (!canPlay) return;
-									playMove(i);
-								}}
-							/>
-						))}
-					</div>
-
-					<div className="mt-6 text-white/60 font-medium">
-						<SpectatorCount count={game.spectatCnt} />
-					</div>
-				</div>
-
-				{/* Popup Replay */}
-				{showPopup && (
-					<div className="shrink-0">
-						<EndGamePopup
-							endGameMessage={endGameMessage}
+		<div className="rounded-2xl border border-white/10 bg-slate-900/80 p-30 shadow-2xl">
+			<div className="inline-block text-center p-4">
+				<div className="flex flex-col lg:flex-row items-start justify-center gap-6">
+					{/* play area*/}
+					<div className="flex flex-col items-center">
+						<PlayerCards
+							playerXName={playerXName}
+							playerOName={playerOName}
+							playerXAvatar={playerXAvatar}
+							playerOAvatar={playerOAvatar}
+							currentPlayer={currentPlayer}
+							timeLeft={timeLeft}
 							playerRole={playerRole}
-							playerLeft={game.playerLeft}
-							replayVotes={game.replayVotes}
-							waitingReplayOtherPlayer={waitingReplayOtherPlayer}
-							requestReplay={requestReplay}
-							leaveGame={leaveGame}
-							navigate={navigate}
 						/>
+
+						<GameStatusBanner
+							error={error}
+							status={status}
+							playerRole={playerRole}
+							canPlay={canPlay}
+							hasReplayRole={hasReplayRole}
+							opponentDisconnect={opponentDisconnect}
+						/>
+
+						<div className="grid w-96 max-w-full grid-cols-3 gap-3">
+							{flatBoard.map((value, i) => (
+								<Square
+									key={i}
+									value={value}
+									isWarning={i === toDisapear}
+									onSquareClick={() => {
+										if (!canPlay) return;
+										playMove(i);
+									}}
+								/>
+							))}
+						</div>
+
+						<div className="mt-6 text-white/60 font-medium">
+							<SpectatorCount count={game.spectatCnt} />
+						</div>
 					</div>
-				)}
+
+					{/* Popup Replay */}
+					{showPopup && (
+						<div className="shrink-0">
+							<EndGamePopup
+								endGameMessage={endGameMessage}
+								playerRole={playerRole}
+								playerLeft={game.playerLeft}
+								replayVotes={game.replayVotes}
+								waitingReplayOtherPlayer={waitingReplayOtherPlayer}
+								requestReplay={requestReplay}
+								leaveGame={leaveGame}
+								navigate={navigate}
+							/>
+						</div>
+					)}
+				</div>
 			</div>
 		</div>
 	);
