@@ -6,6 +6,7 @@ import { LevelProgress } from "../ui/Level"
 import { useTranslation } from "react-i18next"
 import { Username } from "@/components/ui/Username"
 import { EmptyStateCard } from "../ui/EmptyCard"
+import { UserRound } from "lucide-react"
 
 interface User {
   username: string
@@ -29,7 +30,7 @@ export function AboutCard({ user, className }: Props) {
     return (
       <EmptyStateCard
       title={t("profile.about.title")}
-      icon={<span className="text-xl font-bold">?</span>}
+      icon={<UserRound size={24} />}
       message={t("profile.about.notConnected")}
       description={t("profile.about.login")}
     />

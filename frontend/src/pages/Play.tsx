@@ -1,4 +1,4 @@
-import { History as HistoryIcon, Plus, Users } from "lucide-react";
+import { Gamepad2, Plus, Users } from "lucide-react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router";
@@ -77,7 +77,7 @@ export default function Play() {
 		<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
 			<EmptyStateCard
 			title={t("game.title")}
-			icon={<HistoryIcon size={24} />}
+			icon={<Gamepad2 size={24} />}
 			message={t("game.notConnected")}
 			description={t("game.login")}
 			actions={
