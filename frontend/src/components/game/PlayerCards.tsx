@@ -22,6 +22,17 @@ type Props = {
 	playerRole: PlayerRole | null;
 };
 
+function PlayerSymbolIcon({ symbol }: { symbol: PlayerSymbol }) {
+	const Icon = symbol === 'X' ? X : Circle;
+	const color = symbol === 'X' ? 'text-cyan-400' : 'text-fuchsia-400';
+
+	return (
+		<span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-white/10 bg-white/5">
+			<Icon className={`h-4 w-4 stroke-3 ${color}`} />
+		</span>
+	);
+}
+
 function PlayerCard({
 	symbol,
 	name,
@@ -32,25 +43,22 @@ function PlayerCard({
 	return (
 		<div className="relative mt-4">
 			{isYou && (
-				<span
-					className="absolute inset-x-0 -top-6 text-center text-s font-bold uppercase text-cyan-400
-"
-				>
+				<span className="absolute inset-x-0 -top-6 text-center text-xs font-bold uppercase text-cyan-400">
 					You
 				</span>
 			)}
 			<Card
-				className={`flex w-28 flex-col items-center
-        ${isActive ? 'ring-2 ring-cyan-400' : ''}`}
+				className={`flex w-28 flex-col items-center p-3
+	        ${isActive ? 'ring-2 ring-cyan-400' : ''}`}
 			>
 				<Avatar src={avatar} alt={`player ${symbol}`} fallback={name[0]} />
-				<div className="flex items-center gap-2 font-bold  mt-3">
-					{symbol === 'X' ? (
-						<X className="w-5 h-5 text-cyan-400 stroke-3" />
-					) : (
-						<Circle className="w-5 h-5 text-fuchsia-400 stroke-3" />
-					)}
-					<Username name={name} variant="card" className="font-bold" />
+				<div className="mt-3 flex w-full min-w-0 items-center justify-center gap-1 font-bold">
+					<PlayerSymbolIcon symbol={symbol} />
+					<Username
+						name={name}
+						variant="card"
+						className="text-xs max-w-14 font-bold"
+					/>
 				</div>
 			</Card>
 		</div>
@@ -69,7 +77,7 @@ export function PlayerCards({
 	const percentage = Math.max(0, Math.min(100, (timeLeft / 30) * 100));
 
 	return (
-		<div className="mb-8 flex w-96 max-w-full items-center justify-between text-white">
+		<div className="mb-8 flex w-full max-w-96 items-center justify-between text-white">
 			<PlayerCard
 				symbol="X"
 				name={playerXName}

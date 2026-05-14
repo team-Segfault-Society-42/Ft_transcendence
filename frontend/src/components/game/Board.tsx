@@ -109,10 +109,10 @@ export default function Board() {
 	);
 
 	return (
-		<div className="w-full max-w-5xl rounded-2xl border border-white/10 bg-slate-900/80 p-6 shadow-2xl sm:p-8">
-			<div className="grid w-full grid-cols-1 items-start justify-items-center gap-6 text-center lg:grid-cols-[1fr_auto_1fr]">
+		<div className="w-full max-w-5xl overflow-x-hidden rounded-2xl border border-white/10 bg-slate-900/80 p-4 shadow-2xl sm:p-6 xl:p-8">
+			<div className="grid w-full min-w-0 grid-cols-1 items-start justify-items-center gap-6 text-center xl:grid-cols-[1fr_auto_1fr]">
 				{/* play area*/}
-				<div className="flex flex-col items-center lg:col-start-2">
+				<div className="flex w-full min-w-0 max-w-96 flex-col items-center xl:col-start-2">
 					<PlayerCards
 						playerXName={playerXName}
 						playerOName={playerOName}
@@ -132,7 +132,7 @@ export default function Board() {
 						opponentDisconnect={opponentDisconnect}
 					/>
 
-					<div className="grid w-96 max-w-full grid-cols-3 gap-3 rounded-2xl border border-white/10 bg-black/20 p-8">
+					<div className="grid w-full max-w-96 grid-cols-3 gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 sm:p-8">
 						{flatBoard.map((value, i) => (
 							<Square
 								key={i}
@@ -152,7 +152,7 @@ export default function Board() {
 				</div>
 
 				{/* Popup Replay */}
-				<div className="w-80 lg:col-start-3 lg:justify-self-start">
+				<div className="w-full min-w-0 max-w-80 xl:col-start-3 xl:justify-self-start">
 					{showPopup && (
 						<EndGamePopup
 							endGameMessage={endGameMessage}
