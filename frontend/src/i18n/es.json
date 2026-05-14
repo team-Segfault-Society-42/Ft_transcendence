@@ -4,19 +4,18 @@
     "home": {
       	"play": {
         	"title": "Jugar una partida",
-        	"description": "Un juego de estrategia atemporal. ¡Sé el primero en conseguir 3 en línea y gana la partida!"
+        	"description": "Únete a partidas competitivas o mira juegos en directo"
       	},
       	"hero": {
         	"title": "Tres En Raya",
         	"texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
       	},
 		"buttons": {
-			"register": "Registrarse",
 			"login": "Ingresar",
-			"start": "INICIAR PARTIDA",
 			"hi": "Hola, ",
 			"create": "Crear una partida",
-			"join": "Unirse a una partida"
+			"join": "Unirse a una partida",
+			"watch": "Ver partidas"
 		}
     },
 

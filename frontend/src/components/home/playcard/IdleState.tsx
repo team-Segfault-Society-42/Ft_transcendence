@@ -27,25 +27,25 @@ export function IdleState({ createGame }: Props) {
 				/>
 
 				<p className="text-white/80 text-sm text-center max-w-sm leading-relaxed mb-6">
-					Jump into competitive matches or spectate games live
+					{t("home.play.description")}
 				</p>
 
 
 				<div className="flex flex-col gap-4 w-full">
 					<Button onClick={createGame}>
-						Create Lobby
+						{t("home.buttons.create")}
 					</Button>
 
 					<Button
 						onClick={() => navigate("/play")}
 					>
-						Join Game
+						{t("home.buttons.join")}
 					</Button>
 
 					<Button
 						onClick={() => navigate("/spectate")}
 					>
-						Watch Games
+						{t("home.buttons.watch")}
 					</Button>
 				</div>
 			</div>

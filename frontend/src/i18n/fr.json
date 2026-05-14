@@ -4,19 +4,18 @@
     "home": {
         "play": {
             "title": "Jouer une partie",
-            "description": "Un jeu de stratégie intemporel. Soyez le premier à aligner 3 symboles pour remporter la victoire !"
+            "description": "Lancez des parties compétitives ou regardez des matchs en direct"
         },
         "hero":{
             "title": "Morpion",
             "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
         },
         "buttons":{
-            "register": "S'enregistrer",
             "login": "Se connecter",
-            "start": "LANCER LA PARTIE",
             "hi": "Salut, ",
             "create": "Créer une partie",
-            "join": "Rejoindre une partie"
+            "join": "Rejoindre une partie",
+            "watch": "Regarder des matchs"
         }
     },
 
