@@ -123,15 +123,17 @@ export class PresenceService {
 	}
 
 	private buildFriendStatus(userId: number) {
-		const online = this.isUserOnline(userId)
+		const online = this.isUserOnline(userId);
+
+		const activity = online
+			? this.gameService.getUserGameActivity(userId)
+			: 'offline';
 
 		return {
 			userId,
 			online,
-			inGame: online && this.gameService.isUserInGame(userId),
-			activity: online
-				? this.gameService.getUserGameActivity(userId)
-				: 'offline',
+			inGame: activity === 'playing',
+			activity,
 		};
 	}
 

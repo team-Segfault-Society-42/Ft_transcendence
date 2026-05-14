@@ -135,9 +135,6 @@ export class AuthController {
 			sameSite: 'lax',
 			path: '/',
 		});
-		if (userId !== null) {
-			this.presenceService.disconnectUserSockets(userId);
-		}
 
 		res.clearCookie('2fa_pending', {
 			httpOnly: true,

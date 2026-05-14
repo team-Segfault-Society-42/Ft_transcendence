@@ -71,6 +71,17 @@ export class GameGateway implements OnGatewayDisconnect {
         .then((result) => {
           if (result) {
             this.emitGameUpdate(gameId, result.game);
+            if (result.game.playerProfiles.X?.id) {
+                this.presenceService.emitFriendStatusChange(
+                    result.game.playerProfiles.X.id,
+                );
+            }
+
+            if (result.game.playerProfiles.O?.id) {
+                this.presenceService.emitFriendStatusChange(
+                    result.game.playerProfiles.O.id,
+                );
+            }
           }
         })
         .catch((error) => {
@@ -108,6 +119,17 @@ export class GameGateway implements OnGatewayDisconnect {
         .then((result) => {
           if (result) {
             this.emitGameUpdate(gameId, result);
+            if (result.playerProfiles.X?.id) {
+                this.presenceService.emitFriendStatusChange(
+                    result.playerProfiles.X.id,
+                );
+            }
+
+            if (result.playerProfiles.O?.id) {
+                this.presenceService.emitFriendStatusChange(
+                    result.playerProfiles.O.id,
+                );
+            }
           }
         })
         .catch((error) => {
@@ -221,7 +243,17 @@ export class GameGateway implements OnGatewayDisconnect {
       client.data.currentGameId = body.gameId;
 
       this.emitGameUpdate(body.gameId, game);
-	  await this.presenceService.emitFriendStatusChange(userId);
+      if (game.playerProfiles.X?.id) {
+        await this.presenceService.emitFriendStatusChange(
+            game.playerProfiles.X.id,
+        );
+    }
+
+    if (game.playerProfiles.O?.id) {
+        await this.presenceService.emitFriendStatusChange(
+            game.playerProfiles.O.id,
+        );
+    }
       client.emit('joined_as', { role });
     } catch (error) {
       client.emit('game_error', {
@@ -292,6 +324,7 @@ export class GameGateway implements OnGatewayDisconnect {
         await client.leave(body.gameId);
         if (client.data.currentGameId === body.gameId) {
           delete client.data.currentGameId;
+          await this.presenceService.emitFriendStatusChange(userId);
         }
         return;
       }
@@ -300,6 +333,7 @@ export class GameGateway implements OnGatewayDisconnect {
         await client.leave(body.gameId);
         if (client.data.currentGameId === body.gameId) {
           delete client.data.currentGameId;
+          await this.presenceService.emitFriendStatusChange(userId);
         }
       }
     } catch (error) {
