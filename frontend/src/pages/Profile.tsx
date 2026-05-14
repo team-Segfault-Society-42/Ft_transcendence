@@ -16,6 +16,7 @@ import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { AchievementIcon } from "@/components/ui/AchievementIcons";
 import { CardTitle } from "@/components/ui/Card";
+import { friendsService, type FriendListItem, type IncomingFriendRequest, type OutgoingFriendRequest } from "@/services/friendsService";
 
 interface User {
   id: number;
@@ -46,6 +47,10 @@ export default function Profile() {
   const { username } = useParams<{ username: string }>()
   const isMe = !username || username === user?.username
   const [profileData, setProfileData] = useState<User | null>(isMe ? user : null)
+
+  const [friends, setFriends] = useState<FriendListItem[]>([])
+  const [incomingRequests, setIncomingRequests] = useState<IncomingFriendRequest[]>([])
+  const [outgoingRequests, setOutgoingRequests] = useState<OutgoingFriendRequest[]>([])
   
   const [isEdit, isInEdit] = useState(false);
   const [userName, setUserName] = useState(user?.username || "");
@@ -80,6 +85,22 @@ export default function Profile() {
         catch (error) {
           navigate("/dashboard");
         }
+
+        try {
+          
+          const [friends, incomingRequests, outgoingRequests] = await Promise.all([
+          friendsService.getFriends(),
+          friendsService.getIncomingFriendRequests(),
+          friendsService.getOutgoingFriendRequests(),
+			]);
+          setFriends(friends)
+          setIncomingRequests(incomingRequests)
+          setOutgoingRequests(outgoingRequests)
+        }
+        catch (error) {
+
+        }
+
       }
     }
     loadProfile()
