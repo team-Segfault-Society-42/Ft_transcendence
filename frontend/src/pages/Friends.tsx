@@ -93,6 +93,19 @@ export default function Friends() {
 		loadFriendsData();
 	}, [loadFriendsData]);
 
+	useEffect(() => {
+		async function handleFriendsUpdated() {
+			await loadFriendsData();
+			await refreshFriendStatuses();
+		}
+
+		window.addEventListener("friends_updated", handleFriendsUpdated);
+
+		return () => {
+			window.removeEventListener("friends_updated", handleFriendsUpdated);
+		};
+	}, [loadFriendsData]);
+
 
 	async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();

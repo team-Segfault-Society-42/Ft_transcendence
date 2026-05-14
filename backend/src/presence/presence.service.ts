@@ -121,4 +121,18 @@ export class PresenceService {
 				: 'offline',
 		};
 	}
+
+	emitFriendsUpdated(userIds: number[]) {
+		if (!this.server) {
+			return;
+		}
+
+		for (const userId of userIds) {
+			const socketIds = this.getUserSocketIds(userId);
+
+			for (const socketId of socketIds) {
+				this.server.to(socketId).emit('friends_updated');
+			}
+		}
+	}
 }

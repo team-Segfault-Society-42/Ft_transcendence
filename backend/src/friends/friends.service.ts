@@ -94,6 +94,8 @@ export class FriendsService {
 				},
 			});
 
+			this.presenceService.emitFriendsUpdated([senderId, receiverId]);
+
 			return {
 				requestId: request.id,
 				status: request.status,
@@ -192,6 +194,7 @@ export class FriendsService {
 			where: { id: requestId },
 			select: {
 				id: true,
+				senderId: true,
 				receiverId: true,
 				status: true,
 			},
@@ -216,6 +219,8 @@ export class FriendsService {
 				where: { id: requestId },
 			});
 
+			this.presenceService.emitFriendsUpdated([userId, request.senderId]);
+
 			return {
 				message: 'FRIEND_REQUEST_DECLINED',
 			};
@@ -232,6 +237,8 @@ export class FriendsService {
 				updatedAt: true,
 			},
 		});
+
+		this.presenceService.emitFriendsUpdated([userId, request.senderId]);
 
 		return {
 			friendshipId: updatedRequest.id,
@@ -326,6 +333,11 @@ export class FriendsService {
 		await this.prisma.friend.delete({
 			where: { id: friendshipId },
 		});
+
+		this.presenceService.emitFriendsUpdated([
+			friendship.senderId,
+			friendship.receiverId,
+		]);
 
 		return {
 			message: 'FRIEND_REMOVED_SUCCESS',

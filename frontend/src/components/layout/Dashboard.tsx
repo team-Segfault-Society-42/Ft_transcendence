@@ -97,6 +97,10 @@ export default function Dashboard() {
 			updateFriendStatus(status);
 		});
 
+		socket.on("friends_updated", () => {
+			window.dispatchEvent(new Event("friends_updated"));
+		});
+
 		socket.on("connect_error", (error: Error) => {
 			console.error("[PresenceSocket] connection error:", error.message);
 		});
