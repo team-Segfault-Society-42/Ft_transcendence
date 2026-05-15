@@ -20,6 +20,7 @@ export class FriendsService {
 		private readonly prisma: PrismaService,
 		@Inject(forwardRef(() => PresenceService))
 		private readonly presenceService: PresenceService,
+		@Inject(forwardRef(() => GameService))
 		private readonly gameService: GameService,
 	) {}
 

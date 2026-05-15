@@ -12,15 +12,9 @@ import { useTranslation } from "react-i18next";
 import { Chatbar } from "./Chatbar";
 import { Button } from "../ui/Button";
 import { useActiveGameStore } from "@/Store/activeGameStore";
-import {
-	connectPresenceSocket,
-	disconnectPresenceSocket,
-} from "@/services/presenceSocket";
-
+import { connectPresenceSocket, disconnectPresenceSocket,} from "@/services/presenceSocket";
 import { friendsService } from "@/services/friendsService";
-
 import { usePresenceStore } from "@/Store/presenceStore";
-
 import type { FriendStatus } from "@/services/friendsService";
 
 export default function Dashboard() {
@@ -55,6 +49,14 @@ export default function Dashboard() {
     (state) => state.fetchActiveGame,
   );
 
+  const setActiveGame = useActiveGameStore(
+    (state) => state.setActiveGame,
+  );
+  
+  const clearActiveGame = useActiveGameStore(
+    (state) => state.clearActiveGame,
+  );
+
   useEffect(() => {
     async function getCurrentUser() {
       try {
@@ -76,40 +78,42 @@ export default function Dashboard() {
     getCurrentUser();
   }, []);
 
-  useEffect(() => {
-    fetchActiveGame();
-  
-    const interval = setInterval(() => {
-      fetchActiveGame();
-    }, 2000);
-  
-    return () => clearInterval(interval);
-  }, [fetchActiveGame]);
 	useEffect(() => {
 		if (!user) {
 			clearFriendStatus();
+      clearActiveGame();
 			disconnectPresenceSocket();
 			return;
 		}
 
 		const socket = connectPresenceSocket();
-
-		async function loadFriendStatuses() {
+    
+		async function initializeRealtime() {
 			try {
 				const statuses = await friendsService.getFriendsStatus();
 				setFriendStatus(statuses);
+        await fetchActiveGame();
 			} catch (error) {
-				console.error("[PresenceSocket] failed to load statuses", error);
+				console.error("[PresenceSocket] initialization failed", error);
 			}
 		}
 
-		loadFriendStatuses();
+		initializeRealtime();
 
 
 		socket.on("friend_status_changed", (status: FriendStatus) => {
-
 			updateFriendStatus(status);
 		});
+
+    socket.on("active_game_updated", (activeGame) => {
+
+      if (!activeGame) {
+        clearActiveGame();
+        return;
+      }
+    
+      setActiveGame(activeGame);
+    });
 
 		socket.on("friends_updated", () => {
 			window.dispatchEvent(new Event("friends_updated"));
@@ -121,6 +125,7 @@ export default function Dashboard() {
 
 		return () => {
 			socket.off("friend_status_changed");
+      socket.off("active_game_updated");
 			socket.off("connect_error");
 		};
 	}, [
@@ -128,6 +133,9 @@ export default function Dashboard() {
 		setFriendStatus,
 		updateFriendStatus,
 		clearFriendStatus,
+    setActiveGame,
+	  clearActiveGame,
+	  fetchActiveGame,
 	]);
 
   async function handleLogout() {

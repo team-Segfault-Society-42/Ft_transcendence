@@ -3,6 +3,8 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Inject,
+  forwardRef,
   NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
@@ -17,24 +19,32 @@ import {
   assignPlayerRole,
   resetBoardForReplay,
 } from './game.logic';
+import { PresenceService } from '../../presence/presence.service';
 
 export const TURN_TIMEOUT_MS = 30000;
 
 @Injectable()
 export class GameService {
-  constructor(private readonly matchService: MatchesService) {}
+  constructor(
+    private readonly matchService: MatchesService,
+
+    @Inject(forwardRef(() => PresenceService))
+		private readonly presenceService: PresenceService,
+  ){}
 
   private activeGame = new Map<string, GameState>();
 
   private getMutableGameById(gameId: string): GameState {
     const game = this.activeGame.get(gameId);
-    if (!game) throw new NotFoundException(`Game with ID ${gameId} not found`);
+    if (!game)
+      throw new NotFoundException(`Game with ID ${gameId} not found`);
     return game;
   }
 
   private findActiveGameByUserId(userId: number): [string, GameState] | null {
     for (const [gameId, game] of this.activeGame.entries()) {
-      if (game.status === 'finished') continue;
+      if (game.status === 'finished')
+        continue;
 
       if (
         game.players.X.ownerUserId === userId ||
@@ -49,12 +59,18 @@ export class GameService {
 
   createGame(user: PublicPlayerProfile): string {
     const active = this.findActiveGameByUserId(user.id);
-    if (active) throw new ConflictException('ERR_GAME_ALREADY_ACTIVE');
+    if (active)
+      throw new ConflictException('ERR_GAME_ALREADY_ACTIVE');
     const gameId = randomUUID();
     const newGame = initGameState();
     newGame.players.X.ownerUserId = user.id;
     newGame.playerProfiles.X = user;
     this.activeGame.set(gameId, newGame);
+    this.presenceService.emitActiveGameUpdated(user.id, {
+			gameId,
+			status: 'waiting',
+			playerX: newGame.playerProfiles.X,
+		});
     return gameId;
   }
 
@@ -63,7 +79,8 @@ export class GameService {
    */
   getGameById(gameId: string): GameState {
     const game = this.activeGame.get(gameId);
-    if (!game) throw new NotFoundException(`Game with ID ${gameId} not found`);
+    if (!game)
+      throw new NotFoundException(`Game with ID ${gameId} not found`);
     return structuredClone(game);
   }
 
@@ -152,6 +169,29 @@ export class GameService {
     }
 
     this.activeGame.set(gameId, game);
+
+    if (game.status === 'playing') {
+    const payload = {
+			gameId,
+			status: game.status,
+			playerX: game.playerProfiles.X!,
+			playerO: game.playerProfiles.O!,
+		};
+
+		if (game.playerProfiles.X?.id) {
+			this.presenceService.emitActiveGameUpdated(
+				game.playerProfiles.X.id,
+				payload,
+			);
+		}
+
+		if (game.playerProfiles.O?.id) {
+			this.presenceService.emitActiveGameUpdated(
+				game.playerProfiles.O.id,
+				payload,
+			);
+		}
+  }
     return { game, role };
   }
 
@@ -206,8 +246,21 @@ export class GameService {
 
     if (updatState.status === 'finished') {
       await this.saveGameToDB(updatState);
-    }
 
+      if (updatState.playerProfiles.X?.id) {
+        this.presenceService.emitActiveGameUpdated(
+          updatState.playerProfiles.X.id,
+          null,
+        );
+      }
+    
+      if (updatState.playerProfiles.O?.id) {
+        this.presenceService.emitActiveGameUpdated(
+          updatState.playerProfiles.O.id,
+          null,
+        );
+      }
+    }
     this.activeGame.set(gameId, updatState);
     return updatState;
   }
@@ -295,6 +348,21 @@ export class GameService {
 
     await this.saveGameToDB(game);
     this.activeGame.set(gameId, game);
+
+    if (game.playerProfiles.X?.id) {
+      this.presenceService.emitActiveGameUpdated(
+        game.playerProfiles.X.id,
+        null,
+      );
+    }
+    
+    if (game.playerProfiles.O?.id) {
+      this.presenceService.emitActiveGameUpdated(
+        game.playerProfiles.O.id,
+        null,
+      );
+    }
+
     return game;
   }
 
@@ -328,23 +396,22 @@ export class GameService {
     return { waiting, playing };
   }
 
-  leaveGame(
-    gameId: string,
-    userId: number,
-  ): { deleted: boolean; game: GameState | null } {
+  leaveGame(gameId: string, userId: number ): { deleted: boolean; game: GameState | null } {
     const game = this.getMutableGameById(gameId);
     const role = getPlayerRoleByUserId(game, userId);
 
-    // playing
-    if (game.status === 'playing')
-      throw new BadRequestException('ERR_GAME_CANT_LEAVE_PLAYING');
+    if ( game.status === 'waiting' && role === 'X') {
+			this.activeGame.delete(gameId);
+			this.presenceService.emitActiveGameUpdated( userId, null);
+			return { deleted: true,game: null };
+		}
 
-    if (game.status === 'waiting' && role === 'X') {
-      this.activeGame.delete(gameId);
-      return { deleted: true, game: null };
-    }
+		if (game.status === 'playing') {
+			throw new BadRequestException('ERR_GAME_CANT_LEAVE_PLAYING',);
+		}
 
-    if (role === 'X' || role === 'O') game.playerLeft = role;
+    if (role === 'X' || role === 'O')
+      game.playerLeft = role;
 
     this.activeGame.set(gameId, game);
     return { deleted: false, game };
