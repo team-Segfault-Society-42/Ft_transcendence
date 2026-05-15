@@ -1,11 +1,11 @@
-import Square from "./Square";
+import Square from "@/components/game/Square";
 import { useGameStore } from "../Store/gameStore";
 import type { CellValue } from "../type/game.types";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { getEndGameMessage, truncateUserName } from "./boardHelpers";
+import { getEndGameMessage } from "@/components/game/boardHelpers";
 import { Gamepad2 } from "lucide-react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 
@@ -112,13 +112,11 @@ export default function Board() {
     ((playerRole === "X" && game.replayVotes.X && !game.replayVotes.O) ||
       (playerRole === "O" && game.replayVotes.O && !game.replayVotes.X));
 
-  const playerXNameTrunc = truncateUserName(playerXName);
-  const playerONameTrunc = truncateUserName(playerOName);
   const endGameMessage = getEndGameMessage(
     game.endReason,
     winner,
-    playerXNameTrunc,
-    playerONameTrunc,
+    playerXName,
+    playerOName,
   );
 
   return (
@@ -140,7 +138,7 @@ export default function Board() {
               {playerXName[0]}
             </div>
           )}
-          <p className="font-bold">{playerXNameTrunc}</p>
+          <p className="font-bold">{playerXName}</p>
         </div>
 
         <div className="bg-gray-700 p-4 rounded flex flex-col items-center justify-center">
@@ -164,7 +162,7 @@ export default function Board() {
               {playerOName[0]}
             </div>
           )}
-          <p className="font-bold">{playerONameTrunc}</p>
+          <p className="font-bold">{playerOName}</p>
         </div>
       </div>
 

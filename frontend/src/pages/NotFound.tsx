@@ -7,8 +7,8 @@ export default function NotFound() {
 
   return (
     <EmptyStateCard
-      title="404"
-      icon={<span className="text-2xl">🔍</span>}
+      title=""
+      icon={<span className="text-8xl font-black">404</span>}
       message="Page not found"
       description="This page doesn't exist or has been moved."
       actions={<Button onClick={() => navigate("/")}>Go Home</Button>}

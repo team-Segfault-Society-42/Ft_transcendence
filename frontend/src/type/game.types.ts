@@ -84,7 +84,6 @@ export interface GameState {
   lastMove: number;
 
   players: PlayersInGame;
-  scores: ScoreBoard;
   replayVotes: ReplayState;
   playerProfiles: PlayerProfilesInGame;
   movesGameHistory: MovesGameHistory;
