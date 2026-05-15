@@ -127,6 +127,23 @@ export default function Profile() {
     return "NONE";
 	}
 
+  async function handleSendRequest() {
+    if (!profileData) return;
+
+    try {
+
+      await friendsService.sendFriendRequest(profileData.id)
+      toast.success(t("friends.success.requestSent"))
+      await loadFriendshipData()
+
+    } 
+    catch (error) {
+
+      const message = error.response?.data?.message || error.message
+      toast.error(message)
+    }
+  }
+
   useEffect(() => {
     if (!profileData) return;
 
