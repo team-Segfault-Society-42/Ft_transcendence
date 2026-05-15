@@ -38,7 +38,7 @@ interface CurrentUser {
 	xp?: number;
 }
 
-type RelationshipState =
+export type RelationshipState =
 	| "SELF"
 	| "FRIEND"
 	| "PENDING_SENT"

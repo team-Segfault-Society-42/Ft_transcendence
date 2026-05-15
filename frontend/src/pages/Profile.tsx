@@ -13,9 +13,10 @@ import { Winrate } from "@/components/ui/Winrate";
 import { LevelProgress } from "@/components/ui/Level";
 import { Username } from "@/components/ui/Username";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AchievementIcon } from "@/components/ui/AchievementIcons";
 import { CardTitle } from "@/components/ui/Card";
+import { friendsService, type FriendListItem, type IncomingFriendRequest, type OutgoingFriendRequest } from "@/services/friendsService";
 
 interface User {
   id: number;
@@ -36,6 +37,8 @@ interface Achievement {
   iconName: string;
 }
 
+type RelationshipState = "SELF" | "FRIEND" | "PENDING_SENT" | "PENDING_RECEIVED" | "NONE"
+
 export default function Profile() {
   const { t } = useTranslation();
   const [user, setUser] =
@@ -43,6 +46,14 @@ export default function Profile() {
       [User | null, React.Dispatch<React.SetStateAction<User | null>>]
     >();
 
+  const { username } = useParams<{ username: string }>()
+  const isMe = !username || username === user?.username
+  const [profileData, setProfileData] = useState<User | null>(isMe ? user : null)
+
+  const [friends, setFriends] = useState<FriendListItem[]>([])
+  const [incomingRequests, setIncomingRequests] = useState<IncomingFriendRequest[]>([])
+  const [outgoingRequests, setOutgoingRequests] = useState<OutgoingFriendRequest[]>([])
+  
   const [isEdit, isInEdit] = useState(false);
   const [userName, setUserName] = useState(user?.username || "");
   const [bio, setBio] = useState(user?.bio || "");
@@ -59,10 +70,119 @@ export default function Profile() {
 	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
 	const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
+ 
   useEffect(() => {
-    if (user) {
+    async function loadProfile() {
+      if (isMe) {
+        setProfileData(user)
+        setLoading(false)
+      }
+      else if (username) {
+        try {
+          setLoading(true)
+          const data = await userService.getUserByUsername(username)
+          setProfileData(data)
+          setLoading(false)
+        } 
+        catch (error) {
+          navigate("/dashboard");
+        }
+        loadFriendshipData()
+      }
+    }
+    loadProfile()
+  }, [username, user, isMe])
+
+  function getRelationshipState(): RelationshipState  {
+    if (user && profileData?.id === user.id) {
+      return "SELF";
+    }
+    if (friends.some((item) => item.friend.id === profileData?.id)) {
+      return "FRIEND";
+    }
+    if (outgoingRequests.some((request) => request.receiver.id === profileData?.id)) {
+      return "PENDING_SENT";
+    }
+    if (incomingRequests.some((request) => request.sender.id === profileData?.id)) {
+      return "PENDING_RECEIVED";
+    }
+    return "NONE";
+	}
+
+  async function loadFriendshipData() {
+    try {
+          
+      const [friends, incomingRequests, outgoingRequests] = await Promise.all([
+      friendsService.getFriends(),
+      friendsService.getIncomingFriendRequests(),
+      friendsService.getOutgoingFriendRequests(),
+			]);
+      setFriends(friends)
+      setIncomingRequests(incomingRequests)
+      setOutgoingRequests(outgoingRequests)
+    }
+    catch (error: any) {
+
+    }
+  }
+
+  async function handleSendRequest() {
+    if (!profileData) return;
+
+    try {
+      await friendsService.sendFriendRequest(profileData.id)
+      toast.success(t("friends.success.requestSent"))
+      await loadFriendshipData()
+    } 
+    catch (error: any) {
+
+      const message = error.response?.data?.message || error.message
+      toast.error(message)
+    }
+  }
+
+  async function handleAcceptRequest() {
+    if (!profileData) return;
+
+    const request = incomingRequests.find((r) => r.sender.id === profileData.id)
+
+    if (!request) return
+
+    try {
+      await friendsService.acceptFriendRequest(request.requestId)
+      toast.success(t("friends.success.accepted"))
+      await loadFriendshipData()
+    }
+    catch (error: any) {
+      const message = error.response?.data?.message || error.message;
+      toast.error(message);
+    }
+  }
+
+  async function handleRemoveFriend() {
+    if (!profileData) return;
+
+    const friendship = friends.find((item) => item.friend.id === profileData.id)
+    if (!friendship) return;
+
+    try {
+      await friendsService.removeFriend(friendship.friendshipId)
+      toast.success(t("friends.success.removed"));
+      await loadFriendshipData()
+    }
+    catch (error: any) {
+      const message = error.response?.data?.message || error.message;
+      toast.error(message);
+    }
+  }
+
+  useEffect(() => {
+    if (!profileData) return;
+
+    if (isMe && user) {
       setUserName(user.username);
       setBio(user.bio);
+    }
 
       async function fetchAllAchievments() {
         try {
@@ -76,7 +196,7 @@ export default function Profile() {
 
       async function fetchAchievements() {
         try {
-          const data = await userService.getAchievements(user!.id)
+          const data = await userService.getAchievements(profileData!.id)
           if (Array.isArray(data)) {
             setUnlockedAchievements(data.map((a: any) => a.achievementId || a));
           }
@@ -87,8 +207,8 @@ export default function Profile() {
       fetchAchievements()
 
       setLoading(false);
-    }
-  }, [user]);
+    
+  }, [profileData?.id, isMe, user]);
 
   if (!user || loading) {
     return (
@@ -199,6 +319,8 @@ export default function Profile() {
 		}
 	}
 
+  const state = getRelationshipState()
+
   return (
     <section className="w-full max-w-3xl mx-auto px-6 py-10">
       <div className="relative bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-8 overflow-hidden">
@@ -216,14 +338,14 @@ export default function Profile() {
           {/* AVATAR */}
           <div className="relative group">
             <Avatar
-              src={user.avatar}
-              alt={user.username}
+              src={profileData?.avatar}
+              alt={profileData?.username}
               size="lg"
               className="border border-white/20 z-10 relative"
             />
             <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
             </div>
-			{isEdit && (
+			{isMe && isEdit && (
 				<div className="mt-3 flex justify-center">
 					<input
 						ref={avatarInputRef}
@@ -257,16 +379,47 @@ export default function Profile() {
             />
           ) : (
             <h1 className="text-2xl font-bold tracking-wide">
-              <Username name={user.username} variant="profile" />
+              <Username name={profileData?.username ?? ""} variant="profile" />
             </h1>
+          )}
+        </div>
+
+        <div>
+          {/* FRIEND BUTTON */}
+          {!isMe && (
+            <div className="mt-4">
+              {state === "NONE" && (
+                <Button onClick={handleSendRequest}>
+                  {t("friends.actions.add")}
+                </Button>
+              )}
+
+              {state === "PENDING_SENT" && (
+                <Button disabled>
+                  {t("friends.states.pending")}
+                </Button>
+              )}
+
+              {state === "PENDING_RECEIVED" && (
+                <Button onClick={handleAcceptRequest}>
+                  {t("friends.actions.accept")}
+                </Button>
+              )}
+
+              {state === "FRIEND" && (
+                <Button variant="danger" onClick={handleRemoveFriend}>
+                  {t("friends.actions.remove")}
+                </Button>
+              )}
+            </div>
           )}
         </div>
 
         {/* STATS */}
         <div className="mt-8 grid grid-cols-2 gap-4 text-center">
           {[
-            { label: t("profile.stats.wins"), value: user.wins },
-            { label: t("profile.stats.losses"), value: user.losses },
+            { label: t("profile.stats.wins"), value: profileData?.wins },
+            { label: t("profile.stats.losses"), value: profileData?.losses },
           ].map((stat, i) => (
             <div
               key={i}
@@ -280,10 +433,10 @@ export default function Profile() {
         </div>
 
         {/* WINRATE */}
-        <Winrate wins={user.wins} losses={user.losses} draws={user.draws} />
+        <Winrate wins={profileData?.wins ?? 0} losses={profileData?.losses ?? 0} draws={profileData?.draws ?? 0} />
 
         {/* Level */}
-        <LevelProgress xp={user.xp} />
+        <LevelProgress xp={profileData?.xp ?? 0} />
 
         {/* Achievements */}
         <div className="mt-8">
@@ -335,9 +488,9 @@ export default function Profile() {
               onChange={(e) => setBio(e.target.value)}
               className="w-full bg-transparent focus:outline-none resize-none text-sm text-white/80"
             />
-          ) : user.bio ? (
+          ) : profileData?.bio ? (
                 <p className="text-sm leading-relaxed text-white/80">
-                  {user.bio}
+                  {profileData?.bio}
                 </p>
           ) : (
             <p className="text-sm text-white/30 italic">
@@ -348,15 +501,15 @@ export default function Profile() {
         </div>
 
         {/* BUTTON */}
-        <Button onClick={handleSave} className="mt-8 w-full flex justify-center">
+        {isMe && ( <Button onClick={handleSave} className="mt-8 w-full flex justify-center">
           {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
-        </Button>
+        </Button> )}
 
         {/* 2FA */}
-        <div className="mt-8">
+        {isMe && ( <div className="mt-8">
           <p className="text-white/50 text-sm mb-2">{t("auth.twofa.title")}</p>
 
-          {user.isTwoFactorEnabled ? (
+          {profileData?.isTwoFactorEnabled ? (
             <div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
               <p className="text-sm text-green-400 font-medium">
                 {t("auth.twofa.enabled")}
@@ -410,12 +563,15 @@ export default function Profile() {
                   >
                     {t("auth.twofa.regenerate")}
                   </Button>
-                </div>
+                </div> 
+                
               )}
+              
             </div>
+            
           )}
         </div>
-
+        )}
       </div>
     </section>
   );

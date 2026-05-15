@@ -106,7 +106,8 @@ export default function LeaderBoard() {
             {leaderboard.map((l, index) => (
               <div
                 key={l.id}
-                className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl"
+                onClick={() => navigate(`/profile/${l.username}`)}
+                className="flex items-center cursor-pointer justify-between p-4 bg-white/5 border border-white/10 rounded-xl"
               >
                 <div className="flex items-center gap-4 min-w-0 flex-1">
                   <span className="text-white/30 font-mono w-6">
