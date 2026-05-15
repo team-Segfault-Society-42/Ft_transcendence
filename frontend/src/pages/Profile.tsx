@@ -17,7 +17,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AchievementIcon } from "@/components/ui/AchievementIcons";
 import { CardTitle } from "@/components/ui/Card";
 import { friendsService, type FriendListItem, type IncomingFriendRequest, type OutgoingFriendRequest } from "@/services/friendsService";
-import { type RelationshipState } from "./Friends";
 
 interface User {
   id: number;
@@ -37,6 +36,8 @@ interface Achievement {
   description: string;
   iconName: string;
 }
+
+type RelationshipState = "SELF" | "FRIEND" | "PENDING_SENT" | "PENDING_RECEIVED" | "NONE"
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -86,6 +87,7 @@ export default function Profile() {
         catch (error) {
           navigate("/dashboard");
         }
+        loadFriendshipData()
       }
     }
     loadProfile()
@@ -163,6 +165,26 @@ export default function Profile() {
       toast.error(message);
     }
     
+  }
+
+  async function handleRemoveFriend() {
+    if (!profileData) return;
+
+    const friendship = friends.find((item) => item.friend.id === profileData.id)
+    if (!friendship) return;
+
+    try {
+
+      await friendsService.removeFriend(friendship.friendshipId)
+      toast.success(t("friends.success.removed"));
+      await loadFriendshipData()
+    }
+    catch (error) {
+      const message = error.response?.data?.message || error.message;
+      toast.error(message);
+
+    }
+
   }
 
   useEffect(() => {
