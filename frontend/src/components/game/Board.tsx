@@ -14,18 +14,10 @@ import { GameStatusBanner } from './GameStatusBanner';
 import { EndGamePopup } from './EndGamePopup';
 import { SpectatorCount } from './SpectatorCount';
 import { Button } from '@/components/ui/Button';
-import { Input } from '../ui/Input';
 
 export default function Board() {
-	const {
-		gameId,
-		game,
-		error,
-		playMove,
-		playerRole,
-		requestReplay,
-		leaveGame,
-	} = useGameStore();
+	const { game, error, playMove, playerRole, requestReplay, leaveGame } =
+		useGameStore();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
