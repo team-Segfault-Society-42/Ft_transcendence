@@ -93,7 +93,7 @@ export default function Profile() {
     loadProfile()
   }, [username, user, isMe])
 
-  function getRelationshipState() {
+  function getRelationshipState(): RelationshipState  {
     if (user && profileData?.id === user.id) {
       return "SELF";
     }
@@ -121,7 +121,7 @@ export default function Profile() {
       setIncomingRequests(incomingRequests)
       setOutgoingRequests(outgoingRequests)
     }
-    catch (error) {
+    catch (error: any) {
 
     }
   }
@@ -134,7 +134,7 @@ export default function Profile() {
       toast.success(t("friends.success.requestSent"))
       await loadFriendshipData()
     } 
-    catch (error) {
+    catch (error: any) {
 
       const message = error.response?.data?.message || error.message
       toast.error(message)
@@ -153,7 +153,7 @@ export default function Profile() {
       toast.success(t("friends.success.accepted"))
       await loadFriendshipData()
     }
-    catch (error) {
+    catch (error: any) {
       const message = error.response?.data?.message || error.message;
       toast.error(message);
     }
@@ -170,7 +170,7 @@ export default function Profile() {
       toast.success(t("friends.success.removed"));
       await loadFriendshipData()
     }
-    catch (error) {
+    catch (error: any) {
       const message = error.response?.data?.message || error.message;
       toast.error(message);
     }
@@ -379,7 +379,7 @@ export default function Profile() {
             />
           ) : (
             <h1 className="text-2xl font-bold tracking-wide">
-              <Username name={profileData?.username} variant="profile" />
+              <Username name={profileData?.username ?? ""} variant="profile" />
             </h1>
           )}
         </div>
@@ -433,10 +433,10 @@ export default function Profile() {
         </div>
 
         {/* WINRATE */}
-        <Winrate wins={profileData?.wins} losses={profileData?.losses} draws={profileData?.draws} />
+        <Winrate wins={profileData?.wins ?? 0} losses={profileData?.losses ?? 0} draws={profileData?.draws ?? 0} />
 
         {/* Level */}
-        <LevelProgress xp={profileData?.xp} />
+        <LevelProgress xp={profileData?.xp ?? 0} />
 
         {/* Achievements */}
         <div className="mt-8">
