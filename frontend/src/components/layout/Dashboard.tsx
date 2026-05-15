@@ -16,6 +16,7 @@ import { connectPresenceSocket, disconnectPresenceSocket,} from "@/services/pres
 import { friendsService } from "@/services/friendsService";
 import { usePresenceStore } from "@/Store/presenceStore";
 import type { FriendStatus } from "@/services/friendsService";
+import type { User } from "@/type/user.types";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -23,7 +24,7 @@ export default function Dashboard() {
   const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(
     null,
   );
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isChat, setIsChat] = useState(false);
 

@@ -1,5 +1,12 @@
-import { User, Clock, Trophy, Brain, Handshake } from "lucide-react"
-import { useTranslation } from "react-i18next"
+import { User, Clock, Trophy, Brain, Handshake } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import type { ReactNode } from "react";
+
+interface RuleProps {
+	icon: ReactNode;
+	title: string;
+	desc: string;
+}
 
 export function GameRules() {
     const { t } = useTranslation()
@@ -44,7 +51,7 @@ export function GameRules() {
     )
 }
 
-function Rule({ icon, title, desc }: any) {
+function Rule({ icon, title, desc }: RuleProps) {
     return (
         <div className="flex gap-3 items-start">
 			<div className="w-5 flex justify-center pt-1 shrink-0">
