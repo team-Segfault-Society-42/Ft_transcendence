@@ -97,19 +97,15 @@ export default function Profile() {
     if (user && profileData?.id === user.id) {
       return "SELF";
     }
-
     if (friends.some((item) => item.friend.id === profileData?.id)) {
       return "FRIEND";
     }
-
     if (outgoingRequests.some((request) => request.receiver.id === profileData?.id)) {
       return "PENDING_SENT";
     }
-
     if (incomingRequests.some((request) => request.sender.id === profileData?.id)) {
       return "PENDING_RECEIVED";
     }
-
     return "NONE";
 	}
 
@@ -121,7 +117,6 @@ export default function Profile() {
       friendsService.getIncomingFriendRequests(),
       friendsService.getOutgoingFriendRequests(),
 			]);
-
       setFriends(friends)
       setIncomingRequests(incomingRequests)
       setOutgoingRequests(outgoingRequests)
@@ -135,11 +130,9 @@ export default function Profile() {
     if (!profileData) return;
 
     try {
-
       await friendsService.sendFriendRequest(profileData.id)
       toast.success(t("friends.success.requestSent"))
       await loadFriendshipData()
-
     } 
     catch (error) {
 
@@ -164,7 +157,6 @@ export default function Profile() {
       const message = error.response?.data?.message || error.message;
       toast.error(message);
     }
-    
   }
 
   async function handleRemoveFriend() {
@@ -174,7 +166,6 @@ export default function Profile() {
     if (!friendship) return;
 
     try {
-
       await friendsService.removeFriend(friendship.friendshipId)
       toast.success(t("friends.success.removed"));
       await loadFriendshipData()
@@ -182,9 +173,7 @@ export default function Profile() {
     catch (error) {
       const message = error.response?.data?.message || error.message;
       toast.error(message);
-
     }
-
   }
 
   useEffect(() => {
