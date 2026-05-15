@@ -11,16 +11,8 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Spinner } from "@/components/ui/Spinner";
 import { useActiveGameStore } from "@/Store/activeGameStore";
 import { gameApi } from "@/services/gameApi";
+import type { User } from "@/type/user.types";
 
-interface User {
-  	username: string;
-  	avatar?: string;
-  	bio?: string;
-  	wins?: number;
-  	losses?: number;
-  	draws?: number;
-  	xp?: number;
-}
 
 export default function Play() {
 	

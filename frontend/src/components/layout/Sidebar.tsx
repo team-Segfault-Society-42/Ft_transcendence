@@ -3,13 +3,7 @@ import { useTranslation } from "react-i18next";
 import { House, Gamepad2, UserRound, UsersRound, History, Trophy, Binoculars, BookOpenText } from "lucide-react";
 import LanguageSwitcher from "../ui/LanguageSwitcher";
 import { Button } from "@/components/ui/Button";
-
-interface User {
-	username: string
-	avatar?: string
-	wins?: number
-	losses?: number
-}
+import type { User } from "@/type/user.types";
 
 interface HeaderProps {
 	user: User | null

@@ -8,16 +8,7 @@ import { History as HistoryIcon } from "lucide-react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router-dom";
-
-interface User {
-    username: string
-    avatar?: string
-    bio?: string
-    wins?: number
-    losses?: number
-    draws?: number
-    xp?: number
-}
+import type { User } from "@/type/user.types";
 
 type Props = {
     matches: Match[]

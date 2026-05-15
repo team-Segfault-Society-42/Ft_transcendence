@@ -17,18 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { AchievementIcon } from "@/components/ui/AchievementIcons";
 import { CardTitle } from "@/components/ui/Card";
 import { UserRound } from "lucide-react";
-
-interface User {
-  id: number;
-  username: string;
-  wins: number;
-  losses: number;
-  draws: number;
-  bio: string;
-  avatar: string;
-  xp: number;
-  isTwoFactorEnabled: boolean;
-}
+import type { User } from "@/type/user.types";
 
 interface Achievement {
   key: string;
@@ -63,7 +52,7 @@ export default function Profile() {
   useEffect(() => {
     if (user) {
       setUserName(user.username);
-      setBio(user.bio);
+      setBio(user.bio ?? "");
 
       async function fetchAllAchievments() {
         try {
@@ -217,7 +206,7 @@ export default function Profile() {
           {/* AVATAR */}
           <div className="relative group">
             <Avatar
-              src={user.avatar}
+              src={user.avatar ?? undefined}
               alt={user.username}
               size="lg"
               className="border border-white/20 z-10 relative"

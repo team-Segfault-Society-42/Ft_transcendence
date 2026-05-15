@@ -4,13 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Username } from "@/components/ui/Username";
 import { Motion } from "@/components/ui/Motion";
 import { Link, useNavigate } from "react-router-dom";
-
-interface User {
-  username: string
-  avatar?: string
-  wins?: number
-  losses?: number
-}
+import type { User } from "@/type/user.types";
 
 interface HeaderProps {
   user: User | null
@@ -56,7 +50,7 @@ export function Topbar({ user, onLoginClick}: HeaderProps) {
           />
 
           <Avatar
-          src={user.avatar}
+          src={user.avatar ?? undefined}
           fallback={user.username[0]}
           />
         </Button>
