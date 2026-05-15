@@ -86,22 +86,6 @@ export default function Profile() {
         catch (error) {
           navigate("/dashboard");
         }
-
-        try {
-          
-          const [friends, incomingRequests, outgoingRequests] = await Promise.all([
-          friendsService.getFriends(),
-          friendsService.getIncomingFriendRequests(),
-          friendsService.getOutgoingFriendRequests(),
-			]);
-          setFriends(friends)
-          setIncomingRequests(incomingRequests)
-          setOutgoingRequests(outgoingRequests)
-        }
-        catch (error) {
-
-        }
-
       }
     }
     loadProfile()
@@ -142,6 +126,25 @@ export default function Profile() {
       const message = error.response?.data?.message || error.message
       toast.error(message)
     }
+  }
+
+  async function handleAcceptRequest() {
+    if (!profileData) return;
+
+    const request = incomingRequests.find((r) => r.sender.id === profileData.id)
+
+    if (!request) return
+
+    try {
+      await friendsService.acceptFriendRequest(request.requestId)
+      toast.success(t("friends.success.accepted"))
+      await loadFriendshipData()
+    }
+    catch (error) {
+      const message = error.response?.data?.message || error.message;
+      toast.error(message);
+    }
+    
   }
 
   useEffect(() => {
