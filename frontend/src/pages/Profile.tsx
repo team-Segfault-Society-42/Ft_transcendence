@@ -330,6 +330,8 @@ export default function Profile() {
 		}
 	}
 
+  const state = getRelationshipState()
+
   return (
     <section className="w-full max-w-3xl mx-auto px-6 py-10">
       <div className="relative bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-8 overflow-hidden">
@@ -390,6 +392,37 @@ export default function Profile() {
             <h1 className="text-2xl font-bold tracking-wide">
               <Username name={profileData?.username} variant="profile" />
             </h1>
+          )}
+        </div>
+
+        <div>
+          {/* FRIEND BUTTON */}
+          {!isMe && (
+            <div className="mt-4">
+              {state === "NONE" && (
+                <Button onClick={handleSendRequest}>
+                  {t("friends.actions.add")}
+                </Button>
+              )}
+
+              {state === "PENDING_SENT" && (
+                <Button disabled>
+                  {t("friends.states.pending")}
+                </Button>
+              )}
+
+              {state === "PENDING_RECEIVED" && (
+                <Button onClick={handleAcceptRequest}>
+                  {t("friends.actions.accept")}
+                </Button>
+              )}
+
+              {state === "FRIEND" && (
+                <Button variant="danger" onClick={handleRemoveFriend}>
+                  {t("friends.actions.remove")}
+                </Button>
+              )}
+            </div>
           )}
         </div>
 
