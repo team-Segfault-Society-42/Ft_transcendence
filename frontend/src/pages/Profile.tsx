@@ -111,6 +111,24 @@ export default function Profile() {
     return "NONE";
 	}
 
+  async function loadFriendshipData() {
+    try {
+          
+      const [friends, incomingRequests, outgoingRequests] = await Promise.all([
+      friendsService.getFriends(),
+      friendsService.getIncomingFriendRequests(),
+      friendsService.getOutgoingFriendRequests(),
+			]);
+
+      setFriends(friends)
+      setIncomingRequests(incomingRequests)
+      setOutgoingRequests(outgoingRequests)
+    }
+    catch (error) {
+
+    }
+  }
+
   async function handleSendRequest() {
     if (!profileData) return;
 
