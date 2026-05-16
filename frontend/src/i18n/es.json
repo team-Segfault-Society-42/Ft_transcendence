@@ -25,6 +25,7 @@
 		"home": "Inicio",
 		"game": "Jugar",
 		"profile": "Perfil",
+        "settings": "Ajustes",
 		"leaderboard": "Clasificación",
 		"friends": "Amigos",
 		"chat": "Chat",
@@ -135,6 +136,21 @@
 		"uploading": "Subiendo...",
   		"changeAvatar": "Cambiar avatar",
   		"avatarUpdated": "Avatar actualizado correctamente"
+	},
+
+	"settings": {
+		"title": "Ajustes",
+		"description": "Gestiona tu perfil y la seguridad de tu cuenta.",
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para gestionar tus ajustes",
+		"profile": {
+			"title": "Información del perfil",
+			"description": "Actualiza tu nombre de usuario, biografía y avatar."
+		},
+		"security": {
+			"title": "Seguridad",
+			"description": "Gestiona la autenticación de dos factores y futuras opciones de seguridad."
+		}
 	},
 
     "leaderboard": {

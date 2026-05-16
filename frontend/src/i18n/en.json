@@ -25,6 +25,7 @@
         "home": "Home",
         "game": "Play",
         "profile": "Profile",
+        "settings": "Settings",
         "leaderboard": "Leaderboard",
         "friends": "Friends",
         "chat": "Chat",
@@ -135,6 +136,21 @@
         "emptyBio": "Click edit profile to add a biography",
         "changeAvatar": "Change avatar",
         "avatarUpdated": "Avatar updated successfully"
+    },
+
+    "settings": {
+        "title": "Settings",
+        "description": "Manage your profile and account security.",
+        "notConnected": "Not connected",
+        "login": "Login to manage your settings",
+        "profile": {
+            "title": "Profile information",
+            "description": "Update your username, biography, and avatar."
+        },
+        "security": {
+            "title": "Security",
+            "description": "Manage two-factor authentication and future security options."
+        }
     },
 
     "leaderboard":{
