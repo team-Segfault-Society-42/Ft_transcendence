@@ -89,8 +89,20 @@ export default function Friends() {
 	);
 
 
+	async function refreshFriendStatuses() {
+		if (!user) return;
+
+		const statuses = await friendsService.getFriendsStatus();
+		mergeFriendStatus(statuses);
+	}
+
 	useEffect(() => {
-		loadFriendsData();
+		async function loadPageData() {
+			await loadFriendsData();
+			await refreshFriendStatuses();
+		}
+
+		loadPageData();
 	}, [loadFriendsData]);
 
 	useEffect(() => {
@@ -204,10 +216,7 @@ export default function Friends() {
 		}
 	}
 
-	async function refreshFriendStatuses() {
-		const statuses = await friendsService.getFriendsStatus();
-		mergeFriendStatus(statuses);
-	}
+
 
 	const incomingRequestBySenderId = useMemo(() => {
 		return new Map(
