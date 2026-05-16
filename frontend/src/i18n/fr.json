@@ -135,7 +135,8 @@
         "emptyBio": "Cliquez sur modifier profil pour ajouter une biographie",
         "uploading": "Téléchargement...",
         "changeAvatar": "Changer l'avatar",
-        "avatarUpdated": "Avatar mis à jour avec succès"
+        "avatarUpdated": "Avatar mis à jour avec succès",
+		"username": " Nom d'utilisateur"
     },
 
     "settings": {
