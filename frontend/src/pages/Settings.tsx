@@ -35,6 +35,9 @@ export default function Settings() {
 	const [isSaving, setIsSaving] = useState(false);
 	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
 	const avatarInputRef = useRef<HTMLInputElement | null>(null);
+	const [twoFactorCode, setTwoFactorCode] = useState("");
+	const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
+	const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false);
 
 	useEffect(() => {
 		if (!user) return;
@@ -87,6 +90,62 @@ export default function Settings() {
 		} finally {
 			setIsAvatarUploading(false);
 			event.target.value = "";
+		}
+	}
+
+	async function handleEnableTwoFactor() {
+		if (!user) return;
+
+		try {
+			setIsTwoFactorLoading(true);
+
+			const result = await userService.enableTwoFactor();
+
+			setQrCodeDataUrl(result.qrCodeDataUrl);
+
+			toast.success(t("auth.twofa.setupStarted"));
+		} catch (error: any) {
+			const serverMessage =
+				error.response?.data?.message || error.message;
+
+			const finalMessage = Array.isArray(serverMessage)
+				? serverMessage[0]
+				: serverMessage;
+
+			toast.error(t("auth.error") + finalMessage);
+		} finally {
+			setIsTwoFactorLoading(false);
+		}
+	}
+
+	async function handleVerifyTwoFactor() {
+		if (!user) return;
+
+		try {
+			setIsTwoFactorLoading(true);
+
+			const result =
+				await userService.verifyTwoFactorSetup(twoFactorCode);
+
+			toast.success(result.message);
+
+			const refreshedUser = await userService.getMe();
+
+			setUser(refreshedUser);
+
+			setTwoFactorCode("");
+			setQrCodeDataUrl("");
+		} catch (error: any) {
+			const serverMessage =
+				error.response?.data?.message || error.message;
+
+			const finalMessage = Array.isArray(serverMessage)
+				? serverMessage[0]
+				: serverMessage;
+
+			toast.error(t("auth.error") + finalMessage);
+		} finally {
+			setIsTwoFactorLoading(false);
 		}
 	}
 
@@ -203,12 +262,90 @@ export default function Settings() {
 					</div>
 				</Card>
 
-				<Card>
-					<CardTitle>{t("settings.security.title")}</CardTitle>
-					<CardDescription className="text-white/50">
-						{t("settings.security.description")}
-					</CardDescription>
+
+				<Card className="space-y-6">
+					<div>
+						<CardTitle>
+							{t("settings.security.title")}
+						</CardTitle>
+
+						<CardDescription className="text-white/50 mt-2">
+							{t("settings.security.description")}
+						</CardDescription>
+					</div>
+
+					<div>
+						<p className="text-white/50 text-sm mb-2">
+							{t("auth.twofa.title")}
+						</p>
+
+						{user.isTwoFactorEnabled ? (
+							<div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
+								<p className="text-sm text-green-400 font-medium">
+									{t("auth.twofa.enabled")}
+								</p>
+							</div>
+						) : (
+							<div className="space-y-4">
+								<Button
+									type="button"
+									onClick={handleEnableTwoFactor}
+									disabled={isTwoFactorLoading}
+									className="w-full"
+								>
+									{isTwoFactorLoading
+										? t("auth.twofa.loading")
+										: t("auth.twofa.enable")}
+								</Button>
+
+								{qrCodeDataUrl && (
+									<div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10 space-y-4">
+										<img
+											src={qrCodeDataUrl}
+											alt="2FA QR code"
+											className="mx-auto rounded-lg bg-white p-2"
+										/>
+
+										<Input
+											value={twoFactorCode}
+											onChange={(e) =>
+												setTwoFactorCode(e.target.value)
+											}
+											placeholder={t("auth.twofa.enterCode")}
+											maxLength={6}
+										/>
+
+										<Button
+											type="button"
+											onClick={handleVerifyTwoFactor}
+											disabled={
+												isTwoFactorLoading ||
+												twoFactorCode.length !== 6
+											}
+											className="w-full"
+										>
+											{isTwoFactorLoading
+												? t("auth.twofa.verifying")
+												: t("auth.twofa.verify")}
+										</Button>
+
+										<Button
+											type="button"
+											variant="secondary"
+											onClick={handleEnableTwoFactor}
+											disabled={isTwoFactorLoading}
+											className="w-full"
+										>
+											{t("auth.twofa.regenerate")}
+										</Button>
+									</div>
+								)}
+							</div>
+						)}
+					</div>
 				</Card>
+
+
 			</div>
 		</section>
 	);

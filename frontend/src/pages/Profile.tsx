@@ -234,51 +234,6 @@ export default function Profile() {
     );
   }
 
-
-
-  async function handleEnableTwoFactor() {
-    if (!user) return;
-
-    try {
-      setIsTwoFactorLoading(true);
-      const result = await userService.enableTwoFactor();
-      setQrCodeDataUrl(result.qrCodeDataUrl);
-      toast.success(t("auth.twofa.setupStarted"));
-    } catch (error: any) {
-      const serverMessage = error.response?.data?.message || error.message;
-      const finalMessage = Array.isArray(serverMessage)
-        ? serverMessage[0]
-        : serverMessage;
-      toast.error(t("auth.error") + finalMessage);
-    } finally {
-      setIsTwoFactorLoading(false);
-    }
-  }
-
-  async function handleVerifyTwoFactor() {
-    if (!user) return;
-
-    try {
-      setIsTwoFactorLoading(true);
-      const result = await userService.verifyTwoFactorSetup(twoFactorCode);
-      toast.success(result.message);
-
-      const refreshedUser = await userService.getMe();
-      setUser(refreshedUser);
-
-      setTwoFactorCode("");
-      setQrCodeDataUrl("");
-    } catch (error: any) {
-      const serverMessage = error.response?.data?.message || error.message;
-      const finalMessage = Array.isArray(serverMessage)
-        ? serverMessage[0]
-        : serverMessage;
-      toast.error(t("auth.error") + finalMessage);
-    } finally {
-      setIsTwoFactorLoading(false);
-    }
-  }
-
   const state = getRelationshipState()
 
   return (
