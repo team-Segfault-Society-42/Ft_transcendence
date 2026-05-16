@@ -1,8 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/Card";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
+import { Input } from "@/components/ui/Input";
+import { toast } from "sonner";
+import { userService } from "@/services/userService";
 
 interface User {
 	id: number;
@@ -20,10 +24,21 @@ export default function Settings() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
-	const [user] =
+	const [user, setUser] =
 		useOutletContext<
 			[User | null, React.Dispatch<React.SetStateAction<User | null>>]
 		>();
+
+	const [username, setUsername] = useState(user?.username || "");
+	const [bio, setBio] = useState(user?.bio || "");
+	const [isSaving, setIsSaving] = useState(false);
+
+	useEffect(() => {
+		if (!user) return;
+
+		setUsername(user.username);
+		setBio(user.bio);
+	}, [user]);
 
 	if (!user) {
 		return (
@@ -43,6 +58,34 @@ export default function Settings() {
 		);
 	}
 
+	async function handleSaveProfile() {
+		if (!user) return;
+
+		try {
+			setIsSaving(true);
+
+			const updatedUser = await userService.updateUser(user.id, {
+				username,
+				bio,
+			});
+
+			setUser(updatedUser);
+
+			toast.success(t("settings.profile.updated"));
+		} catch (error: any) {
+			const serverMessage =
+				error.response?.data?.message || error.message;
+
+			const finalMessage = Array.isArray(serverMessage)
+				? serverMessage[0]
+				: serverMessage;
+
+			toast.error(t("auth.error") + finalMessage);
+		} finally {
+			setIsSaving(false);
+		}
+	}
+
 	return (
 		<section className="w-full max-w-4xl mx-auto px-6 py-10 text-white">
 			<div className="mb-8">
@@ -55,11 +98,49 @@ export default function Settings() {
 			</div>
 
 			<div className="grid gap-6">
-				<Card>
-					<CardTitle>{t("settings.profile.title")}</CardTitle>
-					<CardDescription className="text-white/50">
-						{t("settings.profile.description")}
-					</CardDescription>
+				<Card className="space-y-6">
+					<div>
+						<CardTitle>{t("settings.profile.title")}</CardTitle>
+
+						<CardDescription className="text-white/50 mt-2">
+							{t("settings.profile.description")}
+						</CardDescription>
+					</div>
+
+					<div className="space-y-4">
+						<div>
+							<p className="text-sm text-white/50 mb-2">
+								{t("profile.username")}
+							</p>
+
+							<Input
+								value={username}
+								onChange={(e) => setUsername(e.target.value)}
+							/>
+						</div>
+
+						<div>
+							<p className="text-sm text-white/50 mb-2">
+								{t("profile.bio")}
+							</p>
+
+							<textarea
+								value={bio}
+								onChange={(e) => setBio(e.target.value)}
+								className="w-full min-h-28 bg-white/5 border border-white/10 rounded-xl px-4 py-3 resize-none text-sm text-white/80 focus:outline-none focus:border-cyan-400"
+							/>
+						</div>
+
+						<Button
+							onClick={handleSaveProfile}
+							disabled={isSaving}
+							className="w-full"
+						>
+							{isSaving
+								? t("settings.profile.saving")
+								: t("settings.profile.save")}
+						</Button>
+					</div>
 				</Card>
 
 				<Card>

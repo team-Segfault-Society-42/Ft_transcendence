@@ -53,10 +53,7 @@ export default function Profile() {
   const [friends, setFriends] = useState<FriendListItem[]>([])
   const [incomingRequests, setIncomingRequests] = useState<IncomingFriendRequest[]>([])
   const [outgoingRequests, setOutgoingRequests] = useState<OutgoingFriendRequest[]>([])
-  
-  const [isEdit, isInEdit] = useState(false);
-  const [userName, setUserName] = useState(user?.username || "");
-  const [bio, setBio] = useState(user?.bio || "");
+
   const [loading, setLoading] = useState(true);
 
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([])
@@ -70,7 +67,7 @@ export default function Profile() {
 	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
 	const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
- 
+
   useEffect(() => {
     async function loadProfile() {
       if (isMe) {
@@ -83,7 +80,7 @@ export default function Profile() {
           const data = await userService.getUserByUsername(username)
           setProfileData(data)
           setLoading(false)
-        } 
+        }
         catch (error) {
           navigate("/dashboard");
         }
@@ -111,7 +108,7 @@ export default function Profile() {
 
   async function loadFriendshipData() {
     try {
-          
+
       const [friends, incomingRequests, outgoingRequests] = await Promise.all([
       friendsService.getFriends(),
       friendsService.getIncomingFriendRequests(),
@@ -133,7 +130,7 @@ export default function Profile() {
       await friendsService.sendFriendRequest(profileData.id)
       toast.success(t("friends.success.requestSent"))
       await loadFriendshipData()
-    } 
+    }
     catch (error: any) {
 
       const message = error.response?.data?.message || error.message
@@ -179,10 +176,6 @@ export default function Profile() {
   useEffect(() => {
     if (!profileData) return;
 
-    if (isMe && user) {
-      setUserName(user.username);
-      setBio(user.bio);
-    }
 
       async function fetchAllAchievments() {
         try {
@@ -207,7 +200,7 @@ export default function Profile() {
       fetchAchievements()
 
       setLoading(false);
-    
+
   }, [profileData?.id, isMe, user]);
 
   if (!user || loading) {
@@ -231,23 +224,7 @@ export default function Profile() {
     );
   }
 
-  async function handleSave() {
-    if (!user) return;
-    if (isEdit) {
-      try {
-        await userService.updateUser(user.id, { username: userName, bio: bio });
-        setUser({ ...user, username: userName, bio: bio });
-        toast.info(t("auth.buttons.edit"));
-      } catch (error: any) {
-        const serverMessage = error.response?.data?.message || error.message;
-        const finalMessage = Array.isArray(serverMessage)
-          ? serverMessage[0]
-          : serverMessage;
-        toast.error(t("auth.error") + finalMessage);
-      }
-    }
-    isInEdit(!isEdit);
-  }
+
 
   async function handleEnableTwoFactor() {
     if (!user) return;
@@ -324,7 +301,7 @@ export default function Profile() {
   return (
     <section className="w-full max-w-3xl mx-auto px-6 py-10">
       <div className="relative bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-8 overflow-hidden">
-        
+
         <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           {t("sidebar.profile")}
         </CardTitle>
@@ -345,7 +322,7 @@ export default function Profile() {
             />
             <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
             </div>
-			{isMe && isEdit && (
+			{isMe &&  (
 				<div className="mt-3 flex justify-center">
 					<input
 						ref={avatarInputRef}
@@ -371,17 +348,13 @@ export default function Profile() {
 			)}
 
           {/* USERNAME */}
-          {isEdit ? (
-            <Input
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              className="text-center"
-            />
-          ) : (
-            <h1 className="text-2xl font-bold tracking-wide">
-              <Username name={profileData?.username ?? ""} variant="profile" />
-            </h1>
-          )}
+          <h1 className="text-2xl font-bold tracking-wide">
+			<Username
+				name={profileData?.username ?? ""}
+				variant="profile"
+			/>
+		</h1>
+
         </div>
 
         <div>
@@ -481,29 +454,31 @@ export default function Profile() {
             {t("profile.bio")}
           </p>
 
-          <div className="w-full min-h-20 bg-white/5 border border-white/10 rounded-xl px-4 py-3 transition focus-within:border-cyan-400">
-            {isEdit ? (
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className="w-full bg-transparent focus:outline-none resize-none text-sm text-white/80"
-            />
-          ) : profileData?.bio ? (
-                <p className="text-sm leading-relaxed text-white/80">
-                  {profileData?.bio}
-                </p>
-          ) : (
-            <p className="text-sm text-white/30 italic">
-                {t("profile.emptyBio")}
-            </p>
-          )}
-            </div>          
+
+		<div className="w-full min-h-20 bg-white/5 border border-white/10 rounded-xl px-4 py-3 transition focus-within:border-cyan-400">
+			{profileData?.bio ? (
+				<p className="text-sm leading-relaxed text-white/80">
+					{profileData?.bio}
+				</p>
+			) : (
+				<p className="text-sm text-white/30 italic">
+					{t("profile.emptyBio")}
+				</p>
+			)}
+		</div>
+
+
         </div>
 
         {/* BUTTON */}
-        {isMe && ( <Button onClick={handleSave} className="mt-8 w-full flex justify-center">
-          {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
-        </Button> )}
+        {isMe && (
+			<Button
+				onClick={() => navigate("/settings")}
+				className="mt-8 w-full flex justify-center"
+			>
+				{t("settings.title")}
+			</Button>
+		)}
 
         {/* 2FA */}
         {isMe && ( <div className="mt-8">
@@ -563,12 +538,12 @@ export default function Profile() {
                   >
                     {t("auth.twofa.regenerate")}
                   </Button>
-                </div> 
-                
+                </div>
+
               )}
-              
+
             </div>
-            
+
           )}
         </div>
         )}

@@ -135,7 +135,8 @@
         "xp": "{{current}} / {{max}} XP",
         "emptyBio": "Click edit profile to add a biography",
         "changeAvatar": "Change avatar",
-        "avatarUpdated": "Avatar updated successfully"
+        "avatarUpdated": "Avatar updated successfully",
+        "username": "Username"
     },
 
     "settings": {
@@ -145,7 +146,10 @@
         "login": "Login to manage your settings",
         "profile": {
             "title": "Profile information",
-            "description": "Update your username, biography, and avatar."
+            "description": "Update your username, biography, and avatar.",
+            "updated": "Profile updated successfully",
+            "saving": "Saving...",
+            "save": "Save changes"
         },
         "security": {
             "title": "Security",
