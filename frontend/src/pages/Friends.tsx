@@ -89,8 +89,20 @@ export default function Friends() {
 	);
 
 
+	async function refreshFriendStatuses() {
+		if (!user) return;
+
+		const statuses = await friendsService.getFriendsStatus();
+		mergeFriendStatus(statuses);
+	}
+
 	useEffect(() => {
-		loadFriendsData();
+		async function loadPageData() {
+			await loadFriendsData();
+			await refreshFriendStatuses();
+		}
+
+		loadPageData();
 	}, [loadFriendsData]);
 
 	useEffect(() => {
@@ -158,6 +170,7 @@ export default function Friends() {
 			toast.success(t("friends.success.requestSent"));
 			await loadFriendsData();
 			await refreshFriendStatuses();
+			window.dispatchEvent(new Event("friends_updated"));
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -170,6 +183,7 @@ export default function Friends() {
 			toast.success(t("friends.success.accepted"));
 			await loadFriendsData();
 			await refreshFriendStatuses();
+			window.dispatchEvent(new Event("friends_updated"));
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -182,6 +196,7 @@ export default function Friends() {
 			toast.success(t("friends.success.declined"));
 			await loadFriendsData();
 			await refreshFriendStatuses();
+			window.dispatchEvent(new Event("friends_updated"));
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -194,16 +209,14 @@ export default function Friends() {
 			toast.success(t("friends.success.removed"));
 			await loadFriendsData();
 			await refreshFriendStatuses();
+			window.dispatchEvent(new Event("friends_updated"));
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
 		}
 	}
 
-	async function refreshFriendStatuses() {
-		const statuses = await friendsService.getFriendsStatus();
-		mergeFriendStatus(statuses);
-	}
+
 
 	const incomingRequestBySenderId = useMemo(() => {
 		return new Map(
@@ -332,7 +345,12 @@ export default function Friends() {
 					) : (
 						<div className="space-y-3">
 							{friends.map((item) => {
-								const status = friendStatus[item.friend.id];
+								const status = friendStatus[item.friend.id] ?? {
+									userId: item.friend.id,
+									online: false,
+									inGame: false,
+									activity: "offline" as const,
+								};
 
 								return (
 									<div
@@ -342,22 +360,22 @@ export default function Friends() {
 										<div>
 											<UserRow user={item.friend} />
 											<p className="text-xs mt-1 flex items-center gap-2">
-												<StatusDot activity={status?.activity ?? "offline"} />
+												<StatusDot activity={status.activity ?? "offline"} />
 
 												<span
 													className={
-														status?.activity === "offline"
+														status.activity === "offline"
 															? "text-red-400/80"
-															: status?.activity === "waiting"
+															: status.activity === "waiting"
 																? "text-yellow-300"
-																: status?.activity === "playing"
+																: status.activity === "playing"
 																	? "text-cyan-300"
 																	: "text-green-400"
 													}
 												>
-													{status?.activity === "offline" && t("friends.status.offline")}
+													{status.activity === "offline" && t("friends.status.offline")}
 
-													{status?.activity === "available" && (
+													{status.activity === "available" && (
 														<>
 															{t("friends.status.online")}
 															{" · "}
@@ -365,7 +383,7 @@ export default function Friends() {
 														</>
 													)}
 
-													{status?.activity === "waiting" && (
+													{status.activity === "waiting" && (
 														<>
 															{t("friends.status.online")}
 															{" · "}
@@ -373,7 +391,7 @@ export default function Friends() {
 														</>
 													)}
 
-													{status?.activity === "playing" && (
+													{status.activity === "playing" && (
 														<>
 															{t("friends.status.online")}
 															{" · "}

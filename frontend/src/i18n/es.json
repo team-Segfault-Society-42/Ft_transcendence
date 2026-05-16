@@ -25,6 +25,7 @@
 		"home": "Inicio",
 		"game": "Jugar",
 		"profile": "Perfil",
+        "settings": "Ajustes",
 		"leaderboard": "Clasificación",
 		"friends": "Amigos",
 		"chat": "Chat",
@@ -118,10 +119,6 @@
 			"winrateValue": "{{value}}%"
 		},
 		"bio": "Biografía",
-		"buttons": {
-			"edit": "Editar perfil",
-			"save": "Guardar cambios"
-      	},
 		"about": {
 			"title": "Acerca de",
 			"notConnected": "No conectado",
@@ -134,7 +131,27 @@
 		"emptyBio": "Haz clic en editar perfil para añadir una biografía",
 		"uploading": "Subiendo...",
   		"changeAvatar": "Cambiar avatar",
-  		"avatarUpdated": "Avatar actualizado correctamente"
+  		"avatarUpdated": "Avatar actualizado correctamente",
+		"username": "Nombre de Usuario",
+		"editProfile": "Editar perfil"
+	},
+
+	"settings": {
+		"title": "Ajustes",
+		"description": "Gestiona tu perfil y la seguridad de tu cuenta.",
+		"notConnected": "No conectado",
+		"login": "Inicia sesión para gestionar tus ajustes",
+		"profile": {
+			"title": "Información del perfil",
+			"description": "Actualiza tu nombre de usuario, biografía y avatar."
+		},
+		"security": {
+			"title": "Seguridad",
+			"description": "Gestiona la autenticación de dos factores y futuras opciones de seguridad.",
+			"disableTitle": "Desactivar 2FA",
+			"disableDescription": "La desactivación de 2FA se añadirá más adelante. Por ahora, la 2FA solo se puede activar.",
+			"disableComingSoon": "Desactivar 2FA próximamente"
+		}
 	},
 
     "leaderboard": {

@@ -25,6 +25,7 @@
         "home": "Accueil",
         "game": "Jouer",
         "profile": "Profil",
+        "settings": "Paramètres",
         "leaderboard": "Classement",
         "friends": "Amis",
         "chat": "Discussion",
@@ -118,10 +119,6 @@
             "winrateValue": "{{value}}%"
         },
         "bio": "Bio",
-        "buttons": {
-            "edit": "Modifier le profil",
-            "save": "Sauvegarder les changements"
-        },
         "about": {
             "title": "À propos",
             "notConnected": "Non connecté",
@@ -134,7 +131,27 @@
         "emptyBio": "Cliquez sur modifier profil pour ajouter une biographie",
         "uploading": "Téléchargement...",
         "changeAvatar": "Changer l'avatar",
-        "avatarUpdated": "Avatar mis à jour avec succès"
+        "avatarUpdated": "Avatar mis à jour avec succès",
+        "username": " Nom d'utilisateur",
+        "editProfile": "Modifier le profil"
+    },
+
+    "settings": {
+        "title": "Paramètres",
+        "description": "Gère ton profil et la sécurité de ton compte.",
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour gérer tes paramètres",
+        "profile": {
+            "title": "Informations du profil",
+            "description": "Modifie ton nom d'utilisateur, ta biographie et ton avatar."
+        },
+        "security": {
+            "title": "Sécurité",
+            "description": "Gère l'authentification à deux facteurs et les futures options de sécurité.",
+            "disableTitle": "Désactiver la 2FA",
+            "disableDescription": "La désactivation de la 2FA sera ajoutée plus tard. Pour l’instant, la 2FA peut seulement être activée.",
+            "disableComingSoon": "Désactivation de la 2FA bientôt disponible"
+        }
     },
 
     "leaderboard": {

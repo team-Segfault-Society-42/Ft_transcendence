@@ -25,6 +25,7 @@
         "home": "Home",
         "game": "Play",
         "profile": "Profile",
+        "settings": "Settings",
         "leaderboard": "Leaderboard",
         "friends": "Friends",
         "chat": "Chat",
@@ -119,10 +120,6 @@
             "winrateValue": "{{value}}%"
         },
         "bio": "Bio",
-        "buttons": {
-            "edit": "Edit profile",
-            "save": "Save changes"
-        },
         "about": {
             "title": "About",
             "notConnected": "Not connected",
@@ -134,7 +131,30 @@
         "xp": "{{current}} / {{max}} XP",
         "emptyBio": "Click edit profile to add a biography",
         "changeAvatar": "Change avatar",
-        "avatarUpdated": "Avatar updated successfully"
+        "avatarUpdated": "Avatar updated successfully",
+        "username": "Username",
+        "editProfile": "Edit profile"
+    },
+
+    "settings": {
+        "title": "Settings",
+        "description": "Manage your profile and account security.",
+        "notConnected": "Not connected",
+        "login": "Login to manage your settings",
+        "profile": {
+            "title": "Profile information",
+            "description": "Update your username, biography, and avatar.",
+            "updated": "Profile updated successfully",
+            "saving": "Saving...",
+            "save": "Save changes"
+        },
+        "security": {
+            "title": "Security",
+            "description": "Manage two-factor authentication and future security options.",
+            "disableTitle": "Disable 2FA",
+            "disableDescription": "Disabling 2FA will be added later. For now, 2FA can only be enabled.",
+            "disableComingSoon": "Disable 2FA coming soon"
+        }
     },
 
     "leaderboard":{
