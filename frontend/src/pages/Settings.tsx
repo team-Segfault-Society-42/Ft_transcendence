@@ -1,12 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/Card";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { userService } from "@/services/userService";
+import { Avatar } from "@/components/ui/Avatar";
 
 interface User {
 	id: number;
@@ -32,6 +33,8 @@ export default function Settings() {
 	const [username, setUsername] = useState(user?.username || "");
 	const [bio, setBio] = useState(user?.bio || "");
 	const [isSaving, setIsSaving] = useState(false);
+	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
+	const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
 	useEffect(() => {
 		if (!user) return;
@@ -56,6 +59,35 @@ export default function Settings() {
 				/>
 			</section>
 		);
+	}
+
+	async function handleAvatarUpload(event: React.ChangeEvent<HTMLInputElement>) {
+		if (!user) return;
+
+		const file = event.target.files?.[0];
+
+		if (!file) return;
+
+		try {
+			setIsAvatarUploading(true);
+
+			const updatedUser = await userService.uploadAvatar(file);
+			setUser(updatedUser);
+
+			toast.success(t("profile.avatarUpdated"));
+		} catch (error: any) {
+			const serverMessage =
+				error.response?.data?.message || error.message;
+
+			const finalMessage = Array.isArray(serverMessage)
+				? serverMessage[0]
+				: serverMessage;
+
+			toast.error(t("auth.error") + finalMessage);
+		} finally {
+			setIsAvatarUploading(false);
+			event.target.value = "";
+		}
 	}
 
 	async function handleSaveProfile() {
@@ -108,6 +140,34 @@ export default function Settings() {
 					</div>
 
 					<div className="space-y-4">
+						<div className="flex flex-col items-center gap-4">
+							<Avatar
+								src={user.avatar}
+								alt={user.username}
+								size="lg"
+								className="border border-white/20"
+							/>
+
+							<input
+								ref={avatarInputRef}
+								type="file"
+								accept="image/png,image/jpeg,image/webp"
+								onChange={handleAvatarUpload}
+								disabled={isAvatarUploading}
+								className="hidden"
+							/>
+
+							<Button
+								type="button"
+								variant="secondary"
+								onClick={() => avatarInputRef.current?.click()}
+								disabled={isAvatarUploading}
+							>
+								{isAvatarUploading
+									? t("profile.uploading")
+									: t("profile.changeAvatar")}
+							</Button>
+						</div>
 						<div>
 							<p className="text-sm text-white/50 mb-2">
 								{t("profile.username")}

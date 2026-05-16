@@ -1,5 +1,5 @@
 // import avatarImg from "/avatar.png"
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { userService } from "../services/userService";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/Input";
@@ -64,8 +64,6 @@ export default function Profile() {
   const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false);
   const navigate = useNavigate()
 
-	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
-	const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
 
   useEffect(() => {
@@ -269,33 +267,6 @@ export default function Profile() {
     }
   }
 
-	async function handleAvatarUpload(event: React.ChangeEvent<HTMLInputElement>) {
-		if (!user) return;
-
-		const file = event.target.files?.[0];
-
-		if (!file) return;
-
-		try {
-			setIsAvatarUploading(true);
-
-			const updatedUser = await userService.uploadAvatar(file);
-			setUser({ ...user, avatar: updatedUser.avatar });
-
-			toast.success(t("profile.avatarUpdated"));
-		} catch (error: any) {
-			const serverMessage = error.response?.data?.message || error.message;
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
-
-			toast.error(t("auth.error") + finalMessage);
-		} finally {
-			setIsAvatarUploading(false);
-			event.target.value = "";
-		}
-	}
-
   const state = getRelationshipState()
 
   return (
@@ -322,30 +293,8 @@ export default function Profile() {
             />
             <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
             </div>
-			{isMe &&  (
-				<div className="mt-3 flex justify-center">
-					<input
-						ref={avatarInputRef}
-						type="file"
-						accept="image/png,image/jpeg,image/webp"
-						onChange={handleAvatarUpload}
-						disabled={isAvatarUploading}
-						className="hidden"
-					/>
 
-					<Button
-						type="button"
-						variant="secondary"
-						onClick={() => avatarInputRef.current?.click()}
-						disabled={isAvatarUploading}
-						className="px-4 py-2 text-xs"
-					>
-						{isAvatarUploading
-            ? t("profile.uploading")
-            : t("profile.changeAvatar")}
-					</Button>
-				</div>
-			)}
+
 
           {/* USERNAME */}
           <h1 className="text-2xl font-bold tracking-wide">
