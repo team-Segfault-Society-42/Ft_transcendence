@@ -15,6 +15,7 @@ import Friends from "./pages/Friends";
 // import Chat from "./pages/Chat";
 import Rules from "./pages/Rules";
 import NotFound from "./pages/NotFound";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/game/:gameId" element={<Game />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:username" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/history" element={<History />} />

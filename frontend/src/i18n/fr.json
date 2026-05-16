@@ -38,6 +38,7 @@
         "home": "Accueil",
         "game": "Jouer",
         "profile": "Profil",
+        "settings": "Paramètres",
         "leaderboard": "Classement",
         "friends": "Amis",
         "chat": "Discussion",
@@ -148,6 +149,21 @@
         "uploading": "Téléchargement...",
         "changeAvatar": "Changer l'avatar",
         "avatarUpdated": "Avatar mis à jour avec succès"
+    },
+
+    "settings": {
+        "title": "Paramètres",
+        "description": "Gère ton profil et la sécurité de ton compte.",
+        "notConnected": "Non connecté",
+        "login": "Connecte-toi pour gérer tes paramètres",
+        "profile": {
+            "title": "Informations du profil",
+            "description": "Modifie ton nom d'utilisateur, ta biographie et ton avatar."
+        },
+        "security": {
+            "title": "Sécurité",
+            "description": "Gère l'authentification à deux facteurs et les futures options de sécurité."
+        }
     },
 
     "leaderboard": {

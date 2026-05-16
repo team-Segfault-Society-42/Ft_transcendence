@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { House, Gamepad2, UserRound, UsersRound, History, Trophy, Binoculars, BookOpenText } from "lucide-react";
+import { House, Gamepad2, UserRound, UsersRound, History, Trophy, Binoculars, BookOpenText, Settings as SettingsIcon } from "lucide-react";
 import LanguageSwitcher from "../ui/LanguageSwitcher";
 import { Button } from "@/components/ui/Button";
 import type { User } from "@/type/user.types";
@@ -20,6 +20,7 @@ export function Sidebar({user, onLoginClick, onLogoutClick} : HeaderProps) {
     { to: "/play", label: "sidebar.game", icon: Gamepad2 },
     { to: "/spectate", label: "sidebar.spectate", icon: Binoculars },
     { to: "/profile", label: "sidebar.profile", icon: UserRound },
+    { to: "/settings", label: "sidebar.settings", icon: SettingsIcon },
     { to: "/leaderboard", label: "sidebar.leaderboard", icon: Trophy },
     { to: "/friends", label: "sidebar.friends", icon: UsersRound },
     { to: "/history", label: "sidebar.history", icon: History },
@@ -35,7 +36,7 @@ export function Sidebar({user, onLoginClick, onLogoutClick} : HeaderProps) {
 
 			<nav className="flex flex-col gap-2 mt-20">
 				{links.map(link => {
-				const Icon = link.icon 
+				const Icon = link.icon
 				return (
 					<NavLink
 					key={link.to}
