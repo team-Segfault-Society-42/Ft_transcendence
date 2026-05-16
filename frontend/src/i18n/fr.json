@@ -160,7 +160,10 @@
         },
         "security": {
             "title": "Sécurité",
-            "description": "Gère l'authentification à deux facteurs et les futures options de sécurité."
+            "description": "Gère l'authentification à deux facteurs et les futures options de sécurité.",
+            "disableTitle": "Désactiver la 2FA",
+            "disableDescription": "La désactivation de la 2FA sera ajoutée plus tard. Pour l’instant, la 2FA peut seulement être activée.",
+            "disableComingSoon": "Désactivation de la 2FA bientôt disponible"
         }
     },
 

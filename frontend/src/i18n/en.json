@@ -163,7 +163,10 @@
         },
         "security": {
             "title": "Security",
-            "description": "Manage two-factor authentication and future security options."
+            "description": "Manage two-factor authentication and future security options.",
+            "disableTitle": "Disable 2FA",
+            "disableDescription": "Disabling 2FA will be added later. For now, 2FA can only be enabled.",
+            "disableComingSoon": "Disable 2FA coming soon"
         }
     },
 
