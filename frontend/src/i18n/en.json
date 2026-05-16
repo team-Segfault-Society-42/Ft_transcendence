@@ -133,10 +133,6 @@
             "winrateValue": "{{value}}%"
         },
         "bio": "Bio",
-        "buttons": {
-            "edit": "Edit profile",
-            "save": "Save changes"
-        },
         "about": {
             "title": "About",
             "notConnected": "Not connected",
@@ -149,7 +145,8 @@
         "emptyBio": "Click edit profile to add a biography",
         "changeAvatar": "Change avatar",
         "avatarUpdated": "Avatar updated successfully",
-        "username": "Username"
+        "username": "Username",
+        "editProfile": "Edit profile"
     },
 
     "settings": {
