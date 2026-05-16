@@ -124,6 +124,7 @@ export default function Profile() {
       await friendsService.sendFriendRequest(profileData.id)
       toast.success(t("friends.success.requestSent"))
       await loadFriendshipData()
+	  window.dispatchEvent(new Event("friends_updated"));
     }
     catch (error: any) {
 
@@ -143,6 +144,7 @@ export default function Profile() {
       await friendsService.acceptFriendRequest(request.requestId)
       toast.success(t("friends.success.accepted"))
       await loadFriendshipData()
+	  window.dispatchEvent(new Event("friends_updated"));
     }
     catch (error: any) {
       const message = error.response?.data?.message || error.message;
@@ -160,6 +162,7 @@ export default function Profile() {
       await friendsService.removeFriend(friendship.friendshipId)
       toast.success(t("friends.success.removed"));
       await loadFriendshipData()
+	  window.dispatchEvent(new Event("friends_updated"));
     }
     catch (error: any) {
       const message = error.response?.data?.message || error.message;
