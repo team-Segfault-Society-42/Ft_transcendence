@@ -119,10 +119,6 @@
             "winrateValue": "{{value}}%"
         },
         "bio": "Bio",
-        "buttons": {
-            "edit": "Modifier le profil",
-            "save": "Sauvegarder les changements"
-        },
         "about": {
             "title": "À propos",
             "notConnected": "Non connecté",
@@ -136,7 +132,8 @@
         "uploading": "Téléchargement...",
         "changeAvatar": "Changer l'avatar",
         "avatarUpdated": "Avatar mis à jour avec succès",
-		"username": " Nom d'utilisateur"
+        "username": " Nom d'utilisateur",
+        "editProfile": "Modifier le profil"
     },
 
     "settings": {

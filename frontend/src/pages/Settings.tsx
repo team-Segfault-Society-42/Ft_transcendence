@@ -188,7 +188,7 @@ export default function Settings() {
 				</p>
 			</div>
 
-			<div className="grid gap-6">
+			<div className="grid gap-8">
 				<Card className="space-y-6">
 					<div>
 						<CardTitle>{t("settings.profile.title")}</CardTitle>
@@ -261,7 +261,6 @@ export default function Settings() {
 						</Button>
 					</div>
 				</Card>
-
 
 				<Card className="space-y-6">
 					<div>

@@ -376,7 +376,7 @@ export default function Profile() {
 				onClick={() => navigate("/settings")}
 				className="mt-8 w-full flex justify-center"
 			>
-				{t("settings.title")}
+				{t("profile.editProfile")}
 			</Button>
 		)}
 
