@@ -148,7 +148,8 @@
 		"emptyBio": "Haz clic en editar perfil para añadir una biografía",
 		"uploading": "Subiendo...",
   		"changeAvatar": "Cambiar avatar",
-  		"avatarUpdated": "Avatar actualizado correctamente"
+  		"avatarUpdated": "Avatar actualizado correctamente",
+		"username": "Nombre de Usuario"
 	},
 
 	"settings": {
