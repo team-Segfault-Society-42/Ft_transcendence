@@ -279,10 +279,31 @@ export default function Settings() {
 						</p>
 
 						{user.isTwoFactorEnabled ? (
-							<div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
-								<p className="text-sm text-green-400 font-medium">
-									{t("auth.twofa.enabled")}
-								</p>
+							<div className="space-y-4">
+								<div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
+									<p className="text-sm text-green-400 font-medium">
+										{t("auth.twofa.enabled")}
+									</p>
+								</div>
+
+								<div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
+									<p className="text-sm font-semibold text-white">
+										{t("settings.security.disableTitle")}
+									</p>
+
+									<p className="text-sm text-white/50 mt-2">
+										{t("settings.security.disableDescription")}
+									</p>
+
+									<Button
+										type="button"
+										variant="secondary"
+										disabled
+										className="mt-4 w-full"
+									>
+										{t("settings.security.disableComingSoon")}
+									</Button>
+								</div>
 							</div>
 						) : (
 							<div className="space-y-4">
