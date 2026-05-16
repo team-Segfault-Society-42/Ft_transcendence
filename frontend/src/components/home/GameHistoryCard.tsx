@@ -68,6 +68,7 @@ export function GameHistoryCard({ matches, className, user }: Props) {
         {displayedMatches.map((match) => {
 
             const result = match.result.toLowerCase()
+            console.log(result)
 
             const resultColor =
             	result === "win"
@@ -99,7 +100,9 @@ export function GameHistoryCard({ matches, className, user }: Props) {
         )}>
 
     {/* LEFT */}
-    <div className="flex items-center gap-3">
+    <div 
+    onClick={() => navigate(`/profile/${match.opponent.username}`)}
+    className="flex items-center gap-3 cursor-pointer">
         <Avatar
             src={match.opponent.avatar}
             fallback={match.opponent.username[0]}
@@ -120,7 +123,7 @@ export function GameHistoryCard({ matches, className, user }: Props) {
     {/* RIGHT */}
     <div className="text-right">
         <p className={cn("font-semibold uppercase", resultColor)}>
-            {t(`backend.${result.toUpperCase()}`)}
+            {t(`backend.STATUS_MATCH_${result.toUpperCase()}`)}
         </p>
 
         <p className="text-xs text-white/50">

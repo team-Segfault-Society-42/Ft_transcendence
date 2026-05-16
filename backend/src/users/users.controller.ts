@@ -42,20 +42,41 @@ export class UsersController {
 		private readonly achievementsService: AchievementsService,
 	) {}
 
-  @ApiOperation({ summary: 'Get all existing achievements' })
-  @ApiResponse({ status: 200, type: [AchievementDto] })
-  @Get('allAchievements')
-  getAllAchievements() {
-    return this.achievementsService.getAllAchievements()
-  }
+	@ApiOperation({ summary: 'Get all existing achievements' })
+	@ApiResponse({ status: 200, type: [AchievementDto] })
+	@Get('allAchievements')
+	getAllAchievements() {
+		return this.achievementsService.getAllAchievements()
+	}
 
-  @ApiOperation({ summary: 'Get all of achievements of users' })
-  @ApiParam({ name: 'id', description: 'User ID', example: 1 })
-  @ApiResponse({ status: 200, description: 'Return user achievements list' })
-  @Get(':id/achievements')
-  getAchievements(@Param('id', ParseIntPipe) id: number) {
-    return this.achievementsService.getAchievements(id);
-  }
+	@ApiOperation({ summary: 'Get all of achievements of users' })
+	@ApiParam({ name: 'id', description: 'User ID', example: 1 })
+	@ApiResponse({ status: 200, description: 'Return user achievements list' })
+	@Get(':id/achievements')
+	getAchievements(@Param('id', ParseIntPipe) id: number) {
+		return this.achievementsService.getAchievements(id);
+	}
+
+	@ApiOperation({ summary: 'Get user by username', description: 'Retrieves a users public profile from their exact username.' })
+	@ApiParam({
+		name: 'username',
+		description: 'The unique username of the user being searched for',
+		example: 'dummy5'
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'User successfully found.'
+	})
+	@ApiResponse({ 
+        status: 404, 
+        description: 'No users were found with this username.' 
+    })
+	@Get('by-username/:username')
+	getUserByUsername(@Param('username') username: string) {
+		return this.usersService.getUserByUsername(username)
+	}
+
+
 
 	@ApiOperation({ summary: 'Get leaderboard of users' })
 	@ApiQuery({

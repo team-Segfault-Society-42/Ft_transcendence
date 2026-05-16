@@ -26,6 +26,7 @@ function App() {
           <Route path="/spectate" element={<LiveGamesDisplay />} />
           <Route path="/game/:gameId" element={<Game />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:username" element={<Profile />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/history" element={<History />} />
