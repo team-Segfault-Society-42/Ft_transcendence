@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { userService } from "../services/userService";
 import { useTranslation } from "react-i18next";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useOutletContext } from "react-router";
 import { toast } from "sonner";
@@ -41,7 +40,7 @@ type RelationshipState = "SELF" | "FRIEND" | "PENDING_SENT" | "PENDING_RECEIVED"
 
 export default function Profile() {
   const { t } = useTranslation();
-  const [user, setUser] =
+  const [user] =
     useOutletContext<
       [User | null, React.Dispatch<React.SetStateAction<User | null>>]
     >();
@@ -59,9 +58,6 @@ export default function Profile() {
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([])
   const [allAchievements, setAllAchievements] = useState<Achievement[]>([]);
 
-  const [twoFactorCode, setTwoFactorCode] = useState("");
-  const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
-  const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false);
   const navigate = useNavigate()
 
 
@@ -220,51 +216,6 @@ export default function Profile() {
         />
       </section>
     );
-  }
-
-
-
-  async function handleEnableTwoFactor() {
-    if (!user) return;
-
-    try {
-      setIsTwoFactorLoading(true);
-      const result = await userService.enableTwoFactor();
-      setQrCodeDataUrl(result.qrCodeDataUrl);
-      toast.success(t("auth.twofa.setupStarted"));
-    } catch (error: any) {
-      const serverMessage = error.response?.data?.message || error.message;
-      const finalMessage = Array.isArray(serverMessage)
-        ? serverMessage[0]
-        : serverMessage;
-      toast.error(t("auth.error") + finalMessage);
-    } finally {
-      setIsTwoFactorLoading(false);
-    }
-  }
-
-  async function handleVerifyTwoFactor() {
-    if (!user) return;
-
-    try {
-      setIsTwoFactorLoading(true);
-      const result = await userService.verifyTwoFactorSetup(twoFactorCode);
-      toast.success(result.message);
-
-      const refreshedUser = await userService.getMe();
-      setUser(refreshedUser);
-
-      setTwoFactorCode("");
-      setQrCodeDataUrl("");
-    } catch (error: any) {
-      const serverMessage = error.response?.data?.message || error.message;
-      const finalMessage = Array.isArray(serverMessage)
-        ? serverMessage[0]
-        : serverMessage;
-      toast.error(t("auth.error") + finalMessage);
-    } finally {
-      setIsTwoFactorLoading(false);
-    }
   }
 
   const state = getRelationshipState()
@@ -429,73 +380,6 @@ export default function Profile() {
 			</Button>
 		)}
 
-        {/* 2FA */}
-        {isMe && ( <div className="mt-8">
-          <p className="text-white/50 text-sm mb-2">{t("auth.twofa.title")}</p>
-
-          {profileData?.isTwoFactorEnabled ? (
-            <div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
-              <p className="text-sm text-green-400 font-medium">
-                {t("auth.twofa.enabled")}
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <Button
-                type="button"
-                onClick={handleEnableTwoFactor}
-                disabled={isTwoFactorLoading}
-                className="w-full"
-              >
-                {isTwoFactorLoading
-                  ? t("auth.twofa.loading")
-                  : t("auth.twofa.enable")}
-              </Button>
-
-              {qrCodeDataUrl && (
-                <div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10 space-y-4">
-                  <img
-                    src={qrCodeDataUrl}
-                    alt="2FA QR code"
-                    className="mx-auto rounded-lg bg-white p-2"
-                  />
-
-                  <Input
-                    value={twoFactorCode}
-                    onChange={(e) => setTwoFactorCode(e.target.value)}
-                    placeholder={t("auth.twofa.enterCode")}
-                    maxLength={6}
-                  />
-
-                  <Button
-                    type="button"
-                    onClick={handleVerifyTwoFactor}
-                    disabled={isTwoFactorLoading || twoFactorCode.length !== 6}
-                    className="w-full"
-                  >
-                    {isTwoFactorLoading
-                      ? t("auth.twofa.verifying")
-                      : t("auth.twofa.verify")}
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={handleEnableTwoFactor}
-                    disabled={isTwoFactorLoading}
-                    className="w-full"
-                  >
-                    {t("auth.twofa.regenerate")}
-                  </Button>
-                </div>
-
-              )}
-
-            </div>
-
-          )}
-        </div>
-        )}
       </div>
     </section>
   );
