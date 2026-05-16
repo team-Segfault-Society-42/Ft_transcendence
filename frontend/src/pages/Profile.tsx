@@ -1,8 +1,7 @@
 // import avatarImg from "/avatar.png"
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { userService } from "../services/userService";
 import { useTranslation } from "react-i18next";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useOutletContext } from "react-router";
 import { toast } from "sonner";
@@ -17,9 +16,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AchievementIcon } from "@/components/ui/AchievementIcons";
 import { CardTitle } from "@/components/ui/Card";
 import { UserRound } from "lucide-react";
-import type { User } from "@/type/user.types";
 import { friendsService, type FriendListItem, type IncomingFriendRequest, type OutgoingFriendRequest } from "@/services/friendsService";
 
+interface User {
+  id: number;
+  username: string;
+  wins: number;
+  losses: number;
+  draws: number;
+  bio: string;
+  avatar: string;
+  xp: number;
+  isTwoFactorEnabled: boolean;
+}
 
 interface Achievement {
   key: string;
@@ -32,7 +41,7 @@ type RelationshipState = "SELF" | "FRIEND" | "PENDING_SENT" | "PENDING_RECEIVED"
 
 export default function Profile() {
   const { t } = useTranslation();
-  const [user, setUser] =
+  const [user] =
     useOutletContext<
       [User | null, React.Dispatch<React.SetStateAction<User | null>>]
     >();
@@ -45,21 +54,13 @@ export default function Profile() {
   const [incomingRequests, setIncomingRequests] = useState<IncomingFriendRequest[]>([])
   const [outgoingRequests, setOutgoingRequests] = useState<OutgoingFriendRequest[]>([])
 
-  const [isEdit, isInEdit] = useState(false);
-  const [userName, setUserName] = useState(user?.username || "");
-  const [bio, setBio] = useState(user?.bio || "");
   const [loading, setLoading] = useState(true);
 
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([])
   const [allAchievements, setAllAchievements] = useState<Achievement[]>([]);
 
-  const [twoFactorCode, setTwoFactorCode] = useState("");
-  const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
-  const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false);
   const navigate = useNavigate()
 
-	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
-	const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
 
   useEffect(() => {
@@ -124,6 +125,7 @@ export default function Profile() {
       await friendsService.sendFriendRequest(profileData.id)
       toast.success(t("friends.success.requestSent"))
       await loadFriendshipData()
+	  window.dispatchEvent(new Event("friends_updated"));
     }
     catch (error: any) {
 
@@ -143,6 +145,7 @@ export default function Profile() {
       await friendsService.acceptFriendRequest(request.requestId)
       toast.success(t("friends.success.accepted"))
       await loadFriendshipData()
+	  window.dispatchEvent(new Event("friends_updated"));
     }
     catch (error: any) {
       const message = error.response?.data?.message || error.message;
@@ -160,6 +163,7 @@ export default function Profile() {
       await friendsService.removeFriend(friendship.friendshipId)
       toast.success(t("friends.success.removed"));
       await loadFriendshipData()
+	  window.dispatchEvent(new Event("friends_updated"));
     }
     catch (error: any) {
       const message = error.response?.data?.message || error.message;
@@ -169,38 +173,45 @@ export default function Profile() {
 
   useEffect(() => {
     if (!profileData) return;
-    const profileId = profileData.id;
 
-    if (isMe && user) {
-      setUserName(user.username);
-      setBio(user.bio ?? "");
-    }
 
-    async function fetchAllAchievments() {
-      try {
-        const data = await userService.getAllAchievements();
-        setAllAchievements(data);
-      } catch (error) {
-        console.error("Failed to fetch all achievements: ", error);
-      }
-    }
-
-    async function fetchAchievements() {
-      try {
-        const data = await userService.getAchievements(profileId);
-        if (Array.isArray(data)) {
-          setUnlockedAchievements(data.map((a: any) => a.achievementId || a));
+      async function fetchAllAchievments() {
+        try {
+          const data = await userService.getAllAchievements()
+          setAllAchievements(data)
+        } catch (error) {
+          console.error("Failed to fetch all achievements: ", error)
         }
-      } catch (error) {
-        console.error("Failed to fetch achievements: ", error);
       }
-    }
+      fetchAllAchievments()
 
-    fetchAllAchievments();
-    fetchAchievements();
+      async function fetchAchievements() {
+        try {
+          const data = await userService.getAchievements(profileData!.id)
+          if (Array.isArray(data)) {
+            setUnlockedAchievements(data.map((a: any) => a.achievementId || a));
+          }
+        } catch (error) {
+          console.error("Failed to fetch achievements: ", error)
+        }
+      }
+      fetchAchievements()
 
-    setLoading(false);
+      setLoading(false);
+
   }, [profileData?.id, isMe, user]);
+  
+  useEffect(() => {
+	async function handleFriendsUpdated() {
+		await loadFriendshipData();
+	}
+
+	window.addEventListener("friends_updated", handleFriendsUpdated);
+
+	return () => {
+		window.removeEventListener("friends_updated", handleFriendsUpdated);
+	};
+}, []);
 
   if (!user || loading) {
     return (
@@ -223,94 +234,6 @@ export default function Profile() {
     );
   }
 
-  async function handleSave() {
-    if (!user) return;
-    if (isEdit) {
-      try {
-        await userService.updateUser(user.id, { username: userName, bio: bio });
-        setUser({ ...user, username: userName, bio: bio });
-        toast.info(t("auth.buttons.edit"));
-      } catch (error: any) {
-        const serverMessage = error.response?.data?.message || error.message;
-        const finalMessage = Array.isArray(serverMessage)
-          ? serverMessage[0]
-          : serverMessage;
-        toast.error(t("auth.error") + finalMessage);
-      }
-    }
-    isInEdit(!isEdit);
-  }
-
-  async function handleEnableTwoFactor() {
-    if (!user) return;
-
-    try {
-      setIsTwoFactorLoading(true);
-      const result = await userService.enableTwoFactor();
-      setQrCodeDataUrl(result.qrCodeDataUrl);
-      toast.success(t("auth.twofa.setupStarted"));
-    } catch (error: any) {
-      const serverMessage = error.response?.data?.message || error.message;
-      const finalMessage = Array.isArray(serverMessage)
-        ? serverMessage[0]
-        : serverMessage;
-      toast.error(t("auth.error") + finalMessage);
-    } finally {
-      setIsTwoFactorLoading(false);
-    }
-  }
-
-  async function handleVerifyTwoFactor() {
-    if (!user) return;
-
-    try {
-      setIsTwoFactorLoading(true);
-      const result = await userService.verifyTwoFactorSetup(twoFactorCode);
-      toast.success(result.message);
-
-      const refreshedUser = await userService.getMe();
-      setUser(refreshedUser);
-
-      setTwoFactorCode("");
-      setQrCodeDataUrl("");
-    } catch (error: any) {
-      const serverMessage = error.response?.data?.message || error.message;
-      const finalMessage = Array.isArray(serverMessage)
-        ? serverMessage[0]
-        : serverMessage;
-      toast.error(t("auth.error") + finalMessage);
-    } finally {
-      setIsTwoFactorLoading(false);
-    }
-  }
-
-	async function handleAvatarUpload(event: React.ChangeEvent<HTMLInputElement>) {
-		if (!user) return;
-
-		const file = event.target.files?.[0];
-
-		if (!file) return;
-
-		try {
-			setIsAvatarUploading(true);
-
-			const updatedUser = await userService.uploadAvatar(file);
-			setUser({ ...user, avatar: updatedUser.avatar });
-
-			toast.success(t("profile.avatarUpdated"));
-		} catch (error: any) {
-			const serverMessage = error.response?.data?.message || error.message;
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
-
-			toast.error(t("auth.error") + finalMessage);
-		} finally {
-			setIsAvatarUploading(false);
-			event.target.value = "";
-		}
-	}
-
   const state = getRelationshipState()
 
   return (
@@ -330,50 +253,24 @@ export default function Profile() {
           {/* AVATAR */}
           <div className="relative group">
             <Avatar
-              src={profileData?.avatar ?? undefined}
-              alt={profileData?.username}
+              src={user.avatar ?? undefined}
+              alt={user.username}
               size="lg"
               className="border border-white/20 z-10 relative"
             />
             <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-md opacity-0 group-hover:opacity-100 transition"></div>
             </div>
-			{isMe && isEdit && (
-				<div className="mt-3 flex justify-center">
-					<input
-						ref={avatarInputRef}
-						type="file"
-						accept="image/png,image/jpeg,image/webp"
-						onChange={handleAvatarUpload}
-						disabled={isAvatarUploading}
-						className="hidden"
-					/>
 
-					<Button
-						type="button"
-						variant="secondary"
-						onClick={() => avatarInputRef.current?.click()}
-						disabled={isAvatarUploading}
-						className="px-4 py-2 text-xs"
-					>
-						{isAvatarUploading
-            ? t("profile.uploading")
-            : t("profile.changeAvatar")}
-					</Button>
-				</div>
-			)}
+
 
           {/* USERNAME */}
-          {isEdit ? (
-            <Input
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              className="text-center"
-            />
-          ) : (
-            <h1 className="text-2xl font-bold tracking-wide">
-              <Username name={profileData?.username ?? ""} variant="profile" />
-            </h1>
-          )}
+          <h1 className="text-2xl font-bold tracking-wide">
+			<Username
+				name={profileData?.username ?? ""}
+				variant="profile"
+			/>
+		</h1>
+
         </div>
 
         <div>
@@ -473,97 +370,32 @@ export default function Profile() {
             {t("profile.bio")}
           </p>
 
-          <div className="w-full min-h-20 bg-white/5 border border-white/10 rounded-xl px-4 py-3 transition focus-within:border-cyan-400">
-            {isEdit ? (
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className="w-full bg-transparent focus:outline-none resize-none text-sm text-white/80"
-            />
-          ) : profileData?.bio ? (
-                <p className="text-sm leading-relaxed text-white/80">
-                  {profileData?.bio}
-                </p>
-          ) : (
-            <p className="text-sm text-white/30 italic">
-                {t("profile.emptyBio")}
-            </p>
-          )}
-            </div>
+
+		<div className="w-full min-h-20 bg-white/5 border border-white/10 rounded-xl px-4 py-3 transition focus-within:border-cyan-400">
+			{profileData?.bio ? (
+				<p className="text-sm leading-relaxed text-white/80">
+					{profileData?.bio}
+				</p>
+			) : (
+				<p className="text-sm text-white/30 italic">
+					{t("profile.emptyBio")}
+				</p>
+			)}
+		</div>
+
+
         </div>
 
         {/* BUTTON */}
-        {isMe && ( <Button onClick={handleSave} className="mt-8 w-full flex justify-center">
-          {isEdit ? t("profile.buttons.save") : t("profile.buttons.edit")}
-        </Button> )}
+        {isMe && (
+			<Button
+				onClick={() => navigate("/settings")}
+				className="mt-8 w-full flex justify-center"
+			>
+				{t("profile.editProfile")}
+			</Button>
+		)}
 
-        {/* 2FA */}
-        {isMe && ( <div className="mt-8">
-          <p className="text-white/50 text-sm mb-2">{t("auth.twofa.title")}</p>
-
-          {profileData?.isTwoFactorEnabled ? (
-            <div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10">
-              <p className="text-sm text-green-400 font-medium">
-                {t("auth.twofa.enabled")}
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <Button
-                type="button"
-                onClick={handleEnableTwoFactor}
-                disabled={isTwoFactorLoading}
-                className="w-full"
-              >
-                {isTwoFactorLoading
-                  ? t("auth.twofa.loading")
-                  : t("auth.twofa.enable")}
-              </Button>
-
-              {qrCodeDataUrl && (
-                <div className="bg-white/5 rounded-lg py-4 px-4 border border-white/10 space-y-4">
-                  <img
-                    src={qrCodeDataUrl}
-                    alt="2FA QR code"
-                    className="mx-auto rounded-lg bg-white p-2"
-                  />
-
-                  <Input
-                    value={twoFactorCode}
-                    onChange={(e) => setTwoFactorCode(e.target.value)}
-                    placeholder={t("auth.twofa.enterCode")}
-                    maxLength={6}
-                  />
-
-                  <Button
-                    type="button"
-                    onClick={handleVerifyTwoFactor}
-                    disabled={isTwoFactorLoading || twoFactorCode.length !== 6}
-                    className="w-full"
-                  >
-                    {isTwoFactorLoading
-                      ? t("auth.twofa.verifying")
-                      : t("auth.twofa.verify")}
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={handleEnableTwoFactor}
-                    disabled={isTwoFactorLoading}
-                    className="w-full"
-                  >
-                    {t("auth.twofa.regenerate")}
-                  </Button>
-                </div>
-
-              )}
-
-            </div>
-
-          )}
-        </div>
-        )}
       </div>
     </section>
   );
