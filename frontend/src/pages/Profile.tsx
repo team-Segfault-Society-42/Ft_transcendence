@@ -20,17 +20,6 @@ import { UserRound } from "lucide-react";
 import type { User } from "@/type/user.types";
 import { friendsService, type FriendListItem, type IncomingFriendRequest, type OutgoingFriendRequest } from "@/services/friendsService";
 
-interface User {
-  id: number;
-  username: string;
-  wins: number;
-  losses: number;
-  draws: number;
-  bio: string;
-  avatar: string;
-  xp: number;
-  isTwoFactorEnabled: boolean;
-}
 
 interface Achievement {
   key: string;
@@ -55,7 +44,7 @@ export default function Profile() {
   const [friends, setFriends] = useState<FriendListItem[]>([])
   const [incomingRequests, setIncomingRequests] = useState<IncomingFriendRequest[]>([])
   const [outgoingRequests, setOutgoingRequests] = useState<OutgoingFriendRequest[]>([])
-  
+
   const [isEdit, isInEdit] = useState(false);
   const [userName, setUserName] = useState(user?.username || "");
   const [bio, setBio] = useState(user?.bio || "");
@@ -72,7 +61,7 @@ export default function Profile() {
 	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
 	const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
- 
+
   useEffect(() => {
     async function loadProfile() {
       if (isMe) {
@@ -85,7 +74,7 @@ export default function Profile() {
           const data = await userService.getUserByUsername(username)
           setProfileData(data)
           setLoading(false)
-        } 
+        }
         catch (error) {
           navigate("/dashboard");
         }
@@ -113,7 +102,7 @@ export default function Profile() {
 
   async function loadFriendshipData() {
     try {
-          
+
       const [friends, incomingRequests, outgoingRequests] = await Promise.all([
       friendsService.getFriends(),
       friendsService.getIncomingFriendRequests(),
@@ -135,7 +124,7 @@ export default function Profile() {
       await friendsService.sendFriendRequest(profileData.id)
       toast.success(t("friends.success.requestSent"))
       await loadFriendshipData()
-    } 
+    }
     catch (error: any) {
 
       const message = error.response?.data?.message || error.message
@@ -180,35 +169,37 @@ export default function Profile() {
 
   useEffect(() => {
     if (!profileData) return;
+    const profileId = profileData.id;
 
     if (isMe && user) {
       setUserName(user.username);
       setBio(user.bio ?? "");
+    }
 
-      async function fetchAllAchievments() {
-        try {
-          const data = await userService.getAllAchievements()
-          setAllAchievements(data)
-        } catch (error) {
-          console.error("Failed to fetch all achievements: ", error)
-        }
+    async function fetchAllAchievments() {
+      try {
+        const data = await userService.getAllAchievements();
+        setAllAchievements(data);
+      } catch (error) {
+        console.error("Failed to fetch all achievements: ", error);
       }
-      fetchAllAchievments()
+    }
 
-      async function fetchAchievements() {
-        try {
-          const data = await userService.getAchievements(profileData!.id)
-          if (Array.isArray(data)) {
-            setUnlockedAchievements(data.map((a: any) => a.achievementId || a));
-          }
-        } catch (error) {
-          console.error("Failed to fetch achievements: ", error)
+    async function fetchAchievements() {
+      try {
+        const data = await userService.getAchievements(profileId);
+        if (Array.isArray(data)) {
+          setUnlockedAchievements(data.map((a: any) => a.achievementId || a));
         }
+      } catch (error) {
+        console.error("Failed to fetch achievements: ", error);
       }
-      fetchAchievements()
+    }
 
-      setLoading(false);
-    
+    fetchAllAchievments();
+    fetchAchievements();
+
+    setLoading(false);
   }, [profileData?.id, isMe, user]);
 
   if (!user || loading) {
@@ -325,7 +316,7 @@ export default function Profile() {
   return (
     <section className="w-full max-w-3xl mx-auto px-6 py-10">
       <div className="relative bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-8 overflow-hidden">
-        
+
         <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
           {t("sidebar.profile")}
         </CardTitle>
@@ -339,7 +330,7 @@ export default function Profile() {
           {/* AVATAR */}
           <div className="relative group">
             <Avatar
-              src={profileData?.avatar ?? undefine}
+              src={profileData?.avatar ?? undefined}
               alt={profileData?.username}
               size="lg"
               className="border border-white/20 z-10 relative"
@@ -498,7 +489,7 @@ export default function Profile() {
                 {t("profile.emptyBio")}
             </p>
           )}
-            </div>          
+            </div>
         </div>
 
         {/* BUTTON */}
@@ -564,12 +555,12 @@ export default function Profile() {
                   >
                     {t("auth.twofa.regenerate")}
                   </Button>
-                </div> 
-                
+                </div>
+
               )}
-              
+
             </div>
-            
+
           )}
         </div>
         )}

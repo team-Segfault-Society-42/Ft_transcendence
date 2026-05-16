@@ -78,6 +78,8 @@ export interface GameState {
   winner: PlayerSymbol | null;
   endReason: EndReason;
 
+  scores: ScoreBoard;
+  
   moveCount: number;
   queuIdx: BoardPosition[];
   toDisapear: number;

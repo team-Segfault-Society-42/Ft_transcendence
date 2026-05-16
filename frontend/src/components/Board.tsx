@@ -205,7 +205,9 @@ export default function Board() {
             <h2
               className={`text-2xl font-bold text-center wrap-break-word ${endGameMessage.color}`}
             >
-              {endGameMessage.title}
+              {endGameMessage.winnerName
+                ? `${endGameMessage.winnerName} ${endGameMessage.resultText}`
+                : endGameMessage.resultText}
             </h2>
 
             <p className="text-sm text-gray-600 font-medium text-center">
