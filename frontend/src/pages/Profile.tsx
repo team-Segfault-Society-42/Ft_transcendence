@@ -199,6 +199,18 @@ export default function Profile() {
       setLoading(false);
 
   }, [profileData?.id, isMe, user]);
+  
+  useEffect(() => {
+	async function handleFriendsUpdated() {
+		await loadFriendshipData();
+	}
+
+	window.addEventListener("friends_updated", handleFriendsUpdated);
+
+	return () => {
+		window.removeEventListener("friends_updated", handleFriendsUpdated);
+	};
+}, []);
 
   if (!user || loading) {
     return (
