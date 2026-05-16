@@ -332,7 +332,12 @@ export default function Friends() {
 					) : (
 						<div className="space-y-3">
 							{friends.map((item) => {
-								const status = friendStatus[item.friend.id];
+								const status = friendStatus[item.friend.id] ?? {
+									userId: item.friend.id,
+									online: false,
+									inGame: false,
+									activity: "offline" as const,
+								};
 
 								return (
 									<div
@@ -342,22 +347,22 @@ export default function Friends() {
 										<div>
 											<UserRow user={item.friend} />
 											<p className="text-xs mt-1 flex items-center gap-2">
-												<StatusDot activity={status?.activity ?? "offline"} />
+												<StatusDot activity={status.activity ?? "offline"} />
 
 												<span
 													className={
-														status?.activity === "offline"
+														status.activity === "offline"
 															? "text-red-400/80"
-															: status?.activity === "waiting"
+															: status.activity === "waiting"
 																? "text-yellow-300"
-																: status?.activity === "playing"
+																: status.activity === "playing"
 																	? "text-cyan-300"
 																	: "text-green-400"
 													}
 												>
-													{status?.activity === "offline" && t("friends.status.offline")}
+													{status.activity === "offline" && t("friends.status.offline")}
 
-													{status?.activity === "available" && (
+													{status.activity === "available" && (
 														<>
 															{t("friends.status.online")}
 															{" · "}
@@ -365,7 +370,7 @@ export default function Friends() {
 														</>
 													)}
 
-													{status?.activity === "waiting" && (
+													{status.activity === "waiting" && (
 														<>
 															{t("friends.status.online")}
 															{" · "}
@@ -373,7 +378,7 @@ export default function Friends() {
 														</>
 													)}
 
-													{status?.activity === "playing" && (
+													{status.activity === "playing" && (
 														<>
 															{t("friends.status.online")}
 															{" · "}
