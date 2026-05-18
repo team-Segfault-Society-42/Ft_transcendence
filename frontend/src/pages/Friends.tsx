@@ -277,7 +277,8 @@ export default function Friends() {
 						return (
 							<div
 								key={result.id}
-								className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
+								className="flex items-center justify-between gap-4 cursor-pointer bg-white/5 border border-white/10 rounded-xl p-3"
+								onClick={() => navigate(`/profile/${result.username}`)}
 							>
 								<UserRow user={result} />
 
