@@ -386,7 +386,7 @@ export class GameService {
     for (const [gameId, game] of allGames) {
       if (game.status === 'waiting' && game.players.X.ownerUserId !== userId)
         waiting.push({ gameId, playerX: game.playerProfiles.X });
-      else if (game.status === 'playing')
+      else if (game.status === 'playing' && game.players.X.ownerUserId !== userId && game.players.O.ownerUserId !== userId)
         playing.push({
           gameId,
           playerX: game.playerProfiles.X,

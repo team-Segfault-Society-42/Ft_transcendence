@@ -6,6 +6,8 @@ import { gameApi } from "@/services/gameApi";
 import { IdleState } from "./IdleState";
 import { WaitingState } from "./WaitingState";
 import { PlayingState } from "./PlayingState";
+import { useNavigate } from "react-router-dom";
+import { useRef, useEffect } from "react";
 
 type Props = {
   	user: any
@@ -14,6 +16,15 @@ type Props = {
 export function PlayCard({ user }: Props) {
     const { t } = useTranslation();
     const activeGame = useActiveGameStore((state) => state.activeGame);
+	const navigate = useNavigate();
+	const previousStatus = useRef<string | null>(null);
+
+	useEffect(() => {
+	if (previousStatus.current === "waiting" && activeGame?.status === "playing") {
+		navigate(`/game/${activeGame.gameId}`);
+	}
+	previousStatus.current = activeGame?.status ?? null;
+	}, [activeGame, navigate]);
 
     const createGame = async () => {
       	try {
@@ -64,9 +75,9 @@ export function PlayCard({ user }: Props) {
 	if (activeGame?.status === "playing") {
 		return (
 			<PlayingState
-				gameId={activeGame.gameId}
-				playerX={activeGame.playerX}
-				playerO={activeGame.playerO}
+			gameId={activeGame.gameId}
+			playerX={activeGame.playerX}
+			playerO={activeGame.playerO}
 			/>
 		)
 	}
