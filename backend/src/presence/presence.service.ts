@@ -2,6 +2,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { Namespace } from 'socket.io';
 import { FriendsService } from '../friends/friends.service';
 import { GameService } from '../modules/game/game.service';
+import type { FriendEventName } from '../friends/friends.events';
 
 const MAX_PRESENCE_SOCKETS_PER_USER = 20;
 
@@ -160,17 +161,21 @@ export class PresenceService {
 		};
 	}
 
-	emitFriendsUpdated(userIds: number[]) {
+	emitFriendEvent(userId: number, eventName: FriendEventName) {
 		if (!this.server) {
 			return;
 		}
 
-		for (const userId of userIds) {
-			const socketIds = this.getUserSocketIds(userId);
+		const socketIds = this.getUserSocketIds(userId);
 
-			for (const socketId of socketIds) {
-				this.server.to(socketId).emit('friends_updated');
-			}
+		for (const socketId of socketIds) {
+			this.server.to(socketId).emit(eventName);
+		}
+	}
+
+	emitFriendEvents(userIds: number[], eventName: FriendEventName) {
+		for (const userId of userIds) {
+			this.emitFriendEvent(userId, eventName);
 		}
 	}
 

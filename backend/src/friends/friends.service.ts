@@ -13,6 +13,7 @@ import { FriendRequestAction } from './dto/respond-friend-request.dto';
 import { MAX_PENDING_FRIEND_REQUESTS, MAX_FRIEND_RESULTS} from './friends.constants';
 import { PresenceService } from '../presence/presence.service';
 import { GameService } from '../modules/game/game.service';
+import { FRIEND_EVENTS } from './friends.events';
 
 @Injectable()
 export class FriendsService {
@@ -95,7 +96,15 @@ export class FriendsService {
 				},
 			});
 
-			this.presenceService.emitFriendsUpdated([senderId, receiverId]);
+			this.presenceService.emitFriendEvent(
+				senderId,
+				FRIEND_EVENTS.REQUEST_SENT,
+			);
+
+			this.presenceService.emitFriendEvent(
+				receiverId,
+				FRIEND_EVENTS.REQUEST_RECEIVED,
+			);
 
 			return {
 				requestId: request.id,
@@ -220,7 +229,15 @@ export class FriendsService {
 				where: { id: requestId },
 			});
 
-			this.presenceService.emitFriendsUpdated([userId, request.senderId]);
+			this.presenceService.emitFriendEvent(
+				userId,
+				FRIEND_EVENTS.REQUEST_DECLINED,
+			);
+
+			this.presenceService.emitFriendEvent(
+				request.senderId,
+				FRIEND_EVENTS.REQUEST_DECLINED,
+			);
 
 			return {
 				message: 'FRIEND_REQUEST_DECLINED',
@@ -239,7 +256,15 @@ export class FriendsService {
 			},
 		});
 
-		this.presenceService.emitFriendsUpdated([userId, request.senderId]);
+		this.presenceService.emitFriendEvent(
+			userId,
+			FRIEND_EVENTS.REQUEST_ACCEPTED,
+		);
+
+		this.presenceService.emitFriendEvent(
+			request.senderId,
+			FRIEND_EVENTS.REQUEST_ACCEPTED,
+		);
 
 		return {
 			friendshipId: updatedRequest.id,
@@ -335,10 +360,15 @@ export class FriendsService {
 			where: { id: friendshipId },
 		});
 
-		this.presenceService.emitFriendsUpdated([
+		this.presenceService.emitFriendEvent(
 			friendship.senderId,
+			FRIEND_EVENTS.FRIEND_REMOVED,
+		);
+
+		this.presenceService.emitFriendEvent(
 			friendship.receiverId,
-		]);
+			FRIEND_EVENTS.FRIEND_REMOVED,
+		);
 
 		return {
 			message: 'FRIEND_REMOVED_SUCCESS',
