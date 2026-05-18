@@ -327,6 +327,21 @@ export class GameService {
 
     await this.saveGameToDB(game);
     this.activeGame.set(gameId, game);
+
+    if (game.playerProfiles.X?.id) {
+      this.presenceService.emitActiveGameUpdated(
+        game.playerProfiles.X.id,
+        null,
+      );
+    }
+    
+    if (game.playerProfiles.O?.id) {
+      this.presenceService.emitActiveGameUpdated(
+        game.playerProfiles.O.id,
+        null,
+      );
+    }
+    
     return { gameId, game };
   }
 
