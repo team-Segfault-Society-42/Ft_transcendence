@@ -12,6 +12,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { useActiveGameStore } from "@/Store/activeGameStore";
 import { gameApi } from "@/services/gameApi";
 import type { User } from "@/type/user.types";
+import { PlayingState } from "@/components/home/playcard/PlayingState";
 
 
 export default function Play() {
@@ -87,6 +88,13 @@ export default function Play() {
       	<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         	{/* MY GAMES */}
+			{activeGame?.status === "playing" ? (
+			<PlayingState
+			gameId={activeGame.gameId}
+			playerX={activeGame.playerX}
+			playerO={activeGame.playerO}
+			/>
+			) : (
         	<Card className="h-full relative flex items-center justify-center bg-slate-900">
           		<CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
             		{t("play.myGames.title")}
@@ -158,6 +166,7 @@ export default function Play() {
             )}
           	</div>
         	</Card>
+			)}
 
         {/* AVAILABLE GAMES */}
         <Card className="h-full relative flex items-center justify-center bg-slate-900">
