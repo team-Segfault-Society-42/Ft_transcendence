@@ -3,7 +3,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import Footer from "./Footer";
 import { AuthModal } from "@/components/auth/AuthModal";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { userService } from "@/services/userService";
 import { Spinner } from "@/components/ui/Spinner";
 import { useNavigate } from "react-router-dom";
@@ -57,6 +57,16 @@ export default function Dashboard() {
   const clearActiveGame = useActiveGameStore(
     (state) => state.clearActiveGame,
   );
+
+  const activeGame = useActiveGameStore((state) => state.activeGame);
+  const previousStatus = useRef<string | null>(null);
+
+	useEffect(() => {
+	  if (previousStatus.current === "waiting" && activeGame?.status === "playing") {
+		  navigate(`/game/${activeGame.gameId}`);
+	  }
+	  previousStatus.current = activeGame?.status ?? null;
+	}, [activeGame, navigate]);
 
   useEffect(() => {
     async function getCurrentUser() {
