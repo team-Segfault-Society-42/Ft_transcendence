@@ -320,7 +320,7 @@
       "success": "Autenticación 2FA exitosa",
       "back": "Volver al inicio",
       "error": "Error de autenticación",
-      "loginPrompt": "Saisissez votre code 2FA pour terminer la connexion"
+      "loginPrompt": "Introduzca su código 2FA para completar el inicio de sesión"
     }
   },
   "footer": {
@@ -471,7 +471,7 @@
       "gameNotFound": "Partida no encontrada",
       "notYourTurn": "No es tu turno",
       "waitingOpponent": "Esperando al oponente...",
-      "alreadyOccupied": "Esta case ya está ocupada",
+      "alreadyOccupied": "Esta casilla ya está ocupada",
       "replayUnavailable": "La repetición solo está disponible una vez que la partida ha finalizado.",
       "spectatorCannotPlay": "Los espectadores no pueden jugar",
       "spectatorCannotReplay": "Los espectadores no pueden solicitar una repetición.",
