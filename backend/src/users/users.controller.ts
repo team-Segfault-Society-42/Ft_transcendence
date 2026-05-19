@@ -28,6 +28,7 @@ import { AVATAR_MAX_FILE_SIZE } from './avatar.constants';
 import { AvatarUploadExceptionFilter } from './avatar-upload.exception-filter';
 import { AvatarUploadRateLimitGuard } from './avatar-upload-rate-limit.guard';
 import { AchievementDto } from './dto/achievements.dto';
+import { describe } from 'node:test';
 
 
 type SortBy = 'xp' | 'wins' | 'totalGames';
@@ -41,6 +42,14 @@ export class UsersController {
 		private readonly matchServices: MatchesService,
 		private readonly achievementsService: AchievementsService,
 	) {}
+
+	@ApiOperation({ summary: 'Get the user ranking' })
+	@ApiParam({ name: 'id', description: 'User ID', example:1 })
+	@ApiResponse({ status: 200, description: 'Return user ranking' })
+	@Get(':id/rank')
+	getUserRank(@Param('id', ParseIntPipe) id: number): Promise<{ rank: number, xp: number }> {
+		return this.usersService.getUserRank(id)
+	}
 
 	@ApiOperation({ summary: 'Get all existing achievements' })
 	@ApiResponse({ status: 200, type: [AchievementDto] })
