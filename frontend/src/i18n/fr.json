@@ -81,7 +81,32 @@
     "backHome": "Retour à la maison",
     "spectating": "Vous êtes spectateur",
     "waitingOpponent": "En attente de l'adversaire...",
-    "waitingMove": "En attente du coup de l'adversaire..."
+    "waitingMove": "En attente du coup de l'adversaire...",
+    "status": {
+      "opponentDisconnected": "Adversaire déconnecté – attente 20 secondes pour la reconnexion."
+    },
+    "end": {
+      "draw": {
+        "title": "Égalité",
+        "subtitle": "Aucun joueur n'a gagné cette manche"
+      },
+      "timeout": {
+        "title": "gagne   !",
+        "subtitle": "{{name}} a manqué de temps"
+      },
+      "forfeit": {
+        "title": "gagne !",
+        "subtitle": "{{name}} a quitté la partie"
+      },
+      "normalWin": {
+        "title": "gagne !",
+        "subtitle": "Le jeu s'est terminé normalement"
+      },
+      "default": {
+        "title": "Partie terminée",
+        "subtitle": "Ce match est terminé"
+      }
+    }
   },
   "play": {
     "myGames": {
@@ -280,7 +305,8 @@
       "setupStarted": "Configuration 2FA démarrée",
       "success": "Connexion 2FA réussie",
       "back": "Retour à l'accueil",
-      "error": "Erreur d'authentification"
+      "error": "Erreur d'authentification",
+      "loginPrompt": "Saisissez votre code 2FA pour terminer la connexion"
     }
   },
   "footer": {

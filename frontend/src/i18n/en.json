@@ -81,7 +81,32 @@
     "backHome": "Back to home",
     "spectating": "You are spectating",
     "waitingOpponent": "Waiting for opponent...",
-    "waitingMove": "Waiting for opponent move..."
+    "waitingMove": "Waiting for opponent move...",
+    "status": {
+      "opponentDisconnected": "Opponent disconnected — waiting 20s for reconnection.."
+    },
+    "end": {
+      "draw": {
+        "title": "Draw",
+        "subtitle": "No player won this round"
+      },
+      "timeout": {
+        "title": "won !",
+        "subtitle": "{{name}} ran out of time"
+      },
+      "forfeit": {
+        "title": "won !",
+        "subtitle": "{{name}} left the game"
+      },
+      "normalWin": {
+        "title": "won !",
+        "subtitle": "The game ended normally"
+      },
+      "default": {
+        "title": "Game finished",
+        "subtitle": "This match has ended"
+      }
+    }
   },
   "play": {
     "myGames": {
@@ -281,7 +306,8 @@
       "setupStarted": "2FA setup started",
       "success": "Two-factor login successful",
       "back": "Back to home",
-      "error": "Authentication error"
+      "error": "Authentication error",
+      "loginPrompt": "Enter your 2FA code to finish login"
     }
   },
   "footer": {

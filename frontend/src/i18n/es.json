@@ -10,5 +10,53 @@
       "unknown": "Error desconocido",
       "default": "Algo salió mal"
     }
+  },
+  "auth": {
+    "errors": {
+      "username": "El nombre de usuario debe tener al menos 3 caracteres.",
+      "email": "Dirección de correo electrónico no válida.",
+      "password": "La contraseña debe tener al menos 8 caracteres."
+    },
+    "success": "¡Usuario creado exitosamente!",
+    "error": "Se produjo un error:",
+    "username": "Nombre de usuario",
+    "placeholders": {
+      "username": "Ingrese su nombre de usuario"
+    },
+    "twofa": {
+      "loginPrompt": "Introduzca su código 2FA para completar el inicio de sesión"
+    }
+  },
+  "game": {
+    "spectating": "estas mirando",
+    "replay": "REPETICIÓN",
+    "waitingMove": "Esperando el movimiento del oponente...",
+    "status": {
+      "opponentDisconnected": "Oponente desconectado: esperando 20 segundos para volver a conectarse."
+    },
+    "waitingOpponent": "Esperando al oponente...",
+    "backHome": "De vuelta a casa",
+    "end": {
+      "draw": {
+        "title": "Dibujar",
+        "subtitle": "Ningún jugador ganó esta ronda"
+      },
+      "timeout": {
+        "title": "ganado !",
+        "subtitle": "{{name}} se quedó sin tiempo"
+      },
+      "forfeit": {
+        "title": "ganado !",
+        "subtitle": "{{name}} abandonó el juego"
+      },
+      "normalWin": {
+        "title": "ganado !",
+        "subtitle": "El juego terminó normalmente."
+      },
+      "default": {
+        "title": "Juego terminado",
+        "subtitle": "Este partido ha terminado"
+      }
+    }
   }
 }
