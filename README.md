@@ -152,17 +152,24 @@ Uses Vite HMR and HTTP only. Available at `http://localhost`.
 
 ## Technical Stack
 
-| Layer | Technology | Justification |
+### Core Technologies
+
+| Layer | Technology | Why we chose it |
 | --- | --- | --- |
-| Frontend | React + Vite | Component model suits SPA architecture; Vite HMR speeds up development iteration |
-| Routing | React Router | Standard SPA routing with `BrowserRouter` |
-| Styling | Tailwind CSS | Utility-first CSS enforces visual consistency via design tokens |
-| Backend | NestJS | Structured, opinionated framework with built-in dependency injection, guards, and decorators. This is suited for a multi-module API with auth, sockets, and REST. |
-| Real-time | Socket.IO | Bidirectional WebSocket communication for game state and chat |
-| Database | PostgreSQL | Robust relational database; strong Prisma support; well-suited to the relational data model |
-| ORM | Prisma 7 | Type-safe ORM with schema-driven migrations; `@prisma/adapter-pg` for connection pooling |
-| Proxy | NGINX | Single entry point; handles HTTP→HTTPS redirect and WebSocket upgrade |
-| Containerisation | Docker + Docker Compose | Reproducible dev and prod environments; secrets-based config avoids `.env` exposure |
+| Frontend | React + Vite | React's component model fits the SPA architecture and directly supports the reusable components module. TypeScript across front and backend keeps the codebase consistent and adds type safety — helpful when learning. Vite integrates naturally with React and its HMR speeds up dev iteration. |
+| Backend | NestJS | Its rigid, opinionated structure enforces consistent patterns across the team — important when everyone is learning and reading each other's code. Built-in dependency injection, guards, and decorators suit a multi-module API handling auth, sockets, and REST. |
+| Database | PostgreSQL | Robust relational database well-suited to the data model (Users, Games, Moves, Friends, Achievements). Strong Prisma integration and solid NestJS ecosystem support made it a practical choice. |
+| ORM | Prisma 7 | Type-safe ORM that pairs naturally with PostgreSQL. Schema-driven approach keeps the data model explicit and `@prisma/adapter-pg` adds connection pooling. |
+| Proxy | NGINX | Familiar from prior 42 projects (webserv, inception). Acts as the single entry point: handles HTTP→HTTPS redirect, WebSocket upgrade, and proxies traffic to frontend and backend. |
+| Containerisation | Docker + Docker Compose | Familiar from inception. Reproducible dev and prod environments; secrets-based config keeps sensitive values out of committed files. Multi-stage Dockerfiles keep production images lean. |
+
+### Additional Technologies
+
+| Layer | Technology | Why we chose it |
+| --- | --- | --- |
+| Routing | React Router | Standard SPA routing for React; `BrowserRouter` provides client-side navigation with minimal setup. |
+| Styling | Tailwind CSS | Required by the subject. Utility-first approach speeds up styling and enforces visual consistency through design tokens. |
+| Real-time | Socket.IO | Bidirectional WebSocket library with built-in room management — well-suited for real-time game state sync and live chat. |
 
 ---
 
