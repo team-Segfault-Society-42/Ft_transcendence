@@ -121,7 +121,7 @@
     "profile": {
         "loading": "Loading...",
         "uploading": "Uploading...",
-        "level": "Level {{level}}",
+        "level": "Level {{currentLevel}}",
         "achievement": "Achievements",
         "stats": {
             "wins": "Wins",

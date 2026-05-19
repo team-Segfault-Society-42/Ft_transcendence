@@ -120,7 +120,7 @@
 
     "profile": {
         "loading": "Chargement...",
-        "level": "Niveau {{level}}",
+        "level": "Niveau {{currentLevel}}",
         "achievement": "Trophées",
         "stats": {
             "wins": "Victoires",

@@ -120,7 +120,7 @@
 
     "profile": {
 		"loading": "Cargando...",
-		"level": "Nivel {{level}}",
+		"level": "Nivel {{currentLevel}}",
 		"achievement": "Logros",
 		"stats": {
 			"wins": "Victorias",
