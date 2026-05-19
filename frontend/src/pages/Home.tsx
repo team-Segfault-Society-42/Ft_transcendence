@@ -13,6 +13,16 @@ export default function Home() {
   const [user] = useOutletContext<any>();
   const [matches, setMatches] = useState<Match[]>([]);
   const { t } = useTranslation();
+  const [createError, setCreateError] = useState<string | null>(null);
+
+  const createGame = async () => {
+    try {
+      const data = await gameApi.createGame();
+      navigate(`/game/${data.gameId}`);
+    } catch {
+      setCreateError("home.errors.createFailed");
+    }
+  };
 
   useEffect(() => {
     if (!user) {
@@ -45,6 +55,9 @@ export default function Home() {
         </div>
       </Motion>
 
+      {createError && (
+        <p className="text-red-500 text-sm text-center">{t(createError)}</p>
+      )}
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link to="/profile" className="h-full">
           <AboutCard user={user} className="flex-1" />

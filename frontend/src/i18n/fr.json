@@ -16,6 +16,9 @@
       "hi": "Salut, ",
       "create": "Créer une partie",
       "join": "Rejoindre une partie"
+    },
+    "errors": {
+      "createFailed": "Échec de la création du jeu. \nVeuillez réessayer"
     }
   },
   "sidebar": {
@@ -107,8 +110,12 @@
       "default": {
         "title": "Partie terminée",
         "subtitle": "Ce match est terminé"
-      }
-    }
+      },
+      "opponentLeftReplay": "L’adversaire est parti – replay indisponible",
+      "decidingReplay": "Les joueurs décident s'ils veulent rejouer."
+    },
+    "you": "Toi",
+    "spectators": "Spectateurs sur cette partie : {{count}}"
   },
   "play": {
     "myGames": {
@@ -248,7 +255,9 @@
   "chat": {
     "title": "Discussion",
     "notConnected": "Non connecté",
-    "login": "Connecte-toi pour accéder à la discussion"
+    "login": "Connecte-toi pour accéder à la discussion",
+    "open": "Ouvrir le chat",
+    "placeholder": "Message ({{count}} caractères maximum)"
   },
   "history": {
     "title": "Historique des parties",
@@ -467,5 +476,10 @@
       "unknown": "Erreur inconnue",
       "default": "Quelque chose s'est mal passé"
     }
+  },
+  "notFound": {
+    "title": "Page introuvable",
+    "description": "Cette page n'existe pas ou a été déplacée.",
+    "goHome": "Retour a la page d'accueil"
   }
 }

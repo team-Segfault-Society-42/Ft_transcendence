@@ -1,10 +1,12 @@
 import { Eye } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
 	count: number;
 };
 
 export function SpectatorCount({ count }: Props) {
+	const { t } = useTranslation();
 	if (count <= 0) return null;
 
 	return (
@@ -12,9 +14,7 @@ export function SpectatorCount({ count }: Props) {
 			<Eye size={14} />
 
 			<span>
-				{/* a traduire */}
-				{'Spectating this game: '}
-				{count}
+				{t('game.spectators', { count })}
 			</span>
 		</div>
 	);

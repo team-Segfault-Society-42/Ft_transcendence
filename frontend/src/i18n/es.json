@@ -58,10 +58,53 @@
       "default": {
         "title": "Juego terminado",
         "subtitle": "Este partido ha terminado"
+      },
+      "opponentLeftReplay": "El oponente se ha ido. La repetición no está disponible.",
+      "decidingReplay": "Los jugadores deciden si quieren volver a jugar."
+    },
+    "you": "Tú",
+    "spectators": "Espectadores en esta partida: {{count}}",
+    "rules": {
+      "maxSymbols": {
+        "title": "Máximo 3 símbolos por jugador",
+        "desc": "Solo puedes tener hasta 3 símbolos en el tablero."
+      },
+      "disappear": {
+        "title": "El mayor desaparece",
+        "desc": "Al colocar un nuevo símbolo, el más antiguo desaparece"
+      },
+      "win": {
+        "title": "Alinea 3 para ganar",
+        "desc": "Consigue 3 símbolos seguidos (horizontal, vertical o diagonal)"
+      },
+      "strategy": {
+        "title": "pensar en el futuro",
+        "desc": "Planifica tus movimientos y controla el tablero"
+      },
+      "draw": {
+        "title": "Regla de sorteo",
+        "desc": "Si ningún jugador gana después de 20 movimientos, la partida termina en empate."
       }
     }
   },
   "buttons": {
     "backHome": "De vuelta a casa"
+  },
+  "chat": {
+    "open": "abrir chat",
+    "placeholder": "Mensaje (máximo {{count}} caracteres)"
+  },
+  "home": {
+    "play": {
+      "description": "Un juego de estrategia atemporal. \n¡Sé el primero en conseguir 3 seguidos y conseguir la victoria!"
+    },
+    "errors": {
+      "createFailed": "No se pudo crear el juego. \nPor favor inténtalo de nuevo"
+    }
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "Esta página no existe o ha sido movida.",
+    "goHome": "Regresar a la página principal"
   }
 }

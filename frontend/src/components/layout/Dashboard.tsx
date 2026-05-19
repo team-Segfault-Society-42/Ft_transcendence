@@ -217,7 +217,7 @@ export default function Dashboard() {
           onClick={handleChatClick}
           className="fixed bottom-6 right-6 z-50"
         >
-          Open chat
+          {t('chat.open')}
         </Button>
       )}
       {user && isChat && <Chatbar onClose={handleChatClick} />}

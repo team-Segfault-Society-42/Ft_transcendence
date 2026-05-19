@@ -16,6 +16,9 @@
       "hi": "Hi,",
       "create": "Create a game",
       "join": "Join a game"
+    },
+    "errors": {
+      "createFailed": "Failed to create game. Please try again"
     }
   },
   "sidebar": {
@@ -107,8 +110,12 @@
       "default": {
         "title": "Game finished",
         "subtitle": "This match has ended"
-      }
-    }
+      },
+      "opponentLeftReplay": "The opponent has left — replay unavailable",
+      "decidingReplay": "The players decide if they want to play again."
+    },
+    "you": "You",
+    "spectators": "Spectating this game: {{count}}"
   },
   "play": {
     "myGames": {
@@ -249,7 +256,9 @@
   "chat": {
     "title": "Chat",
     "notConnected": "Not connected",
-    "login": "Login to see the chat"
+    "login": "Login to see the chat",
+    "open": "Open chat",
+    "placeholder": "Message (max {{count}} characters)"
   },
   "history": {
     "title": "Game History",
@@ -468,5 +477,10 @@
       "unknown": "Unknown error",
       "default": "Something went wrong"
     }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "This page doesn't exist or has been moved.",
+    "goHome": "Go Home"
   }
 }
