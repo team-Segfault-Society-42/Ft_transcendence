@@ -126,6 +126,7 @@
         "stats": {
             "wins": "Wins",
             "losses": "Losses",
+            "draw": "Draw",
             "winrate": "Winrate",
             "games_zero": "No games played",
             "games_one": "{{count}} game played",

@@ -28,7 +28,6 @@ import { AVATAR_MAX_FILE_SIZE } from './avatar.constants';
 import { AvatarUploadExceptionFilter } from './avatar-upload.exception-filter';
 import { AvatarUploadRateLimitGuard } from './avatar-upload-rate-limit.guard';
 import { AchievementDto } from './dto/achievements.dto';
-import { describe } from 'node:test';
 
 
 type SortBy = 'xp' | 'wins' | 'totalGames';

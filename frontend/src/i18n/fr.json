@@ -125,6 +125,7 @@
         "stats": {
             "wins": "Victoires",
             "losses": "Défaites",
+            "draw": "Égalité",
             "winrate": "Taux de victoires",
             "games_zero": "Aucune partie jouée",
             "games_one": "{{count}} partie jouée",
