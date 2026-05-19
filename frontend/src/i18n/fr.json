@@ -2,21 +2,34 @@
     "title": "ft_transcendence",
 
     "home": {
-        "play": {
-            "title": "Jouer une partie",
-            "description": "Un jeu de stratégie intemporel. Soyez le premier à aligner 3 symboles pour remporter la victoire !"
-        },
         "hero":{
             "title": "Morpion",
             "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
         },
+        "play":{
+            "idle":{
+                "title": "Jouer",
+                "description": "Lancez des parties compétitives ou regardez des matchs en direct",
+                "create": "Créer une partie",
+                "join": "Rejoindre une partie",
+                "watch": "Regarder des matchs"
+            },
+            "waiting":{
+                "title": "Salle d'attente",
+                "description": "En attente qu'un adversaire rejoigne...",
+                "copy": "Copier le lien",
+                "cancel": "Annuler"
+            },
+            "playing":{
+                "title": "Match en cours",
+                "description": "Entrez dans l'arène et combattez pour la victoire !",
+                "vs": "VS",
+                "resume": "Reprendre la partie"
+            }
+        },
         "buttons":{
-            "register": "S'enregistrer",
             "login": "Se connecter",
-            "start": "LANCER LA PARTIE",
-            "hi": "Salut, ",
-            "create": "Créer une partie",
-            "join": "Rejoindre une partie"
+            "hi": "Salut, "
         }
     },
 

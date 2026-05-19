@@ -5,12 +5,31 @@ import { GameService } from '../modules/game/game.service';
 
 const MAX_PRESENCE_SOCKETS_PER_USER = 20;
 
+type ActiveGameStatus = "idle" | "waiting" | "playing";
+
+interface ActiveGamePayload {
+	gameId: string;
+
+	status: ActiveGameStatus;
+
+	playerX?: {
+		username: string;
+		avatar?: string | null;
+	};
+
+	playerO?: {
+		username: string;
+		avatar?: string | null;
+	};
+}
+
 @Injectable()
 export class PresenceService {
 	constructor(
 		@Inject(forwardRef(() => FriendsService))
 		private readonly friendsService: FriendsService,
 
+		@Inject(forwardRef(() => GameService))
 		private readonly gameService: GameService,
 	) {}
 	private readonly onlineUsers = new Map<number, Set<string>>();
@@ -148,6 +167,21 @@ export class PresenceService {
 			for (const socketId of socketIds) {
 				this.server.to(socketId).emit('friends_updated');
 			}
+		}
+	}
+
+	emitActiveGameUpdated( userId: number, activeGame: ActiveGamePayload | null) {
+		if (!this.server) {
+			return;
+		}
+	
+		const socketIds = this.getUserSocketIds(userId);
+	
+		for (const socketId of socketIds) {
+			this.server.to(socketId).emit(
+				"active_game_updated",
+				activeGame,
+			);
 		}
 	}
 }

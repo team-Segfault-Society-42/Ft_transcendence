@@ -9,16 +9,7 @@ import { useTranslation } from "react-i18next";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { EyeOff, Binoculars } from "lucide-react";
 import { Spinner } from "@/components/ui/Spinner";
-
-interface User {
-  username: string
-  avatar?: string
-  bio?: string
-  wins?: number
-  losses?: number
-  draws?: number
-  xp?: number
-}
+import type { User } from "@/type/user.types";
 
 export default function LiveGamesDisplay() {
 

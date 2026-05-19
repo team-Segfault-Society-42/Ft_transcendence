@@ -15,6 +15,7 @@ import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { AchievementIcon } from "@/components/ui/AchievementIcons";
 import { CardTitle } from "@/components/ui/Card";
+import { UserRound } from "lucide-react";
 import { friendsService, type FriendListItem, type IncomingFriendRequest, type OutgoingFriendRequest } from "@/services/friendsService";
 
 interface User {
@@ -217,7 +218,7 @@ export default function Profile() {
       <section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
         <EmptyStateCard
           title={t("profile.about.title")}
-          icon={<span className="text-xl font-bold">?</span>}
+          icon={<UserRound size={24} />}
           message={t("profile.about.notConnected")}
           description={t("profile.about.login")}
           actions={
@@ -252,8 +253,8 @@ export default function Profile() {
           {/* AVATAR */}
           <div className="relative group">
             <Avatar
-              src={profileData?.avatar}
-              alt={profileData?.username}
+              src={user.avatar ?? undefined}
+              alt={user.username}
               size="lg"
               className="border border-white/20 z-10 relative"
             />

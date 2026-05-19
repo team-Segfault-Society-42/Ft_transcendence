@@ -1,6 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AboutCard } from "@/components/home/AboutCard";
-import { PlayCard } from "@/components/home/PlayCard";
+import { PlayCard } from "@/components/home/playcard/PlayCard";
 import { GameHistoryCard } from "@/components/home/GameHistoryCard";
 import type { Match } from "@/lib/match";
 import { useEffect, useState } from "react";
@@ -8,23 +8,11 @@ import { useOutletContext } from "react-router";
 import { userService } from "@/services/userService";
 import { Motion } from "@/components/ui/Motion";
 import { useTranslation } from "react-i18next";
-import { gameApi } from "@/services/gameApi";
 
 export default function Home() {
-  const navigate = useNavigate();
   const [user] = useOutletContext<any>();
   const [matches, setMatches] = useState<Match[]>([]);
   const { t } = useTranslation();
-  const [createError, setCreateError] = useState<string | null>(null);
-
-  const createGame = async () => {
-    try {
-      const data = await gameApi.createGame();
-      navigate(`/game/${data.gameId}`);
-    } catch {
-      setCreateError("Failed to create game. Please try again.");
-    }
-  };
 
   useEffect(() => {
     if (!user) {
@@ -57,21 +45,16 @@ export default function Home() {
         </div>
       </Motion>
 
-      {createError && (
-        <p className="text-red-500 text-sm text-center">{createError}</p>
-      )}
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link to="/profile" className="h-full">
           <AboutCard user={user} className="flex-1" />
         </Link>
 
         {user ? (
-          <Link to="/lobby">
-            <PlayCard createGame={createGame} user={user} />
-          </Link>
+            <PlayCard user={user} />
         ) : (
           <Link to="/rules">
-            <PlayCard createGame={createGame} user={user} />
+            <PlayCard user={user} />
           </Link>
         )}
 

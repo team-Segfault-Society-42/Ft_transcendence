@@ -6,16 +6,8 @@ import { LevelProgress } from "../ui/Level"
 import { useTranslation } from "react-i18next"
 import { Username } from "@/components/ui/Username"
 import { EmptyStateCard } from "../ui/EmptyCard"
-
-interface User {
-  username: string
-  avatar?: string
-  bio?: string
-  wins?: number
-  losses?: number
-  draws?: number
-  xp?: number
-}
+import { UserRound } from "lucide-react"
+import type { User } from "@/type/user.types";
 
 type Props = {
   user: User | null
@@ -29,7 +21,7 @@ export function AboutCard({ user, className }: Props) {
     return (
       <EmptyStateCard
       title={t("profile.about.title")}
-      icon={<span className="text-xl font-bold">?</span>}
+      icon={<UserRound size={24} />}
       message={t("profile.about.notConnected")}
       description={t("profile.about.login")}
     />
@@ -49,7 +41,7 @@ export function AboutCard({ user, className }: Props) {
       <div className="mt-12">
       <div className="flex items-center gap-4 mt-4 min-w-0">
         <Avatar
-          src={user?.avatar}
+          src={user?.avatar ?? undefined}
           fallback={user?.username?.[0] || "?"}
           size="lg"
         />

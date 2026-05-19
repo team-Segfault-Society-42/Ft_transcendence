@@ -3,7 +3,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import Footer from "./Footer";
 import { AuthModal } from "@/components/auth/AuthModal";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { userService } from "@/services/userService";
 import { Spinner } from "@/components/ui/Spinner";
 import { useNavigate } from "react-router-dom";
@@ -11,16 +11,12 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Chatbar } from "./Chatbar";
 import { Button } from "../ui/Button";
-import {
-	connectPresenceSocket,
-	disconnectPresenceSocket,
-} from "@/services/presenceSocket";
-
+import { useActiveGameStore } from "@/Store/activeGameStore";
+import { connectPresenceSocket, disconnectPresenceSocket,} from "@/services/presenceSocket";
 import { friendsService } from "@/services/friendsService";
-
 import { usePresenceStore } from "@/Store/presenceStore";
-
 import type { FriendStatus } from "@/services/friendsService";
+import type { User } from "@/type/user.types";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -28,7 +24,7 @@ export default function Dashboard() {
   const [activeModal, setActiveModal] = useState<"signup" | "login" | null>(
     null,
   );
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isChat, setIsChat] = useState(false);
 
@@ -49,6 +45,28 @@ export default function Dashboard() {
   const openLogin = () => setActiveModal("login");
   const closeModals = () => setActiveModal(null);
   const handleChatClick = () => setIsChat((prev) => !prev);
+
+  const fetchActiveGame = useActiveGameStore(
+    (state) => state.fetchActiveGame,
+  );
+
+  const setActiveGame = useActiveGameStore(
+    (state) => state.setActiveGame,
+  );
+  
+  const clearActiveGame = useActiveGameStore(
+    (state) => state.clearActiveGame,
+  );
+
+  const activeGame = useActiveGameStore((state) => state.activeGame);
+  const previousStatus = useRef<string | null>(null);
+
+	useEffect(() => {
+	  if (previousStatus.current === "waiting" && activeGame?.status === "playing") {
+		  navigate(`/game/${activeGame.gameId}`);
+	  }
+	  previousStatus.current = activeGame?.status ?? null;
+	}, [activeGame, navigate]);
 
   useEffect(() => {
     async function getCurrentUser() {
@@ -74,28 +92,39 @@ export default function Dashboard() {
 	useEffect(() => {
 		if (!user) {
 			clearFriendStatus();
+      clearActiveGame();
 			disconnectPresenceSocket();
 			return;
 		}
 
 		const socket = connectPresenceSocket();
-
-		async function loadFriendStatuses() {
+    
+		async function initializeRealtime() {
 			try {
 				const statuses = await friendsService.getFriendsStatus();
 				setFriendStatus(statuses);
+        await fetchActiveGame();
 			} catch (error) {
-				console.error("[PresenceSocket] failed to load statuses", error);
+				console.error("[PresenceSocket] initialization failed", error);
 			}
 		}
 
-		loadFriendStatuses();
+		initializeRealtime();
 
 
 		socket.on("friend_status_changed", (status: FriendStatus) => {
-
 			updateFriendStatus(status);
 		});
+
+    socket.on("active_game_updated", (activeGame) => {
+
+      if (!activeGame) {
+        clearActiveGame();
+        return;
+      }
+    
+      setActiveGame(activeGame);
+    });
 
 		socket.on("friends_updated", () => {
 			window.dispatchEvent(new Event("friends_updated"));
@@ -107,6 +136,7 @@ export default function Dashboard() {
 
 		return () => {
 			socket.off("friend_status_changed");
+      socket.off("active_game_updated");
 			socket.off("connect_error");
 		};
 	}, [
@@ -114,6 +144,9 @@ export default function Dashboard() {
 		setFriendStatus,
 		updateFriendStatus,
 		clearFriendStatus,
+    setActiveGame,
+	  clearActiveGame,
+	  fetchActiveGame,
 	]);
 
   async function handleLogout() {

@@ -2,21 +2,34 @@
     "title": "ft_transcendence",
 
     "home": {
-      	"play": {
-        	"title": "Jugar una partida",
-        	"description": "Un juego de estrategia atemporal. ¡Sé el primero en conseguir 3 en línea y gana la partida!"
-      	},
-      	"hero": {
-        	"title": "Tres En Raya",
+		"hero": {
+			"title": "Tres En Raya",
         	"texte": "Juega. Compite. Mejora. Desafía a otros jugadores y conviértete en el mejor."
-      	},
+		},
+		"play": {
+			"idle":{
+				"title": "Jugar una partida",
+				"description": "Únete a partidas competitivas o mira juegos en directo",
+				"create": "Crear una partida",
+				"join": "Unirse a una partida",
+				"watch": "Ver partidas"
+			},
+			"waiting": {
+				"title": "Lobby en espera",
+				"description": "Esperando a que un oponente se una...",
+				"copy": "Copiar enlace",
+				"cancel": "Cancelar"
+  			},
+			"playing": {
+				"title": "Partida en curso",
+				"description": "¡Entra en la arena y lucha por la victoria!",
+				"vs": "VS",
+				"resume": "Reanudar partida"
+			}
+		},
 		"buttons": {
-			"register": "Registrarse",
 			"login": "Ingresar",
-			"start": "INICIAR PARTIDA",
-			"hi": "Hola, ",
-			"create": "Crear una partida",
-			"join": "Unirse a una partida"
+			"hi": "Hola, "
 		}
     },
 

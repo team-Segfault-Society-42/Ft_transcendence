@@ -63,6 +63,7 @@ getGame(@Param('id') gameId: string) {
 @ApiOperation({ summary: 'Leave or cancel a game' })
 @ApiParam({ name: 'id', description: 'Game ID', example: 'game_abc123' })
 @ApiResponse({ status: 200, description: 'Successfully left the game' })
+@ApiResponse({ status: 400, description: 'Cannot cancel a game that is already in progress' })
 @ApiResponse({ status: 401, description: 'Not authenticated' })
 @ApiResponse({ status: 404, description: 'Game not found' })
 @Post(':id/leave')

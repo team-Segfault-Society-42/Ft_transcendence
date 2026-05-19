@@ -2,21 +2,34 @@
     "title": "ft_transcendence",
 
     "home": {
-        "play":{
-            "title": "Play Game",
-            "description": "A timeless game of strategy. Be the first to get 3 in a row and claim victory!"
-        },
         "hero":{
             "title": "Tic-Tac-Toe",
             "texte": "Play. Compete. Improve. Challenge players and become the best."
         },
+        "play":{
+            "idle":{
+                "title": "Play Game",
+                "description": "Jump into competitive matches or spectate games live",
+                "create": "Create Lobby",
+                "join": "Join Game",
+                "watch": "Watch Games"
+            },
+            "waiting":{
+                "title": "Waiting Lobby",
+                "description": "Waiting for an opponent to join...",
+                "copy": "Copy Link",
+                "cancel": "Cancel"
+            },
+            "playing":{
+                "title": "Current match",
+                "description": "Enter the arena and fight for victory !",
+                "vs": "VS",
+                "resume": "Resume Match"
+            }
+        },
         "buttons":{
-            "register": "Register",
             "login": "Login",
-            "start": "START GAME",
-            "hi": "Hi,",
-            "create": "Create a game",
-            "join": "Join a game"
+            "hi": "Hi,"
         }
     },
 
