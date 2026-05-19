@@ -70,23 +70,37 @@ If you wish to run this project with all its features on your own computer, you 
 
 ### Setup
 
-**1. Clone the repository:**
+**1. Clone the repository and navigate into the cloned directory:**
 
 ```bash
 git clone <repo-url>
+cd <cloned-directory-path>
 ```
 
-Then navigate into the cloned directory.
-
 **2. Set up your 42 OAuth credentials:**
+
+*If you do not intend to use OAuth via the 42 API, skip to step 3.*
+
+make a copy of `oauth-credentials.conf.example`
 
 ```bash
 cp oauth-credentials.conf.example oauth-credentials.conf
 ```
 
-Open `oauth-credentials.conf` and fill in `FORTYTWO_CLIENT_ID` and `FORTYTWO_CLIENT_SECRET`.
+> **Note:** it is absolutely **CRUCIAL** that the copy be named exactly `oauth-credentials.conf`
+> to ensure these values remain git ignored.
 
-To obtain these values, create an application at <https://profile.intra.42.fr/oauth/applications>.
+**2.1 Open the copied file and replace variables:**
+
+```text
+FORTYTWO_CLIENT_ID=your_client_id_here 			<--- Replace this with UID
+FORTYTWO_CLIENT_SECRET=your_client_secret_here	<--- Replace this with SECRET
+```
+
+*This is a one-time setup so your UID and SECRET persist between rebuilds and you don't need to add them each time
+you destroy the stack and rebuild it.* `make setup` *automatically grabs the values stored in this file and copies them to the relevant secret files for you.*
+
+> **Note:** `UID` and `SECRET` can be found by clicking on your created app here: <https://profile.intra.42.fr/oauth/applications>.
 
 **3. Run the setup wizard:**
 
@@ -94,15 +108,46 @@ To obtain these values, create an application at <https://profile.intra.42.fr/oa
 make setup
 ```
 
-Follow the prompts on screen.
+**3.1 Follow prompts on screen:**
 
-- To test remote multiplayer on LAN: answer **yes** to the LAN setup prompt.
-  Your LAN IP is detected and set automatically *(Linux only; auto-detection may not work on other systems)*.
-- Otherwise skip. (`DOMAIN` defaults to `127.0.0.1`)
+```bash
+Automatically setup DOMAIN? [Y/n]
+```
 
-**4. Verify your IP:**
+- Accepting gives you the choice to setup local LAN for DEV and PROD.
+- Refusing sets DOMAIN to `127.0.0.1` for DEV and PROD.
 
-Open `.env.prod` and confirm `DOMAIN` matches your intended IP address before continuing.
+**3.2 Automatic DOMAIN setup (optional):**
+
+```bash
+# You should see these prompts if you accepted the automatic DOMAIN prompt
+[DEV]   Set DOMAIN to local LAN? [Y/n]
+[PROD]  Set DOMAIN to local LAN? [Y/n]
+
+# Note that automatic IP detection is Linux only; This may not work on other systems
+```
+
+- To test remote multiplayer on LAN: answer **yes**. Your LAN IP is detected and set automatically. (Linux only)
+- Otherwise, answer `no`. (`DOMAIN` defaults to `127.0.0.1`)
+
+> **Note:** If you made a mistake, it is safe to run `make setup` again.
+
+> **Note**: If you skipped the OAuth setup you will get a warning about OAuth related secrets. it is safe to ignore these.
+
+**4. IMPORTANT - Update Secrets:**
+
+`make setup` *is intended for a quick start if you just want to run the project quickly and see what it looks like.
+This also means the default values for the secrets are hardcoded in the Makefile logic. Unnecessary to say that this is **NOT** good for a real production environment.*
+
+So, please **make sure you change** the following secrets before running this in a live environment:
+
+```text
+- secrets/backend_pw.txt
+- secrets/postgres_root_pw.txt
+- secrets/jwt_secret.txt
+```
+
+---
 
 ### Run — Production
 
@@ -110,7 +155,8 @@ Open `.env.prod` and confirm `DOMAIN` matches your intended IP address before co
 make prod
 ```
 
-The application will be available at `https://<DOMAIN>`.
+The application will be available at `https://<DOMAIN>:8443`.
+Or by HTTP redirect via `http://<DOMAIN>:8080`.
 
 Accept the self-signed certificate warning in your browser.
 
@@ -120,23 +166,19 @@ Accept the self-signed certificate warning in your browser.
 make up
 ```
 
-Uses Vite HMR and HTTP only. Available at `http://localhost`.
+Uses Vite HMR and HTTP only. Available at `http://localhost:1024`.
 
 ### Useful Commands
 
-| Command | Description |
-| --- | --- |
-| `make prod` | Build and start production stack |
-| `make up` | Build and start dev stack |
-| `make down` | Stop all containers |
-| `make re` | Stop → rebuild → restart (dev) |
-| `make reset` | Stop (remove volumes) → full rebuild → restart |
-| `make logs` | Stream all container logs |
-| `make logs-back` | Backend logs only |
-| `make logs-front` | Frontend logs only |
-| `make logs-proxy` | Proxy logs only |
-| `make logs-db` | Database logs only |
-| `make help` | Full colour-coded list of available targets |
+| Command | Description | Stack |
+| --- | --- | --- |
+| `make help` | Full colour-coded list of available targets | |
+| `make prod` | Build and start production stack | PROD |
+| `make up` | Build and start dev stack | DEV |
+| `make down-all` | Stop all containers from both stacks. Safe to use with one stack running. | PROD & DEV |
+| `make reset` | Stop → remove volumes → full rebuild → restart | DEV |
+| `make logs` | Stream all DEV container logs | DEV |
+| `make p-logs` | Stream all PROD container logs | PROD |
 
 ---
 
