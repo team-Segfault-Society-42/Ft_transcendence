@@ -1,111 +1,483 @@
 {
-  "errors": {
-    "game": {
-      "waitingOpponent": "Esperando al oponente...",
-      "alreadyOccupied": "Este espacio ya está ocupado.",
-      "replayUnavailable": "La repetición solo está disponible una vez que el partido ha finalizado.",
-      "spectatorCannotPlay": "Los espectadores no pueden jugar",
-      "spectatorCannotReplay": "Los espectadores no pueden solicitar una repetición.",
-      "invalidMove": "Golpe inválido",
-      "unknown": "Error desconocido",
-      "default": "Algo salió mal",
-      "gameNotFound": "Juego no encontrado",
-      "userNotFound": "Usuario no encontrado",
-      "notYourTurn": "No es tu turno"
+  "title": "ft_transcendence",
+  "home": {
+    "play": {
+      "title": "Jugar una partida",
+      "description": "¡Un juego de estrategia atemporal. Sé el primero en alinear 3 símbolos para llevarte la victoria!"
+    },
+    "hero": {
+      "title": "Tres en Raya",
+      "texte": "Juega. Compite. Mejora. ¡Desafía a otros jugadores y conviértete en el mejor!"
+    },
+    "buttons": {
+      "register": "Registrarse",
+      "login": "Ingresar",
+      "start": "INICIAR PARTIDA",
+      "hi": "Hola, ",
+      "create": "Crear una partida",
+      "join": "Unirse a una partida"
+    },
+    "errors": {
+      "createFailed": "No se pudo crear la partida. Por favor, inténtelo de nuevo."
     }
   },
-  "auth": {
-    "errors": {
-      "username": "El nombre de usuario debe tener al menos 3 caracteres.",
-      "email": "Dirección de correo electrónico no válida.",
-      "password": "La contraseña debe tener al menos 8 caracteres."
-    },
-    "success": "¡Usuario creado exitosamente!",
-    "error": "Se produjo un error:",
-    "username": "Nombre de usuario",
-    "placeholders": {
-      "username": "Ingrese su nombre de usuario"
-    },
-    "twofa": {
-      "loginPrompt": "Introduzca su código 2FA para completar el inicio de sesión"
-    }
+  "sidebar": {
+    "title": "Panel de control",
+    "home": "Inicio",
+    "game": "Jugar",
+    "profile": "Perfil",
+    "settings": "Ajustes",
+    "leaderboard": "Clasificación",
+    "friends": "Amigos",
+    "chat": "Chat",
+    "history": "Historial",
+    "spectate": "Mirar",
+    "rules": "Reglas del juego"
   },
   "game": {
-    "spectating": "estas mirando",
-    "replay": "REPETICIÓN",
-    "waitingMove": "Esperando el movimiento del oponente...",
-    "status": {
-      "opponentDisconnected": "Oponente desconectado: esperando 20 segundos para volver a conectarse.",
-      "opponentLeft": "El oponente ha abandonado el juego: ¡no se puede repetir!",
-      "opponentReconnected": "El oponente se ha vuelto a conectar!"
+    "title": "Jugar",
+    "liveTitle": "Partidas en directo",
+    "liveEmpty": "No hay partidas para ver",
+    "liveDesc": "Las partidas en directo aparecerán aquí",
+    "liveCount_one": "{{count}} partida en directo",
+    "liveCount_other": "{{count}} partidas en directo",
+    "watch": "Mirar",
+    "playing": "En curso...",
+    "turn": "Turno de {{player}} : {{symbol}}",
+    "vs": "VS",
+    "wins": "¡GANA!",
+    "replay": "REINICIAR",
+    "mode": "Modo 2 jugadores",
+    "reset": "REINICIAR SESIÓN",
+    "result": {
+      "win": "Victoria",
+      "loss": "Derrota",
+      "draw": "Empate"
     },
-    "waitingOpponent": "Esperando al oponente...",
-    "backHome": "De vuelta a casa",
-    "end": {
-      "draw": {
-        "title": "Dibujar",
-        "subtitle": "Ningún jugador ganó esta ronda"
-      },
-      "timeout": {
-        "title": "ganado !",
-        "subtitle": "{{name}} se quedó sin tiempo"
-      },
-      "forfeit": {
-        "title": "ganado !",
-        "subtitle": "{{name}} abandonó el juego"
-      },
-      "normalWin": {
-        "title": "ganado !",
-        "subtitle": "El juego terminó normalmente."
-      },
-      "default": {
-        "title": "Juego terminado",
-        "subtitle": "Este partido ha terminado"
-      },
-      "opponentLeftReplay": "El oponente se ha ido. La repetición no está disponible.",
-      "decidingReplay": "Los jugadores deciden si quieren volver a jugar."
-    },
-    "you": "Tú",
-    "spectators": "Espectadores en esta partida: {{count}}",
+    "notConnected": "No conectado",
+    "login": "Inicia sesión para jugar",
+    "liveLogin": "Inicia sesión para ver las partidas disponibles",
+    "howToPlay": "Reglas del juego",
     "rules": {
       "maxSymbols": {
         "title": "Máximo 3 símbolos por jugador",
-        "desc": "Solo puedes tener hasta 3 símbolos en el tablero."
+        "desc": "Solo puedes tener hasta 3 símbolos en el tablero"
       },
       "disappear": {
-        "title": "El mayor desaparece",
+        "title": "El más antiguo desaparece",
         "desc": "Al colocar un nuevo símbolo, el más antiguo desaparece"
       },
       "win": {
         "title": "Alinea 3 para ganar",
-        "desc": "Consigue 3 símbolos seguidos (horizontal, vertical o diagonal)"
+        "desc": "Consigue 3 símbolos en línea (horizontal, vertical o diagonal)"
       },
       "strategy": {
-        "title": "pensar en el futuro",
+        "title": "Anticipa tus jugadas",
         "desc": "Planifica tus movimientos y controla el tablero"
       },
       "draw": {
-        "title": "Regla de sorteo",
+        "title": "Regla de empate",
         "desc": "Si ningún jugador gana después de 20 movimientos, la partida termina en empate."
       }
     },
+    "waiting": "Espera..",
+    "backHome": "De vuelta a casa",
+    "spectating": "Estás observando",
+    "waitingOpponent": "Esperando al oponente...",
+    "waitingMove": "Esperando que el oponente se mueva...",
+    "status": {
+      "opponentDisconnected": "Oponente desconectado: esperando 20 segundos para volver a conectarse.",
+      "opponentLeft": "El oponente ha abandonado el juego: ¡no se puede repetir!",
+      "opponentReconnected": "¡El oponente se ha vuelto a conectar!"
+    },
+    "end": {
+      "draw": {
+        "title": "Empate",
+        "subtitle": "Ningún jugador ganó esta ronda"
+      },
+      "timeout": {
+        "title": "¡gana!",
+        "subtitle": "{{name}} se quedó sin tiempo"
+      },
+      "forfeit": {
+        "title": "¡gana!",
+        "subtitle": "{{name}} abandonó la partida"
+      },
+      "normalWin": {
+        "title": "¡gana!",
+        "subtitle": "La partida terminó normalmente"
+      },
+      "default": {
+        "title": "Partida terminada",
+        "subtitle": "Este partido ha terminado"
+      },
+      "opponentLeftReplay": "El oponente se ha ido: repetición no disponible",
+      "decidingReplay": "Los jugadores están decidiendo si quieren volver a jugar."
+    },
+    "you": "Tú",
+    "spectators": "Espectadores en esta partida: {{count}}",
     "errors": {
-      "noLongerAvailable": "El juego ya no está disponible."
+      "noLongerAvailable": "La partida ya no está disponible."
     }
   },
-  "buttons": {
-    "backHome": "De vuelta a casa"
+  "play": {
+    "myGames": {
+      "title": "Mis partidas",
+      "subtitle": "Crear una nueva partida",
+      "desc": "Crea un lobby e invita a otro jugador.",
+      "create": "Crear partida",
+      "empty": "No hay partidas activas",
+      "waiting": "Esperando a un oponente...",
+      "share": "Comparte este enlace para invitar a alguien:",
+      "copy": "Copiar",
+      "cancel": "Cancelar partida"
+    },
+    "availGames": {
+      "title": "Partidas disponibles",
+      "subtitle": "Partidas públicas",
+      "desc": "Únete a una sala en espera creada por otro jugador",
+      "refresh": "Actualizar partidas",
+      "empty": "No hay partidas disponibles",
+      "waiting": "Esperando a un oponente",
+      "join": "Unirse"
+    }
   },
-  "chat": {
-    "open": "abrir chat",
-    "placeholder": "Mensaje (máximo {{count}} caracteres)"
+  "profile": {
+    "loading": "Cargando...",
+    "level": "Nivel {{currentLevel}}",
+    "achievement": "Logros",
+    "stats": {
+      "wins": "Victorias",
+      "losses": "Derrotas",
+      "draw": "Empate",
+      "winrate": "Porcentaje de victorias",
+      "games_zero": "Ninguna partida jugada",
+      "games_one": "{{count}} partida jugada",
+      "games_other": "{{count}} partidas jugadas",
+      "winrateValue": "{{value}}%"
+    },
+    "bio": "Biografía",
+    "about": {
+      "title": "Acerca de",
+      "notConnected": "No conectado",
+      "login": "Inicia sesión para ver tu perfil",
+      "guest": "Invitado",
+      "viewProfile": "Ver perfil",
+      "noBio": "Sin biografía"
+    },
+    "xp": "{{current}} / {{max}} XP",
+    "emptyBio": "Haz clic en editar perfil para añadir una biografía",
+    "uploading": "Subiendo...",
+    "changeAvatar": "Cambiar avatar",
+    "avatarUpdated": "Avatar actualizado correctamente",
+    "username": "Nombre de Usuario",
+    "editProfile": "Editar perfil"
   },
-  "home": {
-    "play": {
-      "description": "Un juego de estrategia atemporal. \n¡Sé el primero en conseguir 3 seguidos y conseguir la victoria!"
+  "settings": {
+    "title": "Ajustes",
+    "description": "Gestiona tu perfil y la seguridad de tu cuenta.",
+    "notConnected": "No conectado",
+    "login": "Inicia sesión para gestionar tus ajustes",
+    "profile": {
+      "title": "Información del perfil",
+      "description": "Actualiza tu nombre de usuario, biografía y avatar.",
+      "save": "Guardar cambios",
+      "saving": "Guardando..."
+    },
+    "security": {
+      "title": "Seguridad",
+      "description": "Gestiona la autenticación de dos factores y futuras opciones de seguridad.",
+      "disableTitle": "Desactivar 2FA",
+      "disableDescription": "La desactivación de 2FA se añadirá más adelante. Por ahora, la 2FA solo se puede activar.",
+      "disableComingSoon": "Desactivar 2FA próximamente"
+    }
+  },
+  "leaderboard": {
+    "title": "Clasificación",
+    "topXP": "Nivel más alto",
+    "topWins": "Más victorias",
+    "topTotalGames": "Más partidas jugadas",
+    "empty": "No hay jugadores en la clasificación",
+    "xp": "{{value}} XP",
+    "wins": "{{value}} Victorias",
+    "totalGames": "{{value}} Partidas",
+    "notConnected": "No conectado",
+    "login": "Inicia sesión para ver la clasificación"
+  },
+  "friends": {
+    "title": "Amigos",
+    "description": "Gestiona tus amistades y solicitudes",
+    "notConnected": "No conectado",
+    "login": "Inicia sesión para ver tus amigos",
+    "loading": "Cargando amigos...",
+    "search": {
+      "title": "Buscar usuarios",
+      "placeholder": "Buscar por nombre de usuario",
+      "button": "Buscar"
+    },
+    "list": {
+      "title": "Lista de amigos",
+      "empty": "Todavía no tienes amigos"
+    },
+    "requests": {
+      "incoming": "Solicitudes recibidas",
+      "outgoing": "Solicitudes enviadas",
+      "noIncoming": "No tienes solicitudes pendientes",
+      "noOutgoing": "No has enviado solicitudes"
+    },
+    "actions": {
+      "add": "Añadir amigo",
+      "accept": "Aceptar",
+      "decline": "Rechazar",
+      "remove": "Eliminar"
+    },
+    "states": {
+      "self": "Tú",
+      "friend": "Amigo",
+      "pending": "Pendiente"
+    },
+    "success": {
+      "requestSent": "Solicitud enviada",
+      "accepted": "Solicitud aceptada",
+      "declined": "Solicitud rechazada",
+      "removed": "Amigo eliminado"
     },
     "errors": {
-      "createFailed": "No se pudo crear el juego. \nPor favor inténtalo de nuevo"
+      "load": "Error al cargar los amigos: {{error}}",
+      "search": "Error al buscar usuarios: {{error}}",
+      "action": "La acción falló: {{error}}"
+    },
+    "status": {
+      "online": "En línea",
+      "offline": "Desconectado",
+      "available": "Disponible",
+      "inGame": "En partida",
+      "waiting": "Esperando"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "notConnected": "No conectado",
+    "login": "Inicia sesión para ver el chat",
+    "open": "Abrir chat",
+    "placeholder": "Mensaje (máximo {{count}} caracteres)"
+  },
+  "history": {
+    "title": "Historial de partidas",
+    "notConnected": "No conectado",
+    "login": "Inicia sesión para ver tu historial",
+    "empty": "Aún no se han jugado partidas",
+    "emptyDesc": "Tu historial de juego aparecerá aquí."
+  },
+  "buttons": {
+    "backHome": "Volver al inicio",
+    "loading": "Cargando.."
+  },
+  "auth": {
+    "description": "Crea tu cuenta",
+    "description_login": "Acceso",
+    "username": "Nombre de usuario",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "placeholders": {
+      "username": "Introduce tu nombre de usuario",
+      "email": "ejemplo@42.ch",
+      "password": "Tu contraseña segura"
+    },
+    "buttons": {
+      "register": "Registrarse",
+      "loading": "Conectando al servidor...",
+      "change_method": "Cambiar método",
+      "login": "Ingresar",
+      "no_account": "¿ No tienes cuenta ? Regístrate",
+      "already_account": "¿ Ya tienes una cuenta ? Iniciar sesión",
+      "logout": "Cerrar sesión",
+      "edit": "Modificación completada con éxito"
+    },
+    "success": "¡Usuario creado con éxito!",
+    "error": "Ocurrió un error: ",
+    "errors": {
+      "username": "El nombre de usuario debe tener al menos 3 caracteres.",
+      "email": "Dirección de correo inválida.",
+      "password": "La contraseña debe tener al menos 8 caracteres.",
+      "bio": "La bio debe contener menos de 180 caracteres"
+    },
+    "logoutSuccess": "Desconexión exitosa",
+    "errorWithMessage": "Ocurrió un error: {{message}}",
+    "loginWith42": "Ingresar con 42",
+    "twofa": {
+      "title": "Autenticación de dos factores",
+      "description": "Introduce el código de 6 dígitos de tu aplicación de autenticación.",
+      "enabled": "La 2FA está activada en tu cuenta.",
+      "enable": "Activar 2FA",
+      "placeholder": "Ingresa tu código",
+      "verifying": "Verificando...",
+      "verify": "Verificar código",
+      "enterCode": "Introduce el código de 6 dígitos",
+      "regenerate": "Regenerar código QR",
+      "loading": "Cargando...",
+      "setupStarted": "Configuración de 2FA iniciada",
+      "success": "Autenticación 2FA exitosa",
+      "back": "Volver al inicio",
+      "error": "Error de autenticación",
+      "loginPrompt": "Saisissez votre code 2FA pour terminer la connexion"
+    }
+  },
+  "footer": {
+    "brand": "ft_transcendence",
+    "privacy": "Privacidad",
+    "terms": "Términos de uso",
+    "copyright": "© {{year}}"
+  },
+  "privacy": {
+    "title": "Política de privacidad",
+    "intro": "Esta aplicación recopila y procesa datos de los usuarios para proporcionar sus servicios.",
+    "data": {
+      "title": "Datos recopilados",
+      "items": [
+        "Nombre de usuario",
+        "Estadísticas de juego",
+        "Información de perfil"
+      ]
+    },
+    "usage": {
+      "title": "Uso",
+      "content": "Los datos se utilizan únicamente para el funcionamiento de la aplicación y no se comparten con terceros."
+    },
+    "security": {
+      "title": "Seguridad",
+      "content": "Tomamos medidas adecuadas para proteger los datos de los usuarios."
+    }
+  },
+  "terms": {
+    "title": "Términos de uso",
+    "intro": "Al utilizar esta aplicación, aceptas los siguientes términos.",
+    "usage": {
+      "title": "Uso",
+      "content": "Los usuarios deben utilizar la aplicación de forma respetuosa y no intentar explotarla."
+    },
+    "account": {
+      "title": "Cuentas",
+      "content": "Los usuarios son responsables de sus cuentas y su actividad."
+    },
+    "limitation": {
+      "title": "Limitación",
+      "content": "La aplicación se proporciona \"tal cual\" sin garantías."
+    }
+  },
+  "backend": {
+    "ERR_AUTH_EMAIL_INVALID": "El correo electrónico no es válido.",
+    "ERR_AUTH_PWD_MIN_LENGTH": "La contraseña debe tener al menos 8 caracteres.",
+    "ERR_AUTH_PWD_COMPLEXITY": "La contraseña debe tener una minúscula, una majúscula y un número.",
+    "ERR_USER_USERNAME_MIN_LENGTH": "El nombre de usuario es demasiado corto.",
+    "ERR_USER_USERNAME_MAX_LENGTH": "El nombre de usuario es demasiado largo.",
+    "ERR_USER_USERNAME_NO_SPACES": "El nombre de usuario no debe contener espacios.",
+    "ERR_USER_BIO_MAX_LENGTH": "La biografía es demasiado larga.",
+    "ERR_AUTH_2FA_CODE_STRING": "El código debe ser una cadena de caracteres.",
+    "ERR_AUTH_2FA_CODE_LENGTH": "El código debe tener exactamente 6 caracteres.",
+    "AUTH_2FA_REQUIRED": "Se requiere autenticación de dos factores.",
+    "AUTH_LOGIN_SUCCESS": "Inicio de sesión exitoso.",
+    "AUTH_LOGOUT_SUCCESS": "Cierre de sesión exitoso.",
+    "ERR_AUTH_MISSING_2FA_TOKEN": "Falta el token de espera de 2FA.",
+    "AUTH_2FA_LOGIN_SUCCESS": "Inicio de sesión 2FA exitoso.",
+    "ERR_AUTH_ALREADY_EXISTS": "El nombre de usuario ya existe.",
+    "ERR_AUTH_INVALID_CREDENTIALS": "Credenciales inválidas.",
+    "ERR_USER_NOT_FOUND": "Usuario no encontrado.",
+    "ERR_AUTH_MISSING_TOKEN": "Falta el token de autenticación.",
+    "ERR_AUTH_INVALID_TOKEN": "Token inválido o expirado.",
+    "ERR_OAUTH_42_CONFIG": "42 OAuth no está configurado en el servidor.",
+    "ERR_OAUTH_MISSING_CODE": "Falta el código de autorización OAuth.",
+    "ERR_OAUTH_MISSING_STATE": "Falta el estado de OAuth.",
+    "ERR_OAUTH_MISSING_STORED_STATE": "Falta el estado de OAuth almacenado.",
+    "ERR_OAUTH_INVALID_STATE": "Estado de OAuth inválido.",
+    "ERR_OAUTH_GOOGLE_CONFIG": "Google OAuth no está configurado en el servidor.",
+    "ERR_AUTH_2FA_ALREADY_ENABLED": "La 2FA ya está activada.",
+    "ERR_AUTH_2FA_NO_SETUP": "No hay configuración de 2FA en curso.",
+    "ERR_AUTH_2FA_INVALID_CODE": "Código de seguridad inválido.",
+    "AUTH_2FA_ENABLED_SUCCESS": "¡2FA activada con éxito!",
+    "ERR_AUTH_2FA_INVALID_TOKEN": "Token de 2FA inválido.",
+    "ERR_AUTH_2FA_NOT_ENABLED": "La 2FA no está activada.",
+    "ERR_FRIEND_ACTION_INVALID": "La acción seleccionada no es válida.",
+    "ERR_FRIEND_SELF_REQUEST": "No puedes agregarte a ti mismo.",
+    "ERR_FRIEND_ALREADY_FRIENDS": "Ya sois amigos.",
+    "ERR_FRIEND_REQUEST_EXISTS": "Ya existe una solicitud pendiente.",
+    "ERR_FRIEND_TOO_MANY_REQUESTS": "Demasiadas solicitudes pendientes.",
+    "ERR_FRIEND_REQUEST_NOT_FOUND": "Solicitud de amistad no encontrada.",
+    "ERR_FRIEND_RESPONSE_FORBIDDEN": "Acción no autorizada.",
+    "ERR_FRIEND_NOT_PENDING": "La solicitud ya no está pendiente.",
+    "ERR_FRIENDSHIP_NOT_FOUND": "Amistad no encontrada.",
+    "FRIEND_REQUEST_DECLINED": "Solicitud de amistad rechazada.",
+    "ERR_FRIEND_REMOVE_NOT_ACCEPTED": "No se puede eliminar: no sois amigos.",
+    "ERR_FRIEND_REMOVE_FORBIDDEN": "No puedes hacer esto.",
+    "FRIEND_REMOVED_SUCCESS": "Amigo eliminado de tu lista.",
+    "ERR_CHAT_MSG_STRING": "El mensaje debe ser texto.",
+    "ERR_CHAT_MSG_EMPTY": "No puedes enviar un mensaje vacío.",
+    "ERR_CHAT_MSG_TOO_LONG": "El mensaje es demasiado largo (máx. 500 car.).",
+    "CHAT_UNKNOWN_USER": "Usuario desconocido",
+    "ACH_UNKNOWN_NAME": "Éxito desconocido",
+    "ACH_UNKNOWN_DESC": "Descripción no disponible",
+    "ACH_FIRST_GAME_TITLE": "Todo comienza aquí",
+    "ACH_FIRST_GAME_DESC": "Juega tu primera partida.",
+    "ACH_FIRST_WIN_TITLE": "Primera Sangre",
+    "ACH_FIRST_WIN_DESC": "Gana tu primera partida.",
+    "ACH_DRAW_GAME_TITLE": "Empate",
+    "ACH_DRAW_GAME_DESC": "Haz un empate.",
+    "ACH_LOSE_BY_TIME_TITLE": "Demasiado lento",
+    "ACH_LOSE_BY_TIME_DESC": "Pierde por tiempo.",
+    "ACH_WIN_5_TITLE": "Choca esos cinco",
+    "ACH_WIN_5_DESC": "Gana 5 partidas en total.",
+    "ACH_WIN_10_TITLE": "Doble dígito",
+    "ACH_WIN_10_DESC": "Gana 10 partidas en total.",
+    "ACH_WIN_50_TITLE": "Veterano",
+    "ACH_WIN_50_DESC": "Gana 50 partidas en total.",
+    "ACH_GET_ALL_TITLE": "Fin de partida",
+    "ACH_GET_ALL_DESC": "Completa todos los logros.",
+    "ERR_GAME_PLAYER_ID_INVALID": "ID de jugador inválido.",
+    "ERR_GAME_SCORE_INVALID": "La puntuación debe ser un nombre positivo.",
+    "ERR_GAME_END_REASON_REQUIRED": "Se requiere la razón del fin del juego.",
+    "ERR_GAME_ID_REQUIRED": "Se requiere el ID del juego.",
+    "ERR_GAME_ID_INVALID": "ID de juego inválido.",
+    "ERR_GAME_MOVE_COORD_INVALID": "Coordenadas inválidas (deben estar entre 0 et 2).",
+    "ERR_GAME_NOT_FOUND": "Partida no encontrada.",
+    "ERR_GAME_ALREADY_ACTIVE": "Ya tienes una partida activa.",
+    "ERR_GAME_NOT_FINISHED": "La partida aún no ha terminado.",
+    "ERR_GAME_REPLAY_NOT_AVAILABLE": "La revancha solo está disponible al final.",
+    "ERR_GAME_SPECTATOR_REPLAY": "Los espectadores no pueden pedir revancha.",
+    "ERR_GAME_WAITING_PLAYERS": "Esperando a ambos jugadores.",
+    "ERR_GAME_SPECTATOR_MOVE": "Los espectadores no pueden jugar.",
+    "ERR_GAME_NOT_YOUR_TURN": "No es tu turno.",
+    "ERR_GAME_CANT_LEAVE_PLAYING": "No se puede salir de una partida en curso",
+    "ERR_MATCH_SELF_PLAY": "Un jugador no puede jugar contra sí mismo.",
+    "ERR_MATCH_INVALID_WINNER": "El ganador debe ser uno de los dos jugadores.",
+    "ERR_MATCH_SAVE_FAILED": "No se pudo guardar el resultado del partido.",
+    "STATUS_MATCH_DRAW": "EMPATE",
+    "STATUS_MATCH_WIN": "VICTORIA",
+    "STATUS_MATCH_LOSS": "DERROTA",
+    "ERR_QUERY_LIMIT_INVALID": "El límite debe ser un nombre entero positivo.",
+    "ERR_QUERY_OFFSET_INVALID": "El desplazamiento debe ser un nombre entero positivo.",
+    "ERR_QUERY_SEARCH_INVALID": "El término de búsqueda no es válido (máx. 50 car.).",
+    "ERR_USER_AVATAR_RATE_LIMIT": "Demasiados intentos de subida de avatar. Inténtelo más tarde.",
+    "ERR_USER_AVATAR_TOO_LARGE": "La imagen debe pesar menos de 200 KB.",
+    "ERR_USER_AVATAR_INVALID": "Subida de avatar no válida.",
+    "ERR_USER_UPDATE_FORBIDDEN": "Solo puedes actualizar tu propio perfil.",
+    "ERR_QUERY_SEARCH_EMPTY": "La búsqueda no puede estar vacía.",
+    "ERR_USER_UPDATE_FAILED": "Error al actualizar el usuario.",
+    "ERR_USER_AVATAR_REQUIRED": "El archivo del avatar es obligatorio.",
+    "ERR_USER_AVATAR_INVALID_TYPE": "Formato de imagen no válido (PNG, JPEG, WebP)."
+  },
+  "errors": {
+    "game": {
+      "userNotFound": "Usuario no encontrado",
+      "gameNotFound": "Partida no encontrada",
+      "notYourTurn": "No es tu turno",
+      "waitingOpponent": "Esperando al oponente...",
+      "alreadyOccupied": "Esta case ya está ocupada",
+      "replayUnavailable": "La repetición solo está disponible una vez que la partida ha finalizado.",
+      "spectatorCannotPlay": "Los espectadores no pueden jugar",
+      "spectatorCannotReplay": "Los espectadores no pueden solicitar una repetición.",
+      "invalidMove": "Movimiento inválido",
+      "unknown": "Error desconocido",
+      "default": "Algo salió mal"
     }
   },
   "notFound": {
