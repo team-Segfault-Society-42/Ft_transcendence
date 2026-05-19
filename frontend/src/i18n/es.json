@@ -8,7 +8,10 @@
       "spectatorCannotReplay": "Los espectadores no pueden solicitar una repetición.",
       "invalidMove": "Golpe inválido",
       "unknown": "Error desconocido",
-      "default": "Algo salió mal"
+      "default": "Algo salió mal",
+      "gameNotFound": "Juego no encontrado",
+      "userNotFound": "Usuario no encontrado",
+      "notYourTurn": "No es tu turno"
     }
   },
   "auth": {
@@ -85,6 +88,9 @@
         "title": "Regla de sorteo",
         "desc": "Si ningún jugador gana después de 20 movimientos, la partida termina en empate."
       }
+    },
+    "errors": {
+      "noLongerAvailable": "El juego ya no está disponible."
     }
   },
   "buttons": {

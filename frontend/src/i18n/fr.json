@@ -115,7 +115,10 @@
       "decidingReplay": "Les joueurs décident s'ils veulent rejouer."
     },
     "you": "Toi",
-    "spectators": "Spectateurs sur cette partie : {{count}}"
+    "spectators": "Spectateurs sur cette partie : {{count}}",
+    "errors": {
+      "noLongerAvailable": "La partie n'est plus disponible"
+    }
   },
   "play": {
     "myGames": {

@@ -115,7 +115,10 @@
       "decidingReplay": "The players decide if they want to play again."
     },
     "you": "You",
-    "spectators": "Spectating this game: {{count}}"
+    "spectators": "Spectating this game: {{count}}",
+    "errors": {
+      "noLongerAvailable": "The game is no longer available"
+    }
   },
   "play": {
     "myGames": {
