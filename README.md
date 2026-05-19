@@ -263,13 +263,17 @@ erDiagram
 
 ## Individual Contributions
 
-| Member | Contributions | Challenges |
-| --- | --- | --- |
-| ameechan | Docker, Docker Compose, Makefile, NGINX proxy config, infrastructure setup, database seeding | *[TBD — pending team input]* |
-| mbendidi | Game logic, Tic-Tac-Toe engine, WebSocket gateway (game + chat), spectator mode, chat system | *[TBD — pending team input]* |
-| nryser | JWT authentication, 2FA (TOTP), 42 OAuth, friends system API, Swagger documentation | *[TBD — pending team input]* |
-| nadahman | Achievement system, dynamic leaderboard with filters, match data recording and persistence, match history and XP progression, player profile access logic, auth persistence and profile synchronization, frontend–backend integration, some translations, early login/register frontend work | *[TBD — pending team input]* |
-| jdecarro | Full frontend UI, component library (design system), i18n (EN/FR/ES) | *[TBD — pending team input]* |
+| Member | Contributions |
+| --- | --- |
+| ameechan | Docker, Docker Compose, Makefile, NGINX proxy config, infrastructure setup, database seeding |
+| mbendidi | Game logic, Tic-Tac-Toe engine, WebSocket gateway (game + chat), spectator mode, chat system |
+| nryser | JWT authentication, 2FA (TOTP), 42 OAuth, friends system API, Swagger documentation |
+| nadahman | Achievement system, dynamic leaderboard with filters, match data recording and persistence, match history and XP progression, player profile access logic, auth persistence and profile synchronization, frontend–backend integration, some translations, early login/register frontend work |
+| jdecarro | Full frontend UI, component library (design system), i18n (EN/FR/ES) |
+
+### Challenges
+
+*[TBD — pending team input]*
 
 ---
 
