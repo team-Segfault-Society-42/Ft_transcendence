@@ -395,11 +395,14 @@ export default function Profile() {
 				<p className="text-sm leading-relaxed text-white/80">
 					{profileData?.bio}
 				</p>
-			) : (
+			) : isMe ? (
 				<p className="text-sm text-white/30 italic">
 					{t("profile.emptyBio")}
 				</p>
-			)}
+			) : (
+        <p></p>
+        
+      )}
 		</div>
 
 
