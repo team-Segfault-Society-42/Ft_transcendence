@@ -32,7 +32,9 @@
     "replay": "REPETICIÓN",
     "waitingMove": "Esperando el movimiento del oponente...",
     "status": {
-      "opponentDisconnected": "Oponente desconectado: esperando 20 segundos para volver a conectarse."
+      "opponentDisconnected": "Oponente desconectado: esperando 20 segundos para volver a conectarse.",
+      "opponentLeft": "El oponente ha abandonado el juego: ¡no se puede repetir!",
+      "opponentReconnected": "El oponente se ha vuelto a conectar!"
     },
     "waitingOpponent": "Esperando al oponente...",
     "backHome": "De vuelta a casa",
@@ -58,5 +60,8 @@
         "subtitle": "Este partido ha terminado"
       }
     }
+  },
+  "buttons": {
+    "backHome": "De vuelta a casa"
   }
 }

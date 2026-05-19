@@ -83,7 +83,9 @@
     "waitingOpponent": "Waiting for opponent...",
     "waitingMove": "Waiting for opponent move...",
     "status": {
-      "opponentDisconnected": "Opponent disconnected — waiting 20s for reconnection.."
+      "opponentDisconnected": "Opponent disconnected — waiting 20s for reconnection..",
+      "opponentLeft": "The opponent has left the game - no replay!",
+      "opponentReconnected": "The opponent has reconnected!"
     },
     "end": {
       "draw": {
