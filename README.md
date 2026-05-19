@@ -55,8 +55,18 @@ The stack runs entirely in Docker and is composed of a React frontend, a NestJS 
 
 ### Prerequisites
 
+If you wish to run this project with all its features on your own computer, you will need the following:
+
 - Docker
 - Docker Compose
+- Make
+- An app registered with the 42 API (Optional)
+
+> **Note:** the project will still run without a registered 42 API app.
+> However, you will not be able to login to the website via your 42 account.
+
+> If you plan to use the OAuth login via the 42 API, you will need to register an app with them.
+> You can refer to the official documentation for how to achieve this: https://api.intra.42.fr/apidoc
 
 ### Setup
 
