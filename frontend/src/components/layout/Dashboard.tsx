@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isChat, setIsChat] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -186,12 +187,15 @@ export default function Dashboard() {
       user={user}
       onLoginClick={openLogin}
       onLogoutClick={handleLogout}
+      isOpen={isSidebarOpen}
+      onClose={() => setIsSidebarOpen(false)}
       />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         <Topbar
           user={user}
           onLoginClick={openLogin}
+          onMenuClick={() => setIsSidebarOpen(true)}
         />
 
         <main className="flex-1 overflow-y-auto p-6">
