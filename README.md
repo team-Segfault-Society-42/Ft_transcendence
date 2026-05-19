@@ -29,10 +29,10 @@ The stack runs entirely in Docker and is composed of a React frontend, a NestJS 
 
 | Member | Title | Responsibilities |
 | --- | --- | --- |
-| ameechan | PO / Architect *(title TBD — pending team confirmation)* | All infrastructure: Docker, Docker Compose, Makefile, NGINX proxy config. Database seeding. Overall architecture design. |
-| mbendidi | PM / Developer | Project management. Game logic, Tic-Tac-Toe engine, WebSocket gateway (game + chat), spectator mode, chat system. |
+| mbendidi | PO / Developer | Project management. Game logic, Tic-Tac-Toe engine, WebSocket gateway (game + chat), spectator mode, chat system. |
+| nadahman | PM / Developer | Achievement system, dynamic leaderboard with filters, match data recording and persistence, match history and XP progression, player profile access logic, auth persistence and profile synchronization, frontend–backend integration. |
+| ameechan | Architect / Developer | All infrastructure: Docker, Docker Compose, Makefile, NGINX proxy config. Database seeding. Overall architecture design. |
 | nryser | Developer | All backend authentication: JWT, 2FA (TOTP), 42 OAuth. Friends system API. Swagger documentation. |
-| nadahman | Developer | Achievement system, frontend–backend integration. *(specifics TBD — pending confirmation)* |
 | jdecarro | Developer | Full frontend UI, component library (10+ reusable components), i18n (EN/FR/ES). |
 
 ---
@@ -139,8 +139,11 @@ Uses Vite HMR and HTTP only. Available at `http://localhost`.
 | Two-Factor Authentication | TOTP-based 2FA via authenticator app (otplib) | nryser |
 | 42 OAuth | Login via 42 Intra OAuth 2.0 | nryser |
 | Friends system | Send, accept, and manage friend requests | nryser |
-| Match history & stats | Per-user game statistics and full match history | nadahman + team *[TBD]* |
+| Match history & stats | Per-user game statistics, XP progression, and full match history | nadahman |
 | Achievements | Unlockable milestones based on game and social activity | nadahman |
+| Dynamic leaderboard | Filterable rankings with player stats | nadahman |
+| Player profiles | Per-user profile pages with stats and match history | nadahman |
+| Auth persistence & profile sync | Session continuity and profile synchronization across logins | nadahman |
 | Multi-language support | UI available in English, French, and Spanish | jdecarro |
 | Design system | 10+ reusable UI components with consistent styling | jdecarro |
 | Infrastructure tooling | Interactive `make setup` wizard, `make help` colour-coded command reference, dev/prod build targets | ameechan |
@@ -246,15 +249,15 @@ erDiagram
 
 | Module | Points | Contributor(s) |
 | --- | --- | --- |
-| Use a frontend framework (React + Vite) | 1 | jdecarro + team |
-| Use a backend framework (NestJS) | 1 | nryser + team |
-| Use an ORM for the database (Prisma 7) | 1 | ameechan + nryser |
-| Remote authentication via OAuth 2.0 (42 OAuth) | 1 | nryser |
+| Use a frontend framework (React + Vite) | 1 | jdecarro |
+| Use a backend framework (NestJS) | 1 | nryser |
+| Use an ORM for the database (Prisma 7) | 1 | nryser + ameechan |
+| Remote authentication via OAuth 2.0 (42 OAuth) | 1 | nryser + ameechan |
 | Multiple language support (EN, FR, ES) | 1 | jdecarro |
 | Custom design system (10+ reusable components) | 1 | jdecarro |
 | Spectator mode | 1 | mbendidi |
-| Two-Factor Authentication (TOTP via otplib) | 1 | nryser |
-| Game statistics and match history | 1 | nadahman + team |
+| Two-Factor Authentication (TOTP via otplib) | 1 | nryser + ameechan |
+| Game statistics and match history | 1 | nadahman |
 
 ---
 
@@ -265,7 +268,7 @@ erDiagram
 | ameechan | Docker, Docker Compose, Makefile, NGINX proxy config, infrastructure setup, database seeding | *[TBD — pending team input]* |
 | mbendidi | Game logic, Tic-Tac-Toe engine, WebSocket gateway (game + chat), spectator mode, chat system | *[TBD — pending team input]* |
 | nryser | JWT authentication, 2FA (TOTP), 42 OAuth, friends system API, Swagger documentation | *[TBD — pending team input]* |
-| nadahman | Achievement system, frontend–backend integration *(details TBD — pending confirmation)* | *[TBD — pending team input]* |
+| nadahman | Achievement system, dynamic leaderboard with filters, match data recording and persistence, match history and XP progression, player profile access logic, auth persistence and profile synchronization, frontend–backend integration, some translations, early login/register frontend work | *[TBD — pending team input]* |
 | jdecarro | Full frontend UI, component library (design system), i18n (EN/FR/ES) | *[TBD — pending team input]* |
 
 ---
@@ -301,8 +304,18 @@ erDiagram
 - 42 OAuth / Intra API — <https://api.intra.42.fr/apidoc>
 - JWT (RFC 7519) — <https://datatracker.ietf.org/doc/html/rfc7519>
 
-**Additional references:** *[TBD — pending team input]*
+### Additional References
 
-**AI usage:** *[TBD — pending team alignment]*
+- Apprendre React by Grafikart.fr — <https://www.youtube.com/playlist?list=PLjwdMgw5TTLUEOKPg5Z5TgwAOeWkjGL69>
+- Zustand (state management) — <https://zustand.docs.pmnd.rs>
 
-> WIP: AI was used for documentation maintenance, code review / logic checking, and brainstorming technical decisions.
+### AI Usage
+
+AI (Claude) was used across the following areas:
+
+- **Documentation:** Maintaining docs and keeping the README up to date.
+- **Code review:** Checking logic and acting as a second pair of eyes to catch oversights.
+- **Technical guidance:** Brainstorming and advising on technical decisions.
+- **Pull requests:** Support for reviewing and writing PRs clearly and understandably.
+- **Task breakdown:** Breaking large tasks into smaller, easier-to-follow steps.
+- **Concept explanation:** Breaking down hard-to-grasp concepts into clearer, more approachable explanations.
