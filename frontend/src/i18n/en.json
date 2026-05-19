@@ -42,6 +42,7 @@
     "liveCount_one": "{{count}} live game",
     "liveCount_other": "{{count}} live games",
     "watch": "Watch",
+    "watchGame": "Watch a game",
     "playing": "Playing...",
     "turn": "{{player}}'s Turn {{symbol}}",
     "vs": "VS",

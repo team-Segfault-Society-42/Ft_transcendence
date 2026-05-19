@@ -42,6 +42,7 @@
     "liveCount_one": "{{count}} partida en directo",
     "liveCount_other": "{{count}} partidas en directo",
     "watch": "Mirar",
+    "watchGame": "Ver una partida",
     "playing": "En curso...",
     "turn": "Turno de {{player}} : {{symbol}}",
     "vs": "VS",
