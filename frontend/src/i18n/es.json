@@ -157,7 +157,9 @@
 		"login": "Inicia sesión para gestionar tus ajustes",
 		"profile": {
 			"title": "Información del perfil",
-			"description": "Actualiza tu nombre de usuario, biografía y avatar."
+			"description": "Actualiza tu nombre de usuario, biografía y avatar.",
+			"save": "Guardar cambios",
+      		"saving": "Guardando..."
 		},
 		"security": {
 			"title": "Seguridad",

@@ -157,7 +157,9 @@
         "login": "Connecte-toi pour gérer tes paramètres",
         "profile": {
             "title": "Informations du profil",
-            "description": "Modifie ton nom d'utilisateur, ta biographie et ton avatar."
+            "description": "Modifie ton nom d'utilisateur, ta biographie et ton avatar.",
+            "save": "Enregistrer les modifications",
+            "saving": "Enregistrement..."
         },
         "security": {
             "title": "Sécurité",
