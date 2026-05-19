@@ -1,457 +1,428 @@
 {
-    "title": "ft_transcendence",
-
-    "home": {
-        "hero":{
-            "title": "Morpion",
-            "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
-        },
-        "play":{
-            "idle":{
-                "title": "Jouer",
-                "description": "Lancez des parties compétitives ou regardez des matchs en direct",
-                "create": "Créer une partie",
-                "join": "Rejoindre une partie",
-                "watch": "Regarder des matchs"
-            },
-            "waiting":{
-                "title": "Salle d'attente",
-                "description": "En attente qu'un adversaire rejoigne...",
-                "copy": "Copier le lien",
-                "cancel": "Annuler"
-            },
-            "playing":{
-                "title": "Match en cours",
-                "description": "Entrez dans l'arène et combattez pour la victoire !",
-                "vs": "VS",
-                "resume": "Reprendre la partie"
-            }
-        },
-        "buttons":{
-            "login": "Se connecter",
-            "hi": "Salut, "
-        }
-    },
-
-    "sidebar": {
-        "title": "Tableau de bord",
-        "home": "Accueil",
-        "game": "Jouer",
-        "profile": "Profil",
-        "settings": "Paramètres",
-        "leaderboard": "Classement",
-        "friends": "Amis",
-        "chat": "Discussion",
-        "history": "Historique",
-        "spectate": "Regarder",
-        "rules": "Règles du jeu"
-    },
-
-    "game": {
-        "title": "Jouer",
-        "liveTitle": "Regarder",
-        "liveEmpty": "Aucune partie à regarder",
-        "liveDesc": "Les matchs en direct apparaîtront ici",
-        "liveCount_one": "{{count}} partie en direct",
-        "liveCount_other": "{{count}} parties en direct",
-        "watch": "Regarder",
-		"playing": "En cours...",
-        "turn": "Au tour de {{player}} : {{symbol}}",
-        "vs": "VS",
-        "wins": "GAGNE !",
-        "replay": "RECOMMENCER",
-        "mode": "Mode 2 joueurs",
-        "reset": "REDEMARRER SESSION",
-        "result": {
-            "win": "Victoire",
-            "loss": "Défaite",
-            "draw": "Égalité"
-        },
-        "notConnected": "Non connecté",
-        "login": "Connecte-toi pour accéder au jeu",
-        "liveLogin": "Connecte-toi pour regarder une partie",
-        "howToPlay": "Règles du jeu",
-        "rules": {
-            "maxSymbols": {
-                "title": "Maximum de 3 symboles par joueur",
-                "desc": "Vous pouvez avoir au maximum 3 symboles sur le plateau"
-            },
-            "disappear": {
-                "title": "Le plus ancien disparaît",
-                "desc": "Lorsque vous placez un nouveau symbole, le plus ancien disparaît"
-            },
-            "win": {
-                "title": "Alignez 3 pour gagner",
-                "desc": "Alignez 3 symboles (horizontalement, verticalement ou en diagonale)"
-            },
-            "strategy": {
-                "title": "Anticipez vos coups",
-                "desc": "Planifiez vos actions et contrôlez le plateau"
-            },
-            "draw": {
-                "title": "Règle d'égalité",
-                "desc": "Si aucun joueur ne gagne après 20 coups, la partie se termine par une égalité"
-            }
-        }
-    },
-
+  "title": "ft_transcendence",
+  "home": {
     "play": {
-        "myGames": {
-            "title": "Mes parties",
-            "subtitle": "Créer une nouvelle partie",
-            "desc": "Créez un lobby et invitez un autre joueur",
-            "create": "Créer une partie",
-            "empty": "Aucune partie active",
-            "waiting": "En attente d'un adversaire...",
-            "share": "Partagez ce lien pour inviter quelqu’un :",
-            "copy": "Copier",
-            "cancel": "Annuler la partie"
-        },
-        "availGames": {
-            "title": "Parties disponibles",
-            "subtitle": "Parties publiques",
-            "desc": "Rejoignez un lobby en attente créé par un autre joueur",
-            "refresh": "Rafraîchir les parties",
-            "empty": "Aucune partie disponible",
-            "waiting": "En attente d'un adversaire",
-            "join": "Rejoindre"
-        }
+      "title": "Jouer une partie",
+      "description": "Un jeu de stratégie intemporel. Soyez le premier à aligner 3 symboles pour remporter la victoire !"
     },
-
-    "profile": {
-        "loading": "Chargement...",
-        "level": "Niveau {{currentLevel}}",
-        "achievement": "Trophées",
-        "stats": {
-            "wins": "Victoires",
-            "losses": "Défaites",
-            "draw": "Égalité",
-            "winrate": "Taux de victoires",
-            "games_zero": "Aucune partie jouée",
-            "games_one": "{{count}} partie jouée",
-            "games_other": "{{count}} parties jouées",
-            "winrateValue": "{{value}}%"
-        },
-        "bio": "Bio",
-        "about": {
-            "title": "À propos",
-            "notConnected": "Non connecté",
-            "login": "Connecte-toi pour voir ton profil",
-            "guest": "Invité",
-            "viewProfile": "Voir le profil",
-            "noBio": "Pas encore de bio"
-        },
-        "xp": "{{current}} / {{max}} XP",
-        "emptyBio": "Cliquez sur modifier profil pour ajouter une biographie",
-        "uploading": "Téléchargement...",
-        "changeAvatar": "Changer l'avatar",
-        "avatarUpdated": "Avatar mis à jour avec succès",
-        "username": " Nom d'utilisateur",
-        "editProfile": "Modifier le profil"
+    "hero": {
+      "title": "Morpion",
+      "texte": "Joue. Affronte. Progresse. Défie des joueurs et deviens le meilleur !"
     },
-
-    "settings": {
-        "title": "Paramètres",
-        "description": "Gère ton profil et la sécurité de ton compte.",
-        "notConnected": "Non connecté",
-        "login": "Connecte-toi pour gérer tes paramètres",
-        "profile": {
-            "title": "Informations du profil",
-            "description": "Modifie ton nom d'utilisateur, ta biographie et ton avatar.",
-            "save": "Enregistrer les modifications",
-            "saving": "Enregistrement..."
-        },
-        "security": {
-            "title": "Sécurité",
-            "description": "Gère l'authentification à deux facteurs et les futures options de sécurité.",
-            "disableTitle": "Désactiver la 2FA",
-            "disableDescription": "La désactivation de la 2FA sera ajoutée plus tard. Pour l’instant, la 2FA peut seulement être activée.",
-            "disableComingSoon": "Désactivation de la 2FA bientôt disponible"
-        }
-    },
-
-    "leaderboard": {
-        "title": "Classement",
-        "topXP": "Plus haut niveau",
-        "topWins": "Plus de victoires",
-        "topTotalGames": "Plus de parties jouées",
-        "empty": "Aucun joueur dans le classement",
-        "xp": "{{value}} XP",
-        "wins": "{{value}} Victoires",
-        "totalGames": "{{value}} Parties",
-        "notConnected": "Non connecté",
-        "login": "Connecte-toi pour voir le classement"
-    },
-
-    "friends": {
-		"title": "Amis",
-		"description": "Gère tes amis et tes demandes",
-		"notConnected": "Non connecté",
-		"login": "Connecte-toi pour voir tes amis",
-
-		"loading": "Chargement des amis...",
-
-		"search": {
-			"title": "Rechercher des utilisateurs",
-			"placeholder": "Rechercher par nom d'utilisateur",
-			"button": "Rechercher"
-		},
-
-		"list": {
-			"title": "Liste d'amis",
-			"empty": "Tu n'as pas encore d'amis"
-		},
-
-		"requests": {
-			"incoming": "Demandes reçues",
-			"outgoing": "Demandes envoyées",
-			"noIncoming": "Aucune demande reçue",
-			"noOutgoing": "Aucune demande envoyée"
-		},
-
-		"actions": {
-			"add": "Ajouter",
-			"accept": "Accepter",
-			"decline": "Refuser",
-			"remove": "Retirer"
-		},
-
-		"states": {
-			"self": "Toi",
-			"friend": "Ami",
-			"pending": "En attente"
-		},
-
-		"success": {
-			"requestSent": "Demande envoyée",
-			"accepted": "Demande acceptée",
-			"declined": "Demande refusée",
-			"removed": "Ami supprimé"
-		},
-
-		"errors": {
-			"load": "Erreur lors du chargement des amis : {{error}}",
-			"search": "Erreur lors de la recherche : {{error}}",
-			"action": "L'action a échoué : {{error}}"
-		},
-
-		"status": {
-			"online": "En ligne",
-			"offline": "Hors ligne",
-			"available": "Disponible",
-			"inGame": "En partie",
-			"waiting": "En attente"
-			}
-	},
-
-    "chat":{
-        "title": "Discussion",
-        "notConnected": "Non connecté",
-        "login": "Connecte-toi pour accéder à la discussion"
-    },
-
-    "history": {
-        "title": "Historique des parties",
-        "notConnected": "Non connecté",
-        "login": "Connecte-toi pour voir ton historique",
-        "empty": "Aucune partie jouée pour le moment",
-        "emptyDesc": "Ton historique de parties apparaîtra ici"
-    },
-
     "buttons": {
-        "backHome": "Retour à l'accueil"
-    },
-
-    "auth": {
-        "description": "Crée ton compte",
-        "description_login": "Connectez-vous",
-        "username": "Nom d'utilisateur",
-        "email": "Email",
-        "password": "Mot de passe",
-
-        "placeholders": {
-            "username": "Entre ton nom d'utilisateur",
-            "email": "example@42.ch",
-            "password": "Ton mot de passe sécurisé"
-          },
-
-        "buttons": {
-            "register": "S'inscrire",
-            "loading": "Connection au serveur...",
-            "change_method": "Changer de méthode",
-            "login": "Se connecter",
-            "no_account": "Pas encore de compte ? S'inscrire",
-            "already_account": "Déjà un compte ? Se connecter",
-            "logout": "Déconnexion",
-            "edit": "Modification effectuée avec succès"
-          },
-          "success": "Utilisateur créé avec succès !",
-          "error": "Une erreur est survenue : ",
-          "errors": {
-            "username": "Le nom d'utilisateur doit contenir au moins 3 caractères.",
-            "email": "Adresse email invalide",
-            "password": "Le mot de passe doit contenir au moins 8 caractères.",
-            "bio": "La bio doit contenir moins de 180 caractères"
-        },
-        "logoutSuccess": "Déconnexion réussie",
-        "errorWithMessage": "Une erreur est survenue : {{message}}",
-        "loginWith42": "Se connecter avec 42",
-        "twofa": {
-            "title": "Authentification à deux facteurs",
-            "description": "Entrez le code à 6 chiffres de votre application d’authentification.",
-            "enabled": "La 2FA est activée sur votre compte.",
-            "enable": "Activer la 2FA",
-            "placeholder": "Entrez votre code",
-            "verifying": "Vérification...",
-            "verify": "Vérifier le code",
-            "enterCode": "Entrez le code à 6 chiffres",
-            "regenerate": "Régénérer le QR code",
-            "loading": "Chargement...",
-            "setupStarted": "Configuration 2FA démarrée",
-            "success": "Connexion 2FA réussie",
-            "back": "Retour à l'accueil"
-        }
-    },
-
-    "footer": {
-        "projectname": "ft_transcendence",
-        "privacy": "Confidentialité",
-        "terms": "Conditions d'utilisation",
-        "copyright": "© {{year}}"
-    },
-
-    "privacy": {
-        "title": "Politique de confidentialité",
-        "intro": "Cette application collecte et traite des données utilisateur afin de fournir ses services.",
-        "data":{
-            "title": "Données collectées",
-            "items": ["Nom d'utilisateur", "Statistiques de jeu", "Informations du profil"]
-        },
-        "usage":{
-            "title": "Utilisation",
-            "content": "Les données sont utilisées uniquement pour le fonctionnement de l'application et ne sont pas partagées avec des tiers."
-        },
-        "security":{
-            "title": "Sécurité",
-            "content": "Nous mettons en place des mesures appropriées pour protéger les données des utilisateurs."
-        }
-    },
-
-    "terms": {
-        "title": "Conditions d'utilisation",
-        "intro": "En utilisant cette application, vous acceptez les conditions suivantes.",
-        "usage":{
-            "title": "Utilisation",
-            "content": "Les utilisateurs doivent utiliser l'application de manière respectueuse et ne pas tenter de l'exploiter."
-        },
-        "account": {
-            "title": "Comptes",
-            "content": "Les utilisateurs sont responsables de leurs comptes et de leur activité."
-        },
-        "limitation": {
-            "title": "Limitation",
-            "content": "L'application est fournie \"telle quelle\" sans garantie."
-        }
-    },
-
-    "backend": {
-        "ERR_AUTH_EMAIL_INVALID": "L'adresse email est invalide.",
-        "ERR_AUTH_PWD_MIN_LENGTH": "Le mot de passe doit faire 8 caractères minimum.",
-        "ERR_AUTH_PWD_COMPLEXITY": "Le mot de passe doit contenir une minuscule, une majuscule et un chiffre.",
-        "ERR_USER_USERNAME_MIN_LENGTH": "Le nom d'utilisateur est trop court (3 min).",
-        "ERR_USER_USERNAME_MAX_LENGTH": "Le nom d'utilisateur est trop long (20 max).",
-        "ERR_USER_USERNAME_NO_SPACES": "Le nom d'utilisateur ne doit pas contenir d'espaces.",
-        "ERR_USER_BIO_MAX_LENGTH": "La biographie est trop longue (180 max).",
-        "ERR_AUTH_2FA_CODE_STRING": "Le code doit être une chaîne de caractères.",
-        "ERR_AUTH_2FA_CODE_LENGTH": "Le code doit contenir exactement 6 chiffres.",
-        "AUTH_2FA_REQUIRED": "Authentification à deux facteurs requise.",
-        "AUTH_LOGIN_SUCCESS": "Connexion réussie.",
-        "AUTH_LOGOUT_SUCCESS": "Déconnexion réussie.",
-        "ERR_AUTH_MISSING_2FA_TOKEN": "Jeton d'attente 2FA manquant.",
-        "AUTH_2FA_LOGIN_SUCCESS": "Connexion 2FA réussie.",
-        "ERR_AUTH_ALREADY_EXISTS": "Ce nom d'utilisateur est déjà pris.",
-        "ERR_AUTH_INVALID_CREDENTIALS": "Identifiants invalides.",
-        "ERR_USER_NOT_FOUND": "Utilisateur introuvable.",
-        "ERR_AUTH_MISSING_TOKEN": "Jeton d'authentification manquant.",
-        "ERR_AUTH_INVALID_TOKEN": "Jeton invalide ou expiré.",
-        "ERR_OAUTH_42_CONFIG": "La connexion 42 n'est pas configurée sur le serveur.",
-        "ERR_OAUTH_MISSING_CODE": "Code d'autorisation OAuth manquant.",
-        "ERR_OAUTH_MISSING_STATE": "État OAuth manquant.",
-        "ERR_OAUTH_MISSING_STORED_STATE": "État OAuth stocké manquant (session expirée).",
-        "ERR_OAUTH_INVALID_STATE": "État OAuth invalide.",
-        "ERR_OAUTH_GOOGLE_CONFIG": "La connexion Google n'est pas configurée sur le serveur.",
-        "ERR_AUTH_2FA_ALREADY_ENABLED": "La 2FA est déjà activée.",
-        "ERR_AUTH_2FA_NO_SETUP": "Aucune configuration 2FA en cours.",
-        "ERR_AUTH_2FA_INVALID_CODE": "Code de sécurité invalide.",
-        "AUTH_2FA_ENABLED_SUCCESS": "Double authentification activée !",
-        "ERR_AUTH_2FA_INVALID_TOKEN": "Jeton 2FA invalide.",
-        "ERR_AUTH_2FA_NOT_ENABLED": "La 2FA n'est pas activée.",
-        "ERR_FRIEND_ACTION_INVALID": "L'action choisie est invalide (ACCEPT ou DECLINE uniquement).",
-        "ERR_FRIEND_SELF_REQUEST": "Vous ne pouvez pas vous ajouter vous-même.",
-        "ERR_FRIEND_ALREADY_FRIENDS": "Vous êtes déjà amis.",
-        "ERR_FRIEND_REQUEST_EXISTS": "Une demande est déjà en cours.",
-        "ERR_FRIEND_TOO_MANY_REQUESTS": "Trop de demandes en attente.",
-        "ERR_FRIEND_REQUEST_NOT_FOUND": "Demande d'ami introuvable.",
-        "ERR_FRIEND_RESPONSE_FORBIDDEN": "Action non autorisée.",
-        "ERR_FRIEND_NOT_PENDING": "La demande n'est plus en attente.",
-        "ERR_FRIENDSHIP_NOT_FOUND": "Amitié introuvable.",
-        "FRIEND_REQUEST_DECLINED": "Demande d'ami refusée.",
-        "ERR_FRIEND_REMOVE_NOT_ACCEPTED": "Impossible de supprimer : non amis.",
-        "ERR_FRIEND_REMOVE_FORBIDDEN": "Vous ne pouvez pas faire ça.",
-        "FRIEND_REMOVED_SUCCESS": "Ami supprimé de votre liste.",
-        "ERR_CHAT_MSG_STRING": "Le message doit être du texte.",
-        "ERR_CHAT_MSG_EMPTY": "Vous ne pouvez pas envoyer un message vide.",
-        "ERR_CHAT_MSG_TOO_LONG": "Le message est trop long (500 caractères max).",
-        "CHAT_UNKNOWN_USER": "Utilisateur inconnu",
-        "ACH_UNKNOWN_NAME": "Succès inconnu",
-        "ACH_UNKNOWN_DESC": "Description non disponible",
-        "ACH_FIRST_GAME_TITLE": "Tout commence ici",
-        "ACH_FIRST_GAME_DESC": "Jouez votre première partie.",
-        "ACH_FIRST_WIN_TITLE": "Premier Sang",
-        "ACH_FIRST_WIN_DESC": "Gagnez votre première partie.",
-        "ACH_DRAW_GAME_TITLE": "Match Nul",
-        "ACH_DRAW_GAME_DESC": "Faites un match nul.",
-        "ACH_LOSE_BY_TIME_TITLE": "Trop lent",
-        "ACH_LOSE_BY_TIME_DESC": "Perdez une partie au temps.",
-        "ACH_WIN_5_TITLE": "Tape m'en cinq",
-        "ACH_WIN_5_DESC": "Gagnez 5 matchs au total.",
-        "ACH_WIN_10_TITLE": "Passage aux dizaines",
-        "ACH_WIN_10_DESC": "Gagnez 10 matchs au total.",
-        "ACH_WIN_50_TITLE": "Vétéran",
-        "ACH_WIN_50_DESC": "Gagnez 50 matchs au total.",
-        "ACH_GET_ALL_TITLE": "Fin du jeu",
-        "ACH_GET_ALL_DESC": "Obtenez tous les succès.",
-        "ERR_GAME_PLAYER_ID_INVALID": "L'identifiant du joueur est invalide.",
-        "ERR_GAME_SCORE_INVALID": "Le score doit être un nombre positif.",
-        "ERR_GAME_END_REASON_REQUIRED": "La raison de fin de match est requise.",
-        "ERR_GAME_ID_REQUIRED": "L'identifiant de la partie est requis.",
-        "ERR_GAME_ID_INVALID": "L'identifiant de la partie est invalide.",
-        "ERR_GAME_MOVE_COORD_INVALID": "Coordonnées invalides (doivent être entre 0 et 2).",
-        "ERR_GAME_NOT_FOUND": "Partie introuvable.",
-        "ERR_GAME_ALREADY_ACTIVE": "Vous avez déjà une partie en cours.",
-        "ERR_GAME_NOT_FINISHED": "La partie n'est pas encore terminée.",
-        "ERR_GAME_REPLAY_NOT_AVAILABLE": "Rejouer n'est possible qu'à la fin du match.",
-        "ERR_GAME_SPECTATOR_REPLAY": "Les spectateurs ne peuvent pas demander de revanche.",
-        "ERR_GAME_WAITING_PLAYERS": "En attente des deux joueurs.",
-        "ERR_GAME_SPECTATOR_MOVE": "Les spectateurs ne peuvent pas jouer.",
-        "ERR_GAME_NOT_YOUR_TURN": "Ce n'est pas votre tour.",
-        "ERR_GAME_CANT_LEAVE_PLAYING": "Impossible de quitter une partie en cours",
-        "ERR_MATCH_SELF_PLAY": "Un joueur ne peut pas jouer contre lui-même.",
-        "ERR_MATCH_INVALID_WINNER": "Le vainqueur doit être l'un des deux participants.",
-        "ERR_MATCH_SAVE_FAILED": "Impossible d'enregistrer le résultat du match.",
-        "STATUS_MATCH_DRAW": "ÉGALITÉ",
-        "STATUS_MATCH_WIN": "VICTOIRE",
-        "STATUS_MATCH_LOSS": "DÉFAITE",
-        "ERR_QUERY_LIMIT_INVALID": "La limite doit être un nombre entier positif.",
-        "ERR_QUERY_OFFSET_INVALID": "L'offset doit être un nombre entier positif.",
-        "ERR_QUERY_SEARCH_INVALID": "Le terme de recherche est invalide (50 caractères max).",
-        "ERR_USER_AVATAR_RATE_LIMIT": "Trop de tentatives de changement d'avatar. Réessayez plus tard.",
-        "ERR_USER_AVATAR_TOO_LARGE": "L'image doit faire moins de 200 Ko.",
-        "ERR_USER_AVATAR_INVALID": "Envoi de l'avatar invalide (format non supporté ?).",
-        "ERR_USER_UPDATE_FORBIDDEN": "Vous ne pouvez modifier que votre propre profil.",
-        "ERR_QUERY_SEARCH_EMPTY": "La recherche ne peut pas être vide.",
-        "ERR_USER_UPDATE_FAILED": "Échec de la mise à jour du profil.",
-        "ERR_USER_AVATAR_REQUIRED": "Le fichier de l'avatar est requis.",
-        "ERR_USER_AVATAR_INVALID_TYPE": "Format d'image invalide (PNG, JPEG, WebP)."
+      "register": "S'enregistrer",
+      "login": "Se connecter",
+      "start": "LANCER LA PARTIE",
+      "hi": "Salut, ",
+      "create": "Créer une partie",
+      "join": "Rejoindre une partie"
     }
+  },
+  "sidebar": {
+    "title": "Tableau de bord",
+    "home": "Accueil",
+    "game": "Jouer",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "leaderboard": "Classement",
+    "friends": "Amis",
+    "chat": "Discussion",
+    "history": "Historique",
+    "spectate": "Regarder",
+    "rules": "Règles du jeu"
+  },
+  "game": {
+    "title": "Jouer",
+    "liveTitle": "Regarder",
+    "liveEmpty": "Aucune partie à regarder",
+    "liveDesc": "Les matchs en direct apparaîtront ici",
+    "liveCount_one": "{{count}} partie en direct",
+    "liveCount_other": "{{count}} parties en direct",
+    "watch": "Regarder",
+    "playing": "En cours...",
+    "turn": "Au tour de {{player}} : {{symbol}}",
+    "vs": "VS",
+    "wins": "GAGNE !",
+    "replay": "RECOMMENCER",
+    "mode": "Mode 2 joueurs",
+    "reset": "REDEMARRER SESSION",
+    "result": {
+      "win": "Victoire",
+      "loss": "Défaite",
+      "draw": "Égalité"
+    },
+    "notConnected": "Non connecté",
+    "login": "Connecte-toi pour accéder au jeu",
+    "liveLogin": "Connecte-toi pour regarder une partie",
+    "howToPlay": "Règles du jeu",
+    "rules": {
+      "maxSymbols": {
+        "title": "Maximum de 3 symboles par joueur",
+        "desc": "Vous pouvez avoir au maximum 3 symboles sur le plateau"
+      },
+      "disappear": {
+        "title": "Le plus ancien disparaît",
+        "desc": "Lorsque vous placez un nouveau symbole, le plus ancien disparaît"
+      },
+      "win": {
+        "title": "Alignez 3 pour gagner",
+        "desc": "Alignez 3 symboles (horizontalement, verticalement ou en diagonale)"
+      },
+      "strategy": {
+        "title": "Anticipez vos coups",
+        "desc": "Planifiez vos actions et contrôlez le plateau"
+      },
+      "draw": {
+        "title": "Règle d'égalité",
+        "desc": "Si aucun joueur ne gagne après 20 coups, la partie se termine par une égalité"
+      }
+    },
+    "waiting": "En attendant..",
+    "backHome": "Retour à la maison",
+    "spectating": "Vous êtes spectateur",
+    "waitingOpponent": "En attente de l'adversaire...",
+    "waitingMove": "En attente du coup de l'adversaire..."
+  },
+  "play": {
+    "myGames": {
+      "title": "Mes parties",
+      "subtitle": "Créer une nouvelle partie",
+      "desc": "Créez un lobby et invitez un autre joueur",
+      "create": "Créer une partie",
+      "empty": "Aucune partie active",
+      "waiting": "En attente d'un adversaire...",
+      "share": "Partagez ce lien pour inviter quelqu’un :",
+      "copy": "Copier",
+      "cancel": "Annuler la partie"
+    },
+    "availGames": {
+      "title": "Parties disponibles",
+      "subtitle": "Parties publiques",
+      "desc": "Rejoignez un lobby en attente créé par un autre joueur",
+      "refresh": "Rafraîchir les parties",
+      "empty": "Aucune partie disponible",
+      "waiting": "En attente d'un adversaire",
+      "join": "Rejoindre"
+    }
+  },
+  "profile": {
+    "loading": "Chargement...",
+    "level": "Niveau {{currentLevel}}",
+    "achievement": "Trophées",
+    "stats": {
+      "wins": "Victoires",
+      "losses": "Défaites",
+      "draw": "Égalité",
+      "winrate": "Taux de victoires",
+      "games_zero": "Aucune partie jouée",
+      "games_one": "{{count}} partie jouée",
+      "games_other": "{{count}} parties jouées",
+      "winrateValue": "{{value}}%"
+    },
+    "bio": "Bio",
+    "about": {
+      "title": "À propos",
+      "notConnected": "Non connecté",
+      "login": "Connecte-toi pour voir ton profil",
+      "guest": "Invité",
+      "viewProfile": "Voir le profil",
+      "noBio": "Pas encore de bio"
+    },
+    "xp": "{{current}} / {{max}} XP",
+    "emptyBio": "Cliquez sur modifier profil pour ajouter une biographie",
+    "uploading": "Téléchargement...",
+    "changeAvatar": "Changer l'avatar",
+    "avatarUpdated": "Avatar mis à jour avec succès",
+    "username": " Nom d'utilisateur",
+    "editProfile": "Modifier le profil"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "description": "Gère ton profil et la sécurité de ton compte.",
+    "notConnected": "Non connecté",
+    "login": "Connecte-toi pour gérer tes paramètres",
+    "profile": {
+      "title": "Informations du profil",
+      "description": "Modifie ton nom d'utilisateur, ta biographie et ton avatar.",
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement..."
+    },
+    "security": {
+      "title": "Sécurité",
+      "description": "Gère l'authentification à deux facteurs et les futures options de sécurité.",
+      "disableTitle": "Désactiver la 2FA",
+      "disableDescription": "La désactivation de la 2FA sera ajoutée plus tard. Pour l’instant, la 2FA peut seulement être activée.",
+      "disableComingSoon": "Désactivation de la 2FA bientôt disponible"
+    }
+  },
+  "leaderboard": {
+    "title": "Classement",
+    "topXP": "Plus haut niveau",
+    "topWins": "Plus de victoires",
+    "topTotalGames": "Plus de parties jouées",
+    "empty": "Aucun joueur dans le classement",
+    "xp": "{{value}} XP",
+    "wins": "{{value}} Victoires",
+    "totalGames": "{{value}} Parties",
+    "notConnected": "Non connecté",
+    "login": "Connecte-toi pour voir le classement"
+  },
+  "friends": {
+    "title": "Amis",
+    "description": "Gère tes amis et tes demandes",
+    "notConnected": "Non connecté",
+    "login": "Connecte-toi pour voir tes amis",
+    "loading": "Chargement des amis...",
+    "search": {
+      "title": "Rechercher des utilisateurs",
+      "placeholder": "Rechercher par nom d'utilisateur",
+      "button": "Rechercher"
+    },
+    "list": {
+      "title": "Liste d'amis",
+      "empty": "Tu n'as pas encore d'amis"
+    },
+    "requests": {
+      "incoming": "Demandes reçues",
+      "outgoing": "Demandes envoyées",
+      "noIncoming": "Aucune demande reçue",
+      "noOutgoing": "Aucune demande envoyée"
+    },
+    "actions": {
+      "add": "Ajouter",
+      "accept": "Accepter",
+      "decline": "Refuser",
+      "remove": "Retirer"
+    },
+    "states": {
+      "self": "Toi",
+      "friend": "Ami",
+      "pending": "En attente"
+    },
+    "success": {
+      "requestSent": "Demande envoyée",
+      "accepted": "Demande acceptée",
+      "declined": "Demande refusée",
+      "removed": "Ami supprimé"
+    },
+    "errors": {
+      "load": "Erreur lors du chargement des amis : {{error}}",
+      "search": "Erreur lors de la recherche : {{error}}",
+      "action": "L'action a échoué : {{error}}"
+    },
+    "status": {
+      "online": "En ligne",
+      "offline": "Hors ligne",
+      "available": "Disponible",
+      "inGame": "En partie",
+      "waiting": "En attente"
+    }
+  },
+  "chat": {
+    "title": "Discussion",
+    "notConnected": "Non connecté",
+    "login": "Connecte-toi pour accéder à la discussion"
+  },
+  "history": {
+    "title": "Historique des parties",
+    "notConnected": "Non connecté",
+    "login": "Connecte-toi pour voir ton historique",
+    "empty": "Aucune partie jouée pour le moment",
+    "emptyDesc": "Ton historique de parties apparaîtra ici"
+  },
+  "buttons": {
+    "backHome": "Retour à l'accueil",
+    "loading": "Chargement.."
+  },
+  "auth": {
+    "description": "Crée ton compte",
+    "description_login": "Connectez-vous",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "password": "Mot de passe",
+    "placeholders": {
+      "username": "Entre ton nom d'utilisateur",
+      "email": "example@42.ch",
+      "password": "Ton mot de passe sécurisé"
+    },
+    "buttons": {
+      "register": "S'inscrire",
+      "loading": "Connection au serveur...",
+      "change_method": "Changer de méthode",
+      "login": "Se connecter",
+      "no_account": "Pas encore de compte ? S'inscrire",
+      "already_account": "Déjà un compte ? Se connecter",
+      "logout": "Déconnexion",
+      "edit": "Modification effectuée avec succès"
+    },
+    "success": "Utilisateur créé avec succès !",
+    "error": "Une erreur est survenue : ",
+    "errors": {
+      "username": "Le nom d'utilisateur doit contenir au moins 3 caractères.",
+      "email": "Adresse email invalide",
+      "password": "Le mot de passe doit contenir au moins 8 caractères.",
+      "bio": "La bio doit contenir moins de 180 caractères"
+    },
+    "logoutSuccess": "Déconnexion réussie",
+    "errorWithMessage": "Une erreur est survenue : {{message}}",
+    "loginWith42": "Se connecter avec 42",
+    "twofa": {
+      "title": "Authentification à deux facteurs",
+      "description": "Entrez le code à 6 chiffres de votre application d’authentification.",
+      "enabled": "La 2FA est activée sur votre compte.",
+      "enable": "Activer la 2FA",
+      "placeholder": "Entrez votre code",
+      "verifying": "Vérification...",
+      "verify": "Vérifier le code",
+      "enterCode": "Entrez le code à 6 chiffres",
+      "regenerate": "Régénérer le QR code",
+      "loading": "Chargement...",
+      "setupStarted": "Configuration 2FA démarrée",
+      "success": "Connexion 2FA réussie",
+      "back": "Retour à l'accueil",
+      "error": "Erreur d'authentification"
+    }
+  },
+  "footer": {
+    "projectname": "ft_transcendence",
+    "privacy": "Confidentialité",
+    "terms": "Conditions d'utilisation",
+    "copyright": "© {{year}}"
+  },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "intro": "Cette application collecte et traite des données utilisateur afin de fournir ses services.",
+    "data": {
+      "title": "Données collectées",
+      "items": [
+        "Nom d'utilisateur",
+        "Statistiques de jeu",
+        "Informations du profil"
+      ]
+    },
+    "usage": {
+      "title": "Utilisation",
+      "content": "Les données sont utilisées uniquement pour le fonctionnement de l'application et ne sont pas partagées avec des tiers."
+    },
+    "security": {
+      "title": "Sécurité",
+      "content": "Nous mettons en place des mesures appropriées pour protéger les données des utilisateurs."
+    }
+  },
+  "terms": {
+    "title": "Conditions d'utilisation",
+    "intro": "En utilisant cette application, vous acceptez les conditions suivantes.",
+    "usage": {
+      "title": "Utilisation",
+      "content": "Les utilisateurs doivent utiliser l'application de manière respectueuse et ne pas tenter de l'exploiter."
+    },
+    "account": {
+      "title": "Comptes",
+      "content": "Les utilisateurs sont responsables de leurs comptes et de leur activité."
+    },
+    "limitation": {
+      "title": "Limitation",
+      "content": "L'application est fournie \"telle quelle\" sans garantie."
+    }
+  },
+  "backend": {
+    "ERR_AUTH_EMAIL_INVALID": "L'adresse email est invalide.",
+    "ERR_AUTH_PWD_MIN_LENGTH": "Le mot de passe doit faire 8 caractères minimum.",
+    "ERR_AUTH_PWD_COMPLEXITY": "Le mot de passe doit contenir une minuscule, une majuscule et un chiffre.",
+    "ERR_USER_USERNAME_MIN_LENGTH": "Le nom d'utilisateur est trop court (3 min).",
+    "ERR_USER_USERNAME_MAX_LENGTH": "Le nom d'utilisateur est trop long (20 max).",
+    "ERR_USER_USERNAME_NO_SPACES": "Le nom d'utilisateur ne doit pas contenir d'espaces.",
+    "ERR_USER_BIO_MAX_LENGTH": "La biographie est trop longue (180 max).",
+    "ERR_AUTH_2FA_CODE_STRING": "Le code doit être une chaîne de caractères.",
+    "ERR_AUTH_2FA_CODE_LENGTH": "Le code doit contenir exactement 6 chiffres.",
+    "AUTH_2FA_REQUIRED": "Authentification à deux facteurs requise.",
+    "AUTH_LOGIN_SUCCESS": "Connexion réussie.",
+    "AUTH_LOGOUT_SUCCESS": "Déconnexion réussie.",
+    "ERR_AUTH_MISSING_2FA_TOKEN": "Jeton d'attente 2FA manquant.",
+    "AUTH_2FA_LOGIN_SUCCESS": "Connexion 2FA réussie.",
+    "ERR_AUTH_ALREADY_EXISTS": "Ce nom d'utilisateur est déjà pris.",
+    "ERR_AUTH_INVALID_CREDENTIALS": "Identifiants invalides.",
+    "ERR_USER_NOT_FOUND": "Utilisateur introuvable.",
+    "ERR_AUTH_MISSING_TOKEN": "Jeton d'authentification manquant.",
+    "ERR_AUTH_INVALID_TOKEN": "Jeton invalide ou expiré.",
+    "ERR_OAUTH_42_CONFIG": "La connexion 42 n'est pas configurée sur le serveur.",
+    "ERR_OAUTH_MISSING_CODE": "Code d'autorisation OAuth manquant.",
+    "ERR_OAUTH_MISSING_STATE": "État OAuth manquant.",
+    "ERR_OAUTH_MISSING_STORED_STATE": "État OAuth stocké manquant (session expirée).",
+    "ERR_OAUTH_INVALID_STATE": "État OAuth invalide.",
+    "ERR_OAUTH_GOOGLE_CONFIG": "La connexion Google n'est pas configurée sur le serveur.",
+    "ERR_AUTH_2FA_ALREADY_ENABLED": "La 2FA est déjà activée.",
+    "ERR_AUTH_2FA_NO_SETUP": "Aucune configuration 2FA en cours.",
+    "ERR_AUTH_2FA_INVALID_CODE": "Code de sécurité invalide.",
+    "AUTH_2FA_ENABLED_SUCCESS": "Double authentification activée !",
+    "ERR_AUTH_2FA_INVALID_TOKEN": "Jeton 2FA invalide.",
+    "ERR_AUTH_2FA_NOT_ENABLED": "La 2FA n'est pas activée.",
+    "ERR_FRIEND_ACTION_INVALID": "L'action choisie est invalide (ACCEPT ou DECLINE uniquement).",
+    "ERR_FRIEND_SELF_REQUEST": "Vous ne pouvez pas vous ajouter vous-même.",
+    "ERR_FRIEND_ALREADY_FRIENDS": "Vous êtes déjà amis.",
+    "ERR_FRIEND_REQUEST_EXISTS": "Une demande est déjà en cours.",
+    "ERR_FRIEND_TOO_MANY_REQUESTS": "Trop de demandes en attente.",
+    "ERR_FRIEND_REQUEST_NOT_FOUND": "Demande d'ami introuvable.",
+    "ERR_FRIEND_RESPONSE_FORBIDDEN": "Action non autorisée.",
+    "ERR_FRIEND_NOT_PENDING": "La demande n'est plus en attente.",
+    "ERR_FRIENDSHIP_NOT_FOUND": "Amitié introuvable.",
+    "FRIEND_REQUEST_DECLINED": "Demande d'ami refusée.",
+    "ERR_FRIEND_REMOVE_NOT_ACCEPTED": "Impossible de supprimer : non amis.",
+    "ERR_FRIEND_REMOVE_FORBIDDEN": "Vous ne pouvez pas faire ça.",
+    "FRIEND_REMOVED_SUCCESS": "Ami supprimé de votre liste.",
+    "ERR_CHAT_MSG_STRING": "Le message doit être du texte.",
+    "ERR_CHAT_MSG_EMPTY": "Vous ne pouvez pas envoyer un message vide.",
+    "ERR_CHAT_MSG_TOO_LONG": "Le message est trop long (500 caractères max).",
+    "CHAT_UNKNOWN_USER": "Utilisateur inconnu",
+    "ACH_UNKNOWN_NAME": "Succès inconnu",
+    "ACH_UNKNOWN_DESC": "Description non disponible",
+    "ACH_FIRST_GAME_TITLE": "Tout commence ici",
+    "ACH_FIRST_GAME_DESC": "Jouez votre première partie.",
+    "ACH_FIRST_WIN_TITLE": "Premier Sang",
+    "ACH_FIRST_WIN_DESC": "Gagnez votre première partie.",
+    "ACH_DRAW_GAME_TITLE": "Match Nul",
+    "ACH_DRAW_GAME_DESC": "Faites un match nul.",
+    "ACH_LOSE_BY_TIME_TITLE": "Trop lent",
+    "ACH_LOSE_BY_TIME_DESC": "Perdez une partie au temps.",
+    "ACH_WIN_5_TITLE": "Tape m'en cinq",
+    "ACH_WIN_5_DESC": "Gagnez 5 matchs au total.",
+    "ACH_WIN_10_TITLE": "Passage aux dizaines",
+    "ACH_WIN_10_DESC": "Gagnez 10 matchs au total.",
+    "ACH_WIN_50_TITLE": "Vétéran",
+    "ACH_WIN_50_DESC": "Gagnez 50 matchs au total.",
+    "ACH_GET_ALL_TITLE": "Fin du jeu",
+    "ACH_GET_ALL_DESC": "Obtenez tous les succès.",
+    "ERR_GAME_PLAYER_ID_INVALID": "L'identifiant du joueur est invalide.",
+    "ERR_GAME_SCORE_INVALID": "Le score doit être un nombre positif.",
+    "ERR_GAME_END_REASON_REQUIRED": "La raison de fin de match est requise.",
+    "ERR_GAME_ID_REQUIRED": "L'identifiant de la partie est requis.",
+    "ERR_GAME_ID_INVALID": "L'identifiant de la partie est invalide.",
+    "ERR_GAME_MOVE_COORD_INVALID": "Coordonnées invalides (doivent être entre 0 et 2).",
+    "ERR_GAME_NOT_FOUND": "Partie introuvable.",
+    "ERR_GAME_ALREADY_ACTIVE": "Vous avez déjà une partie en cours.",
+    "ERR_GAME_NOT_FINISHED": "La partie n'est pas encore terminée.",
+    "ERR_GAME_REPLAY_NOT_AVAILABLE": "Rejouer n'est possible qu'à la fin du match.",
+    "ERR_GAME_SPECTATOR_REPLAY": "Les spectateurs ne peuvent pas demander de revanche.",
+    "ERR_GAME_WAITING_PLAYERS": "En attente des deux joueurs.",
+    "ERR_GAME_SPECTATOR_MOVE": "Les spectateurs ne peuvent pas jouer.",
+    "ERR_GAME_NOT_YOUR_TURN": "Ce n'est pas votre tour.",
+    "ERR_GAME_CANT_LEAVE_PLAYING": "Impossible de quitter une partie en cours",
+    "ERR_MATCH_SELF_PLAY": "Un joueur ne peut pas jouer contre lui-même.",
+    "ERR_MATCH_INVALID_WINNER": "Le vainqueur doit être l'un des deux participants.",
+    "ERR_MATCH_SAVE_FAILED": "Impossible d'enregistrer le résultat du match.",
+    "STATUS_MATCH_DRAW": "ÉGALITÉ",
+    "STATUS_MATCH_WIN": "VICTOIRE",
+    "STATUS_MATCH_LOSS": "DÉFAITE",
+    "ERR_QUERY_LIMIT_INVALID": "La limite doit être un nombre entier positif.",
+    "ERR_QUERY_OFFSET_INVALID": "L'offset doit être un nombre entier positif.",
+    "ERR_QUERY_SEARCH_INVALID": "Le terme de recherche est invalide (50 caractères max).",
+    "ERR_USER_AVATAR_RATE_LIMIT": "Trop de tentatives de changement d'avatar. Réessayez plus tard.",
+    "ERR_USER_AVATAR_TOO_LARGE": "L'image doit faire moins de 200 Ko.",
+    "ERR_USER_AVATAR_INVALID": "Envoi de l'avatar invalide (format non supporté ?).",
+    "ERR_USER_UPDATE_FORBIDDEN": "Vous ne pouvez modifier que votre propre profil.",
+    "ERR_QUERY_SEARCH_EMPTY": "La recherche ne peut pas être vide.",
+    "ERR_USER_UPDATE_FAILED": "Échec de la mise à jour du profil.",
+    "ERR_USER_AVATAR_REQUIRED": "Le fichier de l'avatar est requis.",
+    "ERR_USER_AVATAR_INVALID_TYPE": "Format d'image invalide (PNG, JPEG, WebP)."
+  }
 }
