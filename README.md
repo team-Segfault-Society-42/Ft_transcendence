@@ -47,6 +47,8 @@ The stack runs entirely in Docker and is composed of a React frontend, a NestJS 
 
 - **Task distribution:** Tasks were tracked on GitHub Issues and mapped to an Excalidraw Kanban board. Each week, tasks were distributed based on members' interest, their current area of work, and availability. When a team member was particularly swamped, another would step in to help.
 
+- **Sprints:** Development was organised in one-week sprints, occasionally extended to two weeks for larger features. Progress was reviewed and the next sprint planned at the weekly meeting.
+
 ---
 
 ## Instructions
