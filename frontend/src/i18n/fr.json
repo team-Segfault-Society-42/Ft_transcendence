@@ -424,5 +424,20 @@
     "ERR_USER_UPDATE_FAILED": "Échec de la mise à jour du profil.",
     "ERR_USER_AVATAR_REQUIRED": "Le fichier de l'avatar est requis.",
     "ERR_USER_AVATAR_INVALID_TYPE": "Format d'image invalide (PNG, JPEG, WebP)."
+  },
+  "errors": {
+    "game": {
+      "userNotFound": "Utilisateur introuvable",
+      "gameNotFound": "Partie introuvable",
+      "notYourTurn": "Ce n'est pas votre tour",
+      "waitingOpponent": "En attente de l'adversaire...",
+      "alreadyOccupied": "Cette case est déjà occupée",
+      "replayUnavailable": "Le replay est disponible uniquement après la fin de la partie",
+      "spectatorCannotPlay": "Les spectateurs ne peuvent pas jouer",
+      "spectatorCannotReplay": "Les spectateurs ne peuvent pas demander de replay",
+      "invalidMove": "Coup invalide",
+      "unknown": "Erreur inconnue",
+      "default": "Quelque chose s'est mal passé"
+    }
   }
 }

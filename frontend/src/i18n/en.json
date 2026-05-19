@@ -425,5 +425,20 @@
     "ERR_USER_UPDATE_FAILED": "Failed to update user.",
     "ERR_USER_AVATAR_REQUIRED": "Avatar file is required.",
     "ERR_USER_AVATAR_INVALID_TYPE": "Invalid image format (PNG, JPEG, WebP)."
+  },
+  "errors": {
+    "game": {
+      "userNotFound": "User not found",
+      "gameNotFound": "Game not found",
+      "notYourTurn": "It's not your turn",
+      "waitingOpponent": "Waiting for the opponent...",
+      "alreadyOccupied": "This cell is already occupied",
+      "replayUnavailable": "The replay is only available after the game has ended.",
+      "spectatorCannotPlay": "Spectators cannot play",
+      "spectatorCannotReplay": "Viewers cannot request a replay",
+      "invalidMove": "Invalid blow",
+      "unknown": "Unknown error",
+      "default": "Something went wrong"
+    }
   }
 }
