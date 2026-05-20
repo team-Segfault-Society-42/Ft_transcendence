@@ -5,6 +5,7 @@ import {
 	Get,
 	Req,
 	Res,
+	Patch,
 	UnauthorizedException,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
@@ -20,6 +21,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PresenceService } from '../presence/presence.service';
 import type { JwtPayload } from './jwt-auth.guard';
 import { DisableTwoFactorDto } from './dto/disable-twofa.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -277,6 +279,24 @@ export class AuthController {
 		return this.twoFactorService.disableTwoFactor(
 			req.user.sub,
 			dto.code,
+		);
+	}
+
+	@Patch('me/password')
+	@ApiOperation({ summary: 'Update current authenticated user password' })
+	@ApiBody({ type: UpdatePasswordDto })
+	@ApiResponse({
+		status: 200,
+		description: 'Password updated successfully',
+	})
+	updatePassword(
+		@Req() req: AuthRequest,
+		@Body() dto: UpdatePasswordDto,
+	) {
+		return this.authService.updatePassword(
+			req.user.sub,
+			dto.currentPassword,
+			dto.newPassword,
 		);
 	}
 }

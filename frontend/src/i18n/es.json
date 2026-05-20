@@ -494,7 +494,9 @@
     "ERR_QUERY_SEARCH_EMPTY": "La búsqueda no puede estar vacía.",
     "ERR_USER_UPDATE_FAILED": "Error al actualizar el usuario.",
     "ERR_USER_AVATAR_REQUIRED": "El archivo del avatar es obligatorio.",
-    "ERR_USER_AVATAR_INVALID_TYPE": "Formato de imagen no válido (PNG, JPEG, WebP)."
+    "ERR_USER_AVATAR_INVALID_TYPE": "Formato de imagen no válido (PNG, JPEG, WebP).",
+    "ERR_AUTH_CURRENT_PWD_REQUIRED": "La contraseña actual es obligatoria.",
+    "AUTH_PASSWORD_UPDATED_SUCCESS": "Contraseña actualizada correctamente."
   },
   "errors": {
     "game": {

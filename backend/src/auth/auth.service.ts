@@ -167,4 +167,48 @@ export class AuthService {
 
 		return this.toPrivateUser(user);
 	}
+
+	async updatePassword(
+		userId: number,
+		currentPassword: string | undefined,
+		newPassword: string,
+	) {
+		const user = await this.prisma.user.findUnique({
+			where: { id: userId },
+			select: {
+				id: true,
+				passwordHash: true,
+			},
+		});
+
+		if (!user) {
+			throw new NotFoundException('ERR_USER_NOT_FOUND');
+		}
+
+		if (user.passwordHash) {
+			if (!currentPassword) {
+				throw new UnauthorizedException('ERR_AUTH_CURRENT_PWD_REQUIRED');
+			}
+
+			const passwordMatches = await bcrypt.compare(
+				currentPassword,
+				user.passwordHash,
+			);
+
+			if (!passwordMatches) {
+				throw new UnauthorizedException('ERR_AUTH_INVALID_CREDENTIALS');
+			}
+		}
+
+		const passwordHash = await bcrypt.hash(newPassword, 10);
+
+		await this.prisma.user.update({
+			where: { id: userId },
+			data: { passwordHash },
+		});
+
+		return {
+			message: 'AUTH_PASSWORD_UPDATED_SUCCESS',
+		};
+	}
 }

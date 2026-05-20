@@ -494,7 +494,9 @@
     "ERR_QUERY_SEARCH_EMPTY": "Search cannot be empty.",
     "ERR_USER_UPDATE_FAILED": "Failed to update user.",
     "ERR_USER_AVATAR_REQUIRED": "Avatar file is required.",
-    "ERR_USER_AVATAR_INVALID_TYPE": "Invalid image format (PNG, JPEG, WebP)."
+    "ERR_USER_AVATAR_INVALID_TYPE": "Invalid image format (PNG, JPEG, WebP).",
+    "ERR_AUTH_CURRENT_PWD_REQUIRED": "Current password is required.",
+    "AUTH_PASSWORD_UPDATED_SUCCESS": "Password updated successfully."
   },
   "errors": {
     "game": {

@@ -494,7 +494,9 @@
     "ERR_QUERY_SEARCH_EMPTY": "La recherche ne peut pas être vide.",
     "ERR_USER_UPDATE_FAILED": "Échec de la mise à jour du profil.",
     "ERR_USER_AVATAR_REQUIRED": "Le fichier de l'avatar est requis.",
-    "ERR_USER_AVATAR_INVALID_TYPE": "Format d'image invalide (PNG, JPEG, WebP)."
+    "ERR_USER_AVATAR_INVALID_TYPE": "Format d'image invalide (PNG, JPEG, WebP).",
+    "ERR_AUTH_CURRENT_PWD_REQUIRED": "Le mot de passe actuel est requis.",
+    "AUTH_PASSWORD_UPDATED_SUCCESS": "Mot de passe mis à jour avec succès."
   },
   "errors": {
     "game": {
