@@ -122,7 +122,6 @@ export default function Friends() {
 			await friendsService.acceptFriendRequest(requestId);
 			toast.success(t("friends.success.accepted"));
 			await loadFriendsData();
-			window.dispatchEvent(new Event("friends_updated"));
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
