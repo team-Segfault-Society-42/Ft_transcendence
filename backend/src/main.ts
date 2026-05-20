@@ -7,8 +7,18 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors();
-  app.use(cookieParser());
+	const rawOrigins = process.env.CORS_ORIGINS ?? '';
+	const allowedOrigins = rawOrigins
+		.split(',')
+		.map((origin) => origin.trim())
+		.filter((origin) => origin !== '');
+
+	app.enableCors({
+		origin: allowedOrigins,
+		credentials: true,
+	});
+
+	app.use(cookieParser());
 
 	app.useGlobalPipes(
 	new ValidationPipe({
