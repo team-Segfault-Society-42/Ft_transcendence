@@ -3,7 +3,26 @@
   "home": {
     "play": {
       "title": "Jugar una partida",
-      "description": "¡Un juego de estrategia atemporal. Sé el primero en alinear 3 símbolos para llevarte la victoria!"
+      "description": "¡Un juego de estrategia atemporal. Sé el primero en alinear 3 símbolos para llevarte la victoria!",
+      "idle": {
+        "title": "Jugar una partida",
+        "description": "Únete a partidas competitivas o mira juegos en directo",
+        "create": "Crear une partida",
+        "join": "Unirse a una partida",
+        "watch": "Ver partidas"
+      },
+      "waiting": {
+				"title": "Lobby en espera",
+				"description": "Esperando a que un oponente se una...",
+				"copy": "Copiar enlace",
+				"cancel": "Cancelar"
+  			},
+			"playing": {
+				"title": "Partida en curso",
+				"description": "¡Entra en la arena y lucha por la victoria!",
+				"vs": "VS",
+				"resume": "Reanudar partida"
+			}
     },
     "hero": {
       "title": "Tres en Raya",
@@ -119,7 +138,11 @@
     "spectators": "Espectadores en esta partida: {{count}}",
     "errors": {
       "noLongerAvailable": "La partida ya no está disponible."
-    }
+    },
+    "score": "Puntaje",
+    "replayVotes": "Reproducir votos",
+    "waitingReplayOther": "Repetición solicitada. \nEsperando al otro jugador...",
+    "timer": "Tiempo restante: {{seconds}}s"
   },
   "play": {
     "myGames": {

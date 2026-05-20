@@ -3,7 +3,26 @@
   "home": {
     "play": {
       "title": "Jouer une partie",
-      "description": "Un jeu de stratégie intemporel. Soyez le premier à aligner 3 symboles pour remporter la victoire !"
+      "description": "Un jeu de stratégie intemporel. Soyez le premier à aligner 3 symboles pour remporter la victoire !",
+      "idle": {
+        "title": "Jouer",
+        "description": "Lancez des parties compétitives ou regardez des matchs en direct",
+        "create": "Créer une partie",
+        "join": "Rejoindre une partie",
+        "watch": "Regarder des matchs"
+      },
+      "waiting":{
+        "title": "Salle d'attente",
+        "description": "En attente qu'un adversaire rejoigne...",
+        "copy": "Copier le lien",
+        "cancel": "Annuler"
+      },
+      "playing":{
+        "title": "Match en cours",
+        "description": "Entrez dans l'arène et combattez pour la victoire !",
+        "vs": "VS",
+        "resume": "Reprendre la partie"
+      }
     },
     "hero": {
       "title": "Morpion",
@@ -119,7 +138,11 @@
     "spectators": "Spectateurs sur cette partie : {{count}}",
     "errors": {
       "noLongerAvailable": "La partie n'est plus disponible"
-    }
+    },
+    "score": "Score",
+    "replayVotes": "Rejouer les votes",
+    "waitingReplayOther": "Replay demandé. \nEn attendant l'autre joueur...",
+    "timer": "Temps restant : {{seconds}}s"
   },
   "play": {
     "myGames": {
