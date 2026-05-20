@@ -155,9 +155,7 @@ export default function Dashboard() {
 
       setUser(null);
 
-      const message = response.message
-      ? t(`backend.${response.message}`)
-      : t("auth.logoutSuccess");
+      const message = response.message || t("auth.logoutSuccess");
       toast.success(message);
       navigate("/");
     } catch {
