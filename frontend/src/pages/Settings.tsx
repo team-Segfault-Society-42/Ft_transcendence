@@ -127,7 +127,11 @@ export default function Settings() {
 			const result =
 				await userService.verifyTwoFactorSetup(twoFactorCode);
 
-			toast.success(result.message);
+			toast.success(
+				t(`backend.${result.message}`, {
+					defaultValue: result.message,
+				}),
+			);
 
 			const refreshedUser = await userService.getMe();
 
