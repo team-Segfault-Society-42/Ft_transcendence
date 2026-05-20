@@ -99,7 +99,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 							</span>
 						</div>
 
-						<div className="text-white text-sm break-all leading-snug">
+						<div className="min-w-0 max-w-full whitespace-pre-wrap wrap-anywhere text-sm leading-snug text-white">
 							{message.content}
 						</div>
 					</div>
