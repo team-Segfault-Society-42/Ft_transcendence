@@ -10,7 +10,6 @@ export interface TwoFactorLoginResponse {
 }
 
 export interface TwoFactorSetupResponse {
-	otpauthUrl: string;
 	qrCodeDataUrl: string;
 }
 

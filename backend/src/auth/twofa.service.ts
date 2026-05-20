@@ -15,7 +15,6 @@ export interface TwoFactorPendingPayload {
 }
 
 export interface TwoFactorSetupResult {
-	otpauthUrl: string;
 	qrCodeDataUrl: string;
 }
 
@@ -54,7 +53,6 @@ export class TwoFactorService {
 		const qrCodeDataUrl = await QRCode.toDataURL(otpauthUrl);
 
 		return {
-			otpauthUrl,
 			qrCodeDataUrl,
 		};
 	}
