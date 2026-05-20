@@ -8,7 +8,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import type { AuthSocket, JwtPayload } from '../auth/jwt-auth.guard';
 import { PresenceService } from './presence.service';
-import { Server } from 'socket.io';
+import { Namespace, Server } from 'socket.io';
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const allowedOrigins = rawOrigins
@@ -32,7 +32,7 @@ export class PresenceGateway
 	) {}
 
 	@WebSocketServer()
-	server: Server;
+	server!: Namespace;
 
 	afterInit() {
 		this.presenceService.setServer(this.server);

@@ -1,4 +1,4 @@
-import { io, type Socket } from "socket.io-client";
+import { io, type Socket } from 'socket.io-client';
 
 let presenceSocket: Socket | null = null;
 
@@ -7,9 +7,9 @@ export function connectPresenceSocket(): Socket {
 		return presenceSocket;
 	}
 
-	presenceSocket = io(window.location.origin, {
-		path: "/socket.io/",
-		transports: ["websocket"],
+	presenceSocket = io(`${window.location.origin}/presence`, {
+		path: '/socket.io/',
+		transports: ['websocket'],
 		withCredentials: true,
 	});
 

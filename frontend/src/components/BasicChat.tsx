@@ -15,7 +15,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 	const bottomRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-		const client = io(window.location.origin, {
+		const client = io(`${window.location.origin}/chat`, {
 			path: '/socket.io/',
 			transports: ['websocket'],
 			withCredentials: true,

@@ -8,7 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { GameService, TURN_TIMEOUT_MS } from './game.service';
 import { PlayMoveDto } from './dto/play-move.dto';
-import { Server } from 'socket.io';
+import { Namespace } from 'socket.io';
 import { GameState } from './game.types';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
@@ -37,7 +37,7 @@ const allowedOrigins = trimmedOrigins.filter(function (origin) {
 @UseGuards(JwtAuthGuard) // TODO: verify if can delete (is no necessary bcz CALLED FOR APP)
 export class GameGateway implements OnGatewayDisconnect {
 	@WebSocketServer()
-	server!: Server;
+	server!: Namespace;
 
 	private turnTimers = new Map<string, NodeJS.Timeout>();
 
@@ -97,13 +97,13 @@ export class GameGateway implements OnGatewayDisconnect {
 	}
 
 	private getSpectatorsCnt(gameId: string, game: GameState): number {
-		const room = this.server.sockets.adapter.rooms.get(gameId);
+		const room = this.server.adapter.rooms.get(gameId);
 		if (!room) return 0;
 
 		const userIdsInRoom = new Set<number>();
 
 		for (const socketId of room) {
-			const socket = this.server.sockets.sockets.get(socketId) as
+			const socket = this.server.sockets.get(socketId) as
 				| AuthSocket
 				| undefined;
 			const userId = socket?.data.user.sub;
@@ -129,7 +129,7 @@ export class GameGateway implements OnGatewayDisconnect {
 
 		if (game.status !== 'finished') return;
 
-		const room = this.server.sockets.adapter.rooms.get(gameId);
+		const room = this.server.adapter.rooms.get(gameId);
 		if (room && room.size > 0) return;
 
 		this.clearTurnTimer(gameId);

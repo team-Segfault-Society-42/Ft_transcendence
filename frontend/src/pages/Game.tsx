@@ -12,7 +12,7 @@ export default function Game() {
 		if (!gameId) return;
 		useGameStore.getState().resetGameState();
 
-		const client = io(window.location.origin, {
+		const client = io(`${window.location.origin}/game`, {
 			path: '/socket.io/',
 			transports: ['websocket'],
 			withCredentials: true,

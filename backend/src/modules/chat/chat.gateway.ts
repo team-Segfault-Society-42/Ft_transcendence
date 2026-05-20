@@ -6,7 +6,7 @@ import {
 	WebSocketGateway,
 	WebSocketServer,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Namespace } from 'socket.io';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
 import { SendChatMessageDto } from './dto/chat.dto';
@@ -34,7 +34,7 @@ const allowedOrigins = trimmedOrigins.filter(function (origin) {
 @UsePipes(new ValidationPipe({ whitelist: true }))
 export class ChatGateway {
 	@WebSocketServer()
-	server!: Server;
+	server!: Namespace;
 
 	constructor(private readonly usersService: UsersService) {}
 
