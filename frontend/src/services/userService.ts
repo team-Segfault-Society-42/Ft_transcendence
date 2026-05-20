@@ -17,6 +17,10 @@ export interface TwoFactorVerifyResponse {
 	message: string;
 }
 
+export interface TwoFactorDisableResponse {
+	message: string;
+}
+
 export async function userLogout() {
   const response = await api.post("auth/logout");
   return response.data;
@@ -48,6 +52,13 @@ export async function verifyTwoFactorSetup(
 	code: string,
 ): Promise<TwoFactorVerifyResponse> {
 	const response = await api.post("auth/2fa/verify", { code });
+	return response.data;
+}
+
+export async function disableTwoFactor(
+	code: string,
+): Promise<TwoFactorDisableResponse> {
+	const response = await api.post("auth/2fa/disable", { code });
 	return response.data;
 }
 
@@ -105,6 +116,7 @@ export const userService = {
 	completeTwoFactorLogin,
 	enableTwoFactor,
 	verifyTwoFactorSetup,
+	disableTwoFactor,
     getMe,
     userLogout,
     getUserHistory,

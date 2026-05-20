@@ -38,6 +38,7 @@ export default function Settings() {
 	const [twoFactorCode, setTwoFactorCode] = useState("");
 	const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
 	const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false);
+	const [disableTwoFactorCode, setDisableTwoFactorCode] = useState("");
 
 	useEffect(() => {
 		if (!user) return;
@@ -148,6 +149,44 @@ export default function Settings() {
 				: serverMessage;
 
 			toast.error(t(`backend.${finalMessage}`, { defaultValue: finalMessage }));
+		} finally {
+			setIsTwoFactorLoading(false);
+		}
+	}
+
+	async function handleDisableTwoFactor() {
+		if (!user) return;
+
+		try {
+			setIsTwoFactorLoading(true);
+
+			const result = await userService.disableTwoFactor(
+				disableTwoFactorCode,
+			);
+
+			toast.success(
+				t(`backend.${result.message}`, {
+					defaultValue: result.message,
+				}),
+			);
+
+			const refreshedUser = await userService.getMe();
+			setUser(refreshedUser);
+
+			setDisableTwoFactorCode("");
+		} catch (error: any) {
+			const serverMessage =
+				error.response?.data?.message || error.message;
+
+			const finalMessage = Array.isArray(serverMessage)
+				? serverMessage[0]
+				: serverMessage;
+
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
 		} finally {
 			setIsTwoFactorLoading(false);
 		}
@@ -295,17 +334,26 @@ export default function Settings() {
 										{t("settings.security.disableTitle")}
 									</p>
 
-									<p className="text-sm text-white/50 mt-2">
-										{t("settings.security.disableDescription")}
-									</p>
+									<Input
+										value={disableTwoFactorCode}
+										onChange={(e) => setDisableTwoFactorCode(e.target.value)}
+										placeholder={t("auth.twofa.enterCode")}
+										maxLength={6}
+									/>
 
 									<Button
 										type="button"
-										variant="secondary"
-										disabled
+										variant="danger"
+										onClick={handleDisableTwoFactor}
+										disabled={
+											isTwoFactorLoading ||
+											disableTwoFactorCode.length !== 6
+										}
 										className="mt-4 w-full"
 									>
-										{t("settings.security.disableComingSoon")}
+										{isTwoFactorLoading
+											? t("auth.twofa.verifying")
+											: t("settings.security.disableTitle")}
 									</Button>
 								</div>
 							</div>
