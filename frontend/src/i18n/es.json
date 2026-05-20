@@ -182,6 +182,7 @@
     "profile": {
       "title": "Información del perfil",
       "description": "Actualiza tu nombre de usuario, biografía y avatar.",
+      "updated": "Perfil actualizado correctamente",
       "save": "Guardar cambios",
       "saving": "Guardando..."
     },
