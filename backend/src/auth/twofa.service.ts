@@ -216,4 +216,42 @@ export class TwoFactorService {
 			secret,
 		});
 	}
+
+	async disableTwoFactor(userId: number, code: string) {
+		const user = await this.prisma.user.findUnique({
+			where: { id: userId },
+		});
+
+		if (!user) {
+			throw new UnauthorizedException('ERR_USER_NOT_FOUND');
+		}
+
+		if (!user.isTwoFactorEnabled || !user.twoFactorSecret) {
+			throw new BadRequestException('ERR_AUTH_2FA_NOT_ENABLED');
+		}
+
+		this.assertCanAttempt(userId);
+
+		const isCodeValid = this.verifyTotpCode(user.twoFactorSecret, code);
+
+		if (!isCodeValid) {
+			this.recordFailedAttempt(userId);
+			throw new BadRequestException('ERR_AUTH_2FA_INVALID_CODE');
+		}
+
+		this.clearFailedAttempts(userId);
+
+		await this.prisma.user.update({
+			where: { id: userId },
+			data: {
+				isTwoFactorEnabled: false,
+				twoFactorSecret: null,
+				twoFactorTempSecret: null,
+			},
+		});
+
+		return {
+			message: 'AUTH_2FA_DISABLED_SUCCESS',
+		};
+	}
 }

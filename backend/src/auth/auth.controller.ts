@@ -19,6 +19,7 @@ import { TwoFactorCodeDto } from './dto/twofa-code.dto';
 import { JwtService } from '@nestjs/jwt';
 import { PresenceService } from '../presence/presence.service';
 import type { JwtPayload } from './jwt-auth.guard';
+import { DisableTwoFactorDto } from './dto/disable-twofa.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -261,5 +262,21 @@ export class AuthController {
 		return {
 			message: 'AUTH_2FA_LOGIN_SUCCESS',
 		};
+	}
+
+	@Post('2fa/disable')
+	@ApiOperation({ summary: 'Disable two factor authentication' })
+	@ApiResponse({
+		status: 200,
+		description: 'Two factor authentication disabled successfully',
+	})
+	async disableTwoFactor(
+		@Req() req: AuthRequest,
+		@Body() dto: DisableTwoFactorDto,
+	) {
+		return this.twoFactorService.disableTwoFactor(
+			req.user.sub,
+			dto.code,
+		);
 	}
 }

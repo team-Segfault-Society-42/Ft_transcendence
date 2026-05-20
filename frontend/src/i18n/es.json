@@ -421,6 +421,7 @@
     "ERR_AUTH_2FA_NO_SETUP": "No hay configuración de 2FA en curso.",
     "ERR_AUTH_2FA_INVALID_CODE": "Código de seguridad inválido.",
     "AUTH_2FA_ENABLED_SUCCESS": "¡2FA activada con éxito!",
+    "AUTH_2FA_DISABLED_SUCCESS": "2FA ya está desactivada!",
     "ERR_AUTH_2FA_INVALID_TOKEN": "Token de 2FA inválido.",
     "ERR_AUTH_2FA_NOT_ENABLED": "La 2FA no está activada.",
     "ERR_FRIEND_ACTION_INVALID": "La acción seleccionada no es válida.",
