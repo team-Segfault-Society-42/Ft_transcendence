@@ -10,7 +10,6 @@ import type { AuthSocket, JwtPayload } from '../auth/jwt-auth.guard';
 import { PresenceService } from './presence.service';
 import { Server } from 'socket.io';
 
-
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const allowedOrigins = rawOrigins
 	.split(',')
@@ -18,6 +17,7 @@ const allowedOrigins = rawOrigins
 	.filter((origin) => origin !== '');
 
 @WebSocketGateway({
+	namespace: '/presence',
 	cors: {
 		origin: allowedOrigins,
 		credentials: true,
@@ -41,17 +41,13 @@ export class PresenceGateway
 	async handleConnection(client: AuthSocket) {
 		const user = await this.getUserFromSocket(client);
 
-
 		if (!user) {
 			client.disconnect();
 			return;
 		}
 
 		client.data.user = user;
-		const connection = this.presenceService.connectUser(
-			user.sub,
-			client.id,
-		);
+		const connection = this.presenceService.connectUser(user.sub, client.id);
 
 		if (!connection.connected) {
 			client.disconnect();
@@ -61,11 +57,9 @@ export class PresenceGateway
 		if (connection.wasOffline) {
 			await this.presenceService.emitFriendStatusChange(user.sub);
 		}
-
 	}
 
 	async handleDisconnect(client: AuthSocket) {
-
 		const result = this.presenceService.disconnectSocket(client.id);
 
 		if (!result || !result.isOffline) {
@@ -75,7 +69,9 @@ export class PresenceGateway
 		await this.presenceService.emitFriendStatusChange(result.userId);
 	}
 
-	private async getUserFromSocket(client: AuthSocket): Promise<JwtPayload | null> {
+	private async getUserFromSocket(
+		client: AuthSocket,
+	): Promise<JwtPayload | null> {
 		const token = this.extractAccessToken(client);
 
 		if (!token) {
@@ -111,5 +107,4 @@ export class PresenceGateway
 
 		return null;
 	}
-
 }

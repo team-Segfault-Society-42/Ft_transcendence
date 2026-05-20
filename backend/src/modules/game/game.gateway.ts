@@ -28,10 +28,10 @@ const allowedOrigins = trimmedOrigins.filter(function (origin) {
 });
 
 @WebSocketGateway({
+	namespace: '/game',
 	cors: {
 		origin: allowedOrigins,
 		credentials: true,
-		namespace: '/game',
 	},
 })
 @UseGuards(JwtAuthGuard) // TODO: verify if can delete (is no necessary bcz CALLED FOR APP)
