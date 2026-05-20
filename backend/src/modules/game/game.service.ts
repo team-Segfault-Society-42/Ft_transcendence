@@ -313,46 +313,6 @@ export class GameService {
 		await this.matchService.recordMatch(data, game.movesGameHistory);
 	}
 
-	async finalizeReconnectTimeout(
-		gameId: string,
-		role: PlayerSymbol,
-	): Promise<{ gameId: string; game: GameState } | null> {
-		const game = this.getMutableGameById(gameId);
-
-		const seat = game.players[role];
-		if (seat.socketIds.length > 0) return null;
-		if (game.status !== 'playing') return null;
-
-		const other = role === 'X' ? 'O' : 'X';
-		if (game.players[other].ownerUserId === null) return null;
-		if (game.players[other].socketIds.length == 0) return null;
-
-		game.status = 'finished';
-		game.winner = other;
-		game.endReason = 'forfeit';
-		game.toDisapear = -1;
-		game.replayVotes = { X: false, O: false };
-
-		await this.saveGameToDB(game);
-		this.activeGame.set(gameId, game);
-
-		if (game.playerProfiles.X?.id) {
-			this.presenceService.emitActiveGameUpdated(
-				game.playerProfiles.X.id,
-				null,
-			);
-		}
-
-		if (game.playerProfiles.O?.id) {
-			this.presenceService.emitActiveGameUpdated(
-				game.playerProfiles.O.id,
-				null,
-			);
-		}
-
-		return { gameId, game };
-	}
-
 	async finalizeTurnTimeout(gameId: string): Promise<GameState | null> {
 		const game = this.getMutableGameById(gameId);
 		if (game.status !== 'playing') return null;

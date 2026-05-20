@@ -39,64 +39,13 @@ export class GameGateway implements OnGatewayDisconnect {
 	@WebSocketServer()
 	server!: Server;
 
-	private timersForfeit = new Map<string, NodeJS.Timeout>();
 	private turnTimers = new Map<string, NodeJS.Timeout>();
-	private readonly RECONNECT_GRACE_MS = 20000;
+
 	constructor(
 		private readonly gameService: GameService,
 		private readonly usersService: UsersService,
 		private readonly presenceService: PresenceService,
 	) {}
-
-	private getTimerKey(gameId: string, role: 'X' | 'O') {
-		return `${gameId}:${role}`;
-	}
-
-	private clearTimerForfeit(gameId: string, role: 'X' | 'O') {
-		const timerKey = this.getTimerKey(gameId, role);
-		const timer = this.timersForfeit.get(timerKey);
-
-		if (timer) {
-			clearTimeout(timer);
-			this.timersForfeit.delete(timerKey);
-		}
-	}
-
-	private startReconnectTimer(gameId: string, role: 'X' | 'O') {
-		const timerKey = this.getTimerKey(gameId, role);
-		this.clearTimerForfeit(gameId, role);
-
-		const timer = setTimeout(() => {
-			this.gameService
-				.finalizeReconnectTimeout(gameId, role)
-				.then((result) => {
-					if (result) {
-						this.emitGameUpdate(gameId, result.game);
-						if (result.game.playerProfiles.X?.id) {
-							this.presenceService.emitFriendStatusChange(
-								result.game.playerProfiles.X.id,
-							);
-						}
-
-						if (result.game.playerProfiles.O?.id) {
-							this.presenceService.emitFriendStatusChange(
-								result.game.playerProfiles.O.id,
-							);
-						}
-					}
-				})
-				.catch((error) => {
-					console.error('Reconnect timeout error:', error);
-				})
-				.finally(() => {
-					if (this.timersForfeit.get(timerKey) === timer) {
-						this.timersForfeit.delete(timerKey);
-					}
-				});
-		}, this.RECONNECT_GRACE_MS);
-
-		this.timersForfeit.set(timerKey, timer);
-	}
 
 	private clearTurnTimer(gameId: string) {
 		const timer = this.turnTimers.get(gameId);
@@ -184,8 +133,6 @@ export class GameGateway implements OnGatewayDisconnect {
 		if (room && room.size > 0) return;
 
 		this.clearTurnTimer(gameId);
-		this.clearTimerForfeit(gameId, 'X');
-		this.clearTimerForfeit(gameId, 'O');
 		this.gameService.deleteGame(gameId);
 	}
 
@@ -211,8 +158,6 @@ export class GameGateway implements OnGatewayDisconnect {
 	handleDisconnect(client: AuthSocket) {
 		const result = this.gameService.processPlayerDisconnection(client.id);
 		if (result) {
-			if (result.game.status === 'playing')
-				this.startReconnectTimer(result.gameId, result.role);
 			if (result?.game.status === 'finished')
 				result.game.playerLeft = result.role;
 			this.emitGameUpdate(result.gameId, result.game);
