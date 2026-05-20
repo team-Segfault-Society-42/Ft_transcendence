@@ -23,7 +23,7 @@ export function IdleState({ createGame }: Props) {
 
 				<Gamepad2
 				size={72}
-				className="mx-auto text-cyan-400"
+				className="mx-auto text-cyan-400 mt-12"
 				/>
 
 				<p className="text-white/80 text-sm text-center max-w-sm leading-relaxed mb-6">

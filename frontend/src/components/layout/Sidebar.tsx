@@ -40,7 +40,7 @@ export function Sidebar({user, onLoginClick, onLogoutClick, isOpen, onClose} : H
 		fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-white/10 flex flex-col p-4
 		transform transition-transform duration-300
 		${isOpen ? "translate-x-0" : "-translate-x-full"}
-		lg:relative lg:translate-x-0 lg:z-auto
+		xl:relative xl:translate-x-0 xl:z-auto
 	  `}>
 		<div>
 			<h1 className="text-xl absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">

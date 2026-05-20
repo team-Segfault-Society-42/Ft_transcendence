@@ -22,7 +22,7 @@ export function Topbar({ user, onLoginClick, onMenuClick }: HeaderProps) {
     <header className="h-16 border-b border-white/10 flex items-center px-4 lg:px-6">
       <div className="flex-1 flex items-center">
     <button
-      className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition min-h-11 min-w-11 flex items-center justify-center"
+      className="xl:hidden p-2 rounded-lg hover:bg-white/10 transition min-h-11 min-w-11 flex items-center justify-center"
       onClick={onMenuClick}
       aria-label="Ouvrir le menu"
     >
