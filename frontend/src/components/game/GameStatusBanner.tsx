@@ -14,8 +14,6 @@ export function GameStatusBanner({
 	error,
 	status,
 	playerRole,
-	canPlay,
-	hasReplayRole,
 	opponentDisconnect,
 }: Props) {
 	const { t } = useTranslation();
@@ -30,14 +28,6 @@ export function GameStatusBanner({
 			{playerRole === 'spectator' && (
 				<div className="mb-4 text-sm text-white/70">
 					{t('game.spectating', { defaultValue: 'You are spectating' })}
-				</div>
-			)}
-
-			{status === 'waiting' && (
-				<div className="mb-4 rounded-lg border border-yellow-400 bg-yellow-500/20 px-4 py-3 text-yellow-100">
-					{t('game.waitingOpponent', {
-						defaultValue: 'Waiting for opponent...',
-					})}
 				</div>
 			)}
 

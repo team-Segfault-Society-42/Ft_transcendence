@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Username } from '@/components/ui/Username';
+import { useEffect, useRef } from 'react';
 
 type Props = {
 	endGameMessage: EndGameMessage;
@@ -14,6 +15,7 @@ type Props = {
 	requestReplay: () => void;
 	leaveGame: () => void;
 	navigate: (path: string) => void;
+	playWinSound: () => void;
 };
 
 export function EndGamePopup({
@@ -25,6 +27,7 @@ export function EndGamePopup({
 	requestReplay,
 	leaveGame,
 	navigate,
+	playWinSound,
 }: Props) {
 	const { t } = useTranslation();
 	const canReplay = (playerRole === 'X' || playerRole === 'O') && !playerLeft;
@@ -34,6 +37,14 @@ export function EndGamePopup({
 			: playerRole === 'O'
 				? replayVotes.O
 				: false;
+	const didPlayWinSound = useRef(false);
+
+	useEffect(() => {
+		if (didPlayWinSound.current) return;
+		if (!endGameMessage.winnerName) return;
+		playWinSound();
+		didPlayWinSound.current = true;
+	}, [endGameMessage.winnerName, playWinSound]);
 
 	return (
 		<Card className="flex min-w-80 max-w-[90vw] flex-col items-center gap-4 bg-slate-900 p-8 text-white hover:scale-100">

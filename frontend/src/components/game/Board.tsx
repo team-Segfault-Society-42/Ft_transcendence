@@ -1,3 +1,4 @@
+import useSound from 'use-sound';
 import Square from './Square';
 import { useGameStore } from '../../Store/gameStore';
 import type { CellValue } from '../../type/game.types';
@@ -24,6 +25,9 @@ export default function Board() {
 	const timeLeft = useGameTimer(game);
 
 	const oldOppDiscnct = useRef(false);
+	const [playErrorSound] = useSound('/sounds/cell_error.mp3', { volume: 0.1 });
+	const [playSound] = useSound('/sounds/place.mp3', { volume: 0.2 });
+	const [playWinSound] = useSound('/sounds/win.mp3', { volume: 0.01 });
 
 	const xDisconnect =
 		game?.players.X.socketIds.length === 0 &&
@@ -133,7 +137,11 @@ export default function Board() {
 								value={value}
 								isWarning={i === toDisapear}
 								onSquareClick={() => {
-									if (!canPlay) return;
+									if (!canPlay || value !== null) {
+										playErrorSound();
+										return;
+									}
+									playSound();
 									playMove(i);
 								}}
 							/>
@@ -157,6 +165,7 @@ export default function Board() {
 							requestReplay={requestReplay}
 							leaveGame={leaveGame}
 							navigate={navigate}
+							playWinSound={playWinSound}
 						/>
 					)}
 				</div>
