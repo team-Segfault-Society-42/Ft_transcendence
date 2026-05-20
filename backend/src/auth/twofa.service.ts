@@ -8,6 +8,15 @@ import { authenticator } from '@otplib/v12-adapter';
 import * as QRCode from 'qrcode';
 import { PrismaService } from '../prisma/prisma.service';
 
+const TWO_FACTOR_MAX_FAILED_ATTEMPTS = 5;
+const TWO_FACTOR_ATTEMPT_WINDOW_MS = 5 * 60 * 1000;
+const TWO_FACTOR_LOCK_MS = 5 * 60 * 1000;
+
+interface TwoFactorAttemptState {
+	failedAttempts: number[];
+	lockedUntil?: number;
+}
+
 export interface TwoFactorPendingPayload {
 	sub: number;
 	email: string;
@@ -25,6 +34,51 @@ export class TwoFactorService {
 		private readonly jwtService: JwtService,
 	) {}
 
+	private readonly attemptsByUserId = new Map<number, TwoFactorAttemptState>();
+
+	private assertCanAttempt(userId: number) {
+		const now = Date.now();
+		const state = this.attemptsByUserId.get(userId);
+
+		if (!state?.lockedUntil) {
+			return;
+		}
+
+		if (state.lockedUntil > now) {
+			throw new UnauthorizedException('ERR_AUTH_2FA_TOO_MANY_ATTEMPTS');
+		}
+
+		this.attemptsByUserId.delete(userId);
+	}
+
+	private recordFailedAttempt(userId: number) {
+		const now = Date.now();
+		const state = this.attemptsByUserId.get(userId) ?? {
+			failedAttempts: [],
+		};
+
+		const recentAttempts = state.failedAttempts.filter(
+			(timestamp) => now - timestamp < TWO_FACTOR_ATTEMPT_WINDOW_MS,
+		);
+
+		recentAttempts.push(now);
+
+		if (recentAttempts.length >= TWO_FACTOR_MAX_FAILED_ATTEMPTS) {
+			this.attemptsByUserId.set(userId, {
+				failedAttempts: recentAttempts,
+				lockedUntil: now + TWO_FACTOR_LOCK_MS,
+			});
+			return;
+		}
+
+		this.attemptsByUserId.set(userId, {
+			failedAttempts: recentAttempts,
+		});
+	}
+
+	private clearFailedAttempts(userId: number) {
+		this.attemptsByUserId.delete(userId);
+	}
 	async generateSetup(userId: number): Promise<TwoFactorSetupResult> {
 		const user = await this.prisma.user.findUnique({
 			where: { id: userId },
@@ -74,11 +128,16 @@ export class TwoFactorService {
 			throw new BadRequestException('ERR_AUTH_2FA_NO_SETUP');
 		}
 
+		this.assertCanAttempt(userId);
+
 		const isCodeValid = this.verifyTotpCode(user.twoFactorTempSecret, code);
 
 		if (!isCodeValid) {
+			this.recordFailedAttempt(userId);
 			throw new BadRequestException('ERR_AUTH_2FA_INVALID_CODE');
 		}
+
+		this.clearFailedAttempts(userId);
 
 		await this.prisma.user.update({
 			where: { id: userId },
@@ -136,11 +195,16 @@ export class TwoFactorService {
 			throw new BadRequestException('ERR_AUTH_2FA_NOT_ENABLED');
 		}
 
+		this.assertCanAttempt(userId);
+
 		const isCodeValid = this.verifyTotpCode(user.twoFactorSecret, code);
 
 		if (!isCodeValid) {
+			this.recordFailedAttempt(userId);
 			throw new BadRequestException('ERR_AUTH_2FA_INVALID_CODE');
 		}
+
+		this.clearFailedAttempts(userId);
 	}
 
 	private verifyTotpCode(secret: string, code: string): boolean {

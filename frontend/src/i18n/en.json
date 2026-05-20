@@ -11,13 +11,13 @@
         "join": "Join Game",
         "watch": "Watch Games"
       },
-      "waiting":{
+      "waiting": {
         "title": "Waiting Lobby",
         "description": "Waiting for an opponent to join...",
         "copy": "Copy Link",
         "cancel": "Cancel"
       },
-        "playing":{
+      "playing": {
         "title": "Current match",
         "description": "Enter the arena and fight for victory !",
         "vs": "VS",
@@ -416,6 +416,7 @@
     "ERR_OAUTH_MISSING_STORED_STATE": "Missing stored OAuth state.",
     "ERR_OAUTH_INVALID_STATE": "Invalid OAuth state.",
     "ERR_OAUTH_GOOGLE_CONFIG": "Google OAuth is not configured on the backend.",
+    "ERR_AUTH_2FA_TOO_MANY_ATTEMPTS": "Too many attempts, wait 5 minutes to try again.",
     "ERR_AUTH_2FA_ALREADY_ENABLED": "2FA is already enabled.",
     "ERR_AUTH_2FA_NO_SETUP": "No 2FA setup in progress.",
     "ERR_AUTH_2FA_INVALID_CODE": "Invalid security code.",

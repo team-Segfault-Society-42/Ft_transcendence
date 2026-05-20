@@ -11,13 +11,13 @@
         "join": "Rejoindre une partie",
         "watch": "Regarder des matchs"
       },
-      "waiting":{
+      "waiting": {
         "title": "Salle d'attente",
         "description": "En attente qu'un adversaire rejoigne...",
         "copy": "Copier le lien",
         "cancel": "Annuler"
       },
-      "playing":{
+      "playing": {
         "title": "Match en cours",
         "description": "Entrez dans l'arène et combattez pour la victoire !",
         "vs": "VS",
@@ -416,6 +416,7 @@
     "ERR_OAUTH_MISSING_STORED_STATE": "État OAuth stocké manquant (session expirée).",
     "ERR_OAUTH_INVALID_STATE": "État OAuth invalide.",
     "ERR_OAUTH_GOOGLE_CONFIG": "La connexion Google n'est pas configurée sur le serveur.",
+    "ERR_AUTH_2FA_TOO_MANY_ATTEMPTS": "Trop de tentatives, veuillez patienter 5 minutes avant de réessayer.",
     "ERR_AUTH_2FA_ALREADY_ENABLED": "La 2FA est déjà activée.",
     "ERR_AUTH_2FA_NO_SETUP": "Aucune configuration 2FA en cours.",
     "ERR_AUTH_2FA_INVALID_CODE": "Code de sécurité invalide.",

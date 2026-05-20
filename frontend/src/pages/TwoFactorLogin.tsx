@@ -29,7 +29,11 @@ export default function TwoFactorLogin() {
 				? serverMessage[0]
 				: serverMessage;
 
-			toast.error(t("auth.twofa.error") + finalMessage);
+			const translatedMessage = finalMessage
+				? t(`backend.${finalMessage}`, { defaultValue: finalMessage })
+				: t("auth.error");
+
+			toast.error(translatedMessage);
 		} finally {
 			setIsLoading(false);
 		}
@@ -65,7 +69,7 @@ export default function TwoFactorLogin() {
 							className="w-full"
 							disabled={isLoading || code.length !== 6}
 						>
-							{isLoading 
+							{isLoading
 							? t("auth.twofa.verifying")
 							: t("auth.twofa.verify")}
 						</Button>

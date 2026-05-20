@@ -53,7 +53,7 @@ export function AuthModal({
 			const finalMessage = Array.isArray(serverMessage)
 				? serverMessage[0]
 				: serverMessage;
-			toast.error(t("auth.error") + finalMessage);
+			toast.error(t(`backend.${finalMessage}`, { defaultValue: finalMessage }));
 		} finally {
 			setIsVerifying(false);
 		}

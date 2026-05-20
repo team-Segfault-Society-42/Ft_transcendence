@@ -12,17 +12,17 @@
         "watch": "Ver partidas"
       },
       "waiting": {
-				"title": "Lobby en espera",
-				"description": "Esperando a que un oponente se una...",
-				"copy": "Copiar enlace",
-				"cancel": "Cancelar"
-  			},
-			"playing": {
-				"title": "Partida en curso",
-				"description": "¡Entra en la arena y lucha por la victoria!",
-				"vs": "VS",
-				"resume": "Reanudar partida"
-			}
+        "title": "Lobby en espera",
+        "description": "Esperando a que un oponente se una...",
+        "copy": "Copiar enlace",
+        "cancel": "Cancelar"
+      },
+      "playing": {
+        "title": "Partida en curso",
+        "description": "¡Entra en la arena y lucha por la victoria!",
+        "vs": "VS",
+        "resume": "Reanudar partida"
+      }
     },
     "hero": {
       "title": "Tres en Raya",
@@ -416,6 +416,7 @@
     "ERR_OAUTH_MISSING_STORED_STATE": "Falta el estado de OAuth almacenado.",
     "ERR_OAUTH_INVALID_STATE": "Estado de OAuth inválido.",
     "ERR_OAUTH_GOOGLE_CONFIG": "Google OAuth no está configurado en el servidor.",
+    "ERR_AUTH_2FA_TOO_MANY_ATTEMPTS": "Demasiados intentos realizados, espere 5 minutos para intentarlo de nuevo.",
     "ERR_AUTH_2FA_ALREADY_ENABLED": "La 2FA ya está activada.",
     "ERR_AUTH_2FA_NO_SETUP": "No hay configuración de 2FA en curso.",
     "ERR_AUTH_2FA_INVALID_CODE": "Código de seguridad inválido.",

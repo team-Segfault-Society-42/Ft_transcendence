@@ -86,7 +86,7 @@ export default function Settings() {
 				? serverMessage[0]
 				: serverMessage;
 
-			toast.error(t("auth.error") + finalMessage);
+			toast.error(t(`backend.${finalMessage}`, { defaultValue: finalMessage }));
 		} finally {
 			setIsAvatarUploading(false);
 			event.target.value = "";
@@ -112,7 +112,7 @@ export default function Settings() {
 				? serverMessage[0]
 				: serverMessage;
 
-			toast.error(t("auth.error") + finalMessage);
+			toast.error(t(`backend.${finalMessage}`, { defaultValue: finalMessage }));
 		} finally {
 			setIsTwoFactorLoading(false);
 		}
@@ -143,7 +143,7 @@ export default function Settings() {
 				? serverMessage[0]
 				: serverMessage;
 
-			toast.error(t("auth.error") + finalMessage);
+			toast.error(t(`backend.${finalMessage}`, { defaultValue: finalMessage }));
 		} finally {
 			setIsTwoFactorLoading(false);
 		}
@@ -171,7 +171,7 @@ export default function Settings() {
 				? serverMessage[0]
 				: serverMessage;
 
-			toast.error(t("auth.error") + finalMessage);
+			toast.error(t(`backend.${finalMessage}`, { defaultValue: finalMessage }));
 		} finally {
 			setIsSaving(false);
 		}
