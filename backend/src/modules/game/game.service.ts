@@ -8,7 +8,12 @@ import {
 	NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { GameState, PlayerRole, PublicPlayerProfile } from './game.types';
+import {
+	GameState,
+	PlayerRole,
+	PublicPlayerProfile,
+	SocketIds,
+} from './game.types';
 import { MatchesService } from './matches.service';
 import {
 	initGameState,
@@ -267,8 +272,16 @@ export class GameService {
 			const role = getPlayerRoleBySocketId(game, socketId);
 			if (role === 'spectator') continue;
 
-			game.players[role].socketId = null;
+			game.players[role].socketIds = game.players[role].socketIds.filter(
+				(id) => id !== socketId,
+			);
+
 			this.activeGame.set(gameId, game);
+
+			if (game.players[role].socketIds.length > 0) {
+				return null;
+			}
+
 			return { gameId, role, game };
 		}
 
@@ -306,12 +319,12 @@ export class GameService {
 		const game = this.getMutableGameById(gameId);
 
 		const seat = game.players[role];
-		if (seat.socketId != null) return null;
+		if (seat.socketIds != null) return null;
 		if (game.status !== 'playing') return null;
 
 		const other = role === 'X' ? 'O' : 'X';
 		if (game.players[other].ownerUserId === null) return null;
-		if (game.players[other].socketId == null) return null;
+		if (game.players[other].socketIds == null) return null;
 
 		game.status = 'finished';
 		game.winner = other;

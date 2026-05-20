@@ -31,11 +31,11 @@ export function initGameState(): GameState {
 
 		players: {
 			X: {
-				socketId: null,
+				socketIds: [],
 				ownerUserId: null,
 			},
 			O: {
-				socketId: null,
+				socketIds: [],
 				ownerUserId: null,
 			},
 		},
@@ -164,22 +164,22 @@ export function assignPlayerRole(
 	socketId: string,
 ): PlayerRole {
 	if (game.players.X.ownerUserId === userId) {
-		game.players.X.socketId = socketId;
+		game.players.X.socketIds.push(socketId);
 		return 'X';
 	}
 	if (game.players.O.ownerUserId === userId) {
-		game.players.O.socketId = socketId;
+		game.players.O.socketIds.push(socketId);
 		return 'O';
 	}
 
 	if (game.players.X.ownerUserId === null) {
 		game.players.X.ownerUserId = userId;
-		game.players.X.socketId = socketId;
+		game.players.X.socketIds.push(socketId);
 		return 'X';
 	}
 	if (game.players.O.ownerUserId === null) {
 		game.players.O.ownerUserId = userId;
-		game.players.O.socketId = socketId;
+		game.players.O.socketIds.push(socketId);
 		game.status = 'playing';
 		game.currentPlayer = 'X';
 		game.lastMove = Date.now();
@@ -201,8 +201,8 @@ export function getPlayerRoleBySocketId(
 	game: GameState,
 	socketId: string,
 ): PlayerRole {
-	if (game.players.X.socketId === socketId) return 'X';
-	if (game.players.O.socketId === socketId) return 'O';
+	if (game.players.X.socketIds.includes(socketId)) return 'X';
+	if (game.players.O.socketIds.includes(socketId)) return 'O';
 	return 'spectator';
 }
 
