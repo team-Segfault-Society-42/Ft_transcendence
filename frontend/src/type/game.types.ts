@@ -14,7 +14,7 @@ export type SpectatorsCnt = number;
 
 export type PlayerLeft = 'X' | 'O' | null;
 
-export type SocketId = string[];
+export type SocketIds = string[];
 
 export interface PublicPlayerProfile {
 	id: number;
@@ -38,7 +38,7 @@ export interface Move extends BoardPosition {
 
 export interface PlayerSeat {
 	ownerUserId: number | null;
-	socketId: SocketId;
+	socketIds: SocketIds;
 }
 // to stock socketId of client x and client o
 export interface PlayersInGame {

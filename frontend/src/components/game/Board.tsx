@@ -26,9 +26,11 @@ export default function Board() {
 	const oldOppDiscnct = useRef(false);
 
 	const xDisconnect =
-		game?.players.X.socketId === null && game.players.X.ownerUserId !== null;
+		game?.players.X.socketIds.length === 0 &&
+		game.players.X.ownerUserId !== null;
 	const oDisconnect =
-		game?.players.O.socketId === null && game.players.O.ownerUserId !== null;
+		game?.players.O.socketIds.length === 0 &&
+		game.players.O.ownerUserId !== null;
 	const opponentDisconnect =
 		playerRole === 'X' ? oDisconnect : playerRole === 'O' ? xDisconnect : false;
 
