@@ -15,79 +15,72 @@ export type SpectatorsCnt = number;
 export type PlayerLeft = 'X' | 'O' | null;
 
 export interface PublicPlayerProfile {
-  id: number;
-  username: string;
-  avatar: string | null;
+	id: number;
+	username: string;
+	avatar: string | null;
 }
 
 export interface PlayerProfilesInGame {
-  X: PublicPlayerProfile | null;
-  O: PublicPlayerProfile | null;
+	X: PublicPlayerProfile | null;
+	O: PublicPlayerProfile | null;
 }
 
 export interface BoardPosition {
-  r: number;
-  c: number;
+	r: number;
+	c: number;
 }
 
 export interface Move extends BoardPosition {
-  player: PlayerSymbol;
+	player: PlayerSymbol;
 }
 
 export interface PlayerSeat {
-  ownerUserId: number | null;
-  socketId: string | null;
+	ownerUserId: number | null;
+	socketId: string | null;
 }
 // to stock socketId of client x and client o
 export interface PlayersInGame {
-  X: PlayerSeat;
-  O: PlayerSeat;
+	X: PlayerSeat;
+	O: PlayerSeat;
 }
 
 export interface ReplayState {
-  X: boolean;
-  O: boolean;
-}
-
-export interface ScoreBoard {
-  X: number;
-  O: number;
-  D: number;
+	X: boolean;
+	O: boolean;
 }
 
 export interface WaitingGame {
-  gameId: string;
-  playerX: PublicPlayerProfile | null;
+	gameId: string;
+	playerX: PublicPlayerProfile | null;
 }
 
 export interface PlayingGame {
-  gameId: string;
-  playerX: PublicPlayerProfile | null;
-  playerO: PublicPlayerProfile | null;
+	gameId: string;
+	playerX: PublicPlayerProfile | null;
+	playerO: PublicPlayerProfile | null;
 }
 
 export interface LiveGamesResponse {
-  waiting: WaitingGame[];
-  playing: PlayingGame[];
+	waiting: WaitingGame[];
+	playing: PlayingGame[];
 }
 
 export interface GameState {
-  board: CellValue[][];
-  currentPlayer: PlayerSymbol;
-  status: GameStatus;
-  winner: PlayerSymbol | null;
-  endReason: EndReason;
+	board: CellValue[][];
+	currentPlayer: PlayerSymbol;
+	status: GameStatus;
+	winner: PlayerSymbol | null;
+	endReason: EndReason;
 
-  moveCount: number;
-  queuIdx: BoardPosition[];
-  toDisapear: number;
-  lastMove: number;
+	moveCount: number;
+	queuIdx: BoardPosition[];
+	toDisapear: number;
+	lastMove: number;
 
-  players: PlayersInGame;
-  scores: ScoreBoard;
-  replayVotes: ReplayState;
-  playerProfiles: PlayerProfilesInGame;
-  movesGameHistory: MovesGameHistory;
-  spectatCnt: SpectatorsCnt;
-  playerLeft: PlayerLeft;
+	players: PlayersInGame;
+	replayVotes: ReplayState;
+	playerProfiles: PlayerProfilesInGame;
+	movesGameHistory: MovesGameHistory;
+	spectatCnt: SpectatorsCnt;
+	playerLeft: PlayerLeft;
 }
