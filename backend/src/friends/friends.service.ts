@@ -244,17 +244,33 @@ export class FriendsService {
 			};
 		}
 
-		const updatedRequest = await this.prisma.friend.update({
-			where: { id: requestId },
+		const updatedCount = await this.prisma.friend.updateMany({
+			where: {
+				id: requestId,
+				status: FriendStatus.PENDING,
+				receiverId: userId,
+			},
 			data: {
 				status: FriendStatus.ACCEPTED,
 			},
+		});
+
+		if (updatedCount.count !== 1) {
+			throw new ConflictException('ERR_FRIEND_NOT_PENDING');
+		}
+
+		const updatedRequest = await this.prisma.friend.findUnique({
+			where: { id: requestId },
 			select: {
 				id: true,
 				status: true,
 				updatedAt: true,
 			},
 		});
+
+		if (!updatedRequest) {
+			throw new NotFoundException('ERR_FRIEND_REQUEST_NOT_FOUND');
+		}
 
 		this.presenceService.emitFriendEvent(
 			userId,
