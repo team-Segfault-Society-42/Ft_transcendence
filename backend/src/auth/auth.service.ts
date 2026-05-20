@@ -36,6 +36,7 @@ const privateUserSelect = {
 	losses: true,
 	draws: true,
 	xp: true,
+	// Exposed isTwoFactorEnabled intentionally for authenticated account/settings UI.
 	isTwoFactorEnabled: true,
 } satisfies Prisma.UserSelect;
 

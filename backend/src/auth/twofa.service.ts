@@ -144,6 +144,9 @@ export class TwoFactorService {
 	}
 
 	private verifyTotpCode(secret: string, code: string): boolean {
+		// @otplib/v12-adapter authenticator.verify() uses the library default
+		// TOTP validation window. We rely on the default to tolerate small
+		// clock drift, and keep this documented because it affects 2FA security.
 		return authenticator.verify({
 			token: code,
 			secret,
