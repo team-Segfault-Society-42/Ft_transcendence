@@ -9,6 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 import type { AuthSocket, JwtPayload } from '../auth/jwt-auth.guard';
 import { PresenceService } from './presence.service';
 import { Namespace } from 'socket.io';
+import { extractAccessTokenFromCookie } from '../auth/utils/extract-access-token-from-cookie';
+
 
 const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const allowedOrigins = rawOrigins
@@ -69,10 +71,10 @@ export class PresenceGateway
 		await this.presenceService.emitFriendStatusChange(result.userId);
 	}
 
-	private async getUserFromSocket(
-		client: AuthSocket,
-	): Promise<JwtPayload | null> {
-		const token = this.extractAccessToken(client);
+	private async getUserFromSocket(client: AuthSocket): Promise<JwtPayload | null> {
+		const token = extractAccessTokenFromCookie(
+			client.handshake.headers.cookie,
+		);
 
 		if (!token) {
 			return null;
@@ -86,26 +88,4 @@ export class PresenceGateway
 		}
 	}
 
-	private extractAccessToken(client: AuthSocket): string | null {
-		const rawCookies = client.handshake.headers.cookie;
-
-		if (!rawCookies) {
-			return null;
-		}
-
-		for (const cookie of rawCookies.split(';')) {
-			const [key, ...valueParts] = cookie.trim().split('=');
-			const value = valueParts.join('=');
-
-			if (key === 'access_token' && value) {
-				try {
-					return decodeURIComponent(value);
-				} catch {
-					return null;
-				}
-			}
-		}
-
-		return null;
-	}
 }

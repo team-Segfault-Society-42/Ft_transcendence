@@ -9,6 +9,7 @@ import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
 import type { DefaultEventsMap, Socket } from 'socket.io';
 import { IS_PUBLIC_KEY } from './public.decorator';
+import { extractAccessTokenFromCookie } from './utils/extract-access-token-from-cookie';
 
 export interface JwtPayload {
 	sub: number;
@@ -95,25 +96,6 @@ export class JwtAuthGuard implements CanActivate {
 	}
 
 	private extractTokenFromWs(client: AuthSocket): string | undefined {
-		const rawCookies = client.handshake.headers.cookie;
-
-		if (!rawCookies) {
-			return undefined;
-		}
-
-		for (const cookie of rawCookies.split(';')) {
-			const [key, ...valueParts] = cookie.trim().split('=');
-			const value = valueParts.join('=');
-
-			if (key === 'access_token' && value) {
-				try {
-					return decodeURIComponent(value);
-				} catch {
-					return undefined;
-				}
-			}
-		}
-
-		return undefined;
+		return extractAccessTokenFromCookie(client.handshake.headers.cookie);
 	}
 }
