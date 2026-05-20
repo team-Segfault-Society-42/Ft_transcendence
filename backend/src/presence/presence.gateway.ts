@@ -79,6 +79,7 @@ export class PresenceGateway
 		}
 
 		try {
+			// verifyAsync validates JWT signature AND expiration by default
 			return await this.jwtService.verifyAsync<JwtPayload>(token);
 		} catch {
 			return null;
