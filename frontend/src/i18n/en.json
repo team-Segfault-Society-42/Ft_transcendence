@@ -214,7 +214,15 @@
       "description": "Manage two-factor authentication and future security options.",
       "disableTitle": "Disable 2FA",
       "disableDescription": "Disabling 2FA will be added later. For now, 2FA can only be enabled.",
-      "disableComingSoon": "Disable 2FA coming soon"
+      "disableComingSoon": "Disable 2FA coming soon",
+      "passwordTitle": "Change password",
+      "passwordDescription": "Update your local account password.",
+      "setPasswordTitle": "Set password",
+      "setPasswordDescription": "Add a local password to your OAuth account.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "updatePassword": "Update password",
+      "setPassword": "Set password"
     }
   },
   "leaderboard": {

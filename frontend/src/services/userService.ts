@@ -21,6 +21,15 @@ export interface TwoFactorDisableResponse {
 	message: string;
 }
 
+export interface UpdatePasswordPayload {
+	currentPassword?: string;
+	newPassword: string;
+}
+
+export interface UpdatePasswordResponse {
+	message: string;
+}
+
 export async function userLogout() {
   const response = await api.post("auth/logout");
   return response.data;
@@ -59,6 +68,13 @@ export async function disableTwoFactor(
 	code: string,
 ): Promise<TwoFactorDisableResponse> {
 	const response = await api.post("auth/2fa/disable", { code });
+	return response.data;
+}
+
+export async function updatePassword(
+	data: UpdatePasswordPayload,
+): Promise<UpdatePasswordResponse> {
+	const response = await api.patch("auth/me/password", data);
 	return response.data;
 }
 
@@ -117,6 +133,7 @@ export const userService = {
 	enableTwoFactor,
 	verifyTwoFactorSetup,
 	disableTwoFactor,
+	updatePassword,
     getMe,
     userLogout,
     getUserHistory,

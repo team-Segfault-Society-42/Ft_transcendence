@@ -19,6 +19,7 @@ interface User {
 	avatar: string;
 	xp: number;
 	isTwoFactorEnabled: boolean;
+	hasPassword: boolean;
 }
 
 export default function Settings() {
@@ -39,6 +40,9 @@ export default function Settings() {
 	const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
 	const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false);
 	const [disableTwoFactorCode, setDisableTwoFactorCode] = useState("");
+	const [currentPassword, setCurrentPassword] = useState("");
+	const [newPassword, setNewPassword] = useState("");
+	const [isPasswordSaving, setIsPasswordSaving] = useState(false);
 
 	useEffect(() => {
 		if (!user) return;
@@ -192,6 +196,46 @@ export default function Settings() {
 		}
 	}
 
+	async function handleUpdatePassword() {
+		if (!user) return;
+
+		try {
+			setIsPasswordSaving(true);
+
+			const result = await userService.updatePassword({
+				currentPassword: user.hasPassword ? currentPassword : undefined,
+				newPassword,
+			});
+
+			toast.success(
+				t(`backend.${result.message}`, {
+					defaultValue: result.message,
+				}),
+			);
+
+			const refreshedUser = await userService.getMe();
+			setUser(refreshedUser);
+
+			setCurrentPassword("");
+			setNewPassword("");
+		} catch (error: any) {
+			const serverMessage =
+				error.response?.data?.message || error.message;
+
+			const finalMessage = Array.isArray(serverMessage)
+				? serverMessage[0]
+				: serverMessage;
+
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
+		} finally {
+			setIsPasswordSaving(false);
+		}
+	}
+
 	async function handleSaveProfile() {
 		if (!user) return;
 
@@ -305,6 +349,57 @@ export default function Settings() {
 					</div>
 				</Card>
 
+				<Card className="space-y-6">
+					<div>
+						<CardTitle>
+							{user.hasPassword
+								? t("settings.security.passwordTitle")
+								: t("settings.security.setPasswordTitle")}
+						</CardTitle>
+
+						<CardDescription className="text-white/50 mt-2">
+							{user.hasPassword
+								? t("settings.security.passwordDescription")
+								: t("settings.security.setPasswordDescription")}
+						</CardDescription>
+					</div>
+
+					<div className="space-y-4">
+						{user.hasPassword && (
+							<Input
+								type="password"
+								value={currentPassword}
+								onChange={(e) => setCurrentPassword(e.target.value)}
+								placeholder={t("settings.security.currentPassword")}
+							/>
+						)}
+
+						<Input
+							type="password"
+							value={newPassword}
+							onChange={(e) => setNewPassword(e.target.value)}
+							placeholder={t("settings.security.newPassword")}
+						/>
+
+						<Button
+							type="button"
+							onClick={handleUpdatePassword}
+							disabled={
+								isPasswordSaving ||
+								newPassword.length < 8 ||
+								(user.hasPassword && currentPassword.length === 0)
+							}
+							className="w-full"
+						>
+							{isPasswordSaving
+								? t("settings.profile.saving")
+								: user.hasPassword
+									? t("settings.security.updatePassword")
+									: t("settings.security.setPassword")}
+						</Button>
+					</div>
+				</Card>
+				
 				<Card className="space-y-6">
 					<div>
 						<CardTitle>

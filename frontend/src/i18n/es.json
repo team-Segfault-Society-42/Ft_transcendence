@@ -214,7 +214,15 @@
       "description": "Gestiona la autenticación de dos factores y futuras opciones de seguridad.",
       "disableTitle": "Desactivar 2FA",
       "disableDescription": "La desactivación de 2FA se añadirá más adelante. Por ahora, la 2FA solo se puede activar.",
-      "disableComingSoon": "Desactivar 2FA próximamente"
+      "disableComingSoon": "Desactivar 2FA próximamente",
+      "passwordTitle": "Cambiar contraseña",
+      "passwordDescription": "Actualizar la contraseña de tu cuenta local.",
+      "setPasswordTitle": "Establecer contraseña",
+      "setPasswordDescription": "Agregar una contraseña local a tu cuenta OAuth.",
+      "currentPassword": "Contraseña actual",
+      "newPassword": "Nueva contraseña",
+      "updatePassword": "Actualizar contraseña",
+      "setPassword": "Establecer contraseña"
     }
   },
   "leaderboard": {

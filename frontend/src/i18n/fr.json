@@ -214,7 +214,15 @@
       "description": "Gère l'authentification à deux facteurs et les futures options de sécurité.",
       "disableTitle": "Désactiver la 2FA",
       "disableDescription": "La désactivation de la 2FA sera ajoutée plus tard. Pour l’instant, la 2FA peut seulement être activée.",
-      "disableComingSoon": "Désactivation de la 2FA bientôt disponible"
+      "disableComingSoon": "Désactivation de la 2FA bientôt disponible",
+      "passwordTitle": "Changer le mot de passe",
+      "passwordDescription": "Mettre à jour le mot de passe de votre compte local.",
+      "setPasswordTitle": "Définir un mot de passe",
+      "setPasswordDescription": "Ajouter un mot de passe local à votre compte OAuth.",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "updatePassword": "Mettre à jour le mot de passe",
+      "setPassword": "Définir le mot de passe"
     }
   },
   "leaderboard": {
