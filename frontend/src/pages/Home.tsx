@@ -26,7 +26,7 @@ export default function Home() {
   }, [user]);
 
   return (
-    <section className="w-full flex flex-col gap-10">
+    <section className="w-full flex flex-col gap-6">
       <Motion>
         <div className="bg-slate-900 mx-6 mt-6 relative overflow-hidden rounded-2xl border border-white/10 h-62.5 md:h-75">
           <img

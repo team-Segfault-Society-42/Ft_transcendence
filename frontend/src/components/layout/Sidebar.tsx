@@ -32,12 +32,12 @@ export function Sidebar({user, onLoginClick, onLogoutClick, isOpen, onClose} : H
   	return (
 	<>
 	{isOpen && (
-		<div className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+		<div className="fixed inset-0 bg-black/50 z-40 xl:hidden"
 		onClick={onClose}
 		/>
 	)}
 	<aside className={`
-		fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-white/10 flex flex-col p-4
+		fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-white/10 flex flex-col p-4 overflow-y-auto
 		transform transition-transform duration-300
 		${isOpen ? "translate-x-0" : "-translate-x-full"}
 		xl:relative xl:translate-x-0 xl:z-auto
