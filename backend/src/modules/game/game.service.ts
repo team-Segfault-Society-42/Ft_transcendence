@@ -11,6 +11,7 @@ import { randomUUID } from 'crypto';
 import {
 	GameState,
 	PlayerRole,
+	PlayerSymbol,
 	PublicPlayerProfile,
 	SocketIds,
 } from './game.types';
@@ -314,17 +315,17 @@ export class GameService {
 
 	async finalizeReconnectTimeout(
 		gameId: string,
-		role: 'X' | 'O',
+		role: PlayerSymbol,
 	): Promise<{ gameId: string; game: GameState } | null> {
 		const game = this.getMutableGameById(gameId);
 
 		const seat = game.players[role];
-		if (seat.socketIds != null) return null;
+		if (seat.socketIds.length > 0) return null;
 		if (game.status !== 'playing') return null;
 
 		const other = role === 'X' ? 'O' : 'X';
 		if (game.players[other].ownerUserId === null) return null;
-		if (game.players[other].socketIds == null) return null;
+		if (game.players[other].socketIds.length == 0) return null;
 
 		game.status = 'finished';
 		game.winner = other;

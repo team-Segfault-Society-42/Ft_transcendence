@@ -206,17 +206,6 @@ export function getPlayerRoleBySocketId(
 	return 'spectator';
 }
 
-/**
- * (GETTER)
- * Get the player role for a client
- * @param game - The game state
- * @param clientId - The client identifier
- * @return PlayerRole The player role
- */
-export function getPlayerRole(game: GameState, clientId: string): PlayerRole {
-	return getPlayerRoleBySocketId(game, clientId);
-}
-
 export function posToIdx(pos: BoardPosition): number {
 	return pos.r * 3 + pos.c;
 }
