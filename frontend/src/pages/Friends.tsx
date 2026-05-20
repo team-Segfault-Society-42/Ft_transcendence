@@ -7,7 +7,7 @@ import {
 	Check,
 	X,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router";
@@ -19,13 +19,11 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
 	friendsService,
-	type FriendListItem,
-	type IncomingFriendRequest,
-	type OutgoingFriendRequest,
 	type PublicUser,
 	type FriendStatus,
 } from "@/services/friendsService";
 import { usePresenceStore } from "@/Store/presenceStore";
+import { useFriendsStore } from "@/Store/friendsStore";
 
 interface CurrentUser {
 	id: number;
@@ -50,74 +48,18 @@ export default function Friends() {
 	const [user] = useOutletContext<[CurrentUser | null]>();
 	const navigate = useNavigate();
 
-	const [friends, setFriends] = useState<FriendListItem[]>([]);
-	const [incomingRequests, setIncomingRequests] = useState<IncomingFriendRequest[]>([]);
-	const [outgoingRequests, setOutgoingRequests] = useState<OutgoingFriendRequest[]>([]);
+	const friends = useFriendsStore((state) => state.friends);
+	const incomingRequests = useFriendsStore((state) => state.incomingRequests);
+	const outgoingRequests = useFriendsStore((state) => state.outgoingRequests);
+	const loading = useFriendsStore((state) => state.isLoading);
+	const loadFriendsData = useFriendsStore((state) => state.loadFriendsData);
 	const [search, setSearch] = useState("");
 	const [searchResults, setSearchResults] = useState<PublicUser[]>([]);
-	const [loading, setLoading] = useState(false);
+
 	const [searchLoading, setSearchLoading] = useState(false);
 	const friendStatus = usePresenceStore(
 		(state) => state.friendStatus,
 	);
-
-	const loadFriendsData = useCallback(async () => {
-		if (!user) return;
-
-		try {
-			setLoading(true);
-
-			const [friendsData, incomingData, outgoingData] = await Promise.all([
-				friendsService.getFriends(),
-				friendsService.getIncomingFriendRequests(),
-				friendsService.getOutgoingFriendRequests(),
-			]);
-
-			setFriends(friendsData);
-			setIncomingRequests(incomingData);
-			setOutgoingRequests(outgoingData);
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.load", { error: message }));
-		} finally {
-			setLoading(false);
-		}
-	}, [user, t]);
-
-	const mergeFriendStatus = usePresenceStore(
-		(state) => state.mergeFriendStatus,
-	);
-
-
-	async function refreshFriendStatuses() {
-		if (!user) return;
-
-		const statuses = await friendsService.getFriendsStatus();
-		mergeFriendStatus(statuses);
-	}
-
-	useEffect(() => {
-		async function loadPageData() {
-			await loadFriendsData();
-			await refreshFriendStatuses();
-		}
-
-		loadPageData();
-	}, [loadFriendsData]);
-
-	useEffect(() => {
-		async function handleFriendsUpdated() {
-			await loadFriendsData();
-			await refreshFriendStatuses();
-		}
-
-		window.addEventListener("friends_updated", handleFriendsUpdated);
-
-		return () => {
-			window.removeEventListener("friends_updated", handleFriendsUpdated);
-		};
-	}, [loadFriendsData]);
-
 
 	async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
@@ -169,8 +111,6 @@ export default function Friends() {
 			await friendsService.sendFriendRequest(userId);
 			toast.success(t("friends.success.requestSent"));
 			await loadFriendsData();
-			await refreshFriendStatuses();
-			window.dispatchEvent(new Event("friends_updated"));
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -182,7 +122,6 @@ export default function Friends() {
 			await friendsService.acceptFriendRequest(requestId);
 			toast.success(t("friends.success.accepted"));
 			await loadFriendsData();
-			await refreshFriendStatuses();
 			window.dispatchEvent(new Event("friends_updated"));
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
@@ -195,8 +134,6 @@ export default function Friends() {
 			await friendsService.declineFriendRequest(requestId);
 			toast.success(t("friends.success.declined"));
 			await loadFriendsData();
-			await refreshFriendStatuses();
-			window.dispatchEvent(new Event("friends_updated"));
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));
@@ -208,8 +145,6 @@ export default function Friends() {
 			await friendsService.removeFriend(friendshipId);
 			toast.success(t("friends.success.removed"));
 			await loadFriendsData();
-			await refreshFriendStatuses();
-			window.dispatchEvent(new Event("friends_updated"));
 		} catch (error: any) {
 			const message = error.response?.data?.message || error.message;
 			toast.error(t("friends.errors.action", { error: message }));

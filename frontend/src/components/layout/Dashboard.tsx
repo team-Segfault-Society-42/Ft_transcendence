@@ -17,6 +17,7 @@ import { friendsService } from "@/services/friendsService";
 import { usePresenceStore } from "@/Store/presenceStore";
 import type { FriendStatus } from "@/services/friendsService";
 import type { User } from "@/type/user.types";
+import { useFriendsStore } from "@/Store/friendsStore";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -42,6 +43,14 @@ export default function Dashboard() {
 		(state) => state.clearFriendStatus,
 	);
 
+	const loadFriendsData = useFriendsStore(
+		(state) => state.loadFriendsData,
+	);
+
+	const clearFriendsData = useFriendsStore(
+		(state) => state.clearFriendsData,
+	);
+
   const openLogin = () => setActiveModal("login");
   const closeModals = () => setActiveModal(null);
   const handleChatClick = () => setIsChat((prev) => !prev);
@@ -53,7 +62,7 @@ export default function Dashboard() {
   const setActiveGame = useActiveGameStore(
     (state) => state.setActiveGame,
   );
-  
+
   const clearActiveGame = useActiveGameStore(
     (state) => state.clearActiveGame,
   );
@@ -92,18 +101,20 @@ export default function Dashboard() {
 	useEffect(() => {
 		if (!user) {
 			clearFriendStatus();
-      clearActiveGame();
+			clearFriendsData();
+      		clearActiveGame();
 			disconnectPresenceSocket();
 			return;
 		}
 
 		const socket = connectPresenceSocket();
-    
+
 		async function initializeRealtime() {
 			try {
 				const statuses = await friendsService.getFriendsStatus();
 				setFriendStatus(statuses);
-        await fetchActiveGame();
+				await loadFriendsData();
+        		await fetchActiveGame();
 			} catch (error) {
 				console.error("[PresenceSocket] initialization failed", error);
 			}
@@ -122,13 +133,22 @@ export default function Dashboard() {
         clearActiveGame();
         return;
       }
-    
+
       setActiveGame(activeGame);
     });
 
-		socket.on("friends_updated", () => {
-			window.dispatchEvent(new Event("friends_updated"));
-		});
+		const handleFriendRelationshipEvent = async () => {
+			await loadFriendsData();
+
+			const statuses = await friendsService.getFriendsStatus();
+			setFriendStatus(statuses);
+		};
+
+		socket.on("friend_request_sent", handleFriendRelationshipEvent);
+		socket.on("friend_request_received", handleFriendRelationshipEvent);
+		socket.on("friend_request_accepted", handleFriendRelationshipEvent);
+		socket.on("friend_request_declined", handleFriendRelationshipEvent);
+		socket.on("friend_removed", handleFriendRelationshipEvent);
 
 		socket.on("connect_error", (error: Error) => {
 			console.error("[PresenceSocket] connection error:", error.message);
@@ -136,7 +156,12 @@ export default function Dashboard() {
 
 		return () => {
 			socket.off("friend_status_changed");
-      socket.off("active_game_updated");
+			socket.off("friend_request_sent", handleFriendRelationshipEvent);
+			socket.off("friend_request_received", handleFriendRelationshipEvent);
+			socket.off("friend_request_accepted", handleFriendRelationshipEvent);
+			socket.off("friend_request_declined", handleFriendRelationshipEvent);
+			socket.off("friend_removed", handleFriendRelationshipEvent);
+      		socket.off("active_game_updated");
 			socket.off("connect_error");
 		};
 	}, [
@@ -144,6 +169,8 @@ export default function Dashboard() {
 		setFriendStatus,
 		updateFriendStatus,
 		clearFriendStatus,
+		loadFriendsData,
+		clearFriendsData,
     setActiveGame,
 	  clearActiveGame,
 	  fetchActiveGame,
