@@ -45,7 +45,7 @@ export default function Home() {
         </div>
       </Motion>
 
-      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Link to="/profile" className="h-full">
           <AboutCard user={user} className="flex-1" />
         </Link>
