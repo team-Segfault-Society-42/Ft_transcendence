@@ -18,6 +18,8 @@ import { usePresenceStore } from "@/Store/presenceStore";
 import type { FriendStatus } from "@/services/friendsService";
 import type { User } from "@/type/user.types";
 import { useFriendsStore } from "@/Store/friendsStore";
+import { getBackendErrorMessage } from "../../utils/getBackendErrorMessage";
+import { AxiosError } from "axios";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -82,16 +84,24 @@ export default function Dashboard() {
       try {
         const result = await userService.getMe();
         setUser(result);
-      } catch (error: any) {
-        if (error.response?.status != 401) {
-          const serverMessage = error.response?.data?.message || error.message;
-          const finalMessage = Array.isArray(serverMessage)
-            ? serverMessage[0]
-            : serverMessage;
-          toast.error(t("auth.errorWithMessage", { message: finalMessage }));
-        }
-        setUser(null);
-      } finally {
+      } catch (error: unknown) {
+			if (
+				error instanceof AxiosError &&
+				error.response?.status !== 401
+			) {
+				const finalMessage = getBackendErrorMessage(error);
+
+				toast.error(
+					t("auth.errorWithMessage", {
+						message: t(`backend.${finalMessage}`, {
+							defaultValue: finalMessage,
+						}),
+					}),
+				);
+			}
+
+			setUser(null);
+		} finally {
         setIsLoading(false);
       }
     }

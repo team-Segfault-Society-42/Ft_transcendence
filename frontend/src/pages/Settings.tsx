@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/Input";
 import { toast } from "sonner";
 import { userService } from "@/services/userService";
 import { Avatar } from "@/components/ui/Avatar";
+import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
 
 interface User {
 	id: number;
@@ -93,15 +94,14 @@ export default function Settings() {
 			setUser(updatedUser);
 
 			toast.success(t("profile.avatarUpdated"));
-		} catch (error: any) {
-			const serverMessage =
-				error.response?.data?.message || error.message;
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
 
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
-
-			toast.error(t(`backend.${finalMessage}`, { defaultValue: finalMessage }));
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
 		} finally {
 			setIsAvatarUploading(false);
 			event.target.value = "";
@@ -119,15 +119,14 @@ export default function Settings() {
 			setQrCodeDataUrl(result.qrCodeDataUrl);
 
 			toast.success(t("auth.twofa.setupStarted"));
-		} catch (error: any) {
-			const serverMessage =
-				error.response?.data?.message || error.message;
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
 
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
-
-			toast.error(t(`backend.${finalMessage}`, { defaultValue: finalMessage }));
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
 		} finally {
 			setIsTwoFactorLoading(false);
 		}
@@ -154,15 +153,14 @@ export default function Settings() {
 
 			setTwoFactorCode("");
 			setQrCodeDataUrl("");
-		} catch (error: any) {
-			const serverMessage =
-				error.response?.data?.message || error.message;
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
 
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
-
-			toast.error(t(`backend.${finalMessage}`, { defaultValue: finalMessage }));
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
 		} finally {
 			setIsTwoFactorLoading(false);
 		}
@@ -188,13 +186,8 @@ export default function Settings() {
 			setUser(refreshedUser);
 
 			setDisableTwoFactorCode("");
-		} catch (error: any) {
-			const serverMessage =
-				error.response?.data?.message || error.message;
-
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
 
 			toast.error(
 				t(`backend.${finalMessage}`, {
@@ -228,13 +221,8 @@ export default function Settings() {
 
 			setCurrentPassword("");
 			setNewPassword("");
-		} catch (error: any) {
-			const serverMessage =
-				error.response?.data?.message || error.message;
-
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
 
 			toast.error(
 				t(`backend.${finalMessage}`, {
@@ -269,13 +257,8 @@ export default function Settings() {
 			setUser(refreshedUser);
 
 			setEmailCurrentPassword("");
-		} catch (error: any) {
-			const serverMessage =
-				error.response?.data?.message || error.message;
-
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
 
 			toast.error(
 				t(`backend.${finalMessage}`, {
@@ -301,15 +284,14 @@ export default function Settings() {
 			setUser(updatedUser);
 
 			toast.success(t("settings.profile.updated"));
-		} catch (error: any) {
-			const serverMessage =
-				error.response?.data?.message || error.message;
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
 
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
-
-			toast.error(t(`backend.${finalMessage}`, { defaultValue: finalMessage }));
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
 		} finally {
 			setIsSaving(false);
 		}

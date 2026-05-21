@@ -18,6 +18,7 @@ import { CardTitle } from "@/components/ui/Card";
 import { UserRound } from "lucide-react";
 import { friendsService } from "@/services/friendsService";
 import { useFriendsStore } from "@/Store/friendsStore";
+import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
 
 interface User {
   id: number;
@@ -119,12 +120,15 @@ export default function Profile() {
       await friendsService.sendFriendRequest(profileData.id)
       toast.success(t("friends.success.requestSent"))
       await loadFriendsData()
-    }
-    catch (error: any) {
+    } catch (error: unknown) {
+		const finalMessage = getBackendErrorMessage(error);
 
-      const message = error.response?.data?.message || error.message
-      toast.error(message)
-    }
+		toast.error(
+			t(`backend.${finalMessage}`, {
+				defaultValue: finalMessage,
+			}),
+		);
+	}
   }
 
   async function handleAcceptRequest() {
@@ -138,11 +142,15 @@ export default function Profile() {
       await friendsService.acceptFriendRequest(request.requestId)
       toast.success(t("friends.success.accepted"))
       await loadFriendsData()
-    }
-    catch (error: any) {
-      const message = error.response?.data?.message || error.message;
-      toast.error(message);
-    }
+    } catch (error: unknown) {
+		const finalMessage = getBackendErrorMessage(error);
+
+		toast.error(
+			t(`backend.${finalMessage}`, {
+				defaultValue: finalMessage,
+			}),
+		);
+	}
   }
 
   async function handleRemoveFriend() {
@@ -155,11 +163,15 @@ export default function Profile() {
       await friendsService.removeFriend(friendship.friendshipId)
       toast.success(t("friends.success.removed"));
       await loadFriendsData()
-    }
-    catch (error: any) {
-      const message = error.response?.data?.message || error.message;
-      toast.error(message);
-    }
+    } catch (error: unknown) {
+		const finalMessage = getBackendErrorMessage(error);
+
+		toast.error(
+			t(`backend.${finalMessage}`, {
+				defaultValue: finalMessage,
+			}),
+		);
+	}
   }
 
   useEffect(() => {

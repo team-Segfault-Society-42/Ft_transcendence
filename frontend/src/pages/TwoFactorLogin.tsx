@@ -4,7 +4,8 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { userService } from "@/services/userService";
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "react-i18next";
+import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
 
 export default function TwoFactorLogin() {
 	const [code, setCode] = useState("");
@@ -23,17 +24,14 @@ export default function TwoFactorLogin() {
 
 			navigate("/");
 			window.location.reload();
-		} catch (error: any) {
-			const serverMessage = error.response?.data?.message || error.message;
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
 
-			const translatedMessage = finalMessage
-				? t(`backend.${finalMessage}`, { defaultValue: finalMessage })
-				: t("auth.error");
-
-			toast.error(translatedMessage);
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
 		} finally {
 			setIsLoading(false);
 		}

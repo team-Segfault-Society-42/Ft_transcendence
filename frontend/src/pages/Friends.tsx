@@ -24,6 +24,7 @@ import {
 } from "@/services/friendsService";
 import { usePresenceStore } from "@/Store/presenceStore";
 import { useFriendsStore } from "@/Store/friendsStore";
+import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
 
 interface CurrentUser {
 	id: number;
@@ -78,9 +79,16 @@ export default function Friends() {
 			const results = await friendsService.searchUsers(trimmedSearch);
 
 			setSearchResults(results);
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.search", { error: message }));
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
+
+			toast.error(
+				t("friends.errors.search", {
+					error: t(`backend.${finalMessage}`, {
+						defaultValue: finalMessage,
+					}),
+				}),
+			);
 		} finally {
 			setSearchLoading(false);
 		}
@@ -111,9 +119,16 @@ export default function Friends() {
 			await friendsService.sendFriendRequest(userId);
 			toast.success(t("friends.success.requestSent"));
 			await loadFriendsData();
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action", { error: message }));
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
+
+			toast.error(
+				t("friends.errors.action", {
+					error: t(`backend.${finalMessage}`, {
+						defaultValue: finalMessage,
+					}),
+				}),
+			);
 		}
 	}
 
@@ -122,9 +137,16 @@ export default function Friends() {
 			await friendsService.acceptFriendRequest(requestId);
 			toast.success(t("friends.success.accepted"));
 			await loadFriendsData();
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action", { error: message }));
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
+
+			toast.error(
+				t("friends.errors.action", {
+					error: t(`backend.${finalMessage}`, {
+						defaultValue: finalMessage,
+					}),
+				}),
+			);
 		}
 	}
 
@@ -133,9 +155,16 @@ export default function Friends() {
 			await friendsService.declineFriendRequest(requestId);
 			toast.success(t("friends.success.declined"));
 			await loadFriendsData();
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action", { error: message }));
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
+
+			toast.error(
+				t("friends.errors.action", {
+					error: t(`backend.${finalMessage}`, {
+						defaultValue: finalMessage,
+					}),
+				}),
+			);
 		}
 	}
 
@@ -144,9 +173,16 @@ export default function Friends() {
 			await friendsService.removeFriend(friendshipId);
 			toast.success(t("friends.success.removed"));
 			await loadFriendsData();
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action", { error: message }));
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
+
+			toast.error(
+				t("friends.errors.action", {
+					error: t(`backend.${finalMessage}`, {
+						defaultValue: finalMessage,
+					}),
+				}),
+			);
 		}
 	}
 
