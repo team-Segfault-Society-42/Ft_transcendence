@@ -25,10 +25,12 @@ services:
     networks:
       - client-side
       - server-side
+    environment:
+      - BACKEND_USER=${BACKEND_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
     secrets:
       - backend_pw
       - jwt_secret
-      - database_url
       - fortytwo_client_id
       - fortytwo_client_secret
     depends_on:
