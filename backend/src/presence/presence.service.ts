@@ -1,11 +1,11 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { Server } from 'socket.io';
+import { Namespace } from 'socket.io';
 import { FriendsService } from '../friends/friends.service';
 import { GameService } from '../modules/game/game.service';
 
 const MAX_PRESENCE_SOCKETS_PER_USER = 20;
 
-type ActiveGameStatus = "idle" | "waiting" | "playing";
+type ActiveGameStatus = 'idle' | 'waiting' | 'playing';
 
 interface ActiveGamePayload {
 	gameId: string;
@@ -34,12 +34,15 @@ export class PresenceService {
 	) {}
 	private readonly onlineUsers = new Map<number, Set<string>>();
 	private readonly usersBySocket = new Map<string, number>();
-	private server: Server | null = null;
+	private server: Namespace | null = null;
 
-	setServer(server: Server) {
+	setServer(server: Namespace) {
 		this.server = server;
 	}
-	connectUser(userId: number, socketId: string): { connected: boolean; wasOffline: boolean } {
+	connectUser(
+		userId: number,
+		socketId: string,
+	): { connected: boolean; wasOffline: boolean } {
 		const sockets = this.onlineUsers.get(userId) ?? new Set<string>();
 
 		if (sockets.size >= MAX_PRESENCE_SOCKETS_PER_USER) {
@@ -61,7 +64,9 @@ export class PresenceService {
 		};
 	}
 
-	disconnectSocket(socketId: string): { userId: number; isOffline: boolean } | null {
+	disconnectSocket(
+		socketId: string,
+	): { userId: number; isOffline: boolean } | null {
 		const userId = this.usersBySocket.get(socketId);
 
 		if (userId === undefined) {
@@ -118,7 +123,7 @@ export class PresenceService {
 		const socketIds = this.getUserSocketIds(userId);
 
 		for (const socketId of socketIds) {
-			const socket = this.server.sockets.sockets.get(socketId);
+			const socket = this.server.sockets.get(socketId);
 			socket?.disconnect(true);
 		}
 	}
@@ -127,16 +132,15 @@ export class PresenceService {
 		const friendIds = await this.friendsService.getAcceptedFriendIds(userId);
 
 		for (const friendId of friendIds) {
-			const socketIds = this.getUserSocketIds(friendId)
+			const socketIds = this.getUserSocketIds(friendId);
 
 			for (const socketId of socketIds) {
 				if (!this.server) {
 					return;
 				}
-				this.server.to(socketId).emit(
-					'friend_status_changed',
-					this.buildFriendStatus(userId),
-				);
+				this.server
+					.to(socketId)
+					.emit('friend_status_changed', this.buildFriendStatus(userId));
 			}
 		}
 	}
@@ -170,18 +174,15 @@ export class PresenceService {
 		}
 	}
 
-	emitActiveGameUpdated( userId: number, activeGame: ActiveGamePayload | null) {
+	emitActiveGameUpdated(userId: number, activeGame: ActiveGamePayload | null) {
 		if (!this.server) {
 			return;
 		}
-	
+
 		const socketIds = this.getUserSocketIds(userId);
-	
+
 		for (const socketId of socketIds) {
-			this.server.to(socketId).emit(
-				"active_game_updated",
-				activeGame,
-			);
+			this.server.to(socketId).emit('active_game_updated', activeGame);
 		}
 	}
 }

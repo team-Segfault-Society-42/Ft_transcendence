@@ -1,14 +1,14 @@
 import {
-  ConnectedSocket,
-  MessageBody,
-  OnGatewayDisconnect,
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
+	ConnectedSocket,
+	MessageBody,
+	OnGatewayDisconnect,
+	SubscribeMessage,
+	WebSocketGateway,
+	WebSocketServer,
 } from '@nestjs/websockets';
 import { GameService, TURN_TIMEOUT_MS } from './game.service';
 import { PlayMoveDto } from './dto/play-move.dto';
-import { Server } from 'socket.io';
+import { Namespace } from 'socket.io';
 import { GameState } from './game.types';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
@@ -20,326 +20,283 @@ const rawOrigins = process.env.CORS_ORIGINS ?? '';
 const parts = rawOrigins.split(',');
 
 const trimmedOrigins = parts.map(function (origin) {
-  return origin.trim();
+	return origin.trim();
 });
 
 const allowedOrigins = trimmedOrigins.filter(function (origin) {
-  return origin !== '';
+	return origin !== '';
 });
 
 @WebSocketGateway({
-  cors: {
-    origin: allowedOrigins,
-    credentials: true,
-  },
+	namespace: '/game',
+	cors: {
+		origin: allowedOrigins,
+		credentials: true,
+	},
 })
 @UseGuards(JwtAuthGuard) // TODO: verify if can delete (is no necessary bcz CALLED FOR APP)
 export class GameGateway implements OnGatewayDisconnect {
-  @WebSocketServer()
-  server!: Server;
+	@WebSocketServer()
+	server!: Namespace;
 
-  private timersForfeit = new Map<string, NodeJS.Timeout>();
-  private turnTimers = new Map<string, NodeJS.Timeout>();
-  private readonly RECONNECT_GRACE_MS = 20000;
-  constructor(
-    private readonly gameService: GameService,
-    private readonly usersService: UsersService,
-    private readonly presenceService: PresenceService,
-  ) {}
+	private turnTimers = new Map<string, NodeJS.Timeout>();
 
-  private getTimerKey(gameId: string, role: 'X' | 'O') {
-    return `${gameId}:${role}`;
-  }
+	constructor(
+		private readonly gameService: GameService,
+		private readonly usersService: UsersService,
+		private readonly presenceService: PresenceService,
+	) {}
 
-  private clearTimerForfeit(gameId: string, role: 'X' | 'O') {
-    const timerKey = this.getTimerKey(gameId, role);
-    const timer = this.timersForfeit.get(timerKey);
+	private clearTurnTimer(gameId: string) {
+		const timer = this.turnTimers.get(gameId);
 
-    if (timer) {
-      clearTimeout(timer);
-      this.timersForfeit.delete(timerKey);
-    }
-  }
+		if (timer) {
+			clearTimeout(timer);
+			this.turnTimers.delete(gameId);
+		}
+	}
 
-  private startReconnectTimer(gameId: string, role: 'X' | 'O') {
-    const timerKey = this.getTimerKey(gameId, role);
-    this.clearTimerForfeit(gameId, role);
+	private startTurnTimer(gameId: string, game: GameState) {
+		this.clearTurnTimer(gameId);
 
-    const timer = setTimeout(() => {
-      this.gameService
-        .finalizeReconnectTimeout(gameId, role)
-        .then((result) => {
-          if (result) {
-            this.emitGameUpdate(gameId, result.game);
-            if (result.game.playerProfiles.X?.id) {
-                this.presenceService.emitFriendStatusChange(
-                    result.game.playerProfiles.X.id,
-                );
-            }
+		if (game.status !== 'playing') return;
 
-            if (result.game.playerProfiles.O?.id) {
-                this.presenceService.emitFriendStatusChange(
-                    result.game.playerProfiles.O.id,
-                );
-            }
-          }
-        })
-        .catch((error) => {
-          console.error('Reconnect timeout error:', error);
-        })
-        .finally(() => {
-          if (this.timersForfeit.get(timerKey) === timer) {
-            this.timersForfeit.delete(timerKey);
-          }
-        });
-    }, this.RECONNECT_GRACE_MS);
+		const delay = Math.max(0, TURN_TIMEOUT_MS - (Date.now() - game.lastMove));
 
-    this.timersForfeit.set(timerKey, timer);
-  }
+		const timer = setTimeout(() => {
+			this.gameService
+				.finalizeTurnTimeout(gameId)
+				.then(async (result) => {
+					if (result) {
+						this.emitGameUpdate(gameId, result);
 
-  private clearTurnTimer(gameId: string) {
-    const timer = this.turnTimers.get(gameId);
+						if (result.playerProfiles.X?.id) {
+							await this.presenceService.emitFriendStatusChange(
+								result.playerProfiles.X.id,
+							);
+						}
 
-    if (timer) {
-      clearTimeout(timer);
-      this.turnTimers.delete(gameId);
-    }
-  }
+						if (result.playerProfiles.O?.id) {
+							await this.presenceService.emitFriendStatusChange(
+								result.playerProfiles.O.id,
+							);
+						}
+					}
+				})
+				.finally(() => {
+					if (this.turnTimers.get(gameId) === timer) {
+						this.turnTimers.delete(gameId);
+					}
+				})
+				.catch((error) => {
+					console.error('Turn timeout error:', error);
+				});
+		}, delay);
 
-  private startTurnTimer(gameId: string, game: GameState) {
-    this.clearTurnTimer(gameId);
+		this.turnTimers.set(gameId, timer);
+	}
 
-    if (game.status !== 'playing') return;
+	private getSpectatorsCnt(gameId: string, game: GameState): number {
+		const room = this.server.adapter.rooms.get(gameId);
+		if (!room) return 0;
 
-    const delay = Math.max(0, TURN_TIMEOUT_MS - (Date.now() - game.lastMove));
+		const userIdsInRoom = new Set<number>();
 
-    const timer = setTimeout(() => {
-      this.gameService
-        .finalizeTurnTimeout(gameId)
-        .then((result) => {
-          if (result) {
-            this.emitGameUpdate(gameId, result);
-            if (result.playerProfiles.X?.id) {
-                this.presenceService.emitFriendStatusChange(
-                    result.playerProfiles.X.id,
-                );
-            }
+		for (const socketId of room) {
+			const socket = this.server.sockets.get(socketId) as
+				| AuthSocket
+				| undefined;
+			const userId = socket?.data.user.sub;
+			if (userId) userIdsInRoom.add(userId);
+		}
 
-            if (result.playerProfiles.O?.id) {
-                this.presenceService.emitFriendStatusChange(
-                    result.playerProfiles.O.id,
-                );
-            }
-          }
-        })
-        .catch((error) => {
-          console.error('Turn timeout error:', error);
-        })
-        .finally(() => {
-          if (this.turnTimers.get(gameId) === timer) {
-            this.turnTimers.delete(gameId);
-          }
-        });
-    }, delay);
+		if (game.players.X.ownerUserId !== null)
+			userIdsInRoom.delete(game.players.X.ownerUserId);
+		if (game.players.O.ownerUserId !== null)
+			userIdsInRoom.delete(game.players.O.ownerUserId);
 
-    this.turnTimers.set(gameId, timer);
-  }
+		return userIdsInRoom.size;
+	}
 
-  private getSpectatorsCnt(gameId: string, game: GameState): number {
-    const room = this.server.sockets.adapter.rooms.get(gameId);
-    if (!room) return 0;
+	private cleanupFinishedGameIfEmpty(gameId: string) {
+		let game: GameState;
 
-    let connectedPlayers = 0;
+		try {
+			game = this.gameService.getGameById(gameId);
+		} catch {
+			return;
+		}
 
-    const socketId_X = game.players.X.socketId;
-    const socketId_O = game.players.O.socketId;
+		if (game.status !== 'finished') return;
 
-    if (socketId_X && room.has(socketId_X)) connectedPlayers++;
-    if (socketId_O && room.has(socketId_O)) connectedPlayers++;
+		const room = this.server.adapter.rooms.get(gameId);
+		if (room && room.size > 0) return;
 
-    return Math.max(0, room.size - connectedPlayers);
-  }
+		this.clearTurnTimer(gameId);
+		this.gameService.deleteGame(gameId);
+	}
 
-  private cleanupFinishedGameIfEmpty(gameId: string) {
-    let game: GameState;
+	private emitGameUpdate(gameId: string, game: GameState) {
+		this.startTurnTimer(gameId, game);
 
-    try {
-      game = this.gameService.getGameById(gameId);
-    } catch {
-      return;
-    }
+		this.server.to(gameId).emit('game_updated', {
+			...game,
+			spectatCnt: this.getSpectatorsCnt(gameId, game),
+		});
+	}
 
-    if (game.status !== 'finished') return;
+	private emitUpdatedRoles(game: GameState) {
+		const socketId_X = game.players.X.socketIds;
+		const socketId_O = game.players.O.socketIds;
 
-    const room = this.server.sockets.adapter.rooms.get(gameId);
-    if (room && room.size > 0) return;
+		if (socketId_X.length > 0)
+			this.server.to(socketId_X).emit('role_updated', { role: 'X' });
+		if (socketId_O.length > 0)
+			this.server.to(socketId_O).emit('role_updated', { role: 'O' });
+	}
 
-    this.clearTurnTimer(gameId);
-    this.clearTimerForfeit(gameId, 'X');
-    this.clearTimerForfeit(gameId, 'O');
-    this.gameService.deleteGame(gameId);
-  }
+	handleDisconnect(client: AuthSocket) {
+		const result = this.gameService.processPlayerDisconnection(client.id);
+		if (result) {
+			if (result?.game.status === 'finished')
+				result.game.playerLeft = result.role;
+			this.emitGameUpdate(result.gameId, result.game);
+			this.cleanupFinishedGameIfEmpty(result.gameId);
+			return;
+		}
+		const gameId = client.data.currentGameId;
+		if (!gameId) return;
 
-  private emitGameUpdate(gameId: string, game: GameState) {
-    this.startTurnTimer(gameId, game);
+		try {
+			const game = this.gameService.getGameById(gameId);
+			this.emitGameUpdate(gameId, game);
+			this.cleanupFinishedGameIfEmpty(gameId);
+		} catch {
+			return;
+		}
+	}
 
-    this.server.to(gameId).emit('game_updated', {
-      ...game,
-      spectatCnt: this.getSpectatorsCnt(gameId, game),
-    });
-  }
+	@SubscribeMessage('join_game')
+	async handleJoinGame(
+		@MessageBody() body: { gameId: string },
+		@ConnectedSocket() client: AuthSocket,
+	) {
+		try {
+			const userId = client.data.user.sub;
 
-  private emitUpdatedRoles(game: GameState) {
-    const socketId_X = game.players.X.socketId;
-    const socketId_O = game.players.O.socketId;
+			const userProfile = await this.usersService.getUser(userId);
 
-    if (socketId_X)
-      this.server.to(socketId_X).emit('role_updated', { role: 'X' });
-    if (socketId_O)
-      this.server.to(socketId_O).emit('role_updated', { role: 'O' });
-  }
+			const { game, role } = this.gameService.joinGame(
+				body.gameId,
+				client.id,
+				userId,
+				userProfile,
+			);
 
-  handleDisconnect(client: AuthSocket) {
-    const result = this.gameService.processPlayerDisconnection(client.id);
-    if (result) {
-      if (result.game.status === 'playing')
-        this.startReconnectTimer(result.gameId, result.role);
-      if (result?.game.status === 'finished')
-        result.game.playerLeft = result.role;
-      this.emitGameUpdate(result.gameId, result.game);
-      this.cleanupFinishedGameIfEmpty(result.gameId);
-      return;
-    }
-    const gameId = client.data.currentGameId;
-    if (!gameId) return;
+			await client.join(body.gameId);
+			client.data.currentGameId = body.gameId;
 
-    try {
-      const game = this.gameService.getGameById(gameId);
-      this.emitGameUpdate(gameId, game);
-      this.cleanupFinishedGameIfEmpty(gameId);
-    } catch {
-      return;
-    }
-  }
+			this.emitGameUpdate(body.gameId, game);
+			if (game.playerProfiles.X?.id) {
+				await this.presenceService.emitFriendStatusChange(
+					game.playerProfiles.X.id,
+				);
+			}
 
-  @SubscribeMessage('join_game')
-  async handleJoinGame(
-    @MessageBody() body: { gameId: string },
-    @ConnectedSocket() client: AuthSocket,
-  ) {
-    try {
-      const userId = client.data.user.sub;
+			if (game.playerProfiles.O?.id) {
+				await this.presenceService.emitFriendStatusChange(
+					game.playerProfiles.O.id,
+				);
+			}
+			client.emit('joined_as', { role });
+		} catch (error) {
+			client.emit('game_error', {
+				message: error instanceof Error ? error.message : 'Unknown error',
+			});
+		}
+	}
 
-      const userProfile = await this.usersService.getUser(userId);
+	@SubscribeMessage('play_move')
+	async handlePlayMove(
+		@MessageBody() body: PlayMoveDto,
+		@ConnectedSocket() client: AuthSocket,
+	) {
+		try {
+			const userId = client.data.user.sub;
+			const newGameState = await this.gameService.playMove(
+				body.gameId,
+				userId,
+				body.r,
+				body.c,
+			);
+			this.emitGameUpdate(body.gameId, newGameState);
+			if (newGameState.playerProfiles.X?.id) {
+				await this.presenceService.emitFriendStatusChange(
+					newGameState.playerProfiles.X.id,
+				);
+			}
 
-      const { game, role } = this.gameService.joinGame(
-        body.gameId,
-        client.id,
-        userId,
-        userProfile,
-      );
+			if (newGameState.playerProfiles.O?.id) {
+				await this.presenceService.emitFriendStatusChange(
+					newGameState.playerProfiles.O.id,
+				);
+			}
+			return newGameState;
+		} catch (error) {
+			client.emit('game_error', {
+				message: error instanceof Error ? error.message : 'Unknown error',
+			});
+		}
+	}
 
-      await client.join(body.gameId);
-      client.data.currentGameId = body.gameId;
+	@SubscribeMessage('request_replay')
+	handleRequestReplay(
+		@MessageBody() body: { gameId: string },
+		@ConnectedSocket() client: AuthSocket,
+	) {
+		try {
+			const userId = client.data.user.sub;
+			const updateGame = this.gameService.requestReplay(body.gameId, userId);
 
-      this.emitGameUpdate(body.gameId, game);
-      if (game.playerProfiles.X?.id) {
-        await this.presenceService.emitFriendStatusChange(
-            game.playerProfiles.X.id,
-        );
-    }
+			this.emitUpdatedRoles(updateGame);
+			this.emitGameUpdate(body.gameId, updateGame);
+			return updateGame;
+		} catch (error) {
+			client.emit('game_error', {
+				message: error instanceof Error ? error.message : 'Unknown error',
+			});
+		}
+	}
 
-    if (game.playerProfiles.O?.id) {
-        await this.presenceService.emitFriendStatusChange(
-            game.playerProfiles.O.id,
-        );
-    }
-      client.emit('joined_as', { role });
-    } catch (error) {
-      client.emit('game_error', {
-        message: error instanceof Error ? error.message : 'Unknown error',
-      });
-    }
+	@SubscribeMessage('leave_game')
+	async handleLeaveGame(
+		@MessageBody() body: { gameId: string },
+		@ConnectedSocket() client: AuthSocket,
+	) {
+		try {
+			const userId = client.data.user.sub;
+			const result = this.gameService.leaveGame(body.gameId, userId);
 
-  }
-
-  @SubscribeMessage('play_move')
-  async handlePlayMove(
-    @MessageBody() body: PlayMoveDto,
-    @ConnectedSocket() client: AuthSocket,
-  ) {
-    try {
-      const userId = client.data.user.sub;
-      const newGameState = await this.gameService.playMove(
-        body.gameId,
-        userId,
-        body.r,
-        body.c,
-      );
-      this.emitGameUpdate(body.gameId, newGameState);
-      if (newGameState.playerProfiles.X?.id) {
-            await this.presenceService.emitFriendStatusChange(newGameState.playerProfiles.X.id);
-        }
-
-        if (newGameState.playerProfiles.O?.id) {
-            await this.presenceService.emitFriendStatusChange(newGameState.playerProfiles.O.id);
-        }
-      return newGameState;
-    } catch (error) {
-      client.emit('game_error', {
-        message: error instanceof Error ? error.message : 'Unknown error',
-      });
-    }
-  }
-
-  @SubscribeMessage('request_replay')
-  handleRequestReplay(
-    @MessageBody() body: { gameId: string },
-    @ConnectedSocket() client: AuthSocket,
-  ) {
-    try {
-      const userId = client.data.user.sub;
-      const updateGame = this.gameService.requestReplay(body.gameId, userId);
-
-      this.emitUpdatedRoles(updateGame);
-      this.emitGameUpdate(body.gameId, updateGame);
-      return updateGame;
-    } catch (error) {
-      client.emit('game_error', {
-        message: error instanceof Error ? error.message : 'Unknown error',
-      });
-    }
-  }
-
-  @SubscribeMessage('leave_game')
-  async handleLeaveGame(
-    @MessageBody() body: { gameId: string },
-    @ConnectedSocket() client: AuthSocket,
-  ) {
-    try {
-      const userId = client.data.user.sub;
-      const result = this.gameService.leaveGame(body.gameId, userId);
-
-      if (result.deleted) {
-        await client.leave(body.gameId);
-        if (client.data.currentGameId === body.gameId) {
-          delete client.data.currentGameId;
-          await this.presenceService.emitFriendStatusChange(userId);
-        }
-        return;
-      }
-      if (result.game) {
-        this.emitGameUpdate(body.gameId, result.game);
-        await client.leave(body.gameId);
-        if (client.data.currentGameId === body.gameId) {
-          delete client.data.currentGameId;
-          await this.presenceService.emitFriendStatusChange(userId);
-        }
-      }
-    } catch (error) {
-      client.emit('game_error', {
-        message: error instanceof Error ? error.message : 'Unknown error',
-      });
-    }
-  }
+			if (result.deleted) {
+				await client.leave(body.gameId);
+				if (client.data.currentGameId === body.gameId) {
+					delete client.data.currentGameId;
+					await this.presenceService.emitFriendStatusChange(userId);
+				}
+				return;
+			}
+			if (result.game) {
+				this.emitGameUpdate(body.gameId, result.game);
+				await client.leave(body.gameId);
+				if (client.data.currentGameId === body.gameId) {
+					delete client.data.currentGameId;
+					await this.presenceService.emitFriendStatusChange(userId);
+				}
+			}
+		} catch (error) {
+			client.emit('game_error', {
+				message: error instanceof Error ? error.message : 'Unknown error',
+			});
+		}
+	}
 }

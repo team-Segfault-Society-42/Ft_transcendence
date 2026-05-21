@@ -18,7 +18,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 	const { t } = useTranslation()
 
 	useEffect(() => {
-		const client = io(window.location.origin, {
+		const client = io(`${window.location.origin}/chat`, {
 			path: '/socket.io/',
 			transports: ['websocket'],
 			withCredentials: true,
@@ -102,7 +102,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 							</span>
 						</div>
 
-						<div className="text-white text-sm break-all leading-snug">
+						<div className="min-w-0 max-w-full whitespace-pre-wrap wrap-anywhere text-sm leading-snug text-white">
 							{message.content}
 						</div>
 					</div>
