@@ -17,6 +17,7 @@ import { friendsService } from "@/services/friendsService";
 import { usePresenceStore } from "@/Store/presenceStore";
 import type { FriendStatus } from "@/services/friendsService";
 import type { User } from "@/type/user.types";
+import { MessageCircle } from "lucide-react";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -214,15 +215,33 @@ export default function Dashboard() {
         onSuccess={handleLoginSuccess}
       />
 
-      {!isChat && (
-        <Button
-          onClick={handleChatClick}
-          className="fixed bottom-6 right-6 z-50"
-        >
-          {t('chat.open')}
-        </Button>
-      )}
-      {user && isChat && <Chatbar onClose={handleChatClick} />}
-    </div>
-  );
-}
+    {user && (
+	  <>
+		  <Button
+			onClick={handleChatClick}
+			className="fixed bottom-6 right-6 z-30 rounded-full p-3"
+		  >
+			  <MessageCircle size={22} />
+		  </Button>
+
+		  {isChat && (
+			  <div
+				className="fixed inset-0 bg-black/50 z-40"
+				onClick={handleChatClick}
+			  />
+		  )}
+
+		  <div
+			  className={`
+				fixed inset-y-0 right-0 z-50 w-80
+				bg-slate-900 border-l border-white/10
+				transform transition-transform duration-300
+				${isChat ? "translate-x-0" : "translate-x-full"}
+			  `}
+		  >
+			  <Chatbar onClose={handleChatClick} />
+		  </div>
+	  </>
+  )}
+  </div>
+)}

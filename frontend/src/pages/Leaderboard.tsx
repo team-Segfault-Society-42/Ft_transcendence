@@ -115,7 +115,7 @@ export default function LeaderBoard() {
                   </span>
                   <Username
                     name={l.username}
-                    variant="profile"
+                    variant="card"
                     className="font-medium min-w-0"/>
                 </div>
 

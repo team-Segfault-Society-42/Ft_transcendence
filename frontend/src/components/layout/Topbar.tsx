@@ -50,14 +50,13 @@ export function Topbar({ user, onLoginClick, onMenuClick }: HeaderProps) {
         size="sm"
         className="rounded-full px-3 gap-2">
 
-          <span className= "hidden sm:inline">
+          <span className= "hidden lg:inline">
             {t("home.buttons.hi")}
           </span>
 
           <Username
           name={user.username}
-          variant="topbar"
-          className="hidden sm:inline"
+          className="hidden md:inline"
           />
 
           <Avatar
