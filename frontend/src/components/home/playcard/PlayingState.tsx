@@ -4,6 +4,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { useNavigate } from "react-router-dom";
 import { Swords } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Username } from "@/components/ui/Username";
 
 interface Props {
 	gameId: string;
@@ -35,16 +36,16 @@ export function PlayingState({ gameId, playerX, playerO }: Props) {
 
 				<Swords
 				size={72}
-				className="mx-auto text-cyan-400 animate-ping animation-duration-[3s]"
+				className="mx-auto mt-12 text-cyan-400 animate-ping animation-duration-[3s]"
 				/>
 
 				<p className="text-white/80 text-sm text-center max-w-sm leading-relaxed mb-6">
 					{t("home.play.playing.description")}
 				</p>
 
-				<div className="flex items-center justify-center gap-6">
+				<div className="flex flex-col sm:flex-row items-center justify-center gap-6">
 
-					<div className="flex flex-col items-center gap-3">
+					<div className="flex flex-1 flex-col items-center gap-3 min-w-0">
 						<Avatar
 							src={playerX?.avatar}
 							fallback={
@@ -53,18 +54,20 @@ export function PlayingState({ gameId, playerX, playerO }: Props) {
 							size="lg"
 						/>
 
-						<p className="text-white font-medium">
-							{playerX?.username}
-						</p>
+						<Username
+							name={playerX?.username || "Player X"}
+							variant="card"
+							className="text-white font-medium text-center"
+						/>
 					</div>
 
-					<div className="flex flex-col items-center">
+					<div className="flex flex-col items-center shrink-0">
 						<p className="text-3xl font-black bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
 							{t("home.play.playing.vs")}
 						</p>
 					</div>
 
-					<div className="flex flex-col items-center gap-3">
+					<div className="flex flex-col flex-1 items-center gap-3 min-w-0">
 						<Avatar
 							src={playerO?.avatar}
 							fallback={
@@ -73,9 +76,11 @@ export function PlayingState({ gameId, playerX, playerO }: Props) {
 							size="lg"
 						/>
 
-						<p className="text-white font-medium">
-							{playerO?.username}
-						</p>
+						<Username
+							name={playerO?.username || "Player O"}
+							variant="card"
+							className="text-white font-medium text-center"
+						/>
 					</div>
 				</div>
 
