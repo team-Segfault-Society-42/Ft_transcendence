@@ -20,7 +20,7 @@ services:
     ports:
       - "5555:5555"
     environment:
-      - CORS_ORIGINS=http://localhost:1024
+      - CORS_ORIGINS=http://localhost:1024,http://${DOMAIN}:1024
     volumes:
       - ./backend:/app                          # reflect host changes instantly
       - backend_node_modules:/app/node_modules  # prevent node_module overwrite in container
