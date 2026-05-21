@@ -222,7 +222,11 @@
       "currentPassword": "Current password",
       "newPassword": "New password",
       "updatePassword": "Update password",
-      "setPassword": "Set password"
+      "setPassword": "Set password",
+      "emailTitle": "Change email",
+      "emailDescription": "Update your account email address.",
+      "email": "Email address",
+      "updateEmail": "Update email"
     }
   },
   "leaderboard": {

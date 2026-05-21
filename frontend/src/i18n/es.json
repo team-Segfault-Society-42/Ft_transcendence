@@ -222,7 +222,11 @@
       "currentPassword": "Contraseña actual",
       "newPassword": "Nueva contraseña",
       "updatePassword": "Actualizar contraseña",
-      "setPassword": "Establecer contraseña"
+      "setPassword": "Establecer contraseña",
+      "emailTitle": "Cambiar correo electrónico",
+      "emailDescription": "Actualiza la dirección de correo electrónico de tu cuenta.",
+      "email": "Correo electrónico",
+      "updateEmail": "Actualizar correo electrónico"
     }
   },
   "leaderboard": {

@@ -222,7 +222,11 @@
       "currentPassword": "Mot de passe actuel",
       "newPassword": "Nouveau mot de passe",
       "updatePassword": "Mettre à jour le mot de passe",
-      "setPassword": "Définir le mot de passe"
+      "setPassword": "Définir le mot de passe",
+      "emailTitle": "Changer l’adresse e-mail",
+      "emailDescription": "Mettez à jour l’adresse e-mail de votre compte.",
+      "email": "Adresse e-mail",
+      "updateEmail": "Mettre à jour l’adresse e-mail"
     }
   },
   "leaderboard": {

@@ -12,6 +12,7 @@ import { Avatar } from "@/components/ui/Avatar";
 interface User {
 	id: number;
 	username: string;
+	email: string;
 	wins: number;
 	losses: number;
 	draws: number;
@@ -43,6 +44,15 @@ export default function Settings() {
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
 	const [isPasswordSaving, setIsPasswordSaving] = useState(false);
+	const [newEmail, setNewEmail] = useState(user?.email ?? "");
+	const [emailCurrentPassword, setEmailCurrentPassword] = useState("");
+	const [isEmailSaving, setIsEmailSaving] = useState(false);
+
+	useEffect(() => {
+		if (user?.email) {
+			setNewEmail(user.email);
+		}
+	}, [user]);
 
 	useEffect(() => {
 		if (!user) return;
@@ -236,6 +246,47 @@ export default function Settings() {
 		}
 	}
 
+	async function handleUpdateEmail() {
+		if (!user) return;
+
+		try {
+			setIsEmailSaving(true);
+
+			const result = await userService.updateEmail({
+				currentPassword: user.hasPassword
+					? emailCurrentPassword
+					: undefined,
+				newEmail,
+			});
+
+			toast.success(
+				t(`backend.${result.message}`, {
+					defaultValue: result.message,
+				}),
+			);
+
+			const refreshedUser = await userService.getMe();
+			setUser(refreshedUser);
+
+			setEmailCurrentPassword("");
+		} catch (error: any) {
+			const serverMessage =
+				error.response?.data?.message || error.message;
+
+			const finalMessage = Array.isArray(serverMessage)
+				? serverMessage[0]
+				: serverMessage;
+
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
+		} finally {
+			setIsEmailSaving(false);
+		}
+	}
+
 	async function handleSaveProfile() {
 		if (!user) return;
 
@@ -399,7 +450,55 @@ export default function Settings() {
 						</Button>
 					</div>
 				</Card>
-				
+
+				<Card className="space-y-6">
+					<div>
+						<CardTitle>
+							{t("settings.security.emailTitle")}
+						</CardTitle>
+
+						<CardDescription className="text-white/50 mt-2">
+							{t("settings.security.emailDescription")}
+						</CardDescription>
+					</div>
+
+					<div className="space-y-4">
+						<Input
+							type="email"
+							value={newEmail}
+							onChange={(e) => setNewEmail(e.target.value)}
+							placeholder={t("settings.security.email")}
+						/>
+
+						{user.hasPassword && (
+							<Input
+								type="password"
+								value={emailCurrentPassword}
+								onChange={(e) =>
+									setEmailCurrentPassword(e.target.value)
+								}
+								placeholder={t("settings.security.currentPassword")}
+							/>
+						)}
+
+						<Button
+							type="button"
+							onClick={handleUpdateEmail}
+							disabled={
+								isEmailSaving ||
+								newEmail.trim().length === 0 ||
+								(user.hasPassword &&
+									emailCurrentPassword.length === 0)
+							}
+							className="w-full"
+						>
+							{isEmailSaving
+								? t("settings.profile.saving")
+								: t("settings.security.updateEmail")}
+						</Button>
+					</div>
+				</Card>
+
 				<Card className="space-y-6">
 					<div>
 						<CardTitle>

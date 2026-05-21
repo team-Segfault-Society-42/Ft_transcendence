@@ -1,5 +1,26 @@
 import { api } from "@/services/api";
 
+export const userService = {
+    getUser,
+    updateUser,
+    createUser,
+    userLogin,
+	completeTwoFactorLogin,
+	enableTwoFactor,
+	verifyTwoFactorSetup,
+	disableTwoFactor,
+	updatePassword,
+    getMe,
+    userLogout,
+    getUserHistory,
+    getLeaderboard,
+    getAchievements,
+	uploadAvatar,
+  getAllAchievements,
+  getUserByUsername,
+  getUserRank,
+}
+
 export interface LoginResponse {
 	message: string;
 	twoFactorRequired?: boolean;
@@ -27,6 +48,15 @@ export interface UpdatePasswordPayload {
 }
 
 export interface UpdatePasswordResponse {
+	message: string;
+}
+
+export interface UpdateEmailPayload {
+	currentPassword?: string;
+	newEmail: string;
+}
+
+export interface UpdateEmailResponse {
 	message: string;
 }
 
@@ -78,6 +108,13 @@ export async function updatePassword(
 	return response.data;
 }
 
+export async function updateEmail(
+	data: UpdateEmailPayload,
+): Promise<UpdateEmailResponse> {
+	const response = await api.patch("auth/me/email", data);
+	return response.data;
+}
+
 export async function createUser(data: unknown) {
   const response = await api.post("auth/register", data);
   return response.data;
@@ -124,26 +161,7 @@ export async function getUserRank(id: number) {
   return response.data
 }
 
-export const userService = {
-    getUser,
-    updateUser,
-    createUser,
-    userLogin,
-	completeTwoFactorLogin,
-	enableTwoFactor,
-	verifyTwoFactorSetup,
-	disableTwoFactor,
-	updatePassword,
-    getMe,
-    userLogout,
-    getUserHistory,
-    getLeaderboard,
-    getAchievements,
-	uploadAvatar,
-  getAllAchievements,
-  getUserByUsername,
-  getUserRank,
-}
+
 
 export async function uploadAvatar(file: File) {
 	const formData = new FormData();
