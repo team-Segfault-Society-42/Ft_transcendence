@@ -89,8 +89,9 @@ export default function Settings() {
 		try {
 			setIsAvatarUploading(true);
 
-			const updatedUser = await userService.uploadAvatar(file);
-			setUser(updatedUser);
+			await userService.uploadAvatar(file);
+			const refreshedUser = await userService.getMe();
+			setUser(refreshedUser);
 
 			toast.success(t("profile.avatarUpdated"));
 		} catch (error: unknown) {
@@ -275,12 +276,13 @@ export default function Settings() {
 		try {
 			setIsSaving(true);
 
-			const updatedUser = await userService.updateUser(user.id, {
+			await userService.updateUser(user.id, {
 				username,
 				bio,
 			});
 
-			setUser(updatedUser);
+			const refreshedUser = await userService.getMe();
+			setUser(refreshedUser);
 
 			toast.success(t("settings.profile.updated"));
 		} catch (error: unknown) {
