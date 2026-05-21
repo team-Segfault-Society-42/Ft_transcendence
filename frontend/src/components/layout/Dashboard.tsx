@@ -18,6 +18,9 @@ import { usePresenceStore } from "@/Store/presenceStore";
 import type { FriendStatus } from "@/services/friendsService";
 import type { User } from "@/type/user.types";
 import { MessageCircle } from "lucide-react";
+import { useFriendsStore } from "@/Store/friendsStore";
+import { getBackendErrorMessage } from "../../utils/getBackendErrorMessage";
+import { AxiosError } from "axios";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -44,6 +47,14 @@ export default function Dashboard() {
 		(state) => state.clearFriendStatus,
 	);
 
+	const loadFriendsData = useFriendsStore(
+		(state) => state.loadFriendsData,
+	);
+
+	const clearFriendsData = useFriendsStore(
+		(state) => state.clearFriendsData,
+	);
+
   const openLogin = () => setActiveModal("login");
   const closeModals = () => setActiveModal(null);
   const handleChatClick = () => setIsChat((prev) => !prev);
@@ -55,7 +66,7 @@ export default function Dashboard() {
   const setActiveGame = useActiveGameStore(
     (state) => state.setActiveGame,
   );
-  
+
   const clearActiveGame = useActiveGameStore(
     (state) => state.clearActiveGame,
   );
@@ -75,16 +86,24 @@ export default function Dashboard() {
       try {
         const result = await userService.getMe();
         setUser(result);
-      } catch (error: any) {
-        if (error.response?.status != 401) {
-          const serverMessage = error.response?.data?.message || error.message;
-          const finalMessage = Array.isArray(serverMessage)
-            ? serverMessage[0]
-            : serverMessage;
-          toast.error(t("auth.errorWithMessage", { message: finalMessage }));
-        }
-        setUser(null);
-      } finally {
+      } catch (error: unknown) {
+			if (
+				error instanceof AxiosError &&
+				error.response?.status !== 401
+			) {
+				const finalMessage = getBackendErrorMessage(error);
+
+				toast.error(
+					t("auth.errorWithMessage", {
+						message: t(`backend.${finalMessage}`, {
+							defaultValue: finalMessage,
+						}),
+					}),
+				);
+			}
+
+			setUser(null);
+		} finally {
         setIsLoading(false);
       }
     }
@@ -94,18 +113,20 @@ export default function Dashboard() {
 	useEffect(() => {
 		if (!user) {
 			clearFriendStatus();
-      clearActiveGame();
+			clearFriendsData();
+      		clearActiveGame();
 			disconnectPresenceSocket();
 			return;
 		}
 
 		const socket = connectPresenceSocket();
-    
+
 		async function initializeRealtime() {
 			try {
 				const statuses = await friendsService.getFriendsStatus();
 				setFriendStatus(statuses);
-        await fetchActiveGame();
+				await loadFriendsData();
+        		await fetchActiveGame();
 			} catch (error) {
 				console.error("[PresenceSocket] initialization failed", error);
 			}
@@ -113,6 +134,10 @@ export default function Dashboard() {
 
 		initializeRealtime();
 
+		// With this when socket reconnects frontend state reloads
+		socket.on("connect", () => {
+			initializeRealtime();
+		});
 
 		socket.on("friend_status_changed", (status: FriendStatus) => {
 			updateFriendStatus(status);
@@ -124,21 +149,36 @@ export default function Dashboard() {
         clearActiveGame();
         return;
       }
-    
+
       setActiveGame(activeGame);
     });
 
-		socket.on("friends_updated", () => {
-			window.dispatchEvent(new Event("friends_updated"));
-		});
+		const handleFriendRelationshipEvent = async () => {
+			await loadFriendsData();
+
+			const statuses = await friendsService.getFriendsStatus();
+			setFriendStatus(statuses);
+		};
+
+		socket.on("friend_request_sent", handleFriendRelationshipEvent);
+		socket.on("friend_request_received", handleFriendRelationshipEvent);
+		socket.on("friend_request_accepted", handleFriendRelationshipEvent);
+		socket.on("friend_request_declined", handleFriendRelationshipEvent);
+		socket.on("friend_removed", handleFriendRelationshipEvent);
 
 		socket.on("connect_error", (error: Error) => {
 			console.error("[PresenceSocket] connection error:", error.message);
 		});
 
 		return () => {
+			socket.off("connect");
 			socket.off("friend_status_changed");
-      socket.off("active_game_updated");
+			socket.off("friend_request_sent", handleFriendRelationshipEvent);
+			socket.off("friend_request_received", handleFriendRelationshipEvent);
+			socket.off("friend_request_accepted", handleFriendRelationshipEvent);
+			socket.off("friend_request_declined", handleFriendRelationshipEvent);
+			socket.off("friend_removed", handleFriendRelationshipEvent);
+      		socket.off("active_game_updated");
 			socket.off("connect_error");
 		};
 	}, [
@@ -146,6 +186,8 @@ export default function Dashboard() {
 		setFriendStatus,
 		updateFriendStatus,
 		clearFriendStatus,
+		loadFriendsData,
+		clearFriendsData,
     setActiveGame,
 	  clearActiveGame,
 	  fetchActiveGame,

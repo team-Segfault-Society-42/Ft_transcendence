@@ -36,6 +36,8 @@ const privateUserSelect = {
 	losses: true,
 	draws: true,
 	xp: true,
+	passwordHash: true,
+	// Exposed isTwoFactorEnabled intentionally for authenticated account/settings UI.
 	isTwoFactorEnabled: true,
 } satisfies Prisma.UserSelect;
 
@@ -63,6 +65,7 @@ export class AuthService {
 		draws: user.draws,
 		xp: user.xp,
 		isTwoFactorEnabled: user.isTwoFactorEnabled,
+		hasPassword: user.passwordHash !== null,
 		};
 	}
 
@@ -165,5 +168,102 @@ export class AuthService {
 			}
 
 		return this.toPrivateUser(user);
+	}
+
+	async updatePassword(
+		userId: number,
+		currentPassword: string | undefined,
+		newPassword: string,
+	) {
+		const user = await this.prisma.user.findUnique({
+			where: { id: userId },
+			select: {
+				id: true,
+				passwordHash: true,
+			},
+		});
+
+		if (!user) {
+			throw new NotFoundException('ERR_USER_NOT_FOUND');
+		}
+
+		if (user.passwordHash) {
+			if (!currentPassword) {
+				throw new UnauthorizedException('ERR_AUTH_CURRENT_PWD_REQUIRED');
+			}
+
+			const passwordMatches = await bcrypt.compare(
+				currentPassword,
+				user.passwordHash,
+			);
+
+			if (!passwordMatches) {
+				throw new UnauthorizedException('ERR_AUTH_INVALID_CREDENTIALS');
+			}
+		}
+
+		const passwordHash = await bcrypt.hash(newPassword, 10);
+
+		await this.prisma.user.update({
+			where: { id: userId },
+			data: { passwordHash },
+		});
+
+		return {
+			message: 'AUTH_PASSWORD_UPDATED_SUCCESS',
+		};
+	}
+
+	async updateEmail(
+		userId: number,
+		currentPassword: string | undefined,
+		newEmail: string,
+	) {
+		const user = await this.prisma.user.findUnique({
+			where: { id: userId },
+			select: {
+				id: true,
+				passwordHash: true,
+			},
+		});
+
+		if (!user) {
+			throw new NotFoundException('ERR_USER_NOT_FOUND');
+		}
+
+		if (user.passwordHash) {
+			if (!currentPassword) {
+				throw new UnauthorizedException('ERR_AUTH_CURRENT_PWD_REQUIRED');
+			}
+
+			const passwordMatches = await bcrypt.compare(
+				currentPassword,
+				user.passwordHash,
+			);
+
+			if (!passwordMatches) {
+				throw new UnauthorizedException('ERR_AUTH_INVALID_CREDENTIALS');
+			}
+		}
+
+		try {
+			await this.prisma.user.update({
+				where: { id: userId },
+				data: { email: newEmail },
+			});
+		} catch (error) {
+			if (
+				error instanceof Prisma.PrismaClientKnownRequestError &&
+				error.code === 'P2002'
+			) {
+				throw new ConflictException('ERR_AUTH_EMAIL_ALREADY_EXISTS');
+			}
+
+			throw error;
+		}
+
+		return {
+			message: 'AUTH_EMAIL_UPDATED_SUCCESS',
+		};
 	}
 }

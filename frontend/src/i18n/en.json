@@ -11,13 +11,13 @@
         "join": "Join Game",
         "watch": "Watch Games"
       },
-      "waiting":{
+      "waiting": {
         "title": "Waiting Lobby",
         "description": "Waiting for an opponent to join...",
         "copy": "Copy Link",
         "cancel": "Cancel"
       },
-        "playing":{
+      "playing": {
         "title": "Current match",
         "description": "Enter the arena and fight for victory !",
         "vs": "VS",
@@ -214,7 +214,19 @@
       "description": "Manage two-factor authentication and future security options.",
       "disableTitle": "Disable 2FA",
       "disableDescription": "Disabling 2FA will be added later. For now, 2FA can only be enabled.",
-      "disableComingSoon": "Disable 2FA coming soon"
+      "disableComingSoon": "Disable 2FA coming soon",
+      "passwordTitle": "Change password",
+      "passwordDescription": "Update your local account password.",
+      "setPasswordTitle": "Set password",
+      "setPasswordDescription": "Add a local password to your OAuth account.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "updatePassword": "Update password",
+      "setPassword": "Set password",
+      "emailTitle": "Change email",
+      "emailDescription": "Update your account email address.",
+      "email": "Email address",
+      "updateEmail": "Update email"
     }
   },
   "leaderboard": {
@@ -392,11 +404,15 @@
   },
   "backend": {
     "ERR_AUTH_EMAIL_INVALID": "Invalid email address.",
+    "ERR_AUTH_CURRENT_PWD_STRING": "Current password must be a string.",
+    "ERR_AUTH_PWD_STRING": "Password must be a string.",
     "ERR_AUTH_PWD_MIN_LENGTH": "Password must be at least 8 characters.",
     "ERR_AUTH_PWD_COMPLEXITY": "Password must contain a lowercase, an uppercase, and a number.",
+    "ERR_USERNAME_STRING": "Username must be a string.",
     "ERR_USER_USERNAME_MIN_LENGTH": "Username is too short (min 3).",
     "ERR_USER_USERNAME_MAX_LENGTH": "Username is too long (max 20).",
     "ERR_USER_USERNAME_NO_SPACES": "Username must not contain spaces.",
+    "ERR_USER_BIO_STRING": "Bio must be a string.",
     "ERR_USER_BIO_MAX_LENGTH": "Bio is too long (max 180).",
     "ERR_AUTH_2FA_CODE_STRING": "Code must be a string.",
     "ERR_AUTH_2FA_CODE_LENGTH": "Code must be exactly 6 characters.",
@@ -416,10 +432,12 @@
     "ERR_OAUTH_MISSING_STORED_STATE": "Missing stored OAuth state.",
     "ERR_OAUTH_INVALID_STATE": "Invalid OAuth state.",
     "ERR_OAUTH_GOOGLE_CONFIG": "Google OAuth is not configured on the backend.",
+    "ERR_AUTH_2FA_TOO_MANY_ATTEMPTS": "Too many attempts, wait 5 minutes to try again.",
     "ERR_AUTH_2FA_ALREADY_ENABLED": "2FA is already enabled.",
     "ERR_AUTH_2FA_NO_SETUP": "No 2FA setup in progress.",
     "ERR_AUTH_2FA_INVALID_CODE": "Invalid security code.",
     "AUTH_2FA_ENABLED_SUCCESS": "2FA enabled successfully!",
+    "AUTH_2FA_DISABLED_SUCCESS": "2FA disabled successfully!",
     "ERR_AUTH_2FA_INVALID_TOKEN": "Invalid 2FA token.",
     "ERR_AUTH_2FA_NOT_ENABLED": "2FA is not enabled.",
     "ERR_FRIEND_ACTION_INVALID": "Invalid action selected (ACCEPT or DECLINE only).",
@@ -488,7 +506,11 @@
     "ERR_QUERY_SEARCH_EMPTY": "Search cannot be empty.",
     "ERR_USER_UPDATE_FAILED": "Failed to update user.",
     "ERR_USER_AVATAR_REQUIRED": "Avatar file is required.",
-    "ERR_USER_AVATAR_INVALID_TYPE": "Invalid image format (PNG, JPEG, WebP)."
+    "ERR_USER_AVATAR_INVALID_TYPE": "Invalid image format (PNG, JPEG, WebP).",
+    "ERR_AUTH_CURRENT_PWD_REQUIRED": "Current password is required.",
+    "AUTH_PASSWORD_UPDATED_SUCCESS": "Password updated successfully.",
+    "ERR_AUTH_EMAIL_ALREADY_EXISTS": "Email already exists.",
+    "AUTH_EMAIL_UPDATED_SUCCESS": "Email updated successfully."
   },
   "errors": {
     "game": {

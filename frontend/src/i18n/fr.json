@@ -11,13 +11,13 @@
         "join": "Rejoindre une partie",
         "watch": "Regarder des matchs"
       },
-      "waiting":{
+      "waiting": {
         "title": "Salle d'attente",
         "description": "En attente qu'un adversaire rejoigne...",
         "copy": "Copier le lien",
         "cancel": "Annuler"
       },
-      "playing":{
+      "playing": {
         "title": "Match en cours",
         "description": "Entrez dans l'arène et combattez pour la victoire !",
         "vs": "VS",
@@ -214,7 +214,19 @@
       "description": "Gère l'authentification à deux facteurs et les futures options de sécurité.",
       "disableTitle": "Désactiver la 2FA",
       "disableDescription": "La désactivation de la 2FA sera ajoutée plus tard. Pour l’instant, la 2FA peut seulement être activée.",
-      "disableComingSoon": "Désactivation de la 2FA bientôt disponible"
+      "disableComingSoon": "Désactivation de la 2FA bientôt disponible",
+      "passwordTitle": "Changer le mot de passe",
+      "passwordDescription": "Mettre à jour le mot de passe de votre compte local.",
+      "setPasswordTitle": "Définir un mot de passe",
+      "setPasswordDescription": "Ajouter un mot de passe local à votre compte OAuth.",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "updatePassword": "Mettre à jour le mot de passe",
+      "setPassword": "Définir le mot de passe",
+      "emailTitle": "Changer l’adresse e-mail",
+      "emailDescription": "Mettez à jour l’adresse e-mail de votre compte.",
+      "email": "Adresse e-mail",
+      "updateEmail": "Mettre à jour l’adresse e-mail"
     }
   },
   "leaderboard": {
@@ -392,11 +404,15 @@
   },
   "backend": {
     "ERR_AUTH_EMAIL_INVALID": "L'adresse email est invalide.",
+    "ERR_AUTH_CURRENT_PWD_STRING": "Le mot de passe actuel doit être une chaîne de caractères.",
+    "ERR_AUTH_PWD_STRING": "Le mot de passe doit être une chaîne de caractères.",
     "ERR_AUTH_PWD_MIN_LENGTH": "Le mot de passe doit faire 8 caractères minimum.",
     "ERR_AUTH_PWD_COMPLEXITY": "Le mot de passe doit contenir une minuscule, une majuscule et un chiffre.",
+    "ERR_USERNAME_STRING": "Le nom d'utilisateur doit être une chaîne de caractères.",
     "ERR_USER_USERNAME_MIN_LENGTH": "Le nom d'utilisateur est trop court (3 min).",
     "ERR_USER_USERNAME_MAX_LENGTH": "Le nom d'utilisateur est trop long (20 max).",
     "ERR_USER_USERNAME_NO_SPACES": "Le nom d'utilisateur ne doit pas contenir d'espaces.",
+    "ERR_USER_BIO_STRING": "La biographie doit être une chaîne de caractères.",
     "ERR_USER_BIO_MAX_LENGTH": "La biographie est trop longue (180 max).",
     "ERR_AUTH_2FA_CODE_STRING": "Le code doit être une chaîne de caractères.",
     "ERR_AUTH_2FA_CODE_LENGTH": "Le code doit contenir exactement 6 chiffres.",
@@ -416,10 +432,12 @@
     "ERR_OAUTH_MISSING_STORED_STATE": "État OAuth stocké manquant (session expirée).",
     "ERR_OAUTH_INVALID_STATE": "État OAuth invalide.",
     "ERR_OAUTH_GOOGLE_CONFIG": "La connexion Google n'est pas configurée sur le serveur.",
+    "ERR_AUTH_2FA_TOO_MANY_ATTEMPTS": "Trop de tentatives, veuillez patienter 5 minutes avant de réessayer.",
     "ERR_AUTH_2FA_ALREADY_ENABLED": "La 2FA est déjà activée.",
     "ERR_AUTH_2FA_NO_SETUP": "Aucune configuration 2FA en cours.",
     "ERR_AUTH_2FA_INVALID_CODE": "Code de sécurité invalide.",
     "AUTH_2FA_ENABLED_SUCCESS": "Double authentification activée !",
+    "AUTH_2FA_DISABLED_SUCCESS": "La 2FA est déjà desactivée.!",
     "ERR_AUTH_2FA_INVALID_TOKEN": "Jeton 2FA invalide.",
     "ERR_AUTH_2FA_NOT_ENABLED": "La 2FA n'est pas activée.",
     "ERR_FRIEND_ACTION_INVALID": "L'action choisie est invalide (ACCEPT ou DECLINE uniquement).",
@@ -488,7 +506,11 @@
     "ERR_QUERY_SEARCH_EMPTY": "La recherche ne peut pas être vide.",
     "ERR_USER_UPDATE_FAILED": "Échec de la mise à jour du profil.",
     "ERR_USER_AVATAR_REQUIRED": "Le fichier de l'avatar est requis.",
-    "ERR_USER_AVATAR_INVALID_TYPE": "Format d'image invalide (PNG, JPEG, WebP)."
+    "ERR_USER_AVATAR_INVALID_TYPE": "Format d'image invalide (PNG, JPEG, WebP).",
+    "ERR_AUTH_CURRENT_PWD_REQUIRED": "Le mot de passe actuel est requis.",
+    "AUTH_PASSWORD_UPDATED_SUCCESS": "Mot de passe mis à jour avec succès.",
+    "ERR_AUTH_EMAIL_ALREADY_EXISTS": "Cette adresse e-mail existe déjà.",
+    "AUTH_EMAIL_UPDATED_SUCCESS": "Adresse e-mail mise à jour avec succès."
   },
   "errors": {
     "game": {
