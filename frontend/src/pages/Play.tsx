@@ -133,7 +133,7 @@ export default function Play() {
                 </div>
               </>
             ) : (
-              <div className="bg-white/5 border border-cyan-500/20 rounded-xl p-6">
+              <div className=" border-cyan-500/20 rounded-xl p-6">
                 <p className="text-center text-white font-medium mb-2">
                   {t("play.myGames.waiting")}
                 </p>
@@ -142,7 +142,7 @@ export default function Play() {
                   {t("play.myGames.share")}
                 </p>
 
-                <div className="flex gap-4 mb-6">
+                <div className="flex flex-col sm:flex-row gap-4 mb-6">
                   <input
                     value={inviteLink}
                     readOnly
