@@ -34,22 +34,22 @@ export default function Board() {
 
 	useEffect(() => {
 		if (game?.playerLeft) {
-			toast.warning('Opponent left - no replay!');
+			toast.warning(t('game.status.opponentLeft'));
 		}
-	}, [game?.playerLeft]);
+	}, [game?.playerLeft, t]);
 
 	useEffect(() => {
 		if (oldOppDiscnct.current && !opponentDisconnect) {
-			toast.success('Opponent reconnected!');
+			toast.success(t('game.status.opponentReconnected'));
 		}
 		oldOppDiscnct.current = opponentDisconnect;
-	}, [opponentDisconnect]);
+	}, [opponentDisconnect, t]);
 
 	if (error && !game) {
 		return (
 			<div className="text-white text-center p-8">
 				<div className="mb-4">{error}</div>
-				<Button onClick={() => navigate('/')}>Back to home</Button>
+				<Button onClick={() => navigate('/')}>{t('buttons.backHome')}</Button>
 			</div>
 		);
 	}
