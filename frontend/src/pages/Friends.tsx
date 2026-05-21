@@ -277,7 +277,7 @@ export default function Friends() {
 						return (
 							<div
 								key={result.id}
-								className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
+								className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 							>
 								<UserRow 
 									user={result}
@@ -358,7 +358,7 @@ export default function Friends() {
 								return (
 									<div
 										key={item.friendshipId}
-										className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
+										className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
 										<div>
 											<UserRow 
@@ -452,7 +452,7 @@ export default function Friends() {
 												onClick={() => handleAcceptRequest(request.requestId)}
 												aria-label={t("friends.actions.accept")}
 												title={t("friends.actions.accept")}
-												className="px-10"
+												className="px-8"
 											>
 												<Check size={16} />
 											</Button>
@@ -463,7 +463,7 @@ export default function Friends() {
 												onClick={() => handleDeclineRequest(request.requestId)}
 												aria-label={t("friends.actions.decline")}
 												title={t("friends.actions.decline")}
-												className="px-10"
+												className="px-8"
 											>
 												<X size={16} />
 											</Button>
