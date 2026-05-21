@@ -334,7 +334,57 @@ erDiagram
 
 ### Challenges
 
-*[TBD — pending team input]*
+#### Learning TypeScript
+
+None of us had meaningful TypeScript experience coming into the project. We learned at our own pace, relying on pair programming sessions on Discord with screen sharing and/or leaning on each other for support and understanding.
+
+While this slowed us down at first, it paid off in the long term. Proper typing allowed for catching errors at compile time rather than runtime, making it easier to keep on top of the codebase as it grew.
+
+#### Keeping Focus When Everything Blurs Together
+
+With so many tasks running in parallel and the open-ended nature of the modules, it was easy to lose sight of what actually needed to be done versus what was us going too far down the rabbit hole.
+
+We used Excalidraw as a shared Kanban board to track modules and features visually, which not only helped everyone stay focused but also allowed us to draw the line on when we were heading too far outside the scope of the selected modules.
+
+#### Building a Workflow That Works for Everyone
+
+We settled on a set of conventions early, a GitHub Issue for every change before writing a single line of code, a strict commit message format (`type(scope): short message`), and PRs written to a shared standard.
+
+It was a lot to take on at first, but across different schedules and availability it kept us aligned without needing to always be online at the same time.
+
+#### Balancing Life and Code
+
+Everyone on the team has their own commitments outside the project, be it family, work, or other responsibilities. Juggling all these obligations while maintaining the ability to contribute substantially to the project was a challenge in itself.
+
+We tried not to let that create guilt or friction and had a dedicated 'absence' channel in Discord to handle this matter. Each member was responsible for giving sufficient warning about any absence and to do their best to compensate for it when possible, whether by working twice as hard before leave or asking for help from a teammate.
+
+Furthermore, our weekly Monday meeting helped stay in sync and plan for any prolonged absences.
+
+#### The Language Barrier
+
+Mixed comfort levels across English and French added friction that a single-language team doesn't face.
+
+French was the natural choice for meetings as everyone could express themselves more freely than if the meetings had been conducted in English.
+
+English was the obvious choice for code communication as it is the industry standard, and posed the added benefit of being written, thus making translation tools a practical aid for those who needed it.
+
+This kept discussions fluid and the repository consistent without forcing anyone into a language they weren't comfortable speaking. When needed, teammates would step in to bridge gaps mid-meeting, keeping the conversation moving without derailing into full translations.
+
+#### Keeping the Frontend Clean and Scalable
+
+As the project grew, the frontend became harder to maintain. Components that were written early on didn't hold up as the design evolved.
+
+We gradually replaced one-off components with reusable ones, improving consistency in layout and readability. It never felt fully finished, but each pass left things cleaner than before.
+
+#### Collaborating Remotely as Strangers
+
+We didn't know each other before the project and intended from early on to work mostly remotely due to multiple team members living a considerable distance away from the school. Naturally, this was a source of potential concern to begin with.
+
+However, a handful of early in-person meetings at school helped put faces to the usernames and create the team cohesion required for remote work.
+
+From there, we built a culture around openness and honesty. If something wasn't working, we said so and discussed accordingly. The weekly Monday meetings often ran 3 to 4 hours and were rescheduled if someone couldn't make it.
+
+This ensured all bases were covered and each member had time to share any updates, questions and concerns they had.
 
 ---
 
