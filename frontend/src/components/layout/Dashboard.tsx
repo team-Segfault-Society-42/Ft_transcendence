@@ -132,6 +132,10 @@ export default function Dashboard() {
 
 		initializeRealtime();
 
+		// With this when socket reconnects frontend state reloads
+		socket.on("connect", () => {
+			initializeRealtime();
+		});
 
 		socket.on("friend_status_changed", (status: FriendStatus) => {
 			updateFriendStatus(status);
@@ -165,6 +169,7 @@ export default function Dashboard() {
 		});
 
 		return () => {
+			socket.off("connect");
 			socket.off("friend_status_changed");
 			socket.off("friend_request_sent", handleFriendRelationshipEvent);
 			socket.off("friend_request_received", handleFriendRelationshipEvent);
