@@ -279,7 +279,10 @@ export default function Friends() {
 								key={result.id}
 								className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 							>
-								<UserRow user={result} />
+								<UserRow 
+									user={result}
+									onClick={() => navigate(`/profile/${result.username}`)} 
+								/>
 
 								{state === "SELF" && (
 									<span className="text-sm text-white/40">
@@ -358,7 +361,10 @@ export default function Friends() {
 										className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
 										<div>
-											<UserRow user={item.friend} />
+											<UserRow 
+												user={item.friend}
+												onClick={() => navigate(`/profile/${item.friend.username}`)} 
+											/>
 											<p className="text-xs mt-1 flex items-center gap-2">
 												<StatusDot activity={status.activity ?? "offline"} />
 
@@ -435,7 +441,10 @@ export default function Friends() {
 										key={request.requestId}
 										className="flex flex-col gap-3 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
-										<UserRow user={request.sender} />
+										<UserRow 
+											user={request.sender}
+											onClick={() => navigate(`/profile/${request.sender.username}`)} 
+										 />
 
 										<div className="flex gap-2 justify-center">
 											<Button
@@ -482,7 +491,10 @@ export default function Friends() {
 										key={request.requestId}
 										className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
-										<UserRow user={request.receiver} />
+										<UserRow 
+											user={request.receiver} 
+											onClick={() => navigate(`/profile/${request.receiver.username}`)}
+										/>
 										<span className="text-sm text-yellow-400">
 											{t("friends.states.pending")}
 										</span>
@@ -497,9 +509,12 @@ export default function Friends() {
 	);
 }
 
-function UserRow({ user }: { user: PublicUser }) {
+function UserRow({ user, onClick }: { user: PublicUser; onClick?: () => void }) {
 	return (
-		<div className="flex items-center gap-3 min-w-0">
+		<div 
+			className={`flex items-center gap-3 min-w-0 ${onClick ? "cursor-pointer" : ""}`}
+			onClick={onClick}
+		>
 			<Avatar
 				src={user.avatar}
 				alt={user.username}

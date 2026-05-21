@@ -16,7 +16,20 @@ export const api = axios.create({
 });
 
 api.interceptors.response.use(
-  (response: AxiosResponse) => response,
+  (response: AxiosResponse) => {
+    const data = response.data;
+
+    if (data && typeof data.message === "string") {
+      const translationKey = `backend.${data.message}`;
+      const translated = i18n.t(translationKey);
+
+      if (translated !== translationKey) {
+        response.data.message = translated;
+      }
+    }
+
+    return response;
+  },
   (error: AxiosError<ErrorResponse>) => {
     const data = error.response?.data;
 
@@ -35,7 +48,6 @@ api.interceptors.response.use(
         error.message = translatedMessage;
       }
     }
-
     return Promise.reject(error);
   },
 );

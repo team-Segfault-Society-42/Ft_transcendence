@@ -59,7 +59,7 @@ export class MatchesService {
             where: { id: result.player1Id },
             data: {
               wins: { increment: 1 },
-              xp: { increment: 20 },
+              xp: { increment: 100 },
               totalGames: { increment: 1 },
             },
           });
@@ -68,7 +68,7 @@ export class MatchesService {
             where: { id: result.player2Id },
             data: {
               losses: { increment: 1 },
-              xp: { increment: 5 },
+              xp: { increment: 25 },
               totalGames: { increment: 1 },
             },
           });
@@ -77,7 +77,7 @@ export class MatchesService {
             where: { id: result.player2Id },
             data: {
               wins: { increment: 1 },
-              xp: { increment: 20 },
+              xp: { increment: 100 },
               totalGames: { increment: 1 },
             },
           });
@@ -86,7 +86,7 @@ export class MatchesService {
             where: { id: result.player1Id },
             data: {
               losses: { increment: 1 },
-              xp: { increment: 5 },
+              xp: { increment: 25 },
               totalGames: { increment: 1 },
             },
           });
@@ -95,7 +95,7 @@ export class MatchesService {
             where: { id: result.player1Id },
             data: {
               draws: { increment: 1 },
-              xp: { increment: 10 },
+              xp: { increment: 50 },
               totalGames: { increment: 1 },
             },
           });
@@ -104,7 +104,7 @@ export class MatchesService {
             where: { id: result.player2Id },
             data: {
               draws: { increment: 1 },
-              xp: { increment: 10 },
+              xp: { increment: 50 },
               totalGames: { increment: 1 },
             },
           });

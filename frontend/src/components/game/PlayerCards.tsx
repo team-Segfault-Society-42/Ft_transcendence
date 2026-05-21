@@ -3,6 +3,7 @@ import { Username } from '../ui/Username';
 import { Card } from '../ui/Card';
 import { Circle, X } from 'lucide-react';
 import type { PlayerRole, PlayerSymbol } from '@/type/game.types';
+import { useTranslation } from 'react-i18next';
 
 type PlayerCardProps = {
 	symbol: PlayerSymbol;
@@ -40,11 +41,13 @@ function PlayerCard({
 	isActive,
 	isYou,
 }: PlayerCardProps) {
+	const { t } = useTranslation();
+
 	return (
 		<div className="relative mt-4">
 			{isYou && (
 				<span className="absolute inset-x-0 -top-6 text-center text-xs font-bold uppercase text-cyan-400">
-					You
+					{t('game.you')}
 				</span>
 			)}
 			<Card

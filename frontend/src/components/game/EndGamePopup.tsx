@@ -102,8 +102,8 @@ export function EndGamePopup({
 			) : (
 				<p className="text-center text-sm text-white/50">
 					{playerLeft
-						? 'Opponent left - replay unavailable'
-						: 'Players try to decide whether to replay'}
+						? t('game.end.opponentLeftReplay')
+						: t('game.end.decidingReplay')}
 				</p>
 			)}
 
