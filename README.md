@@ -271,7 +271,7 @@ erDiagram
         int userId FK
         string key
         datetime unlockedAt
-        int progress
+        int progress "optional"
     }
     Friend {
         int id PK
@@ -279,8 +279,9 @@ erDiagram
         int userBId FK
         int senderId FK
         int receiverId FK
-        string status
+        string status "PENDING or ACCEPTED"
         datetime createdAt
+        datetime updatedAt
     }
 
     User ||--o{ OAuthAccount : "has"
