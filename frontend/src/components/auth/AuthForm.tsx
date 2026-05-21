@@ -57,7 +57,7 @@ export function AuthForm({ mode, onSuccess, onTwoFactorRequired, }: AuthFormProp
 			const result = await userService.userLogin(data);
 
 			if (result.twoFactorRequired) {
-				toast.info("Enter your 2FA code to finish login");
+				toast.info(t("auth.twofa.loginPrompt"));
 				form.reset();
 				onTwoFactorRequired?.();
 				return;

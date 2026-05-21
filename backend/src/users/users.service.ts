@@ -162,4 +162,22 @@ export class UsersService {
 		return this.toPublicUser(user);
 	}
 
+	async getUserRank(id: number) {
+		const user = await this.prisma.user.findUnique({
+			where: { id },
+			select: { xp: true }
+		})
+		if (!user)
+			throw new NotFoundException('ERR_USER_NOT_FOUND');
+
+		const higherXpPlayersCount = await this.prisma.user.count({
+			where: { xp: { gt: user.xp } }
+		})
+
+		return { 
+			rank: higherXpPlayersCount + 1, 
+			xp: user.xp 
+		}
+	}
+
 }

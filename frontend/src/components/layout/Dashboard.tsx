@@ -156,9 +156,7 @@ export default function Dashboard() {
 
       setUser(null);
 
-      const message = response.message
-      ? t(`backend.${response.message}`)
-      : t("auth.logoutSuccess");
+      const message = response.message || t("auth.logoutSuccess");
       toast.success(message);
       navigate("/");
     } catch {
@@ -221,7 +219,7 @@ export default function Dashboard() {
           onClick={handleChatClick}
           className="fixed bottom-6 right-6 z-50"
         >
-          Open chat
+          {t('chat.open')}
         </Button>
       )}
       {user && isChat && <Chatbar onClose={handleChatClick} />}

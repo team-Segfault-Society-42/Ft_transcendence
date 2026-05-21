@@ -1,3 +1,4 @@
+import useSound from 'use-sound';
 import Square from './Square';
 import { useGameStore } from '../../Store/gameStore';
 import type { CellValue } from '../../type/game.types';
@@ -24,32 +25,37 @@ export default function Board() {
 	const timeLeft = useGameTimer(game);
 
 	const oldOppDiscnct = useRef(false);
+	const [playErrorSound] = useSound('/sounds/cell_error.mp3', { volume: 0.1 });
+	const [playSound] = useSound('/sounds/place.mp3', { volume: 0.2 });
+	const [playWinSound] = useSound('/sounds/win.mp3', { volume: 0.01 });
 
 	const xDisconnect =
-		game?.players.X.socketId === null && game.players.X.ownerUserId !== null;
+		game?.players.X.socketIds.length === 0 &&
+		game.players.X.ownerUserId !== null;
 	const oDisconnect =
-		game?.players.O.socketId === null && game.players.O.ownerUserId !== null;
+		game?.players.O.socketIds.length === 0 &&
+		game.players.O.ownerUserId !== null;
 	const opponentDisconnect =
 		playerRole === 'X' ? oDisconnect : playerRole === 'O' ? xDisconnect : false;
 
 	useEffect(() => {
 		if (game?.playerLeft) {
-			toast.warning('Opponent left - no replay!');
+			toast.warning(t('game.status.opponentLeft'));
 		}
-	}, [game?.playerLeft]);
+	}, [game?.playerLeft, t]);
 
 	useEffect(() => {
 		if (oldOppDiscnct.current && !opponentDisconnect) {
-			toast.success('Opponent reconnected!');
+			toast.success(t('game.status.opponentReconnected'));
 		}
 		oldOppDiscnct.current = opponentDisconnect;
-	}, [opponentDisconnect]);
+	}, [opponentDisconnect, t]);
 
 	if (error && !game) {
 		return (
 			<div className="text-white text-center p-8">
 				<div className="mb-4">{error}</div>
-				<Button onClick={() => navigate('/')}>Back to home</Button>
+				<Button onClick={() => navigate('/')}>{t('buttons.backHome')}</Button>
 			</div>
 		);
 	}
@@ -131,7 +137,11 @@ export default function Board() {
 								value={value}
 								isWarning={i === toDisapear}
 								onSquareClick={() => {
-									if (!canPlay) return;
+									if (!canPlay || value !== null) {
+										playErrorSound();
+										return;
+									}
+									playSound();
 									playMove(i);
 								}}
 							/>
@@ -155,6 +165,7 @@ export default function Board() {
 							requestReplay={requestReplay}
 							leaveGame={leaveGame}
 							navigate={navigate}
+							playWinSound={playWinSound}
 						/>
 					)}
 				</div>

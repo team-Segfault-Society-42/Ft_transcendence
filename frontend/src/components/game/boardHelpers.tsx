@@ -1,4 +1,5 @@
 import type { CellValue, EndReason } from '@/type/game.types';
+import i18n from '@/i18n/config';
 
 export type EndGameMessage = {
 	winnerName: string | null;
@@ -22,8 +23,8 @@ export function getEndGameMessage(
 	if (endReason === 'draw') {
 		return {
 			winnerName: null,
-			resultText: 'Draw game',
-			subtitle: 'No player won this round',
+			resultText: i18n.t('game.end.draw.title'),
+			subtitle: i18n.t('game.end.draw.subtitle'),
 			color: 'text-slate-500',
 		};
 	}
@@ -31,8 +32,8 @@ export function getEndGameMessage(
 	if (endReason === 'timeout') {
 		return {
 			winnerName,
-			resultText: 'wins!',
-			subtitle: `${loserName} ran out of time`,
+			resultText: i18n.t('game.end.timeout.title'),
+			subtitle: i18n.t('game.end.timeout.subtitle', { name: loserName }),
 			color: 'text-orange-500',
 		};
 	}
@@ -40,8 +41,8 @@ export function getEndGameMessage(
 	if (endReason === 'forfeit') {
 		return {
 			winnerName,
-			resultText: 'wins!',
-			subtitle: `${loserName} left the match`,
+			resultText: i18n.t('game.end.forfeit.title'),
+			subtitle: i18n.t('game.end.forfeit.subtitle', { name: loserName }),
 			color: 'text-red-500',
 		};
 	}
@@ -49,16 +50,16 @@ export function getEndGameMessage(
 	if (endReason === 'win') {
 		return {
 			winnerName,
-			resultText: 'wins!',
-			subtitle: 'Game finished normally',
+			resultText: i18n.t('game.end.normalWin.title'),
+			subtitle: i18n.t('game.end.normalWin.subtitle'),
 			color: winner === 'X' ? 'text-cyan-500' : 'text-fuchsia-500',
 		};
 	}
 
 	return {
 		winnerName: null,
-		resultText: 'Game finished',
-		subtitle: 'This match has ended',
+		resultText: i18n.t('game.end.default.title'),
+		subtitle: i18n.t('game.end.default.subtitle'),
 		color: 'text-gray-600',
 	};
 }

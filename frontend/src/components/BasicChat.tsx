@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/Button';
 import { io, type Socket } from 'socket.io-client';
 import type { ChatMessage } from '@/type/user.types';
+import { useTranslation } from 'react-i18next';
 
 type BasicChatProps = {
 	onClose: () => void;
@@ -14,8 +15,10 @@ export function BasicChat({ onClose }: BasicChatProps) {
 	const clientRef = useRef<Socket | null>(null);
 	const bottomRef = useRef<HTMLDivElement>(null);
 
+	const { t } = useTranslation()
+
 	useEffect(() => {
-		const client = io(window.location.origin, {
+		const client = io(`${window.location.origin}/chat`, {
 			path: '/socket.io/',
 			transports: ['websocket'],
 			withCredentials: true,
@@ -99,7 +102,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 							</span>
 						</div>
 
-						<div className="text-white text-sm break-all leading-snug">
+						<div className="min-w-0 max-w-full whitespace-pre-wrap wrap-anywhere text-sm leading-snug text-white">
 							{message.content}
 						</div>
 					</div>
@@ -117,7 +120,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 							sendMessage();
 						}
 					}}
-					placeholder="Message (max 500 characters)"
+					placeholder={t('chat.placeholder', { count: 500 })}
 					rows={4}
 					className="flex-1 border p-2 resize-none"
 				/>

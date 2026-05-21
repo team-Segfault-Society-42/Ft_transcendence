@@ -58,6 +58,7 @@ export default function Profile() {
 
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([])
   const [allAchievements, setAllAchievements] = useState<Achievement[]>([]);
+  const [rank, setRank] = useState<number | null>(null)
 
   const navigate = useNavigate()
 
@@ -197,6 +198,17 @@ export default function Profile() {
       }
       fetchAchievements()
 
+      async function fetchRank() {
+        try {
+          const rankData = await userService.getUserRank(profileData!.id)
+          setRank(rankData.rank)
+        } 
+        catch (error) {
+          console.error("Failed to fetch user rank: ", error)
+        }
+      }
+      fetchRank()
+
       setLoading(false);
 
   }, [profileData?.id, isMe, user]);
@@ -271,6 +283,12 @@ export default function Profile() {
 			/>
 		</h1>
 
+          {rank && (
+              <span className="bg-amber-500/10 text-amber-300 border border-amber-500/20 text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+                Rank #{rank}
+              </span>
+            )}
+
         </div>
 
         <div>
@@ -305,9 +323,10 @@ export default function Profile() {
         </div>
 
         {/* STATS */}
-        <div className="mt-8 grid grid-cols-2 gap-4 text-center">
+        <div className="mt-8 grid grid-cols-3 gap-4 text-center">
           {[
             { label: t("profile.stats.wins"), value: profileData?.wins },
+            { label: t("profile.stats.draw"), value: profileData?.draws },
             { label: t("profile.stats.losses"), value: profileData?.losses },
           ].map((stat, i) => (
             <div
@@ -376,11 +395,14 @@ export default function Profile() {
 				<p className="text-sm leading-relaxed text-white/80">
 					{profileData?.bio}
 				</p>
-			) : (
+			) : isMe ? (
 				<p className="text-sm text-white/30 italic">
 					{t("profile.emptyBio")}
 				</p>
-			)}
+			) : (
+        <p></p>
+        
+      )}
 		</div>
 
 

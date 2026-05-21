@@ -1,46 +1,48 @@
+import i18n from "@/i18n/config";
+
 export function gameErrorMsg(rawMessage: string | null | undefined): string {
-  if (!rawMessage) return "Something went wrong";
+  if (!rawMessage) return i18n.t("errors.game.default");
 
   const message = rawMessage.toLowerCase();
 
   if (message.includes("user not found")) {
-    return "User not found";
+    return i18n.t("errors.game.userNotFound");
   }
 
   if (message.includes("game with id") && message.includes("not found")) {
-    return "Game not found";
+    return i18n.t("errors.game.gameNotFound");
   }
 
   if (message.includes("not your turn")) {
-    return "It is not your turn";
+    return i18n.t("errors.game.notYourTurn");
   }
 
   if (message.includes("waiting for both players")) {
-    return "Waiting for opponent...";
+    return i18n.t("errors.game.waitingOpponent");
   }
 
   if (message.includes("already occupied")) {
-    return "This cell is already occupied";
+    return i18n.t("errors.game.alreadyOccupied");
   }
 
   if (message.includes("replay is only available after game end")) {
-    return "Replay is only available after the game ends";
+    return i18n.t("errors.game.replayUnavailable");
   }
 
   if (message.includes("spectators cannot play")) {
-    return "Spectators cannot play";
+    return i18n.t("errors.game.spectatorCannotPlay");
   }
 
   if (message.includes("spectators cannot request replay")) {
-    return "Spectators cannot request replay";
+    return i18n.t("errors.game.spectatorCannotReplay");
   }
 
   if (message.includes("move out of range")) {
-    return "Invalid move";
+    return i18n.t("errors.game.invalidMove");
   }
 
   if (message.includes("unknown error")) {
-    return "Unknown error";
+    return i18n.t("errors.game.unknown");
   }
 
   return rawMessage;

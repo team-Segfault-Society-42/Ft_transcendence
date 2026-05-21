@@ -93,6 +93,11 @@ export async function getUserByUsername(username: string) {
   return response.data
 }
 
+export async function getUserRank(id: number) {
+  const response = await api.get('users/' + id + '/rank')
+  return response.data
+}
+
 export const userService = {
     getUser,
     updateUser,
@@ -109,6 +114,7 @@ export const userService = {
 	uploadAvatar,
   getAllAchievements,
   getUserByUsername,
+  getUserRank,
 }
 
 export async function uploadAvatar(file: File) {
