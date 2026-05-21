@@ -3,6 +3,10 @@ import { Button } from './ui/Button';
 import { io, type Socket } from 'socket.io-client';
 import type { ChatMessage } from '@/type/user.types';
 import { useTranslation } from 'react-i18next';
+import {
+	EasterEggPanel,
+	type EasterEgg,
+} from "./easter-eggs/EasterEggPanel";
 
 type BasicChatProps = {
 	onClose: () => void;
@@ -14,6 +18,8 @@ export function BasicChat({ onClose }: BasicChatProps) {
 	const [connected, setConnected] = useState(false);
 	const clientRef = useRef<Socket | null>(null);
 	const bottomRef = useRef<HTMLDivElement>(null);
+
+	const [easterEgg, setEasterEgg] = useState<EasterEgg | null>(null);
 
 	const { t } = useTranslation()
 
@@ -52,10 +58,35 @@ export function BasicChat({ onClose }: BasicChatProps) {
 		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
 	}, [messages]);
 
+	function tryRunEasterEgg(text: string): boolean {
+		const command = text.toLowerCase();
+
+		const commands: Record<string, EasterEgg> = {
+			"/rick": "rick",
+			"/matrix": "matrix",
+			"/neofetch": "neofetch",
+			"/nuke": "nuke",
+		};
+
+		const egg = commands[command];
+
+		if (!egg) {
+			return false;
+		}
+
+		setEasterEgg(egg);
+		setContent("");
+		return true;
+	}
+
 	function sendMessage() {
 		const text = content.trim();
 
 		if (!clientRef.current || text.length === 0) {
+			return;
+		}
+
+		if (tryRunEasterEgg(text)) {
 			return;
 		}
 
@@ -97,6 +128,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 									minute: '2-digit',
 								})}
 							</span>
+
 							<span className="text-fuchsia-400 font-bold text-sm truncate">
 								@{message.user.username}:
 							</span>
@@ -107,8 +139,17 @@ export function BasicChat({ onClose }: BasicChatProps) {
 						</div>
 					</div>
 				))}
+
+				{easterEgg && (
+					<EasterEggPanel
+						type={easterEgg}
+						onClose={() => setEasterEgg(null)}
+					/>
+				)}
+
 				<div ref={bottomRef} />
 			</div>
+
 
 			<div className="flex items-end gap-2 p-2">
 				<textarea

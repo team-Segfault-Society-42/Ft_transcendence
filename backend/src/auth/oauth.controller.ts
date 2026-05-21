@@ -13,6 +13,7 @@ import { Public } from './public.decorator';
 import { OAuthService } from './oauth.service';
 import { AuthService } from './auth.service';
 import { URLSearchParams } from 'node:url';
+import { randomBytes } from 'crypto';
 
 @Controller('auth')
 export class OAuthController {
@@ -47,7 +48,7 @@ export class OAuthController {
 			);
 		}
 
-		const state = Math.random().toString(36).substring(2);
+		const state = randomBytes(32).toString('hex');
 
 		res.cookie('oauth_state', state, {
 			httpOnly: true,
@@ -111,6 +112,7 @@ export class OAuthController {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === 'production',
 				sameSite: 'lax',
+				path: '/',
 			});
 		} else {
 			res?.cookie('access_token', loginResult.access_token, {
@@ -124,6 +126,7 @@ export class OAuthController {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === 'production',
 				sameSite: 'lax',
+				path: '/',
 			});
 		}
 
@@ -131,6 +134,7 @@ export class OAuthController {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
+			path: '/',
 		});
 
 		const redirectUrl =
@@ -191,6 +195,7 @@ export class OAuthController {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === 'production',
 				sameSite: 'lax',
+				path: '/',
 			});
 		} else {
 			res?.cookie('access_token', loginResult.access_token, {
@@ -204,6 +209,7 @@ export class OAuthController {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === 'production',
 				sameSite: 'lax',
+				path: '/',
 			});
 		}
 

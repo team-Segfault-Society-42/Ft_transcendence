@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
 import { userService } from "@/services/userService"
 import { FormField } from "../ui/FormField"
+import { getBackendErrorMessage } from "../../utils/getBackendErrorMessage"
 
 type AuthMode = "login" | "signup"
 
@@ -65,12 +66,15 @@ export function AuthForm({ mode, onSuccess, onTwoFactorRequired, }: AuthFormProp
         toast.success(t("auth.success"))
         form.reset()
         onSuccess?.()
-    }
-    catch (error: any) {
-        const serverMessage = error.response?.data?.message || error.message
-        const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
-        toast.error(t("auth.error") + finalMessage)
-    }
+    } catch (error: unknown) {
+		const finalMessage = getBackendErrorMessage(error);
+
+		toast.error(
+			t(`backend.${finalMessage}`, {
+				defaultValue: finalMessage,
+			}),
+		);
+	}
     finally {
       setIsLoading(false)
     }
