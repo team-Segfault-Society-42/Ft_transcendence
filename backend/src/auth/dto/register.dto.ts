@@ -14,7 +14,7 @@ export class RegisterDto {
 			description: 'User password',
 			minLength: 8,
 		})
-		@IsString()
+		@IsString({ message: 'ERR_AUTH_PWD_STRING' })
 		@MinLength(8, { message: 'ERR_AUTH_PWD_MIN_LENGTH' })
 		@Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, {
 			message: 'ERR_AUTH_PWD_COMPLEXITY',
@@ -25,7 +25,7 @@ export class RegisterDto {
 				example: 'nico42',
 				description: 'Unique username',
 		})
-		@IsString()
+		@IsString({ message: 'ERR_USERNAME_STRING' })
 		@MinLength(3, { message: 'ERR_USER_USERNAME_MIN_LENGTH' })
 		@MaxLength(20, { message: 'ERR_USER_USERNAME_MAX_LENGTH' })
 		@Matches(/^[a-zA-Z0-9_]+$/, {
@@ -38,7 +38,7 @@ export class RegisterDto {
 				description: 'Optional user biography',
 		})
 		@IsOptional()
-		@IsString()
+		@IsString({ message: 'ERR_USER_BIO_STRING' })
 		@MaxLength(180, { message: 'ERR_USER_BIO_MAX_LENGTH' })
 		bio?: string;
 }

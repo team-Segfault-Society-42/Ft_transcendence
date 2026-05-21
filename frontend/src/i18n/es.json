@@ -12,17 +12,17 @@
         "watch": "Ver partidas"
       },
       "waiting": {
-				"title": "Lobby en espera",
-				"description": "Esperando a que un oponente se una...",
-				"copy": "Copiar enlace",
-				"cancel": "Cancelar"
-  			},
-			"playing": {
-				"title": "Partida en curso",
-				"description": "¡Entra en la arena y lucha por la victoria!",
-				"vs": "VS",
-				"resume": "Reanudar partida"
-			}
+        "title": "Lobby en espera",
+        "description": "Esperando a que un oponente se una...",
+        "copy": "Copiar enlace",
+        "cancel": "Cancelar"
+      },
+      "playing": {
+        "title": "Partida en curso",
+        "description": "¡Entra en la arena y lucha por la victoria!",
+        "vs": "VS",
+        "resume": "Reanudar partida"
+      }
     },
     "hero": {
       "title": "Tres en Raya",
@@ -214,7 +214,19 @@
       "description": "Gestiona la autenticación de dos factores y futuras opciones de seguridad.",
       "disableTitle": "Desactivar 2FA",
       "disableDescription": "La desactivación de 2FA se añadirá más adelante. Por ahora, la 2FA solo se puede activar.",
-      "disableComingSoon": "Desactivar 2FA próximamente"
+      "disableComingSoon": "Desactivar 2FA próximamente",
+      "passwordTitle": "Cambiar contraseña",
+      "passwordDescription": "Actualizar la contraseña de tu cuenta local.",
+      "setPasswordTitle": "Establecer contraseña",
+      "setPasswordDescription": "Agregar una contraseña local a tu cuenta OAuth.",
+      "currentPassword": "Contraseña actual",
+      "newPassword": "Nueva contraseña",
+      "updatePassword": "Actualizar contraseña",
+      "setPassword": "Establecer contraseña",
+      "emailTitle": "Cambiar correo electrónico",
+      "emailDescription": "Actualiza la dirección de correo electrónico de tu cuenta.",
+      "email": "Correo electrónico",
+      "updateEmail": "Actualizar correo electrónico"
     }
   },
   "leaderboard": {
@@ -392,11 +404,15 @@
   },
   "backend": {
     "ERR_AUTH_EMAIL_INVALID": "El correo electrónico no es válido.",
+    "ERR_AUTH_CURRENT_PWD_STRING": "La contraseña actual debe ser una cadena de texto.",
+    "ERR_AUTH_PWD_STRING": "La contraseña debe ser una cadena de texto.",
     "ERR_AUTH_PWD_MIN_LENGTH": "La contraseña debe tener al menos 8 caracteres.",
     "ERR_AUTH_PWD_COMPLEXITY": "La contraseña debe tener una minúscula, una majúscula y un número.",
+    "ERR_USERNAME_STRING": "El nombre de usuario debe ser una cadena de texto.",
     "ERR_USER_USERNAME_MIN_LENGTH": "El nombre de usuario es demasiado corto.",
     "ERR_USER_USERNAME_MAX_LENGTH": "El nombre de usuario es demasiado largo.",
     "ERR_USER_USERNAME_NO_SPACES": "El nombre de usuario no debe contener espacios.",
+    "ERR_USER_BIO_STRING": "La biografía debe ser una cadena de texto.",
     "ERR_USER_BIO_MAX_LENGTH": "La biografía es demasiado larga.",
     "ERR_AUTH_2FA_CODE_STRING": "El código debe ser una cadena de caracteres.",
     "ERR_AUTH_2FA_CODE_LENGTH": "El código debe tener exactamente 6 caracteres.",
@@ -416,10 +432,12 @@
     "ERR_OAUTH_MISSING_STORED_STATE": "Falta el estado de OAuth almacenado.",
     "ERR_OAUTH_INVALID_STATE": "Estado de OAuth inválido.",
     "ERR_OAUTH_GOOGLE_CONFIG": "Google OAuth no está configurado en el servidor.",
+    "ERR_AUTH_2FA_TOO_MANY_ATTEMPTS": "Demasiados intentos realizados, espere 5 minutos para intentarlo de nuevo.",
     "ERR_AUTH_2FA_ALREADY_ENABLED": "La 2FA ya está activada.",
     "ERR_AUTH_2FA_NO_SETUP": "No hay configuración de 2FA en curso.",
     "ERR_AUTH_2FA_INVALID_CODE": "Código de seguridad inválido.",
     "AUTH_2FA_ENABLED_SUCCESS": "¡2FA activada con éxito!",
+    "AUTH_2FA_DISABLED_SUCCESS": "2FA ya está desactivada!",
     "ERR_AUTH_2FA_INVALID_TOKEN": "Token de 2FA inválido.",
     "ERR_AUTH_2FA_NOT_ENABLED": "La 2FA no está activada.",
     "ERR_FRIEND_ACTION_INVALID": "La acción seleccionada no es válida.",
@@ -488,7 +506,11 @@
     "ERR_QUERY_SEARCH_EMPTY": "La búsqueda no puede estar vacía.",
     "ERR_USER_UPDATE_FAILED": "Error al actualizar el usuario.",
     "ERR_USER_AVATAR_REQUIRED": "El archivo del avatar es obligatorio.",
-    "ERR_USER_AVATAR_INVALID_TYPE": "Formato de imagen no válido (PNG, JPEG, WebP)."
+    "ERR_USER_AVATAR_INVALID_TYPE": "Formato de imagen no válido (PNG, JPEG, WebP).",
+    "ERR_AUTH_CURRENT_PWD_REQUIRED": "La contraseña actual es obligatoria.",
+    "AUTH_PASSWORD_UPDATED_SUCCESS": "Contraseña actualizada correctamente.",
+    "ERR_AUTH_EMAIL_ALREADY_EXISTS": "El correo electrónico ya existe.",
+    "AUTH_EMAIL_UPDATED_SUCCESS": "Correo electrónico actualizado correctamente."
   },
   "errors": {
     "game": {

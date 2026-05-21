@@ -1,5 +1,27 @@
 import { api } from "@/services/api";
 
+export const userService = {
+    getUser,
+    updateUser,
+    createUser,
+    userLogin,
+	completeTwoFactorLogin,
+	enableTwoFactor,
+	verifyTwoFactorSetup,
+	disableTwoFactor,
+	updatePassword,
+	updateEmail,
+    getMe,
+    userLogout,
+    getUserHistory,
+    getLeaderboard,
+    getAchievements,
+	uploadAvatar,
+  getAllAchievements,
+  getUserByUsername,
+  getUserRank,
+}
+
 export interface LoginResponse {
 	message: string;
 	twoFactorRequired?: boolean;
@@ -10,11 +32,32 @@ export interface TwoFactorLoginResponse {
 }
 
 export interface TwoFactorSetupResponse {
-	otpauthUrl: string;
 	qrCodeDataUrl: string;
 }
 
 export interface TwoFactorVerifyResponse {
+	message: string;
+}
+
+export interface TwoFactorDisableResponse {
+	message: string;
+}
+
+export interface UpdatePasswordPayload {
+	currentPassword?: string;
+	newPassword: string;
+}
+
+export interface UpdatePasswordResponse {
+	message: string;
+}
+
+export interface UpdateEmailPayload {
+	currentPassword?: string;
+	newEmail: string;
+}
+
+export interface UpdateEmailResponse {
 	message: string;
 }
 
@@ -49,6 +92,27 @@ export async function verifyTwoFactorSetup(
 	code: string,
 ): Promise<TwoFactorVerifyResponse> {
 	const response = await api.post("auth/2fa/verify", { code });
+	return response.data;
+}
+
+export async function disableTwoFactor(
+	code: string,
+): Promise<TwoFactorDisableResponse> {
+	const response = await api.post("auth/2fa/disable", { code });
+	return response.data;
+}
+
+export async function updatePassword(
+	data: UpdatePasswordPayload,
+): Promise<UpdatePasswordResponse> {
+	const response = await api.patch("auth/me/password", data);
+	return response.data;
+}
+
+export async function updateEmail(
+	data: UpdateEmailPayload,
+): Promise<UpdateEmailResponse> {
+	const response = await api.patch("auth/me/email", data);
 	return response.data;
 }
 
@@ -98,24 +162,7 @@ export async function getUserRank(id: number) {
   return response.data
 }
 
-export const userService = {
-    getUser,
-    updateUser,
-    createUser,
-    userLogin,
-	completeTwoFactorLogin,
-	enableTwoFactor,
-	verifyTwoFactorSetup,
-    getMe,
-    userLogout,
-    getUserHistory,
-    getLeaderboard,
-    getAchievements,
-	uploadAvatar,
-  getAllAchievements,
-  getUserByUsername,
-  getUserRank,
-}
+
 
 export async function uploadAvatar(file: File) {
 	const formData = new FormData();

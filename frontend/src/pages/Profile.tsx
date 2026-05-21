@@ -16,7 +16,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AchievementIcon } from "@/components/ui/AchievementIcons";
 import { CardTitle } from "@/components/ui/Card";
 import { UserRound } from "lucide-react";
-import { friendsService, type FriendListItem, type IncomingFriendRequest, type OutgoingFriendRequest } from "@/services/friendsService";
+import { friendsService } from "@/services/friendsService";
+import { useFriendsStore } from "@/Store/friendsStore";
+import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
 
 interface User {
   id: number;
@@ -50,9 +52,17 @@ export default function Profile() {
   const isMe = !username || username === user?.username
   const [profileData, setProfileData] = useState<User | null>(isMe ? user : null)
 
-  const [friends, setFriends] = useState<FriendListItem[]>([])
-  const [incomingRequests, setIncomingRequests] = useState<IncomingFriendRequest[]>([])
-  const [outgoingRequests, setOutgoingRequests] = useState<OutgoingFriendRequest[]>([])
+
+	const friends = useFriendsStore((state) => state.friends);
+	const incomingRequests = useFriendsStore(
+		(state) => state.incomingRequests,
+	);
+	const outgoingRequests = useFriendsStore(
+		(state) => state.outgoingRequests,
+	);
+	const loadFriendsData = useFriendsStore(
+		(state) => state.loadFriendsData,
+	);
 
   const [loading, setLoading] = useState(true);
 
@@ -80,7 +90,6 @@ export default function Profile() {
         catch (error) {
           navigate("/dashboard");
         }
-        loadFriendshipData()
       }
     }
     loadProfile()
@@ -102,22 +111,7 @@ export default function Profile() {
     return "NONE";
 	}
 
-  async function loadFriendshipData() {
-    try {
 
-      const [friends, incomingRequests, outgoingRequests] = await Promise.all([
-      friendsService.getFriends(),
-      friendsService.getIncomingFriendRequests(),
-      friendsService.getOutgoingFriendRequests(),
-			]);
-      setFriends(friends)
-      setIncomingRequests(incomingRequests)
-      setOutgoingRequests(outgoingRequests)
-    }
-    catch (error: any) {
-
-    }
-  }
 
   async function handleSendRequest() {
     if (!profileData) return;
@@ -125,14 +119,16 @@ export default function Profile() {
     try {
       await friendsService.sendFriendRequest(profileData.id)
       toast.success(t("friends.success.requestSent"))
-      await loadFriendshipData()
-	  window.dispatchEvent(new Event("friends_updated"));
-    }
-    catch (error: any) {
+      await loadFriendsData()
+    } catch (error: unknown) {
+		const finalMessage = getBackendErrorMessage(error);
 
-      const message = error.response?.data?.message || error.message
-      toast.error(message)
-    }
+		toast.error(
+			t(`backend.${finalMessage}`, {
+				defaultValue: finalMessage,
+			}),
+		);
+	}
   }
 
   async function handleAcceptRequest() {
@@ -145,13 +141,16 @@ export default function Profile() {
     try {
       await friendsService.acceptFriendRequest(request.requestId)
       toast.success(t("friends.success.accepted"))
-      await loadFriendshipData()
-	  window.dispatchEvent(new Event("friends_updated"));
-    }
-    catch (error: any) {
-      const message = error.response?.data?.message || error.message;
-      toast.error(message);
-    }
+      await loadFriendsData()
+    } catch (error: unknown) {
+		const finalMessage = getBackendErrorMessage(error);
+
+		toast.error(
+			t(`backend.${finalMessage}`, {
+				defaultValue: finalMessage,
+			}),
+		);
+	}
   }
 
   async function handleRemoveFriend() {
@@ -163,13 +162,16 @@ export default function Profile() {
     try {
       await friendsService.removeFriend(friendship.friendshipId)
       toast.success(t("friends.success.removed"));
-      await loadFriendshipData()
-	  window.dispatchEvent(new Event("friends_updated"));
-    }
-    catch (error: any) {
-      const message = error.response?.data?.message || error.message;
-      toast.error(message);
-    }
+      await loadFriendsData()
+    } catch (error: unknown) {
+		const finalMessage = getBackendErrorMessage(error);
+
+		toast.error(
+			t(`backend.${finalMessage}`, {
+				defaultValue: finalMessage,
+			}),
+		);
+	}
   }
 
   useEffect(() => {
@@ -212,18 +214,7 @@ export default function Profile() {
       setLoading(false);
 
   }, [profileData?.id, isMe, user]);
-  
-  useEffect(() => {
-	async function handleFriendsUpdated() {
-		await loadFriendshipData();
-	}
 
-	window.addEventListener("friends_updated", handleFriendsUpdated);
-
-	return () => {
-		window.removeEventListener("friends_updated", handleFriendsUpdated);
-	};
-}, []);
 
   if (!user || loading) {
     return (
@@ -265,8 +256,8 @@ export default function Profile() {
           {/* AVATAR */}
           <div className="relative group">
             <Avatar
-              src={user.avatar ?? undefined}
-              alt={user.username}
+              src={profileData?.avatar ?? undefined}
+              alt={profileData?.username ?? ""}
               size="lg"
               className="border border-white/20 z-10 relative"
             />
