@@ -10,6 +10,7 @@ export const userService = {
 	verifyTwoFactorSetup,
 	disableTwoFactor,
 	updatePassword,
+	updateEmail,
     getMe,
     userLogout,
     getUserHistory,
