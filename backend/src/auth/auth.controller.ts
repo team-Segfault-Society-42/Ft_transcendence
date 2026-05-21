@@ -9,7 +9,7 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiCookieAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -22,6 +22,7 @@ import { PresenceService } from '../presence/presence.service';
 import type { JwtPayload } from './jwt-auth.guard';
 import { DisableTwoFactorDto } from './dto/disable-twofa.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { UpdateEmailDto } from './dto/update-email.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -282,6 +283,7 @@ export class AuthController {
 		);
 	}
 
+	@ApiCookieAuth()
 	@Patch('me/password')
 	@ApiOperation({ summary: 'Update current authenticated user password' })
 	@ApiBody({ type: UpdatePasswordDto })
@@ -297,6 +299,25 @@ export class AuthController {
 			req.user.sub,
 			dto.currentPassword,
 			dto.newPassword,
+		);
+	}
+
+	@ApiCookieAuth()
+	@Patch('me/email')
+	@ApiOperation({ summary: 'Update current authenticated user email' })
+	@ApiBody({ type: UpdateEmailDto })
+	@ApiResponse({
+		status: 200,
+		description: 'Email updated successfully',
+	})
+	updateEmail(
+		@Req() req: AuthRequest,
+		@Body() dto: UpdateEmailDto,
+	) {
+		return this.authService.updateEmail(
+			req.user.sub,
+			dto.currentPassword,
+			dto.newEmail,
 		);
 	}
 }

@@ -504,7 +504,9 @@
     "ERR_USER_AVATAR_REQUIRED": "El archivo del avatar es obligatorio.",
     "ERR_USER_AVATAR_INVALID_TYPE": "Formato de imagen no válido (PNG, JPEG, WebP).",
     "ERR_AUTH_CURRENT_PWD_REQUIRED": "La contraseña actual es obligatoria.",
-    "AUTH_PASSWORD_UPDATED_SUCCESS": "Contraseña actualizada correctamente."
+    "AUTH_PASSWORD_UPDATED_SUCCESS": "Contraseña actualizada correctamente.",
+    "ERR_AUTH_EMAIL_ALREADY_EXISTS": "El correo electrónico ya existe.",
+    "AUTH_EMAIL_UPDATED_SUCCESS": "Correo electrónico actualizado correctamente."
   },
   "errors": {
     "game": {
