@@ -25,6 +25,7 @@ import {
 import { usePresenceStore } from "@/Store/presenceStore";
 import { useFriendsStore } from "@/Store/friendsStore";
 import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
+import { Username } from "@/components/ui/Username";
 
 interface CurrentUser {
 	id: number;
@@ -482,7 +483,7 @@ export default function Friends() {
 function UserRow({ user, onClick }: { user: PublicUser; onClick?: () => void }) {
 	return (
 		<div 
-			className={`flex items-center gap-3 min-w-0 ${onClick ? "cursor-pointer" : ""}`}
+			className={`flex items-center gap-3 min-w-0 overflow-visible ${onClick ? "cursor-pointer" : ""}`}
 			onClick={onClick}
 		>
 			<Avatar
@@ -492,7 +493,11 @@ function UserRow({ user, onClick }: { user: PublicUser; onClick?: () => void }) 
 				size="sm"
 			/>
 			<div className="min-w-0">
-				<p className="font-semibold truncate">{user.username}</p>
+				<Username
+				className="font-semibold"
+				name={user.username}
+				variant="card"
+				/>
 				<p className="text-xs text-white/40 truncate">
 					{user.xp} XP
 				</p>
