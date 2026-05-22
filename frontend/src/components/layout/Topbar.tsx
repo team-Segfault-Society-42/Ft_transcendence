@@ -19,7 +19,7 @@ export function Topbar({ user, onLoginClick, onMenuClick }: HeaderProps) {
   const navigate = useNavigate()
 
   return (
-    <header className="h-16 border-b border-white/10 flex items-center px-4 lg:px-6">
+    <header className="h-16 border-b border-white/10 flex items-center px-4 lg:px-6 overflow-visible">
       <div className="flex-1 flex items-center">
     <button
       className="xl:hidden p-2 rounded-lg hover:bg-white/10 transition min-h-11 min-w-11 flex items-center justify-center"
@@ -41,23 +41,25 @@ export function Topbar({ user, onLoginClick, onMenuClick }: HeaderProps) {
       </Motion>
     </div>
 
-    <div className="flex-1 flex items-center justify-end gap-2">
+    <div className="flex-1 flex items-center justify-end gap-2 overflow-visible">
       {user ? (
       <>
         <Button
         onClick={() => navigate("/profile")}
         variant="secondary"
         size="sm"
-        className="rounded-full px-3 gap-2">
+        className="rounded-full px-3 gap-2 overflow-visible">
 
-          <span className= "hidden lg:inline">
+          <span className= "hidden md:inline">
             {t("home.buttons.hi")}
           </span>
 
-          <Username
-          name={user.username}
-          className="hidden md:inline"
-          />
+          <span className="hidden md:flex min-w-0 overflow-visible">
+            <Username
+            name={user.username}
+            variant="topbar"
+            />
+          </span>
 
           <Avatar
           src={user.avatar ?? undefined}

@@ -21,7 +21,7 @@ export function Username({
     className = "",
 }: UsernameProps) {
     return (
-    <div className="relative group inline-block">
+    <div className="relative group min-w-0 max-w-full">
       
       {/* texte tronqué */}
       <span
@@ -43,9 +43,7 @@ export function Username({
             bg-black/90 text-white text-xs
             px-2 py-1 rounded
             whitespace-nowrap
-            z-50
-            opacity-0 group-hover:opacity-100
-            transition">
+            z-9999">
             {name}
         </span>
       )}
