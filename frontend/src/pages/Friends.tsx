@@ -25,6 +25,7 @@ import {
 import { usePresenceStore } from "@/Store/presenceStore";
 import { useFriendsStore } from "@/Store/friendsStore";
 import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
+import { Username } from "@/components/ui/Username";
 
 interface CurrentUser {
 	id: number;
@@ -247,7 +248,7 @@ export default function Friends() {
 						return (
 							<div
 								key={result.id}
-								className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
+								className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 							>
 								<UserRow 
 									user={result}
@@ -328,7 +329,7 @@ export default function Friends() {
 								return (
 									<div
 										key={item.friendshipId}
-										className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
+										className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
 										<div>
 											<UserRow 
@@ -422,7 +423,7 @@ export default function Friends() {
 												onClick={() => handleAcceptRequest(request.requestId)}
 												aria-label={t("friends.actions.accept")}
 												title={t("friends.actions.accept")}
-												className="px-10"
+												className="px-8"
 											>
 												<Check size={16} />
 											</Button>
@@ -433,7 +434,7 @@ export default function Friends() {
 												onClick={() => handleDeclineRequest(request.requestId)}
 												aria-label={t("friends.actions.decline")}
 												title={t("friends.actions.decline")}
-												className="px-10"
+												className="px-8"
 											>
 												<X size={16} />
 											</Button>
@@ -482,7 +483,7 @@ export default function Friends() {
 function UserRow({ user, onClick }: { user: PublicUser; onClick?: () => void }) {
 	return (
 		<div 
-			className={`flex items-center gap-3 min-w-0 ${onClick ? "cursor-pointer" : ""}`}
+			className={`flex items-center gap-3 min-w-0 overflow-visible ${onClick ? "cursor-pointer" : ""}`}
 			onClick={onClick}
 		>
 			<Avatar
@@ -492,7 +493,11 @@ function UserRow({ user, onClick }: { user: PublicUser; onClick?: () => void }) 
 				size="sm"
 			/>
 			<div className="min-w-0">
-				<p className="font-semibold truncate">{user.username}</p>
+				<Username
+				className="font-semibold"
+				name={user.username}
+				variant="card"
+				/>
 				<p className="text-xs text-white/40 truncate">
 					{user.xp} XP
 				</p>

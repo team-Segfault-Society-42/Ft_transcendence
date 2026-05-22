@@ -26,7 +26,7 @@ export default function Home() {
   }, [user]);
 
   return (
-    <section className="w-full flex flex-col gap-10">
+    <section className="w-full flex flex-col gap-6">
       <Motion>
         <div className="bg-slate-900 mx-6 mt-6 relative overflow-hidden rounded-2xl border border-white/10 h-62.5 md:h-75">
           <img
@@ -45,7 +45,7 @@ export default function Home() {
         </div>
       </Motion>
 
-      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Link to="/profile" className="h-full">
           <AboutCard user={user} className="flex-1" />
         </Link>

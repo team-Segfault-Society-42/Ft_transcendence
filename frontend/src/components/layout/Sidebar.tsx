@@ -9,9 +9,11 @@ interface HeaderProps {
 	user: User | null
 	onLoginClick: () => void
 	onLogoutClick: () => void
+	isOpen: boolean;
+  	onClose: () => void;
 }
 
-export function Sidebar({user, onLoginClick, onLogoutClick} : HeaderProps) {
+export function Sidebar({user, onLoginClick, onLogoutClick, isOpen, onClose} : HeaderProps) {
 
   	const { t } = useTranslation()
 
@@ -28,7 +30,18 @@ export function Sidebar({user, onLoginClick, onLogoutClick} : HeaderProps) {
   ];
 
   	return (
-	<aside className="w-64 bg-slate-900 border-r border-white/10 flex flex-col p-4">
+	<>
+	{isOpen && (
+		<div className="fixed inset-0 bg-black/50 z-40 xl:hidden"
+		onClick={onClose}
+		/>
+	)}
+	<aside className={`
+		fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-white/10 flex flex-col p-4 overflow-y-auto
+		transform transition-transform duration-300
+		${isOpen ? "translate-x-0" : "-translate-x-full"}
+		xl:relative xl:translate-x-0 xl:z-auto
+	  `}>
 		<div>
 			<h1 className="text-xl absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
 				{t("sidebar.title")}
@@ -41,8 +54,9 @@ export function Sidebar({user, onLoginClick, onLogoutClick} : HeaderProps) {
 					<NavLink
 					key={link.to}
 					to={link.to}
+					onClick={onClose}
 					className={({ isActive }) =>
-					`flex items-center gap-3 px-4 py-2 rounded-lg transition ${
+					`flex items-center gap-3 px-4 py-2 rounded-lg transition min-h-11 ${
 					isActive ? "bg-white/10" : "hover:bg-white/5"}`
 					}
 					>
@@ -77,5 +91,6 @@ export function Sidebar({user, onLoginClick, onLogoutClick} : HeaderProps) {
 			</div>
 		</div>
     </aside>
+  </>
   );
 }

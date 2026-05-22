@@ -9,6 +9,7 @@ import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import type { User } from "@/type/user.types";
+import { Username } from "../ui/Username";
 
 type Props = {
     matches: Match[]
@@ -59,17 +60,15 @@ export function GameHistoryCard({ matches, className, user }: Props) {
         <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
             {t("history.title")}
         </CardTitle>
-        <span className="text-xs text-white/50 absolute top-6 right-6 z-10">
+        <span className="text-xs text-white/50 mt-8">
             {t("profile.stats.games", { count: matches.length })}
         </span>
 
     {/* LIST */}
-    <div className="flex-1 flex flex-col mt-16 px-4 overflow-y-auto gap-3 max-h-105">
+    <div className="flex-1 flex flex-col mt-8 px-3 sm:px-4 overflow-y-auto gap-2 sm:gap-3 max-h-105">
         {displayedMatches.map((match) => {
 
             const result = match.result.toLowerCase()
-            console.log(result)
-
             const resultColor =
             	result === "win"
                 ? "text-green-400"
@@ -102,15 +101,18 @@ export function GameHistoryCard({ matches, className, user }: Props) {
     {/* LEFT */}
     <div 
     onClick={() => navigate(`/profile/${match.opponent.username}`)}
-    className="flex items-center gap-3 cursor-pointer">
+    className="flex items-center gap-2 sm:gap-3 cursor-pointer min-w-0">
         <Avatar
             src={match.opponent.avatar}
             fallback={match.opponent.username[0]}
         />
-		<div>
+		<div className="min-w-0">
     
-			<p className="font-medium">
-       			{t("game.vs")} {match.opponent.username}
+			<p className="font-medium flex items-center gap-1 truncate">
+       			{t("game.vs")}
+                <Username
+                name={match.opponent.username}
+                variant="topbar"/>
      		</p>
 
     		<p className="text-xs text-white/60">
@@ -121,7 +123,7 @@ export function GameHistoryCard({ matches, className, user }: Props) {
     </div>
 
     {/* RIGHT */}
-    <div className="text-right">
+    <div className="hidden md:block text-right">
         <p className={cn("font-semibold uppercase", resultColor)}>
             {t(`backend.STATUS_MATCH_${result.toUpperCase()}`)}
         </p>

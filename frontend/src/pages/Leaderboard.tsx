@@ -66,8 +66,8 @@ export default function LeaderBoard() {
           {t("leaderboard.title")}
         </CardTitle>
       
-      <div className="flex flex-col pt-20 pb-20 gap-6">
-        <div className="flex gap-4 justify-center mb-8">
+      <div className="flex flex-col pt-20 pb-10 gap-6">
+        <div className="flex flex-col gap-4 justify-center mb-8 sm:flex-row w-full">
           <Button
             onClick={() => setSortBy("xp")}
             variant={sortBy === "xp"
@@ -107,7 +107,7 @@ export default function LeaderBoard() {
               <div
                 key={l.id}
                 onClick={() => navigate(`/profile/${l.username}`)}
-                className="flex items-center cursor-pointer justify-between p-4 bg-white/5 border border-white/10 rounded-xl"
+                className="flex flex-col items-center cursor-pointer justify-between p-4 bg-white/5 border border-white/10 rounded-xl sm:flex-row"
               >
                 <div className="flex items-center gap-4 min-w-0 flex-1">
                   <span className="text-white/30 font-mono w-6">
@@ -115,7 +115,7 @@ export default function LeaderBoard() {
                   </span>
                   <Username
                     name={l.username}
-                    variant="profile"
+                    variant="card"
                     className="font-medium min-w-0"/>
                 </div>
 

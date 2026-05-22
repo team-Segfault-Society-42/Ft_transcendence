@@ -375,8 +375,8 @@ export default function Profile() {
         </div>
 
         {/* BIO */}
-        <div className="mt-8">
-          <p className="text-white/50 text-sm mb-2">
+        <div className="mt-8 wrap-break-word">
+          <p className="text-white/50 text-sm mb-2 ">
             {t("profile.bio")}
           </p>
 

@@ -133,7 +133,7 @@ export default function Play() {
                 </div>
               </>
             ) : (
-              <div className="bg-white/5 border border-cyan-500/20 rounded-xl p-6">
+              <div className="bg-white/5 border border-cyan-500/20 rounded-xl p-2 sm:p-6">
                 <p className="text-center text-white font-medium mb-2">
                   {t("play.myGames.waiting")}
                 </p>
@@ -142,11 +142,11 @@ export default function Play() {
                   {t("play.myGames.share")}
                 </p>
 
-                <div className="flex gap-4 mb-6">
+                <div className="flex flex-col sm:flex-row gap-4 mb-6">
                   <input
                     value={inviteLink}
                     readOnly
-                    className="flex-1 bg-transparent border border-white/10 rounded-xl px-4 py-2 text-white outline-none"
+                    className="flex-1 bg-transparent border border-white/10 rounded-xl sm:px-4 py-2 text-white outline-none"
                   />
 
                   <Button onClick={handleCopyLink}>
@@ -169,7 +169,7 @@ export default function Play() {
 			)}
 
         {/* AVAILABLE GAMES */}
-        <Card className="h-full relative flex items-center justify-center bg-slate-900">
+        <Card className="h-full relative flex flex-col sm:flex-row items-center justify-center bg-slate-900">
           	<CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
             	{t("play.availGames.title")}
           	</CardTitle>
@@ -218,7 +218,7 @@ export default function Play() {
 			{!loading && games.waiting.map((game) => (
 				<div
 				key={game.gameId}
-				className="bg-white/5 border border-white/10 rounded-xl p-6 flex items-center justify-between gap-4"
+				className="bg-white/5 border border-white/10 rounded-xl p-1 sm:p-6 flex items-center justify-between gap-4"
 				>
 					<div className="flex items-center gap-4">
 						<Avatar

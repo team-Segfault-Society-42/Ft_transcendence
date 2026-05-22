@@ -17,6 +17,7 @@ import { friendsService } from "@/services/friendsService";
 import { usePresenceStore } from "@/Store/presenceStore";
 import type { FriendStatus } from "@/services/friendsService";
 import type { User } from "@/type/user.types";
+import { MessageCircle } from "lucide-react";
 import { useFriendsStore } from "@/Store/friendsStore";
 import { getBackendErrorMessage } from "../../utils/getBackendErrorMessage";
 import { AxiosError } from "axios";
@@ -30,6 +31,7 @@ export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isChat, setIsChat] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -226,12 +228,15 @@ export default function Dashboard() {
       user={user}
       onLoginClick={openLogin}
       onLogoutClick={handleLogout}
+      isOpen={isSidebarOpen}
+      onClose={() => setIsSidebarOpen(false)}
       />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         <Topbar
           user={user}
           onLoginClick={openLogin}
+          onMenuClick={() => setIsSidebarOpen(true)}
         />
 
         <main className="flex-1 overflow-y-auto p-6">
@@ -252,15 +257,33 @@ export default function Dashboard() {
         onSuccess={handleLoginSuccess}
       />
 
-      {!isChat && (
-        <Button
-          onClick={handleChatClick}
-          className="fixed bottom-6 right-6 z-50"
-        >
-          {t('chat.open')}
-        </Button>
-      )}
-      {user && isChat && <Chatbar onClose={handleChatClick} />}
-    </div>
-  );
-}
+    {user && (
+	  <>
+		  <Button
+			onClick={handleChatClick}
+			className="fixed bottom-6 right-6 z-30 rounded-full p-3"
+		  >
+			  <MessageCircle size={22} />
+		  </Button>
+
+		  {isChat && (
+			  <div
+				className="fixed inset-0 bg-black/50 z-40"
+				onClick={handleChatClick}
+			  />
+		  )}
+
+		  <div
+			  className={`
+				fixed inset-y-0 right-0 z-50 w-80
+				bg-slate-900 border-l border-white/10
+				transform transition-transform duration-300
+				${isChat ? "translate-x-0" : "translate-x-full"}
+			  `}
+		  >
+			  <Chatbar onClose={handleChatClick} />
+		  </div>
+	  </>
+  )}
+  </div>
+)}

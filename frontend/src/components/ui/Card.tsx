@@ -53,7 +53,7 @@ export function CardDescription({ children, className }: CardDescriptionProps) {
     return (
         <p
             className={cn(
-            "text-white",
+            "text-white wrap-break-word",
             className
             )}>
             {children}
