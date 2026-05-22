@@ -327,11 +327,11 @@ erDiagram
 
 | Member | Contributions |
 | --- | --- |
-| ameechan | Docker, Docker Compose, Makefile, NGINX proxy config, infrastructure setup, database seeding |
-| mbendidi | Game logic, Tic-Tac-Toe engine, WebSocket gateway (game + chat), spectator mode, chat system |
-| nryser | JWT authentication, 2FA (TOTP), 42 OAuth, friends system API, Swagger documentation |
-| nadahman | Achievement system, dynamic leaderboard with filters, match data recording and persistence, match history and XP progression, player profile access logic, auth persistence and profile synchronization, frontend–backend integration, some translations, early login/register frontend work |
-| jdecarro | Full frontend UI, component library (design system), i18n (EN/FR/ES) |
+| ameechan | - Docker, Docker Compose, Makefile<br>- NGINX proxy config<br>- Infrastructure setup<br>- Database seeding |
+| mbendidi | - Game logic, Tic-Tac-Toe engine<br>- WebSocket gateway (game + chat)<br>- Spectator mode<br>- Chat system |
+| nryser | - JWT auth architecture (HttpOnly cookies, global guard, DTO validation, protected/public route logic)<br>- 2FA (TOTP): QR onboarding, partial auth flow with `2fa_pending` cookie, rate limiting<br>- 42 OAuth: account linking, username normalization and collision handling<br>- Friends system API (send, accept, decline, remove, list)<br>- Realtime presence and websocket authentication<br>- Profile and settings backend (avatar upload, public/private profile separation)<br>- Swagger/OpenAPI documentation |
+| nadahman | - Achievement system<br>- Dynamic leaderboard with filters<br>- Match data recording, persistence, history and XP progression<br>- Player profile access logic<br>- Auth persistence and profile synchronization<br>- Frontend–backend integration<br>- Some translations, early login/register frontend work |
+| jdecarro | - Full frontend UI (pages, layout)<br>- Component library (design system)<br>- i18n (EN/FR/ES, config and translations)<br>- Active game state management and real-time sync (Zustand + global socket)<br>- Active game presence system (emits in game service + presence service) |
 
 ### Challenges
 
@@ -386,6 +386,18 @@ However, a handful of early in-person meetings at school helped put faces to the
 From there, we built a culture around openness and honesty. If something wasn't working, we said so and discussed accordingly. The weekly Monday meetings often ran 3 to 4 hours and were rescheduled if someone couldn't make it.
 
 This ensured all bases were covered and each member had time to share any updates, questions and concerns they had.
+
+#### Designing a Unified Auth Architecture
+
+The authentication system had to work consistently across REST endpoints, WebSocket connections, 42 OAuth, and TOTP-based 2FA. Each layer added new constraints. Cookies behaved differently over WebSockets, OAuth required a partial authentication state before a full session could be issued, and 2FA needed its own intermediate step without prematurely granting access.
+
+We solved this by centralising everything behind a single global JWT guard and modelling partial authentication explicitly using a temporary cookie before full session validation. It required more upfront design than wiring things up case by case, but it kept the logic predictable and consistent across the entire backend.
+
+#### Realtime Synchronisation Across Clients
+
+Keeping multiple clients in sync in real time turned out to be harder than expected. A user could be connected from several tabs at once, disconnect mid-session, or change state in ways that needed to propagate immediately to others. Friend status, online presence, and active game state all needed to stay consistent without polling.
+
+We addressed this by building a centralised socket-based presence system and routing all realtime state through it. Having one consistent model for who was online and what they were doing made edge cases easier to reason about and kept the frontend reliably in sync.
 
 ---
 
