@@ -142,7 +142,8 @@
     "score": "Puntaje",
     "replayVotes": "Reproducir votos",
     "waitingReplayOther": "Repetición solicitada. \nEsperando al otro jugador...",
-    "timer": "Tiempo restante: {{seconds}}s"
+    "timer": "Tiempo restante: {{seconds}}s",
+    "opponentDisconnect": "Oponente desconectado: esperando 20 segundos para volver a conectarse..."
   },
   "play": {
     "myGames": {

@@ -142,7 +142,8 @@
     "score": "Score",
     "replayVotes": "Replay votes",
     "waitingReplayOther": "Replay requested. Waiting for the other player...",
-    "timer": "Time left: {{seconds}}s"
+    "timer": "Time left: {{seconds}}s",
+    "opponentDisconnect": "Opponent disconnected — waiting 20s for reconnection..."
   },
   "play": {
     "myGames": {
