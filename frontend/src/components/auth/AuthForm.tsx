@@ -63,7 +63,6 @@ export function AuthForm({ mode, onSuccess, onTwoFactorRequired, }: AuthFormProp
 				onTwoFactorRequired?.();
 				return;
 			}
-        toast.success(t("auth.success"))
         form.reset()
         onSuccess?.()
     } catch (error: unknown) {
