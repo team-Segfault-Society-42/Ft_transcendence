@@ -76,11 +76,13 @@ export default function Profile() {
 
   useEffect(() => {
     async function loadProfile() {
+      if (!user) return
       if (isMe) {
         setProfileData(user)
         setLoading(false)
       }
       else if (username) {
+        if (!user) return
         try {
           setLoading(true)
           const data = await userService.getUserByUsername(username)
@@ -175,8 +177,8 @@ export default function Profile() {
   }
 
   useEffect(() => {
+    if (!user) return;  
     if (!profileData) return;
-
 
       async function fetchAllAchievments() {
         try {
