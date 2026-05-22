@@ -10,6 +10,7 @@ import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { EyeOff, Binoculars } from "lucide-react";
 import { Spinner } from "@/components/ui/Spinner";
 import type { User } from "@/type/user.types";
+import { Username } from "@/components/ui/Username";
 
 export default function LiveGamesDisplay() {
 
@@ -106,12 +107,18 @@ export default function LiveGamesDisplay() {
 						</div>
 						
 						<div className="min-w-0">
-							<p className="text-xs sm:text-base">
-								{game.playerX?.username || "?"}
+							<p className="text-xs sm:text-base gap-1">
+								<Username
+								name={game.playerX?.username || "?"}
+								variant="card"
+								/>
 									{" "}
 									{t("game.vs")}
 									{" "}
-								{game.playerO?.username || "?"}
+								<Username
+								name={game.playerO?.username || "?"}
+								variant="card"
+								/>
 							</p>
 
 							<p className="text-xs text-white/60">
