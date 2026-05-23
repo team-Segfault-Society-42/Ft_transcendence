@@ -9,6 +9,10 @@ import {
   Crown,
 } from "lucide-react";
 
+/**
+ * Mapping of Lucide icons associated with each in-game achievement.
+ * The "as const" assertion ensures a read-only object for strict TypeScript typing.
+ */
 export const ACHIEVEMENT_ICONS = {
   FIRST_GAME_TROPHY: Medal,
   FIRST_WIN_TROPHY: Trophy,
@@ -20,4 +24,8 @@ export const ACHIEVEMENT_ICONS = {
   GET_ALL_TROPHY: Crown,
 } as const;
 
+/**
+ * Type representing the unique keys of available achievements.
+ * Ensures that only valid keys from the ACHIEVEMENT_ICONS object can be used.
+ */
 export type IconKey = keyof typeof ACHIEVEMENT_ICONS
