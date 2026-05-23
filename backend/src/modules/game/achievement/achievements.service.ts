@@ -8,12 +8,14 @@ import { GameResultDto } from '../dto/game-result.dto';
 export class AchievementsService {
 	constructor(private readonly prismaService: PrismaService) {}
 
-	/**
-	 * Unlocks an achievement for a specific user.
-	 * Uses 'upsert' to prevent duplicate entries if the achievement is already unlocked.
-	 * Supports database transactions (tx) to guarantee data consistency.
-	 */
-
+  /**
+   * Unlocks an achievement for a specific user.
+   * Uses upsert to prevent duplicate entries if the achievement is already unlocked.
+   *
+   * @param userId - ID of the user receiving the achievement.
+   * @param key - Achievement key to unlock.
+   * @param tx - Optional Prisma transaction client for data consistency.
+   */
 	async unlockAchievement(
 		userId: number,
 		key: string,
@@ -22,8 +24,6 @@ export class AchievementsService {
 		const prisma = tx || this.prismaService;
 
 		const achievement = ACHIEVEMENTS[key as AchievementKey];
-
-		// If the achievement key doesn't exist in the official list, abort the operation
 		if (!achievement) return;
 
 		await prisma.userAchievement.upsert({
@@ -33,18 +33,22 @@ export class AchievementsService {
 		});
 	}
 
-	/**
-	 * Retrieves the full list of all existing achievements in the game
-	 * (the raw metadata containing display names and descriptions).
-	 */
+  /**
+   * Retrieves the full list of all achievements available in the game.
+   *
+   * @returns All achievement metadata objects.
+   */
 	async getAllAchievements() {
 		return Object.values(ACHIEVEMENTS);
 	}
 
-	/**
-	 * Retrieves all achievements unlocked by a specific user.
-	 * Maps the database records with the static localized titles and descriptions.
-	 */
+  /**
+   * Retrieves all achievements unlocked by a specific user,
+   * enriched with their localized display names and descriptions.
+   *
+   * @param userId - ID of the user to fetch achievements for.
+   * @returns List of unlocked achievements with display metadata.
+   */
 	async getAchievements(userId: number) {
 		const userAchievement = await this.prismaService.userAchievement.findMany({
 			where: { userId: userId },
@@ -53,7 +57,6 @@ export class AchievementsService {
 			},
 		});
 
-		// For each unlocked achievement, attach its localized display name and description
 		const getInfoFromAchievements = userAchievement.map((m) => {
 			const metaData = ACHIEVEMENTS[m.key as AchievementKey];
 
@@ -71,17 +74,19 @@ export class AchievementsService {
 		return getInfoFromAchievements;
 	}
 
-	/**
-	 * Checks if a user has unlocked every single achievement in the game.
-	 * If they have, automatically grants them the ultimate milestone achievement ('GET_ALL').
-	 */
+  /**
+   * Checks if a user has unlocked all achievements.
+   * Automatically grants the GET_ALL milestone if every other achievement is unlocked.
+   *
+   * @param userId - ID of the user to check.
+   * @param tx - Optional Prisma transaction client.
+   */
 	async checkAllAchievementsUnlocked(
 		userId: number,
 		tx?: Prisma.TransactionClient,
 	) {
 		const prisma = tx || this.prismaService;
 
-		// Count how many achievements the user has unlocked (excluding the ultimate one itself)
 		const userAchievement = await prisma.userAchievement.count({
 			where: {
 				userId,
@@ -90,16 +95,18 @@ export class AchievementsService {
 				},
 			},
 		});
-		// If the count matches the total number of achievements minus one, unlock the ultimate achievement
 		if (userAchievement >= Object.keys(ACHIEVEMENTS).length - 1) {
 			await this.unlockAchievement(userId, 'GET_ALL', tx);
 		}
 	}
 
-	/**
-	 * Processes the outcome of a finished match.
-	 * Automatically evaluates and awards corresponding achievements (first game, total wins milestones, draws, or timeouts).
-	 */
+  /**
+   * Evaluates and awards achievements after a match ends.
+   * Handles first game, first win, win milestones, draws, and timeout losses.
+   *
+   * @param result - Match result containing player IDs and outcome details.
+   * @param tx - Optional Prisma transaction client.
+   */
 	async handleMatchAchievements(
 		result: GameResultDto,
 		tx?: Prisma.TransactionClient,

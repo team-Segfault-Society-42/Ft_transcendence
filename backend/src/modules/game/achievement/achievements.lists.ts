@@ -1,6 +1,6 @@
- /**
- * Union type defining all valid achievement identifiers (keys) in the game.
- * Any new achievement added to the system must have its unique string literal added here.
+/**
+ * Union type defining all valid achievement identifiers in the game.
+ * Any new achievement must have its key added here first.
  */
 export type AchievementKey =
     |   'FIRST_GAME'
@@ -14,9 +14,8 @@ export type AchievementKey =
     
 /**
  * Static registry of all available game achievements.
- * Maps each `AchievementKey` to its metadata configuration.
- * * Note: `displayName` and `description` store translation keys (e.g., 'ACH_FIRST_GAME_TITLE') 
- * instead of raw text, allowing i18next to translate them on the frontend.
+ * displayName and description store i18n keys instead of raw text,
+ * allowing the frontend to translate them based on the user's language.
  */
 export const ACHIEVEMENTS: Record<AchievementKey, { key: AchievementKey, displayName: string, description: string, iconName: string }> = {
 

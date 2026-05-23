@@ -8,9 +8,6 @@ interface AchievementIconProps {
   className?: string;
 }
 
-/**
- * Props definition for the AchievementIcon component.
- */
 export function AchievementIcon({
   iconName,
   isUnlocked,

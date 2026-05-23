@@ -293,14 +293,14 @@ export class GameService {
 		return this.activeGame.delete(gameId);
 	}
 
-	/**
-     * Prepares the final game statistics and saves the completed match into the database.
-     * Maps the local game memory state (identifying players 'X' and 'O') to the corresponding 
-     * player IDs, match scores, winner details, and termination reasons before delegating 
-     * the persistent storage operation to the MatchesService.
-     */
+/**
+ * Persists a completed game to the database.
+ * Maps the in-memory game state (X/O players) to the MatchesService format
+ * before delegating the storage operation.
+ *
+ * @param game - The finished game state containing players, scores, and move history.
+ */
 	private async saveGameToDB(game: GameState) {
-		// Validation: Abort saving if either player profile is missing
 		if (!game.playerProfiles.X || !game.playerProfiles.O) return;
 
 		const data = {
@@ -316,7 +316,6 @@ export class GameService {
 						: undefined,
 			endReason: game.endReason,
 		};
-        // Persist match entry along with its structural sequence of moves history
 		await this.matchService.recordMatch(data, game.movesGameHistory);
 	}
 

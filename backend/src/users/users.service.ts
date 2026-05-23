@@ -151,11 +151,12 @@ export class UsersService {
 	}
 
 	/**
-     * Retrieves a user by their unique username and formats the data for public view.
-     * * @param username - The username string to look up
-     * @returns A safe, filtered public user profile object
-     * @throws NotFoundException if no user matches the given username
-     */
+	 * Retrieves a user by their exact username and formats the data for public view.
+	 *
+	 * @param username - The username string to look up.
+	 * @returns A safe, filtered public user profile object.
+	 * @throws NotFoundException if no user matches the given username.
+	 */
 	async getUserByUsername(username: string) {
 		const user = await this.prisma.user.findUnique({
 			where: { username },
@@ -169,11 +170,13 @@ export class UsersService {
 	}
 
 	/**
-     * Calculates the leaderboard rank and retrieves the XP of a specific user.
-     * * @param id - The unique ID of the user
-     * @returns An object containing the 1-based rank and the user's current XP
-     * @throws NotFoundException if the user does not exist in the database
-     */
+	 * Calculates the global rank of a user based on XP.
+	 * Rank is 1-based — a user with more XP than everyone else is rank 1.
+	 *
+	 * @param id - ID of the user to rank.
+	 * @returns An object containing the user's rank and current XP.
+	 * @throws NotFoundException if the user does not exist.
+	 */
 	async getUserRank(id: number) {
 		const user = await this.prisma.user.findUnique({
 			where: { id },
