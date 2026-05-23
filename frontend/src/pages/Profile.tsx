@@ -175,7 +175,7 @@ export default function Profile() {
   }
 
   useEffect(() => {
-    if (!profileData) return;
+    if (!profileData || !user) return;
 
 
       async function fetchAllAchievments() {
@@ -204,7 +204,7 @@ export default function Profile() {
         try {
           const rankData = await userService.getUserRank(profileData!.id)
           setRank(rankData.rank)
-        } 
+        }
         catch (error) {
           console.error("Failed to fetch user rank: ", error)
         }
@@ -392,7 +392,7 @@ export default function Profile() {
 				</p>
 			) : (
         <p></p>
-        
+
       )}
 		</div>
 
