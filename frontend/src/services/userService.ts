@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import type { User } from "@/type/user.types";
 
 export const userService = {
     getUser,
@@ -25,7 +26,7 @@ export const userService = {
 
 export interface SessionResponse {
 	authenticated: boolean;
-	user: unknown | null;
+	user: User | null;
 }
 
 export interface LoginResponse {
