@@ -89,7 +89,12 @@ export default function Profile() {
           setProfileData(data)
           setLoading(false)
         }
-        catch (error) {
+        catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error("Failed to load profile:", error.message);
+          } else {
+            console.error("Failed to load profile: An unknown error occurred");
+          }
           navigate("/dashboard");
         }
       }
@@ -184,8 +189,12 @@ export default function Profile() {
         try {
           const data = await userService.getAllAchievements()
           setAllAchievements(data)
-        } catch (error) {
-          console.error("Failed to fetch all achievements: ", error)
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error("Failed to fetch all achievements:", error.message);
+          } else {
+            console.error("Failed to fetch all achievements: An unknown error occurred");
+          }
         }
       }
       fetchAllAchievments()
@@ -196,8 +205,12 @@ export default function Profile() {
           if (Array.isArray(data)) {
             setUnlockedAchievements(data.map((a: any) => a.achievementId || a));
           }
-        } catch (error) {
-          console.error("Failed to fetch achievements: ", error)
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error("Failed to fetch achievements:", error.message);
+          } else {
+            console.error("Failed to fetch achievements: An unknown error occurred");
+          }
         }
       }
       fetchAchievements()
@@ -207,8 +220,12 @@ export default function Profile() {
           const rankData = await userService.getUserRank(profileData!.id)
           setRank(rankData.rank)
         } 
-        catch (error) {
-          console.error("Failed to fetch user rank: ", error)
+        catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error("Failed to fetch user rank:", error.message);
+          } else {
+            console.error("Failed to fetch user rank: An unknown error occurred");
+          }
         }
       }
       fetchRank()

@@ -32,8 +32,12 @@ export default function History() {
 				);
 
 				setMatches(sorted);
-			} catch (error) {
-				console.error('Failed to fetch history:', error);
+			} catch (error: unknown) {
+				if (error instanceof Error) {
+                    console.error('Failed to fetch history:', error.message);
+                } else {
+                    console.error('Failed to fetch history: An unknown error occurred');
+                }
 			} finally {
 				setLoading(false);
 			}

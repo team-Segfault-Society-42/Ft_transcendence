@@ -25,16 +25,21 @@ export default function LeaderBoard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user) return;
     async function fetchLeaderboard() {
       try {
         const data = await userService.getLeaderboard(sortBy);
         setLeaderboard(data);
-      } catch (error) {
-        console.error("Failed to fetch leaderboard:", error);
+      } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error("Failed to fetch leaderboard:", error.message)
+          } else {
+            console.error('Failed to fetch leaderboard: An unknown error occurred');
+          }
       }
     }
     fetchLeaderboard();
-  }, [sortBy]);
+  }, [sortBy, user]);
 
   if (!user) {
     return (
