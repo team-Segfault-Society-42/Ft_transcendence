@@ -8,6 +8,7 @@ import { Trophy } from "lucide-react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useNavigate } from "react-router-dom";
 import { Card, CardTitle } from "@/components/ui/Card"
+import type { User } from "@/type/user.types"
 
 interface LeaderBoard {
   id: number;
@@ -21,7 +22,7 @@ export default function LeaderBoard() {
   const [leaderboard, setLeaderboard] = useState<LeaderBoard[]>([]);
   const [sortBy, setSortBy] = useState<"xp" | "totalGames" | "wins">("wins");
   const { t } = useTranslation();
-  const [user] = useOutletContext<any>();
+  const [user] = useOutletContext<[User | null]>();
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -39,6 +39,10 @@ interface Achievement {
   iconName: string;
 }
 
+interface UserAchievement {
+  achievementId: string
+}
+
 type RelationshipState = "SELF" | "FRIEND" | "PENDING_SENT" | "PENDING_RECEIVED" | "NONE"
 
 export default function Profile() {
@@ -203,7 +207,7 @@ export default function Profile() {
         try {
           const data = await userService.getAchievements(profileData!.id)
           if (Array.isArray(data)) {
-            setUnlockedAchievements(data.map((a: any) => a.achievementId || a));
+            setUnlockedAchievements(data.map((a: UserAchievement) => a.achievementId));
           }
         } catch (error: unknown) {
           if (error instanceof Error) {
