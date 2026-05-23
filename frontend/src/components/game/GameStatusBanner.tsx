@@ -33,7 +33,7 @@ export function GameStatusBanner({
 
 			{status === 'playing' && opponentDisconnect && (
 				<div className="border border-orange-400 bg-orange-500/20 px-4 py-3 text-orange-100">
-					Opponent disconnected — waiting 20s for reconnection...
+					{t('game.opponentDisconnect')}
 				</div>
 			)}
 		</div>

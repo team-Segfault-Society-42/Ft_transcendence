@@ -142,7 +142,8 @@
     "score": "Puntaje",
     "replayVotes": "Reproducir votos",
     "waitingReplayOther": "Repetición solicitada. \nEsperando al otro jugador...",
-    "timer": "Tiempo restante: {{seconds}}s"
+    "timer": "Tiempo restante: {{seconds}}s",
+    "opponentDisconnect": "Oponente desconectado: esperando 20 segundos para volver a conectarse..."
   },
   "play": {
     "myGames": {
@@ -411,7 +412,7 @@
     "ERR_USERNAME_STRING": "El nombre de usuario debe ser una cadena de texto.",
     "ERR_USER_USERNAME_MIN_LENGTH": "El nombre de usuario es demasiado corto.",
     "ERR_USER_USERNAME_MAX_LENGTH": "El nombre de usuario es demasiado largo.",
-    "ERR_USER_USERNAME_NO_SPACES": "El nombre de usuario no debe contener espacios.",
+    "ERR_USER_USERNAME_NO_SPACES": "El nombre de usuario contiene caracteres no válidos.",
     "ERR_USER_BIO_STRING": "La biografía debe ser una cadena de texto.",
     "ERR_USER_BIO_MAX_LENGTH": "La biografía es demasiado larga.",
     "ERR_AUTH_2FA_CODE_STRING": "El código debe ser una cadena de caracteres.",

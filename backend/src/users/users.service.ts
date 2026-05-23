@@ -150,6 +150,13 @@ export class UsersService {
 		return this.toPublicUser(updatedUser);
 	}
 
+	/**
+	 * Retrieves a user by their exact username and formats the data for public view.
+	 *
+	 * @param username - The username string to look up.
+	 * @returns A safe, filtered public user profile object.
+	 * @throws NotFoundException if no user matches the given username.
+	 */
 	async getUserByUsername(username: string) {
 		const user = await this.prisma.user.findUnique({
 			where: { username },
@@ -162,6 +169,14 @@ export class UsersService {
 		return this.toPublicUser(user);
 	}
 
+	/**
+	 * Calculates the global rank of a user based on XP.
+	 * Rank is 1-based — a user with more XP than everyone else is rank 1.
+	 *
+	 * @param id - ID of the user to rank.
+	 * @returns An object containing the user's rank and current XP.
+	 * @throws NotFoundException if the user does not exist.
+	 */
 	async getUserRank(id: number) {
 		const user = await this.prisma.user.findUnique({
 			where: { id },
