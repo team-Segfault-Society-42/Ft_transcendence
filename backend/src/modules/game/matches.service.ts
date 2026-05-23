@@ -124,8 +124,12 @@ export class MatchesService {
         await this.achievementService.handleMatchAchievements(result, tx)
 
       });
-    } catch (error) {
-      console.error(`Error saving match: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(`Error saving match: ${error.message}`);
+      } else {
+        console.error('Error saving match: An unknown error occurred');
+      }
       throw new InternalServerErrorException('ERR_MATCH_SAVE_FAILED');
     }
   }
