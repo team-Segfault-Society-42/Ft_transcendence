@@ -234,7 +234,9 @@ erDiagram
     User {
         int id PK
         string email
+        string passwordHash "optional"
         string username
+        string bio "optional"
         string avatar
         int wins
         int losses
@@ -242,6 +244,8 @@ erDiagram
         int xp
         int totalGames
         bool isTwoFactorEnabled
+        string twoFactorSecret "optional"
+        string twoFactorTempSecret "optional"
     }
     OAuthAccount {
         int id PK
