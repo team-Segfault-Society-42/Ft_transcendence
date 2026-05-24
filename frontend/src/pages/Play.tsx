@@ -36,7 +36,7 @@ export default function Play() {
     	try {
 			await gameApi.createGame();
       		await fetchGames();
-    	} catch (error) {
+    	} catch (error: unknown) {
       		console.error("Failed to create game:", error);
     	}
   	}
@@ -44,7 +44,7 @@ export default function Play() {
   	async function handleCopyLink() {
     	try {
       		await navigator.clipboard.writeText(inviteLink);
-    	} catch (error) {
+    	} catch (error: unknown) {
       		console.error("Failed to copy link:", error);
     	}
   	}
@@ -56,7 +56,7 @@ export default function Play() {
   		try {
     		await gameApi.leaveGame(createdGameId);
    			await fetchGames();
-  		} catch (error) {
+  		} catch (error: unknown) {
     		console.error("Failed to cancel game:", error);
   		}
   	}
