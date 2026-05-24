@@ -167,6 +167,24 @@ export class AuthController {
 		return this.authService.me(req.user.sub);
 	}
 
+	@Public()
+	@Get('session')
+	async session(@Req() req: Request) {
+		const token = req.cookies?.['access_token'];
+
+		if (!token) {
+			return { authenticated: false, user: null };
+		}
+
+		try {
+			const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+			const user = await this.authService.me(payload.sub);
+			return { authenticated: true, user };
+		} catch {
+			return { authenticated: false, user: null };
+		}
+	}
+
 	@ApiOperation({ summary: 'Generate 2FA setup data for the authenticated user' })
 	@ApiResponse({
 		status: 201,

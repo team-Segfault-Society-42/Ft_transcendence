@@ -84,13 +84,10 @@ export default function Dashboard() {
   useEffect(() => {
     async function getCurrentUser() {
       try {
-        const result = await userService.getMe();
-        setUser(result);
+        const result = await userService.getSession();
+        setUser(result.authenticated ? result.user : null);
       } catch (error: unknown) {
-			if (
-				error instanceof AxiosError &&
-				error.response?.status !== 401
-			) {
+			if (error instanceof AxiosError) {
 				const finalMessage = getBackendErrorMessage(error);
 
 				toast.error(

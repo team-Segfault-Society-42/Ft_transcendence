@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import type { User } from "@/type/user.types";
 
 export const userService = {
     getUser,
@@ -11,6 +12,7 @@ export const userService = {
 	disableTwoFactor,
 	updatePassword,
 	updateEmail,
+	getSession,
     getMe,
     userLogout,
     getUserHistory,
@@ -20,6 +22,11 @@ export const userService = {
   getAllAchievements,
   getUserByUsername,
   getUserRank,
+}
+
+export interface SessionResponse {
+	authenticated: boolean;
+	user: User | null;
 }
 
 export interface LoginResponse {
@@ -64,6 +71,11 @@ export interface UpdateEmailResponse {
 export async function userLogout() {
   const response = await api.post("auth/logout");
   return response.data;
+}
+
+export async function getSession(): Promise<SessionResponse> {
+	const response = await api.get("auth/session");
+	return response.data;
 }
 
 export async function getMe() {

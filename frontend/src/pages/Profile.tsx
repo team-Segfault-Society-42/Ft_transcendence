@@ -186,8 +186,7 @@ export default function Profile() {
   }
 
   useEffect(() => {
-    if (!user) return;  
-    if (!profileData) return;
+    if (!profileData || !user) return;
 
       async function fetchAllAchievments() {
         try {
@@ -223,14 +222,13 @@ export default function Profile() {
         try {
           const rankData = await userService.getUserRank(profileData!.id)
           setRank(rankData.rank)
-        } 
-        catch (error: unknown) {
+			  } catch (error: unknown) {
           if (error instanceof Error) {
-            console.error("Failed to fetch user rank:", error.message);
-          } else {
-            console.error("Failed to fetch user rank: An unknown error occurred");
-          }
-        }
+					  console.error('Failed to fetch user rank:', error.message);
+				  } else {
+					  console.error('Failed to fetch user rank: An unknown error occurred');
+				  }
+			  }
       }
       fetchRank()
 
@@ -415,7 +413,7 @@ export default function Profile() {
 				</p>
 			) : (
         <p></p>
-        
+
       )}
 		</div>
 
