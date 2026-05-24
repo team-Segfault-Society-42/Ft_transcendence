@@ -34,7 +34,7 @@ const allowedOrigins = trimmedOrigins.filter(function (origin) {
 		credentials: true,
 	},
 })
-@UseGuards(JwtAuthGuard) // TODO: verify if can delete (is no necessary bcz CALLED FOR APP)
+@UseGuards(JwtAuthGuard)
 export class GameGateway implements OnGatewayDisconnect {
 	@WebSocketServer()
 	server!: Namespace;
@@ -47,6 +47,11 @@ export class GameGateway implements OnGatewayDisconnect {
 		private readonly presenceService: PresenceService,
 	) {}
 
+	/**
+	 * Clears the stored turn timer for a game if one exists.
+	 *
+	 * @param gameId - Id of the game linked to the timer.
+	 */
 	private clearTurnTimer(gameId: string) {
 		const timer = this.turnTimers.get(gameId);
 
@@ -56,6 +61,13 @@ export class GameGateway implements OnGatewayDisconnect {
 		}
 	}
 
+	/**
+	 * Starts the backend turn timer for a playing game.
+	 * Frontend countdowns only mirror this server-side timestamp.
+	 *
+	 * @param gameId - Id of the game to time.
+	 * @param game - Current game state used to compute the remaining delay.
+	 */
 	private startTurnTimer(gameId: string, game: GameState) {
 		this.clearTurnTimer(gameId);
 
@@ -96,6 +108,13 @@ export class GameGateway implements OnGatewayDisconnect {
 		this.turnTimers.set(gameId, timer);
 	}
 
+	/**
+	 * Counts unique spectators currently connected to a game room.
+	 *
+	 * @param gameId - Id of the Socket.IO room.
+	 * @param game - Current game state used to exclude player seats.
+	 * @returns Number of unique connected users who are not players.
+	 */
 	private getSpectatorsCnt(gameId: string, game: GameState): number {
 		const room = this.server.adapter.rooms.get(gameId);
 		if (!room) return 0;
@@ -118,6 +137,11 @@ export class GameGateway implements OnGatewayDisconnect {
 		return userIdsInRoom.size;
 	}
 
+	/**
+	 * Deletes a finished game when no socket is still connected to its room.
+	 *
+	 * @param gameId - Id of the game to clean up.
+	 */
 	private cleanupFinishedGameIfEmpty(gameId: string) {
 		let game: GameState;
 
@@ -136,6 +160,13 @@ export class GameGateway implements OnGatewayDisconnect {
 		this.gameService.deleteGame(gameId);
 	}
 
+	/**
+	 * Sends the latest game state to every socket in the game room.
+	 * The spectator count is computed from connected sockets at emit time.
+	 *
+	 * @param gameId - Id of the game room.
+	 * @param game - Game state to broadcast.
+	 */
 	private emitGameUpdate(gameId: string, game: GameState) {
 		this.startTurnTimer(gameId, game);
 
@@ -145,6 +176,11 @@ export class GameGateway implements OnGatewayDisconnect {
 		});
 	}
 
+	/**
+	 * Sends the current X/O roles to player sockets after replay votes may swap seats.
+	 *
+	 * @param game - Game state containing the current player socket ids.
+	 */
 	private emitUpdatedRoles(game: GameState) {
 		const socketId_X = game.players.X.socketIds;
 		const socketId_O = game.players.O.socketIds;
@@ -155,6 +191,11 @@ export class GameGateway implements OnGatewayDisconnect {
 			this.server.to(socketId_O).emit('role_updated', { role: 'O' });
 	}
 
+	/**
+	 * Handles player and spectator disconnections from a game socket.
+	 *
+	 * @param client - Authenticated socket that disconnected.
+	 */
 	handleDisconnect(client: AuthSocket) {
 		const result = this.gameService.processPlayerDisconnection(client.id);
 		if (result) {
@@ -176,6 +217,12 @@ export class GameGateway implements OnGatewayDisconnect {
 		}
 	}
 
+	/**
+	 * Joins the authenticated user to a game room and broadcasts the updated state.
+	 *
+	 * @param body - Payload containing the game id to join.
+	 * @param client - Authenticated socket joining the game.
+	 */
 	@SubscribeMessage('join_game')
 	async handleJoinGame(
 		@MessageBody() body: { gameId: string },
@@ -216,6 +263,13 @@ export class GameGateway implements OnGatewayDisconnect {
 		}
 	}
 
+	/**
+	 * Applies a move from the authenticated player and broadcasts the new game state.
+	 *
+	 * @param body - Move payload containing the game id and board coordinates.
+	 * @param client - Authenticated socket sending the move.
+	 * @returns The updated game state when the move is accepted.
+	 */
 	@SubscribeMessage('play_move')
 	async handlePlayMove(
 		@MessageBody() body: PlayMoveDto,
@@ -249,6 +303,13 @@ export class GameGateway implements OnGatewayDisconnect {
 		}
 	}
 
+	/**
+	 * Registers a replay vote for the authenticated player.
+	 *
+	 * @param body - Payload containing the game id.
+	 * @param client - Authenticated socket requesting the replay.
+	 * @returns The updated game state after the replay vote.
+	 */
 	@SubscribeMessage('request_replay')
 	handleRequestReplay(
 		@MessageBody() body: { gameId: string },
@@ -268,6 +329,12 @@ export class GameGateway implements OnGatewayDisconnect {
 		}
 	}
 
+	/**
+	 * Removes the authenticated user from the game and updates the room state.
+	 *
+	 * @param body - Payload containing the game id to leave.
+	 * @param client - Authenticated socket leaving the game.
+	 */
 	@SubscribeMessage('leave_game')
 	async handleLeaveGame(
 		@MessageBody() body: { gameId: string },

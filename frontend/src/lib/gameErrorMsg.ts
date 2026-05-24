@@ -1,9 +1,22 @@
 import i18n from "@/i18n/config";
 
+/**
+ * Maps backend game errors to messages that can be shown in the UI.
+ *
+ * @param rawMessage - Error message or code received from the game socket.
+ * @returns A readable game error message.
+ */
 export function gameErrorMsg(rawMessage: string | null | undefined): string {
   if (!rawMessage) return i18n.t("errors.game.default");
 
-  const message = rawMessage.toLowerCase();
+  const raw = rawMessage.trim();
+  if (!raw) return i18n.t("errors.game.default");
+
+  const message = raw.toLowerCase();
+
+  if (raw.startsWith("ERR_GAME_") && i18n.exists(raw)) {
+    return i18n.t(raw);
+  }
 
   if (message.includes("user not found")) {
     return i18n.t("errors.game.userNotFound");
@@ -45,5 +58,5 @@ export function gameErrorMsg(rawMessage: string | null | undefined): string {
     return i18n.t("errors.game.unknown");
   }
 
-  return rawMessage;
+  return raw;
 }

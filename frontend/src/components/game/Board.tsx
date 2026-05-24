@@ -51,6 +51,12 @@ export default function Board() {
 		oldOppDiscnct.current = opponentDisconnect;
 	}, [opponentDisconnect, t]);
 
+	useEffect(() => {
+		if (game?.status === 'waiting' && playerRole === 'X') {
+			navigate('/play');
+		}
+	}, [game?.status, playerRole, navigate]);
+
 	if (error && !game) {
 		return (
 			<div className="text-white text-center p-8">
@@ -73,9 +79,6 @@ export default function Board() {
 		);
 	}
 
-	if (game.status === 'waiting' && playerRole === 'X') {
-		navigate('/play');
-	}
 	const { board, currentPlayer, status, winner, toDisapear } = game;
 
 	const playerXName = game.playerProfiles?.X?.username || 'Player X';

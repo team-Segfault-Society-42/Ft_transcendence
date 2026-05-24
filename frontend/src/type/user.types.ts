@@ -17,8 +17,11 @@ export type UserChat = {
   avatar: string | null;
 };
 
+/**
+ * Message payload received from the chat socket.
+ */
 export type ChatMessage = {
-  id: number;
+  id: string;
   content: string;
   createdAt: string;
   user: UserChat;

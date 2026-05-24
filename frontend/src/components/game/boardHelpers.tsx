@@ -8,6 +8,15 @@ export type EndGameMessage = {
 	color: string;
 };
 
+/**
+ * Builds the message shown in the end-game popup.
+ *
+ * @param endReason - Reason why the game finished.
+ * @param winner - Symbol of the winner, or null for a draw.
+ * @param playerXName - Display name of the X player.
+ * @param playerOName - Display name of the O player.
+ * @returns Text and color data used by the popup.
+ */
 export function getEndGameMessage(
 	endReason: EndReason,
 	winner: CellValue,
