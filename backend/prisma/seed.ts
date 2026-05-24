@@ -6,7 +6,8 @@ import * as fs from 'node:fs';
 
 
 // ── Define Prisma Client ────────────────────────────────────────────────────
-const connectionString = fs.readFileSync('/run/secrets/database_url', 'utf8').trim();
+const backendPw = fs.readFileSync('/run/secrets/backend_pw', 'utf8').trim();
+const connectionString = `postgresql://${process.env.BACKEND_USER}:${backendPw}@db:5432/${process.env.POSTGRES_DB}?schema=public`;
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
