@@ -1,35 +1,124 @@
 import {
 	BadRequestException,
 	ConflictException,
-	Injectable,
+	ForbiddenException,
 	Inject,
+	Injectable,
 	forwardRef,
 	NotFoundException,
-	ForbiddenException,
 } from '@nestjs/common';
 import { FriendStatus, Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { FriendRequestAction } from './dto/respond-friend-request.dto';
-import { MAX_PENDING_FRIEND_REQUESTS, MAX_FRIEND_RESULTS} from './friends.constants';
-import { PresenceService } from '../presence/presence.service';
 import { GameService } from '../modules/game/game.service';
+import { PresenceService } from '../presence/presence.service';
+import { PrismaService } from '../prisma/prisma.service';
+import {
+	MAX_FRIEND_RESULTS,
+	MAX_PENDING_FRIEND_REQUESTS,
+} from './friends.constants';
+import { FriendRequestAction } from './dto/respond-friend-request.dto';
 import { FRIEND_EVENTS } from './friends.events';
+
+const publicFriendUserSelect = {
+	id: true,
+	username: true,
+	bio: true,
+	avatar: true,
+	wins: true,
+	losses: true,
+	draws: true,
+	xp: true,
+} satisfies Prisma.UserSelect;
 
 @Injectable()
 export class FriendsService {
 	constructor(
 		private readonly prisma: PrismaService,
+
 		@Inject(forwardRef(() => PresenceService))
 		private readonly presenceService: PresenceService,
+
 		@Inject(forwardRef(() => GameService))
 		private readonly gameService: GameService,
 	) {}
 
+	/**
+	 * @description Returns normalized friendship ordering used by the unique friendship constraint.
+	 * @param senderId - Current authenticated user ID.
+	 * @param receiverId - Target user ID.
+	 * @returns Stable friendship pair ordering.
+	 * @remarks userAId/userBId prevents duplicated inverse friendships.
+	 */
+	private createFriendPair(senderId: number, receiverId: number) {
+		return {
+			userAId: Math.min(senderId, receiverId),
+			userBId: Math.max(senderId, receiverId),
+		};
+	}
+
+	/**
+	 * @description Emits the same realtime friend event to both affected users.
+	 * @param userAId - First affected user.
+	 * @param userBId - Second affected user.
+	 * @param event - Friend event name.
+	 * @returns Nothing.
+	 */
+	private emitFriendEventToUsers(
+		userAId: number,
+		userBId: number,
+		event: string,
+	): void {
+		this.presenceService.emitFriendEvent(userAId, event);
+		this.presenceService.emitFriendEvent(userBId, event);
+	}
+
+	/**
+	 * @description Returns the other user ID from an accepted friendship.
+	 * @param friendship - Friendship row containing sender/receiver IDs.
+	 * @param currentUserId - Current authenticated user ID.
+	 * @returns Friend user ID.
+	 */
+	private getFriendId(
+		friendship: {
+			senderId: number;
+			receiverId: number;
+		},
+		currentUserId: number,
+	): number {
+		return friendship.senderId === currentUserId
+			? friendship.receiverId
+			: friendship.senderId;
+	}
+
+	/**
+	 * @description Returns accepted friendships involving the authenticated user.
+	 * @param userId - Current authenticated user ID.
+	 * @returns Accepted friendship rows.
+	 */
+	private async getAcceptedFriendships(userId: number) {
+		return this.prisma.friend.findMany({
+			where: {
+				status: FriendStatus.ACCEPTED,
+				OR: [
+					{ senderId: userId },
+					{ receiverId: userId },
+				],
+			},
+			take: MAX_FRIEND_RESULTS,
+		});
+	}
+
+	/**
+	 * @description Sends a pending friend request from the authenticated user to another user.
+	 * @param senderId - Current authenticated user ID.
+	 * @param receiverId - Target user ID.
+	 * @returns Friend request summary.
+	 * @throws BadRequestException when requesting self or too many pending requests exist.
+	 * @throws ConflictException when friendship/request already exists.
+	 * @throws NotFoundException when the target user does not exist.
+	 */
 	async sendFriendRequest(senderId: number, receiverId: number) {
 		if (senderId === receiverId) {
-			throw new BadRequestException(
-				'ERR_FRIEND_SELF_REQUEST',
-			);
+			throw new BadRequestException('ERR_FRIEND_SELF_REQUEST');
 		}
 
 		const receiver = await this.prisma.user.findUnique({
@@ -41,8 +130,10 @@ export class FriendsService {
 			throw new NotFoundException('ERR_USER_NOT_FOUND');
 		}
 
-		const userAId = Math.min(senderId, receiverId);
-		const userBId = Math.max(senderId, receiverId);
+		const { userAId, userBId } = this.createFriendPair(
+			senderId,
+			receiverId,
+		);
 
 		const existingFriendship = await this.prisma.friend.findUnique({
 			where: {
@@ -62,9 +153,7 @@ export class FriendsService {
 				throw new ConflictException('ERR_FRIEND_ALREADY_FRIENDS');
 			}
 
-			throw new ConflictException(
-				'ERR_FRIEND_REQUEST_EXISTS',
-			);
+			throw new ConflictException('ERR_FRIEND_REQUEST_EXISTS');
 		}
 
 		const pendingOutgoingCount = await this.prisma.friend.count({
@@ -96,8 +185,9 @@ export class FriendsService {
 				},
 			});
 
-			this.presenceService.emitFriendEvent(
+			this.emitFriendEventToUsers(
 				senderId,
+				receiverId,
 				FRIEND_EVENTS.REQUEST_SENT,
 			);
 
@@ -125,6 +215,11 @@ export class FriendsService {
 		}
 	}
 
+	/**
+	 * @description Returns incoming pending friend requests.
+	 * @param userId - Current authenticated user ID.
+	 * @returns Pending incoming requests with safe sender data.
+	 */
 	async getIncomingRequests(userId: number) {
 		const requests = await this.prisma.friend.findMany({
 			where: {
@@ -136,16 +231,7 @@ export class FriendsService {
 				id: true,
 				createdAt: true,
 				sender: {
-					select: {
-						id: true,
-						username: true,
-						bio: true,
-						avatar: true,
-						wins: true,
-						losses: true,
-						draws: true,
-						xp: true,
-					},
+					select: publicFriendUserSelect,
 				},
 			},
 			orderBy: {
@@ -160,6 +246,11 @@ export class FriendsService {
 		}));
 	}
 
+	/**
+	 * @description Returns outgoing pending friend requests.
+	 * @param userId - Current authenticated user ID.
+	 * @returns Pending outgoing requests with safe receiver data.
+	 */
 	async getOutgoingRequests(userId: number) {
 		const requests = await this.prisma.friend.findMany({
 			where: {
@@ -171,16 +262,7 @@ export class FriendsService {
 				id: true,
 				createdAt: true,
 				receiver: {
-					select: {
-						id: true,
-						username: true,
-						bio: true,
-						avatar: true,
-						wins: true,
-						losses: true,
-						draws: true,
-						xp: true,
-					},
+					select: publicFriendUserSelect,
 				},
 			},
 			orderBy: {
@@ -195,6 +277,14 @@ export class FriendsService {
 		}));
 	}
 
+	/**
+	 * @description Accepts or declines a pending friend request.
+	 * @param userId - Current authenticated user ID.
+	 * @param requestId - Pending friend request ID.
+	 * @param action - Accept or decline action.
+	 * @returns Friendship summary or decline confirmation.
+	 * @remarks Only the receiver of the pending request may respond.
+	 */
 	async respondToFriendRequest(
 		userId: number,
 		requestId: number,
@@ -211,7 +301,9 @@ export class FriendsService {
 		});
 
 		if (!request) {
-			throw new NotFoundException('ERR_FRIEND_REQUEST_NOT_FOUND');
+			throw new NotFoundException(
+				'ERR_FRIEND_REQUEST_NOT_FOUND',
+			);
 		}
 
 		if (request.receiverId !== userId) {
@@ -229,12 +321,8 @@ export class FriendsService {
 				where: { id: requestId },
 			});
 
-			this.presenceService.emitFriendEvent(
+			this.emitFriendEventToUsers(
 				userId,
-				FRIEND_EVENTS.REQUEST_DECLINED,
-			);
-
-			this.presenceService.emitFriendEvent(
 				request.senderId,
 				FRIEND_EVENTS.REQUEST_DECLINED,
 			);
@@ -269,15 +357,13 @@ export class FriendsService {
 		});
 
 		if (!updatedRequest) {
-			throw new NotFoundException('ERR_FRIEND_REQUEST_NOT_FOUND');
+			throw new NotFoundException(
+				'ERR_FRIEND_REQUEST_NOT_FOUND',
+			);
 		}
 
-		this.presenceService.emitFriendEvent(
+		this.emitFriendEventToUsers(
 			userId,
-			FRIEND_EVENTS.REQUEST_ACCEPTED,
-		);
-
-		this.presenceService.emitFriendEvent(
 			request.senderId,
 			FRIEND_EVENTS.REQUEST_ACCEPTED,
 		);
@@ -289,6 +375,11 @@ export class FriendsService {
 		};
 	}
 
+	/**
+	 * @description Returns accepted friends for the authenticated user.
+	 * @param userId - Current authenticated user ID.
+	 * @returns Accepted friendships with safe public friend data.
+	 */
 	async getFriends(userId: number) {
 		const friendships = await this.prisma.friend.findMany({
 			where: {
@@ -305,28 +396,10 @@ export class FriendsService {
 				senderId: true,
 				receiverId: true,
 				sender: {
-					select: {
-						id: true,
-						username: true,
-						bio: true,
-						avatar: true,
-						wins: true,
-						losses: true,
-						draws: true,
-						xp: true,
-					},
+					select: publicFriendUserSelect,
 				},
 				receiver: {
-					select: {
-						id: true,
-						username: true,
-						bio: true,
-						avatar: true,
-						wins: true,
-						losses: true,
-						draws: true,
-						xp: true,
-					},
+					select: publicFriendUserSelect,
 				},
 			},
 			orderBy: {
@@ -344,6 +417,13 @@ export class FriendsService {
 		}));
 	}
 
+	/**
+	 * @description Removes an accepted friendship involving the authenticated user.
+	 * @param userId - Current authenticated user ID.
+	 * @param friendshipId - Accepted friendship ID.
+	 * @returns Frontend translation message key.
+	 * @throws ForbiddenException when the user is not part of the friendship.
+	 */
 	async removeFriend(userId: number, friendshipId: number) {
 		const friendship = await this.prisma.friend.findUnique({
 			where: { id: friendshipId },
@@ -360,7 +440,9 @@ export class FriendsService {
 		}
 
 		if (friendship.status !== FriendStatus.ACCEPTED) {
-			throw new BadRequestException('ERR_FRIEND_REMOVE_NOT_ACCEPTED');
+			throw new BadRequestException(
+				'ERR_FRIEND_REMOVE_NOT_ACCEPTED',
+			);
 		}
 
 		if (
@@ -376,12 +458,8 @@ export class FriendsService {
 			where: { id: friendshipId },
 		});
 
-		this.presenceService.emitFriendEvent(
+		this.emitFriendEventToUsers(
 			friendship.senderId,
-			FRIEND_EVENTS.FRIEND_REMOVED,
-		);
-
-		this.presenceService.emitFriendEvent(
 			friendship.receiverId,
 			FRIEND_EVENTS.FRIEND_REMOVED,
 		);
@@ -391,34 +469,26 @@ export class FriendsService {
 		};
 	}
 
+	/**
+	 * @description Returns realtime online and game activity status for accepted friends.
+	 * @param userId - Current authenticated user ID.
+	 * @returns Friend realtime status summaries.
+	 */
 	async getFriendsStatus(userId: number) {
-		const friendships = await this.prisma.friend.findMany({
-			where: {
-				status: FriendStatus.ACCEPTED,
-				OR: [
-					{ senderId: userId },
-					{ receiverId: userId },
-				],
-			},
-			take: MAX_FRIEND_RESULTS,
-			select: {
-				senderId: true,
-				receiverId: true,
-			},
-		});
+		const friendships = await this.getAcceptedFriendships(userId);
 
 		return friendships.map((friendship) => {
-			const friendId =
-				friendship.senderId === userId
-					? friendship.receiverId
-					: friendship.senderId;
+			const friendId = this.getFriendId(friendship, userId);
 
-			const online = this.presenceService.isUserOnline(friendId);
+			const online =
+				this.presenceService.isUserOnline(friendId);
 
 			return {
 				userId: friendId,
 				online,
-				inGame: online && this.gameService.isUserInGame(friendId),
+				inGame:
+					online &&
+					this.gameService.isUserInGame(friendId),
 				activity: online
 					? this.gameService.getUserGameActivity(friendId)
 					: 'offline',
@@ -426,25 +496,16 @@ export class FriendsService {
 		});
 	}
 
+	/**
+	 * @description Returns accepted friend IDs for realtime presence broadcasting.
+	 * @param userId - Current authenticated user ID.
+	 * @returns Friend user IDs only.
+	 */
 	async getAcceptedFriendIds(userId: number): Promise<number[]> {
-		const friendships = await this.prisma.friend.findMany({
-			where: {
-				status: FriendStatus.ACCEPTED,
-				OR: [
-					{ senderId: userId },
-					{ receiverId: userId },
-				],
-			},
-			select: {
-				senderId: true,
-				receiverId: true,
-			},
-		});
+		const friendships = await this.getAcceptedFriendships(userId);
 
 		return friendships.map((friendship) =>
-			friendship.senderId === userId
-				? friendship.receiverId
-				: friendship.senderId,
+			this.getFriendId(friendship, userId),
 		);
 	}
 }
