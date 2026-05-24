@@ -293,6 +293,13 @@ export class GameService {
 		return this.activeGame.delete(gameId);
 	}
 
+/**
+ * Persists a completed game to the database.
+ * Maps the in-memory game state (X/O players) to the MatchesService format
+ * before delegating the storage operation.
+ *
+ * @param game - The finished game state containing players, scores, and move history.
+ */
 	private async saveGameToDB(game: GameState) {
 		if (!game.playerProfiles.X || !game.playerProfiles.O) return;
 
@@ -309,7 +316,6 @@ export class GameService {
 						: undefined,
 			endReason: game.endReason,
 		};
-
 		await this.matchService.recordMatch(data, game.movesGameHistory);
 	}
 

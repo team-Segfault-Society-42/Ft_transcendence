@@ -15,6 +15,14 @@ export class MatchesService {
     private readonly achievementService: AchievementsService,
   ) {}
 
+  /**
+   * Records a completed match into the database.
+   * Runs inside a transaction to guarantee that game data, move history,
+   * player stats, and achievement unlocks all succeed or fail together.
+   *
+   * @param result - Game result DTO containing player IDs, scores, and outcome.
+   * @param history - Ordered sequence of move positions for replay history.
+   */
   async recordMatch(result: GameResultDto, history: MovesGameHistory) {
     if (result.player1Id === result.player2Id) {
       throw new BadRequestException('ERR_MATCH_SELF_PLAY');
@@ -57,69 +65,56 @@ export class MatchesService {
         if (result.winnerId === result.player1Id) {
           await tx.user.update({
             where: { id: result.player1Id },
-            data: {
-              wins: { increment: 1 },
-              xp: { increment: 100 },
-              totalGames: { increment: 1 },
-            },
+            data: { wins: { increment: 1 }, xp: { increment: 100 }, totalGames: { increment: 1 } },
           });
 
           await tx.user.update({
             where: { id: result.player2Id },
-            data: {
-              losses: { increment: 1 },
-              xp: { increment: 25 },
-              totalGames: { increment: 1 },
-            },
+            data: { losses: { increment: 1 }, xp: { increment: 25 }, totalGames: { increment: 1 } },
           });
         } else if (result.winnerId === result.player2Id) {
           await tx.user.update({
             where: { id: result.player2Id },
-            data: {
-              wins: { increment: 1 },
-              xp: { increment: 100 },
-              totalGames: { increment: 1 },
-            },
+            data: { wins: { increment: 1 }, xp: { increment: 100 }, totalGames: { increment: 1 } },
           });
 
           await tx.user.update({
             where: { id: result.player1Id },
-            data: {
-              losses: { increment: 1 },
-              xp: { increment: 25 },
-              totalGames: { increment: 1 },
-            },
+            data: { losses: { increment: 1 }, xp: { increment: 25 }, totalGames: { increment: 1 } },
           });
         } else {
           await tx.user.update({
             where: { id: result.player1Id },
-            data: {
-              draws: { increment: 1 },
-              xp: { increment: 50 },
-              totalGames: { increment: 1 },
-            },
+            data: { draws: { increment: 1 }, xp: { increment: 50 }, totalGames: { increment: 1 } },
           });
 
           await tx.user.update({
             where: { id: result.player2Id },
-            data: {
-              draws: { increment: 1 },
-              xp: { increment: 50 },
-              totalGames: { increment: 1 },
-            },
+            data: { draws: { increment: 1 }, xp: { increment: 50 }, totalGames: { increment: 1 } },
           });
         }
 
-        // ── Handle Match Achievements ────────────────────────────────────────────────────────
         await this.achievementService.handleMatchAchievements(result, tx)
 
       });
-    } catch (error) {
-      console.error(`Error saving match: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(`Error saving match: ${error.message}`);
+      } else {
+        console.error('Error saving match: An unknown error occurred');
+      }
       throw new InternalServerErrorException('ERR_MATCH_SAVE_FAILED');
     }
   }
 
+  /**
+   * Retrieves the match history for a given user.
+   * Formats results from the user's perspective — win/loss/draw and their
+   * own score vs the opponent's score, regardless of which player slot they occupied.
+   *
+   * @param userId - ID of the user requesting their history.
+   * @returns List of formatted match results from the user's perspective.
+   */
 	async getFinishedGamesHistory(userId: number) {
 		const game = await this.prismaService.game.findMany({
 		where: {
@@ -178,6 +173,13 @@ export class MatchesService {
     return getUserInfoFromGame;
   }
 
+  /**
+   * Fetches the top 10 players for the leaderboard.
+   * Sorting is applied server-side for performance.
+   *
+   * @param sortBy - Metric to rank players by ('wins', 'xp', or 'totalGames').
+   * @returns Top 10 players sorted by the selected metric.
+   */
   async getGameLeaderboard(sortBy: 'wins' | 'xp' | 'totalGames') {
     let orderBy;
     if (sortBy === 'wins') {

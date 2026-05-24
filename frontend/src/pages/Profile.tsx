@@ -39,6 +39,10 @@ interface Achievement {
   iconName: string;
 }
 
+interface UserAchievement {
+  achievementId: string
+}
+
 type RelationshipState = "SELF" | "FRIEND" | "PENDING_SENT" | "PENDING_RECEIVED" | "NONE"
 
 export default function Profile() {
@@ -76,18 +80,25 @@ export default function Profile() {
 
   useEffect(() => {
     async function loadProfile() {
+      if (!user) return
       if (isMe) {
         setProfileData(user)
         setLoading(false)
       }
       else if (username) {
+        if (!user) return
         try {
           setLoading(true)
           const data = await userService.getUserByUsername(username)
           setProfileData(data)
           setLoading(false)
         }
-        catch (error) {
+        catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error("Failed to load profile:", error.message);
+          } else {
+            console.error("Failed to load profile: An unknown error occurred");
+          }
           navigate("/dashboard");
         }
       }
@@ -177,13 +188,16 @@ export default function Profile() {
   useEffect(() => {
     if (!profileData || !user) return;
 
-
       async function fetchAllAchievments() {
         try {
           const data = await userService.getAllAchievements()
           setAllAchievements(data)
-        } catch (error) {
-          console.error("Failed to fetch all achievements: ", error)
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error("Failed to fetch all achievements:", error.message);
+          } else {
+            console.error("Failed to fetch all achievements: An unknown error occurred");
+          }
         }
       }
       fetchAllAchievments()
@@ -192,10 +206,14 @@ export default function Profile() {
         try {
           const data = await userService.getAchievements(profileData!.id)
           if (Array.isArray(data)) {
-            setUnlockedAchievements(data.map((a: any) => a.achievementId || a));
+            setUnlockedAchievements(data.map((a: UserAchievement) => a.achievementId));
           }
-        } catch (error) {
-          console.error("Failed to fetch achievements: ", error)
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error("Failed to fetch achievements:", error.message);
+          } else {
+            console.error("Failed to fetch achievements: An unknown error occurred");
+          }
         }
       }
       fetchAchievements()
@@ -204,10 +222,13 @@ export default function Profile() {
         try {
           const rankData = await userService.getUserRank(profileData!.id)
           setRank(rankData.rank)
-        }
-        catch (error) {
-          console.error("Failed to fetch user rank: ", error)
-        }
+			  } catch (error: unknown) {
+          if (error instanceof Error) {
+					  console.error('Failed to fetch user rank:', error.message);
+				  } else {
+					  console.error('Failed to fetch user rank: An unknown error occurred');
+				  }
+			  }
       }
       fetchRank()
 

@@ -142,7 +142,8 @@
     "score": "Score",
     "replayVotes": "Replay votes",
     "waitingReplayOther": "Replay requested. Waiting for the other player...",
-    "timer": "Time left: {{seconds}}s"
+    "timer": "Time left: {{seconds}}s",
+    "opponentDisconnect": "Opponent disconnected — waiting 20s for reconnection..."
   },
   "play": {
     "myGames": {
@@ -411,7 +412,7 @@
     "ERR_USERNAME_STRING": "Username must be a string.",
     "ERR_USER_USERNAME_MIN_LENGTH": "Username is too short (min 3).",
     "ERR_USER_USERNAME_MAX_LENGTH": "Username is too long (max 20).",
-    "ERR_USER_USERNAME_NO_SPACES": "Username must not contain spaces.",
+    "ERR_USER_USERNAME_NO_SPACES": "Username contains invalid characters.",
     "ERR_USER_BIO_STRING": "Bio must be a string.",
     "ERR_USER_BIO_MAX_LENGTH": "Bio is too long (max 180).",
     "ERR_AUTH_2FA_CODE_STRING": "Code must be a string.",
