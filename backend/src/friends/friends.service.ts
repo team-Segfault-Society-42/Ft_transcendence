@@ -16,7 +16,7 @@ import {
 	MAX_PENDING_FRIEND_REQUESTS,
 } from './friends.constants';
 import { FriendRequestAction } from './dto/respond-friend-request.dto';
-import { FRIEND_EVENTS } from './friends.events';
+import { FRIEND_EVENTS, type FriendEventName } from './friends.events';
 
 const publicFriendUserSelect = {
 	id: true,
@@ -65,7 +65,7 @@ export class FriendsService {
 	private emitFriendEventToUsers(
 		userAId: number,
 		userBId: number,
-		event: string,
+		event: FriendEventName,
 	): void {
 		this.presenceService.emitFriendEvent(userAId, event);
 		this.presenceService.emitFriendEvent(userBId, event);
