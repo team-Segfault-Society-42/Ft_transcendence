@@ -12,7 +12,7 @@ import type { User } from "@/type/user.types";
 
 export default function History() {
 	const { t } = useTranslation();
-	const [user] = useOutletContext<[User | null, any]>();
+	const [user] = useOutletContext<[User | null, React.Dispatch<React.SetStateAction<User | null>>]>();
 	const [matches, setMatches] = useState<Match[]>([]);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();

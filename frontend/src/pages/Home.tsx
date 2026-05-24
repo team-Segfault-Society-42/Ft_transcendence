@@ -8,9 +8,10 @@ import { useOutletContext } from "react-router";
 import { userService } from "@/services/userService";
 import { Motion } from "@/components/ui/Motion";
 import { useTranslation } from "react-i18next";
+import type { User } from "@/type/user.types";
 
 export default function Home() {
-  const [user] = useOutletContext<any>();
+  const [user] = useOutletContext<[User | null, React.Dispatch<React.SetStateAction<User | null>>]>();
   const [matches, setMatches] = useState<Match[]>([]);
   const { t } = useTranslation();
 
