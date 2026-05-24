@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Username } from '@/components/ui/Username';
 import { useEffect, useRef } from 'react';
+import { endGamePopupClasses } from '@/styles/gameChatClasses';
 
 type Props = {
 	endGameMessage: EndGameMessage;
@@ -47,16 +48,16 @@ export function EndGamePopup({
 	}, [endGameMessage.winnerName, playWinSound]);
 
 	return (
-		<Card className="flex min-w-80 max-w-[90vw] flex-col items-center gap-4 bg-slate-900 p-8 text-white hover:scale-100">
+		<Card className={endGamePopupClasses.card}>
 			<h2
-				className={`flex max-w-full items-center justify-center gap-2 text-center text-2xl font-bold ${endGameMessage.color}`}
+				className={`${endGamePopupClasses.title} ${endGameMessage.color}`}
 			>
 				{endGameMessage.winnerName ? (
 					<>
 						<Username
 							name={endGameMessage.winnerName}
 							variant="card"
-							className="max-w-32 font-bold"
+							className={endGamePopupClasses.winnerName}
 						/>
 						<span>{endGameMessage.resultText}</span>
 					</>
@@ -65,34 +66,34 @@ export function EndGamePopup({
 				)}
 			</h2>
 
-			<p className="text-center text-sm font-medium text-white/70">
+			<p className={endGamePopupClasses.subtitle}>
 				{endGameMessage.subtitle}
 			</p>
 
 			{canReplay ? (
-				<div className="flex flex-col items-center gap-3">
+				<div className={endGamePopupClasses.replayActions}>
 					<Button onClick={requestReplay} disabled={hasVoted}>
 						{waitingReplayOtherPlayer
 							? t('game.waiting', { defaultValue: 'Waiting...' })
 							: t('game.replay', { defaultValue: 'REPLAY' })}
 					</Button>
 
-					<div className="flex gap-2 text-xs font-bold">
+					<div className={endGamePopupClasses.replayVotes}>
 						<span
-							className={`rounded-full border px-3 py-1 ${
+							className={`${endGamePopupClasses.vote} ${
 								replayVotes.X
-									? 'border-cyan-400 text-cyan-400'
-									: 'border-white/10 text-white/40'
+									? endGamePopupClasses.voteXActive
+									: endGamePopupClasses.voteInactive
 							}`}
 						>
 							X {replayVotes.X ? '✓' : ''}
 						</span>
 
 						<span
-							className={`rounded-full border px-3 py-1 ${
+							className={`${endGamePopupClasses.vote} ${
 								replayVotes.O
-									? 'border-fuchsia-400 text-fuchsia-400'
-									: 'border-white/10 text-white/40'
+									? endGamePopupClasses.voteOActive
+									: endGamePopupClasses.voteInactive
 							}`}
 						>
 							O {replayVotes.O ? '✓' : ''}
@@ -100,7 +101,7 @@ export function EndGamePopup({
 					</div>
 				</div>
 			) : (
-				<p className="text-center text-sm text-white/50">
+				<p className={endGamePopupClasses.disabledReplayText}>
 					{playerLeft
 						? t('game.end.opponentLeftReplay')
 						: t('game.end.decidingReplay')}

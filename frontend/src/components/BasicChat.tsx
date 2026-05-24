@@ -4,6 +4,7 @@ import { io, type Socket } from 'socket.io-client';
 import type { ChatMessage } from '@/type/user.types';
 import { useTranslation } from 'react-i18next';
 import { EasterEggPanel, type EasterEgg } from './easter-eggs/EasterEggPanel';
+import { basicChatClasses } from '@/styles/gameChatClasses';
 
 type BasicChatProps = {
 	onClose: () => void;
@@ -99,18 +100,18 @@ export function BasicChat({ onClose }: BasicChatProps) {
 	}
 
 	return (
-		<section className="flex flex-col h-full w-full max-w-[320px] overflow-hidden">
+		<section className={basicChatClasses.container}>
 			<div className="flex justify-between items-center p-2">
 				<div className="flex items-center gap-2">
 					<h1>Chat</h1>
 					<span className="relative flex size-3">
 						{connected ? (
 							<>
-								<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-700 opacity-75"></span>
-								<span className="relative inline-flex size-3 rounded-full bg-green-600"></span>
+								<span className={basicChatClasses.onlinePing}></span>
+								<span className={basicChatClasses.onlineDot}></span>
 							</>
 						) : (
-							<span className="relative inline-flex size-3 rounded-full bg-red-500"></span>
+							<span className={basicChatClasses.offlineDot}></span>
 						)}
 					</span>
 				</div>
@@ -135,7 +136,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 							</span>
 						</div>
 
-						<div className="min-w-0 max-w-full whitespace-pre-wrap wrap-anywhere text-sm leading-snug text-white">
+						<div className={basicChatClasses.messageText}>
 							{message.content}
 						</div>
 					</div>

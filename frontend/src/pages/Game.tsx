@@ -6,6 +6,7 @@ import { useGameStore } from '../Store/gameStore';
 import { gameErrorMsg } from '@/lib/gameErrorMsg';
 import type { GameState, PlayerRole } from '@/type/game.types';
 import i18n from '@/i18n/config';
+import { gamePageClasses } from '@/styles/gameChatClasses';
 
 type JoinedAsPayload = {
 	role: PlayerRole;
@@ -68,7 +69,7 @@ export default function Game() {
 	}, [gameId]);
 
 	return (
-		<div className="flex justify-center items-start pt-1 pb-20 sm:pt-8 sm:pb-8">
+		<div className={gamePageClasses.container}>
 			<Board />
 		</div>
 	);

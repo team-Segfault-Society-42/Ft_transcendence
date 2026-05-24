@@ -1,5 +1,6 @@
 import type { GameStatus, PlayerRole } from '@/type/game.types';
 import { useTranslation } from 'react-i18next';
+import { gameStatusBannerClasses } from '@/styles/gameChatClasses';
 
 type Props = {
 	error: string | null;
@@ -18,7 +19,7 @@ export function GameStatusBanner({
 	return (
 		<div>
 			{error && (
-				<div className="mb-4 rounded-lg border border-red-400 bg-red-500/20 px-4 py-3 text-red-200">
+				<div className={gameStatusBannerClasses.error}>
 					{error}
 				</div>
 			)}
@@ -30,7 +31,7 @@ export function GameStatusBanner({
 			)}
 
 			{status === 'playing' && opponentDisconnect && (
-				<div className="border border-orange-400 bg-orange-500/20 px-4 py-3 text-orange-100">
+				<div className={gameStatusBannerClasses.disconnect}>
 					{t('game.opponentDisconnect')}
 				</div>
 			)}
