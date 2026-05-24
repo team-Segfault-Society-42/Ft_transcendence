@@ -8,13 +8,7 @@ import {
 	NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import {
-	GameState,
-	PlayerRole,
-	PlayerSymbol,
-	PublicPlayerProfile,
-	SocketIds,
-} from './game.types';
+import { GameState, PlayerRole, PublicPlayerProfile } from './game.types';
 import { MatchesService } from './matches.service';
 import {
 	initGameState,
@@ -293,13 +287,13 @@ export class GameService {
 		return this.activeGame.delete(gameId);
 	}
 
-/**
- * Persists a completed game to the database.
- * Maps the in-memory game state (X/O players) to the MatchesService format
- * before delegating the storage operation.
- *
- * @param game - The finished game state containing players, scores, and move history.
- */
+	/**
+	 * Persists a completed game to the database.
+	 * Maps the in-memory game state (X/O players) to the MatchesService format
+	 * before delegating the storage operation.
+	 *
+	 * @param game - The finished game state containing players, scores, and move history.
+	 */
 	private async saveGameToDB(game: GameState) {
 		if (!game.playerProfiles.X || !game.playerProfiles.O) return;
 

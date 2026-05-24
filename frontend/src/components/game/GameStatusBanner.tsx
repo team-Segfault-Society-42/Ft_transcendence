@@ -5,8 +5,6 @@ type Props = {
 	error: string | null;
 	status: GameStatus | null;
 	playerRole: PlayerRole | null;
-	canPlay: boolean;
-	hasReplayRole: boolean;
 	opponentDisconnect: boolean;
 };
 

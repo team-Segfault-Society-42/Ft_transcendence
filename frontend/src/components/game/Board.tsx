@@ -125,8 +125,6 @@ export default function Board() {
 						error={error}
 						status={status}
 						playerRole={playerRole}
-						canPlay={canPlay}
-						hasReplayRole={hasReplayRole}
 						opponentDisconnect={opponentDisconnect}
 					/>
 
