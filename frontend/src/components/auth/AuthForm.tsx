@@ -43,7 +43,7 @@ export function AuthForm({ mode, onSuccess, onTwoFactorRequired, }: AuthFormProp
             mode === "signup" ? { username: "", email: "", password: "" } : { email: "", password: "" },
     })
 
-  async function onSubmit(data: any) {
+  async function onSubmit(data: z.infer<typeof schema>) {
     try {
 			setIsLoading(true)
 
