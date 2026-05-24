@@ -8,14 +8,46 @@ import {
 	Res,
 	UnauthorizedException,
 } from '@nestjs/common';
-import type { Request, Response } from 'express';
-import { Public } from './public.decorator';
-import { OAuthService } from './oauth.service';
-import { AuthService } from './auth.service';
-import { URLSearchParams } from 'node:url';
+import {
+	ApiBadRequestResponse,
+	ApiFoundResponse,
+	ApiOperation,
+	ApiTags,
+	ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { randomBytes } from 'crypto';
+import type { Request, Response } from 'express';
+import { URLSearchParams } from 'node:url';
+import { AuthService } from './auth.service';
+import { OAuthService } from './oauth.service';
+import { Public } from './public.decorator';
 
-@Controller('auth')
+const isProduction = process.env.NODE_ENV === 'production';
+
+const oauthCookieOptions = {
+	httpOnly: true,
+	secure: isProduction,
+	sameSite: 'lax' as const,
+	path: '/',
+};
+
+const oauthStateCookieOptions = {
+	...oauthCookieOptions,
+	maxAge: 5 * 60 * 1000,
+};
+
+const accessTokenCookieOptions = {
+	...oauthCookieOptions,
+	maxAge: 8 * 60 * 60 * 1000,
+};
+
+const twoFactorPendingCookieOptions = {
+	...oauthCookieOptions,
+	maxAge: 5 * 60 * 1000,
+};
+
+@ApiTags('OAuth')
+@Controller('auth/oauth')
 export class OAuthController {
 	constructor(
 		private readonly oauthService: OAuthService,
@@ -23,40 +55,35 @@ export class OAuthController {
 	) {}
 
 	private getFrontendSuccessRedirectUrl(): string {
-		return (
-			process.env.FRONTEND_OAUTH_SUCCESS_URL ??
-			'http://localhost:1024/'
-		);
+		return process.env.FRONTEND_OAUTH_SUCCESS_URL ?? 'http://localhost:1024/';
 	}
 
 	private getTwoFactorRedirectUrl(): string {
-		return (
-			process.env.TWO_FACTOR_URL ??
-			'http://localhost:1024/two-factor'
-		);
+		return process.env.TWO_FACTOR_URL ?? 'http://localhost:1024/two-factor';
 	}
 
+	/**
+	 * @description Redirects the browser to the 42 OAuth authorization page.
+	 * @param res - Express response used to set the CSRF state cookie and redirect.
+	 * @returns Redirect response to the 42 authorization URL.
+	 * @throws InternalServerErrorException when required 42 OAuth environment variables are missing.
+	 * @remarks The oauth_state cookie is used to protect the callback against CSRF.
+	 */
 	@Public()
 	@Get('42')
+	@ApiOperation({ summary: 'Start 42 OAuth login' })
+	@ApiFoundResponse({ description: 'Redirects to the 42 OAuth authorization page' })
 	startFortyTwoOAuth(@Res() res: Response) {
 		const clientId = process.env.FORTYTWO_CLIENT_ID;
 		const redirectUri = process.env.FORTYTWO_REDIRECT_URI;
 
 		if (!clientId || !redirectUri) {
-			throw new InternalServerErrorException(
-				'ERR_OAUTH_42_CONFIG',
-			);
+			throw new InternalServerErrorException('ERR_OAUTH_42_CONFIG');
 		}
 
 		const state = randomBytes(32).toString('hex');
 
-		res.cookie('oauth_state', state, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			maxAge: 5 * 60 * 1000,
-			path: '/',
-		});
+		res.cookie('oauth_state', state, oauthStateCookieOptions);
 
 		const params = new URLSearchParams({
 			client_id: clientId,
@@ -66,18 +93,34 @@ export class OAuthController {
 			state,
 		});
 
-		const authorizationUrl = `https://api.intra.42.fr/oauth/authorize?${params.toString()}`;
+		const authorizationUrl =
+			`https://api.intra.42.fr/oauth/authorize?${params.toString()}`;
 
 		return res.redirect(authorizationUrl);
 	}
 
+	/**
+	 * @description Handles the 42 OAuth callback, validates state, then creates either a full session or a 2FA pending session.
+	 * @param code - Authorization code returned by 42.
+	 * @param state - CSRF state returned by 42.
+	 * @param req - Request containing the stored oauth_state cookie.
+	 * @param res - Express response used to set auth cookies and redirect.
+	 * @returns Redirect response to the frontend.
+	 * @throws BadRequestException when required callback query parameters are missing.
+	 * @throws UnauthorizedException when the OAuth state is missing or invalid.
+	 * @remarks This route clears oauth_state after successful validation and never exposes OAuth tokens to the frontend.
+	 */
 	@Public()
 	@Get('42/callback')
+	@ApiOperation({ summary: 'Handle 42 OAuth callback' })
+	@ApiFoundResponse({ description: 'Redirects to the frontend after OAuth login' })
+	@ApiBadRequestResponse({ description: 'Missing OAuth callback code or state' })
+	@ApiUnauthorizedResponse({ description: 'Missing or invalid OAuth state' })
 	async handleFortyTwoCallback(
-		@Query('code') code?: string,
-		@Query('state') state?: string,
-		@Req() req?: Request,
-		@Res({ passthrough: true }) res?: Response,
+		@Query('code') code: string | undefined,
+		@Query('state') state: string | undefined,
+		@Req() req: Request,
+		@Res({ passthrough: true }) res: Response,
 	) {
 		if (!code) {
 			throw new BadRequestException('ERR_OAUTH_MISSING_CODE');
@@ -87,7 +130,7 @@ export class OAuthController {
 			throw new BadRequestException('ERR_OAUTH_MISSING_STATE');
 		}
 
-		const storedState = req?.cookies?.oauth_state;
+		const storedState = req.cookies?.oauth_state;
 
 		if (!storedState) {
 			throw new UnauthorizedException('ERR_OAUTH_MISSING_STORED_STATE');
@@ -101,123 +144,30 @@ export class OAuthController {
 		const loginResult = await this.authService.createLoginResultForUser(user);
 
 		if (loginResult.type === '2fa_required') {
-			res?.cookie('2fa_pending', loginResult.two_factor_token, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'lax',
-				maxAge: 5 * 60 * 1000,
-			});
-
-			res?.clearCookie('access_token', {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'lax',
-				path: '/',
-			});
-		} else {
-			res?.cookie('access_token', loginResult.access_token, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'lax',
-				maxAge: 8 * 60 * 60 * 1000,
-			});
-
-			res?.clearCookie('2fa_pending', {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'lax',
-				path: '/',
-			});
-		}
-
-		res?.clearCookie('oauth_state', {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			path: '/',
-		});
-
-		const redirectUrl =
-			loginResult.type === '2fa_required'
-				? this.getTwoFactorRedirectUrl()
-				: this.getFrontendSuccessRedirectUrl();
-
-		return res?.redirect(redirectUrl);
-	}
-
-	//////////////////// Google OAuth ////////////////////
-	@Public()
-	@Get('google')
-	startGoogleOAuth(@Res() res: Response) {
-		const clientId = process.env.GOOGLE_CLIENT_ID;
-		const redirectUri = process.env.GOOGLE_REDIRECT_URI;
-
-		if (!clientId || !redirectUri) {
-			throw new InternalServerErrorException(
-				'ERR_OAUTH_GOOGLE_CONFIG',
+			res.cookie(
+				'2fa_pending',
+				loginResult.two_factor_token,
+				twoFactorPendingCookieOptions,
 			);
-		}
 
-		const params = new URLSearchParams({
-			client_id: clientId,
-			redirect_uri: redirectUri,
-			response_type: 'code',
-			scope: 'openid email profile',
-		});
-
-		const authorizationUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
-
-		return res.redirect(authorizationUrl);
-	}
-
-	@Public()
-	@Get('google/callback')
-	async handleGoogleCallback(
-		@Query('code') code?: string,
-		@Res({ passthrough: true }) res?: Response,
-	) {
-		if (!code) {
-			throw new BadRequestException('ERR_OAUTH_MISSING_CODE');
-		}
-
-		const user = await this.oauthService.handleGoogleCallback(code);
-		const loginResult = await this.authService.createLoginResultForUser(user);
-
-		if (loginResult.type === '2fa_required') {
-			res?.cookie('2fa_pending', loginResult.two_factor_token, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'lax',
-				maxAge: 5 * 60 * 1000,
-			});
-
-			res?.clearCookie('access_token', {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'lax',
-				path: '/',
-			});
+			res.clearCookie('access_token', oauthCookieOptions);
 		} else {
-			res?.cookie('access_token', loginResult.access_token, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'lax',
-				maxAge: 8 * 60 * 60 * 1000,
-			});
+			res.cookie(
+				'access_token',
+				loginResult.access_token,
+				accessTokenCookieOptions,
+			);
 
-			res?.clearCookie('2fa_pending', {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
-				sameSite: 'lax',
-				path: '/',
-			});
+			res.clearCookie('2fa_pending', oauthCookieOptions);
 		}
+
+		res.clearCookie('oauth_state', oauthCookieOptions);
 
 		const redirectUrl =
 			loginResult.type === '2fa_required'
 				? this.getTwoFactorRedirectUrl()
 				: this.getFrontendSuccessRedirectUrl();
 
-		return res?.redirect(redirectUrl);
+		return res.redirect(redirectUrl);
 	}
 }
