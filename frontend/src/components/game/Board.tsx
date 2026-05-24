@@ -15,6 +15,7 @@ import { GameStatusBanner } from './GameStatusBanner';
 import { EndGamePopup } from './EndGamePopup';
 import { SpectatorCount } from './SpectatorCount';
 import { Button } from '@/components/ui/Button';
+import { boardClasses } from '@/styles/gameChatClasses';
 
 export default function Board() {
 	const { game, error, playMove, playerRole, requestReplay, leaveGame } =
@@ -51,6 +52,12 @@ export default function Board() {
 		oldOppDiscnct.current = opponentDisconnect;
 	}, [opponentDisconnect, t]);
 
+	useEffect(() => {
+		if (game?.status === 'waiting' && playerRole === 'X') {
+			navigate('/play');
+		}
+	}, [game?.status, playerRole, navigate]);
+
 	if (error && !game) {
 		return (
 			<div className="text-white text-center p-8">
@@ -62,7 +69,7 @@ export default function Board() {
 
 	if (!game) {
 		return (
-			<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
+			<section className={boardClasses.emptyState}>
 				<EmptyStateCard
 					title={t('game.title')}
 					icon={<Gamepad2 size={24} />}
@@ -73,9 +80,6 @@ export default function Board() {
 		);
 	}
 
-	if (game.status === 'waiting' && playerRole === 'X') {
-		navigate('/play');
-	}
 	const { board, currentPlayer, status, winner, toDisapear } = game;
 
 	const playerXName = game.playerProfiles?.X?.username || 'Player X';
@@ -107,10 +111,10 @@ export default function Board() {
 	);
 
 	return (
-		<div className="w-full max-w-5xl overflow-x-hidden rounded-2xl border border-white/10 bg-slate-900/80 p-4 shadow-2xl sm:p-6 xl:p-8">
-			<div className="grid w-full min-w-0 grid-cols-1 items-start justify-items-center gap-6 text-center xl:grid-cols-[1fr_auto_1fr]">
+		<div className={boardClasses.card}>
+			<div className={boardClasses.layout}>
 				{/* play area*/}
-				<div className="flex w-full min-w-0 max-w-96 flex-col items-center xl:col-start-2">
+				<div className={boardClasses.playArea}>
 					<PlayerCards
 						playerXName={playerXName}
 						playerOName={playerOName}
@@ -125,12 +129,10 @@ export default function Board() {
 						error={error}
 						status={status}
 						playerRole={playerRole}
-						canPlay={canPlay}
-						hasReplayRole={hasReplayRole}
 						opponentDisconnect={opponentDisconnect}
 					/>
 
-					<div className="grid w-full max-w-96 grid-cols-3 gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 sm:p-8">
+					<div className={boardClasses.boardGrid}>
 						{flatBoard.map((value, i) => (
 							<Square
 								key={i}
@@ -148,13 +150,13 @@ export default function Board() {
 						))}
 					</div>
 
-					<div className="mt-6 text-white/60 font-medium">
+					<div className={boardClasses.spectatorArea}>
 						<SpectatorCount count={game.spectatCnt} />
 					</div>
 				</div>
 
 				{/* Popup Replay */}
-				<div className="w-full min-w-0 max-w-80 xl:col-start-3 xl:justify-self-start">
+				<div className={boardClasses.popupArea}>
 					{showPopup && (
 						<EndGamePopup
 							endGameMessage={endGameMessage}

@@ -8,13 +8,7 @@ import {
 	NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import {
-	GameState,
-	PlayerRole,
-	PlayerSymbol,
-	PublicPlayerProfile,
-	SocketIds,
-} from './game.types';
+import { GameState, PlayerRole, PublicPlayerProfile } from './game.types';
 import { MatchesService } from './matches.service';
 import {
 	initGameState,
@@ -61,6 +55,12 @@ export class GameService {
 		return null;
 	}
 
+	/**
+	 * Creates a waiting game and reserves the X seat for the current user.
+	 *
+	 * @param user - Public profile of the user creating the game.
+	 * @returns Id of the newly created game.
+	 */
 	createGame(user: PublicPlayerProfile): string {
 		const active = this.findActiveGameByUserId(user.id);
 		if (active) throw new ConflictException('ERR_GAME_ALREADY_ACTIVE');
@@ -77,8 +77,12 @@ export class GameService {
 		return gameId;
 	}
 
-	/*
-	 * - !!!return a copy of game
+	/**
+	 * Returns a cloned game state so callers cannot mutate the active game directly.
+	 *
+	 * @param gameId - Id of the game to read.
+	 * @returns A copy of the current game state.
+	 * @throws When the game does not exist.
 	 */
 	getGameById(gameId: string): GameState {
 		const game = this.activeGame.get(gameId);
@@ -100,6 +104,12 @@ export class GameService {
 		};
 	}
 
+	/**
+	 * Builds the active game summary used by the frontend lobby cards.
+	 *
+	 * @param userId - Id of the user asking for their active game.
+	 * @returns The active game summary, or null when the user is free.
+	 */
 	getActiveGameByUserId(userId: number) {
 		const active = this.findActiveGameByUserId(userId);
 		if (!active) return null;
@@ -151,6 +161,15 @@ export class GameService {
 		return 'available';
 	}
 
+	/**
+	 * Adds a socket to a game and assigns the user as X, O, or spectator.
+	 *
+	 * @param gameId - Id of the game to join.
+	 * @param socketId - Socket id joining the game.
+	 * @param userId - Id of the authenticated user.
+	 * @param user - Public profile used for player seats.
+	 * @returns The updated game state and assigned role.
+	 */
 	joinGame(
 		gameId: string,
 		socketId: string,
@@ -196,6 +215,14 @@ export class GameService {
 		return { game, role };
 	}
 
+	/**
+	 * Registers a replay vote and resets the board when both players agree.
+	 *
+	 * @param gameId - Id of the finished game.
+	 * @param userId - Id of the user voting for replay.
+	 * @returns The updated game state after the vote.
+	 * @throws When the game is not finished or the user is a spectator.
+	 */
 	requestReplay(gameId: string, userId: number): GameState {
 		const game = this.getMutableGameById(gameId);
 
@@ -215,6 +242,16 @@ export class GameService {
 		return game;
 	}
 
+	/**
+	 * Validates and applies a player move, including turn timeout checks.
+	 *
+	 * @param gameId - Id of the game being played.
+	 * @param userId - Id of the player sending the move.
+	 * @param r - Board row selected by the player.
+	 * @param c - Board column selected by the player.
+	 * @returns The updated game state after the move or timeout.
+	 * @throws When the user cannot play this move.
+	 */
 	async playMove(
 		gameId: string,
 		userId: number,
@@ -234,7 +271,6 @@ export class GameService {
 		const now = Date.now();
 		const timeOnClick = now - game.lastMove;
 
-		// 30 SEC
 		if (timeOnClick > TURN_TIMEOUT_MS) {
 			const timeOutGame = await this.finalizeTurnTimeout(gameId);
 			if (timeOutGame) return timeOutGame;
@@ -266,6 +302,12 @@ export class GameService {
 		return updatState;
 	}
 
+	/**
+	 * Removes one socket and reports a player disconnect only after all their sockets close.
+	 *
+	 * @param socketId - Socket id that disconnected.
+	 * @returns The disconnected player and game, or null if the user still has another socket.
+	 */
 	processPlayerDisconnection(
 		socketId: string,
 	): { gameId: string; role: 'X' | 'O'; game: GameState } | null {
@@ -293,13 +335,13 @@ export class GameService {
 		return this.activeGame.delete(gameId);
 	}
 
-/**
- * Persists a completed game to the database.
- * Maps the in-memory game state (X/O players) to the MatchesService format
- * before delegating the storage operation.
- *
- * @param game - The finished game state containing players, scores, and move history.
- */
+	/**
+	 * Persists a completed game to the database.
+	 * Maps the in-memory game state (X/O players) to the MatchesService format
+	 * before delegating the storage operation.
+	 *
+	 * @param game - The finished game state containing players, scores, and move history.
+	 */
 	private async saveGameToDB(game: GameState) {
 		if (!game.playerProfiles.X || !game.playerProfiles.O) return;
 
@@ -319,6 +361,12 @@ export class GameService {
 		await this.matchService.recordMatch(data, game.movesGameHistory);
 	}
 
+	/**
+	 * Ends the game when the current player exceeds the turn timer and persists the result.
+	 *
+	 * @param gameId - Id of the game to check.
+	 * @returns The finished game state, or null if the timeout should not fire.
+	 */
 	async finalizeTurnTimeout(gameId: string): Promise<GameState | null> {
 		const game = this.getMutableGameById(gameId);
 		if (game.status !== 'playing') return null;
@@ -362,6 +410,12 @@ export class GameService {
 		return game;
 	}
 
+	/**
+	 * Lists games the current user can join or spectate.
+	 *
+	 * @param userId - Id of the current user.
+	 * @returns Waiting and playing games that do not already include this user.
+	 */
 	getLiveGames(userId: number) {
 		const waiting: { gameId: string; playerX: PublicPlayerProfile | null }[] =
 			[];
@@ -388,6 +442,14 @@ export class GameService {
 		return { waiting, playing };
 	}
 
+	/**
+	 * Cancels a waiting game or marks a finished game as left by a player.
+	 *
+	 * @param gameId - Id of the game to leave.
+	 * @param userId - Id of the user leaving the game.
+	 * @returns Whether the game was deleted and the remaining game state if any.
+	 * @throws When the user tries to leave a game that is still playing.
+	 */
 	leaveGame(
 		gameId: string,
 		userId: number,

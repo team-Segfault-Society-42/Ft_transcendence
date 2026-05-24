@@ -7,6 +7,7 @@ import {
 	WebSocketServer,
 } from '@nestjs/websockets';
 import { Namespace } from 'socket.io';
+import { randomUUID } from 'crypto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import type { AuthSocket } from 'src/auth/jwt-auth.guard';
 import { SendChatMessageDto } from './dto/chat.dto';
@@ -31,13 +32,19 @@ const allowedOrigins = trimmedOrigins.filter(function (origin) {
 	},
 })
 @UseGuards(JwtAuthGuard)
-@UsePipes(new ValidationPipe({ whitelist: true }))
+@UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 export class ChatGateway {
 	@WebSocketServer()
 	server!: Namespace;
 
 	constructor(private readonly usersService: UsersService) {}
 
+	/**
+	 * Builds the public chat payload from the authenticated socket user and broadcasts it.
+	 *
+	 * @param body - Validated chat message received from the socket.
+	 * @param client - Authenticated socket that sent the message.
+	 */
 	@SubscribeMessage('chat_send')
 	async handleChatSend(
 		@MessageBody() body: SendChatMessageDto,
@@ -45,7 +52,7 @@ export class ChatGateway {
 	) {
 		const user = await this.usersService.getUser(client.data.user.sub);
 		const message = {
-			id: Date.now(),
+			id: randomUUID(),
 			content: body.content,
 			createdAt: new Date().toISOString(),
 			user: {

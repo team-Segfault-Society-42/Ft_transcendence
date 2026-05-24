@@ -4,6 +4,17 @@ import { io } from 'socket.io-client';
 import { useParams } from 'react-router-dom';
 import { useGameStore } from '../Store/gameStore';
 import { gameErrorMsg } from '@/lib/gameErrorMsg';
+import type { GameState, PlayerRole } from '@/type/game.types';
+import i18n from '@/i18n/config';
+import { gamePageClasses } from '@/styles/gameChatClasses';
+
+type JoinedAsPayload = {
+	role: PlayerRole;
+};
+
+type GameErrorPayload = {
+	message: string;
+};
 
 export default function Game() {
 	const { gameId } = useParams<{ gameId: string }>();
@@ -24,23 +35,23 @@ export default function Game() {
 			client.emit('join_game', { gameId });
 		});
 
-		client.on('joined_as', (payload) => {
+		client.on('joined_as', (payload: JoinedAsPayload) => {
 			useGameStore.getState().setPlayerRole(payload.role);
 		});
 
-		client.on('connect_error', (error) =>
-			console.error('connexion error:', error.message, error),
+		client.on('connect_error', () =>
+			useGameStore.getState().setError(i18n.t('errors.game.default')),
 		);
 
-		client.on('game_updated', (payload) => {
+		client.on('game_updated', (payload: GameState) => {
 			useGameStore.getState().syncFromServer(payload);
 		});
 
-		client.on('role_updated', (payload) => {
+		client.on('role_updated', (payload: JoinedAsPayload) => {
 			useGameStore.getState().setPlayerRole(payload.role);
 		});
 
-		client.on('game_error', (payload) => {
+		client.on('game_error', (payload: GameErrorPayload) => {
 			const message = gameErrorMsg(payload.message);
 
 			if (message === 'Game not found') {
@@ -58,7 +69,7 @@ export default function Game() {
 	}, [gameId]);
 
 	return (
-		<div className="flex justify-center items-start min-h-screen pt-8">
+		<div className={gamePageClasses.container}>
 			<Board />
 		</div>
 	);

@@ -3,13 +3,15 @@ import { Button } from './ui/Button';
 import { io, type Socket } from 'socket.io-client';
 import type { ChatMessage } from '@/type/user.types';
 import { useTranslation } from 'react-i18next';
-import {
-	EasterEggPanel,
-	type EasterEgg,
-} from "./easter-eggs/EasterEggPanel";
+import { EasterEggPanel, type EasterEgg } from './easter-eggs/EasterEggPanel';
+import { basicChatClasses } from '@/styles/gameChatClasses';
 
 type BasicChatProps = {
 	onClose: () => void;
+};
+
+type ChatException = {
+	message?: string | string[];
 };
 
 export function BasicChat({ onClose }: BasicChatProps) {
@@ -21,7 +23,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 
 	const [easterEgg, setEasterEgg] = useState<EasterEgg | null>(null);
 
-	const { t } = useTranslation()
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		const client = io(`${window.location.origin}/chat`, {
@@ -36,16 +38,16 @@ export function BasicChat({ onClose }: BasicChatProps) {
 		});
 		client.on('disconnect', () => setConnected(false));
 
-		client.on('chat_message', (message) => {
+		client.on('chat_message', (message: ChatMessage) => {
 			setMessages((prev) => [...prev, message]);
 		});
 
-		client.on('connect_error', (error) => {
+		client.on('connect_error', (error: Error) => {
 			console.error('chat socket error:', error.message);
 		});
 
-		client.on('chat_error', (error) => {
-			console.error('Error:', error.error);
+		client.on('exception', (error: ChatException) => {
+			console.error('Chat exception:', error.message);
 		});
 
 		return () => {
@@ -62,10 +64,10 @@ export function BasicChat({ onClose }: BasicChatProps) {
 		const command = text.toLowerCase();
 
 		const commands: Record<string, EasterEgg> = {
-			"/rick": "rick",
-			"/matrix": "matrix",
-			"/neofetch": "neofetch",
-			"/nuke": "nuke",
+			'/rick': 'rick',
+			'/matrix': 'matrix',
+			'/neofetch': 'neofetch',
+			'/nuke': 'nuke',
 		};
 
 		const egg = commands[command];
@@ -75,14 +77,14 @@ export function BasicChat({ onClose }: BasicChatProps) {
 		}
 
 		setEasterEgg(egg);
-		setContent("");
+		setContent('');
 		return true;
 	}
 
 	function sendMessage() {
 		const text = content.trim();
 
-		if (!clientRef.current || text.length === 0) {
+		if (!clientRef.current || !connected || text.length === 0) {
 			return;
 		}
 
@@ -98,18 +100,18 @@ export function BasicChat({ onClose }: BasicChatProps) {
 	}
 
 	return (
-		<section className="flex flex-col h-full w-full max-w-[320px] overflow-hidden">
+		<section className={basicChatClasses.container}>
 			<div className="flex justify-between items-center p-2">
 				<div className="flex items-center gap-2">
 					<h1>Chat</h1>
 					<span className="relative flex size-3">
 						{connected ? (
 							<>
-								<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-700 opacity-75"></span>
-								<span className="relative inline-flex size-3 rounded-full bg-green-600"></span>
+								<span className={basicChatClasses.onlinePing}></span>
+								<span className={basicChatClasses.onlineDot}></span>
 							</>
 						) : (
-							<span className="relative inline-flex size-3 rounded-full bg-red-500"></span>
+							<span className={basicChatClasses.offlineDot}></span>
 						)}
 					</span>
 				</div>
@@ -134,22 +136,18 @@ export function BasicChat({ onClose }: BasicChatProps) {
 							</span>
 						</div>
 
-						<div className="min-w-0 max-w-full whitespace-pre-wrap wrap-anywhere text-sm leading-snug text-white">
+						<div className={basicChatClasses.messageText}>
 							{message.content}
 						</div>
 					</div>
 				))}
 
 				{easterEgg && (
-					<EasterEggPanel
-						type={easterEgg}
-						onClose={() => setEasterEgg(null)}
-					/>
+					<EasterEggPanel type={easterEgg} onClose={() => setEasterEgg(null)} />
 				)}
 
 				<div ref={bottomRef} />
 			</div>
-
 
 			<div className="flex items-end gap-2 p-2">
 				<textarea
@@ -162,6 +160,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 						}
 					}}
 					placeholder={t('chat.placeholder', { count: 500 })}
+					maxLength={500}
 					rows={4}
 					className="flex-1 border p-2 resize-none"
 				/>

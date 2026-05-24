@@ -1,8 +1,14 @@
-import { IsString, MaxLength, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
+/**
+ * Payload received from the chat socket when a user sends a message.
+ * The content is trimmed before validation and broadcast.
+ */
 export class SendChatMessageDto {
-  @IsString({ message: 'ERR_CHAT_MSG_STRING' })
-  @MinLength(1, { message: 'ERR_CHAT_MSG_EMPTY' })
-  @MaxLength(500, { message: 'ERR_CHAT_MSG_TOO_LONG' })
-  content!: string;
+	@Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+	@IsString({ message: 'ERR_CHAT_MSG_STRING' })
+	@IsNotEmpty({ message: 'ERR_CHAT_MSG_EMPTY' })
+	@MaxLength(500, { message: 'ERR_CHAT_MSG_TOO_LONG' })
+	content!: string;
 }

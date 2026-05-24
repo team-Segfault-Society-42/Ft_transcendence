@@ -1,4 +1,5 @@
 import type { CellValue } from "../../type/game.types";
+import { squareClasses } from "@/styles/gameChatClasses";
 
 type SquareProps = {
   value: CellValue;
@@ -13,15 +14,13 @@ export default function Square({
 }: SquareProps) {
   return (
     <button
-      className="aspect-square w-full rounded-xl border border-white/40 bg-white/10 text-7xl font-bold shadow-md active:scale-95 hover:bg-white/20 transition-all flex items-center justify-center"
+      className={squareClasses.button}
       onClick={onSquareClick}
     >
       <span
-        className={`
-          ${value === "X" ? "text-cyan-400" : "text-fuchsia-400"}
-          ${isWarning ? "opacity-30 scale-75" : "opacity-100"}
-          transition-all duration-300
-        `}
+        className={`${squareClasses.value} ${
+          value === "X" ? squareClasses.xValue : squareClasses.oValue
+        } ${isWarning ? squareClasses.warning : squareClasses.normal}`}
       >
         {value ?? ""}
       </span>

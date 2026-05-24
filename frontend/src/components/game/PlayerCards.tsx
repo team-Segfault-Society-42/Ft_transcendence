@@ -4,6 +4,7 @@ import { Card } from '../ui/Card';
 import { Circle, X } from 'lucide-react';
 import type { PlayerRole, PlayerSymbol } from '@/type/game.types';
 import { useTranslation } from 'react-i18next';
+import { playerCardsClasses } from '@/styles/gameChatClasses';
 
 type PlayerCardProps = {
 	symbol: PlayerSymbol;
@@ -28,8 +29,8 @@ function PlayerSymbolIcon({ symbol }: { symbol: PlayerSymbol }) {
 	const color = symbol === 'X' ? 'text-cyan-400' : 'text-fuchsia-400';
 
 	return (
-		<span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-white/10 bg-white/5">
-			<Icon className={`h-4 w-4 stroke-3 ${color}`} />
+		<span className={playerCardsClasses.symbolBadge}>
+			<Icon className={`${playerCardsClasses.symbolIcon} ${color}`} />
 		</span>
 	);
 }
@@ -44,23 +45,24 @@ function PlayerCard({
 	const { t } = useTranslation();
 
 	return (
-		<div className="relative mt-4">
+		<div className="relative mt-2 sm:mt-4">
 			{isYou && (
-				<span className="absolute inset-x-0 -top-6 text-center text-xs font-bold uppercase text-cyan-400">
+				<span className={playerCardsClasses.youLabel}>
 					{t('game.you')}
 				</span>
 			)}
 			<Card
-				className={`flex w-28 flex-col items-center p-3
-	        ${isActive ? 'ring-2 ring-cyan-400' : ''}`}
+				className={`${playerCardsClasses.card} ${
+					isActive ? playerCardsClasses.activeCard : ''
+				}`}
 			>
 				<Avatar src={avatar} alt={`player ${symbol}`} fallback={name[0]} />
-				<div className="mt-3 flex w-full min-w-0 items-center justify-center gap-1 font-bold">
+				<div className={playerCardsClasses.nameRow}>
 					<PlayerSymbolIcon symbol={symbol} />
 					<Username
 						name={name}
 						variant="card"
-						className="text-xs max-w-14 font-bold"
+						className={playerCardsClasses.name}
 					/>
 				</div>
 			</Card>
@@ -80,7 +82,7 @@ export function PlayerCards({
 	const percentage = Math.max(0, Math.min(100, (timeLeft / 30) * 100));
 
 	return (
-		<div className="mb-8 flex w-full max-w-96 items-center justify-between text-white">
+		<div className={playerCardsClasses.container}>
 			<PlayerCard
 				symbol="X"
 				name={playerXName}
@@ -90,7 +92,7 @@ export function PlayerCards({
 			/>
 
 			<div
-				className="grid size-16 place-items-center rounded-full text-sm font-bold"
+				className={playerCardsClasses.timer}
 				style={{
 					background: `radial-gradient(#111827 65%, #0000 0), 
                conic-gradient(${percentage > 30 ? `#22d300` : '#ef4444'} ${percentage}%, #0000 0)`,

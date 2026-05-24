@@ -13,6 +13,11 @@ export function isCellEmpty(
 	return gameState.board[position.r][position.c] === null;
 }
 
+/**
+ * Creates the default in-memory state for a new game.
+ *
+ * @returns A waiting game state with an empty board and empty seats.
+ */
 export function initGameState(): GameState {
 	return {
 		board: createEmptyBoard(BOARD_SIZE),
@@ -84,6 +89,14 @@ export function checkDraw(countMoves: number): boolean {
 	return false;
 }
 
+/**
+ * Checks that a move targets a valid empty cell before it is applied.
+ *
+ * @param gameState - Current game state.
+ * @param r - Board row selected by the player.
+ * @param c - Board column selected by the player.
+ * @throws When the target cell is outside the board or already occupied.
+ */
 export function validateToMove(gameState: GameState, r: number, c: number) {
 	const size = gameState.board.length;
 	if (r < 0 || r >= size || c < 0 || c >= size)
@@ -110,6 +123,14 @@ export function createEmptyBoard(size: number = BOARD_SIZE): CellValue[][] {
 	return board;
 }
 
+/**
+ * Applies an accepted move, updates the disappearing-cell rule, and finishes the game if needed.
+ *
+ * @param game - Current in-memory game state.
+ * @param r - Board row selected by the player.
+ * @param c - Board column selected by the player.
+ * @returns The same game state after applying the move.
+ */
 export function applyMove(game: GameState, r: number, c: number): GameState {
 	const symbol = game.currentPlayer;
 
@@ -149,14 +170,12 @@ export function applyMove(game: GameState, r: number, c: number): GameState {
 }
 
 /**
- * (SETTER)
- * Assign a role to the client
- * - 1st client: X
- * - 2nd client: O (starts the game)
- * - others: spectator
- * @param game - The game state
- * @param clientId - The client identifier
- * @return PlayerRole The assigned player role
+ * Keeps a reconnecting user in the same seat; new users fill X, then O, then become spectators.
+ *
+ * @param game - Current in-memory game state.
+ * @param userId - Id of the user joining or reconnecting.
+ * @param socketId - Socket id used for this connection.
+ * @returns The role assigned to this socket.
  */
 export function assignPlayerRole(
 	game: GameState,
@@ -210,6 +229,12 @@ export function posToIdx(pos: BoardPosition): number {
 	return pos.r * 3 + pos.c;
 }
 
+/**
+ * Starts a replay from a clean board and swaps seats so the previous O player starts as X.
+ *
+ * @param game - Finished game state that both players agreed to replay.
+ * @returns The same game state reset for the replay.
+ */
 export function resetBoardForReplay(game: GameState): GameState {
 	game.board = createEmptyBoard(BOARD_SIZE);
 	game.currentPlayer = 'X';

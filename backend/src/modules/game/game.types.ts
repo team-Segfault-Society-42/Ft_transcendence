@@ -32,10 +32,6 @@ export interface BoardPosition {
 	c: number;
 }
 
-export interface Move extends BoardPosition {
-	player: PlayerSymbol;
-}
-
 export interface PlayerSeat {
 	ownerUserId: number | null;
 	socketIds: SocketIds;

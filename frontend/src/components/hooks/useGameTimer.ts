@@ -3,6 +3,12 @@ import { useEffect, useState } from "react";
 
 const TURN_TIMEOUT_SECONDS = 30;
 
+/**
+ * Mirrors the backend turn timer from the game timestamp.
+ *
+ * @param game - Current game state received from the socket.
+ * @returns Seconds left for the current turn.
+ */
 export function useGameTimer(game: GameState | null) {
   const [timeLeft, setTimeLeft] = useState(TURN_TIMEOUT_SECONDS);
 
