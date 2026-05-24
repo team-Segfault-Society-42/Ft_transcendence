@@ -511,7 +511,8 @@
     "ERR_AUTH_CURRENT_PWD_REQUIRED": "La contraseña actual es obligatoria.",
     "AUTH_PASSWORD_UPDATED_SUCCESS": "Contraseña actualizada correctamente.",
     "ERR_AUTH_EMAIL_ALREADY_EXISTS": "El correo electrónico ya existe.",
-    "AUTH_EMAIL_UPDATED_SUCCESS": "Correo electrónico actualizado correctamente."
+    "AUTH_EMAIL_UPDATED_SUCCESS": "Correo electrónico actualizado correctamente.",
+    "ERR_AUTH_2FA_CODE_DIGITS": "El código 2FA debe contener solo números."
   },
   "errors": {
     "game": {

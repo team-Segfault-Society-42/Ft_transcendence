@@ -511,7 +511,8 @@
     "ERR_AUTH_CURRENT_PWD_REQUIRED": "Current password is required.",
     "AUTH_PASSWORD_UPDATED_SUCCESS": "Password updated successfully.",
     "ERR_AUTH_EMAIL_ALREADY_EXISTS": "Email already exists.",
-    "AUTH_EMAIL_UPDATED_SUCCESS": "Email updated successfully."
+    "AUTH_EMAIL_UPDATED_SUCCESS": "Email updated successfully.",
+    "ERR_AUTH_2FA_CODE_DIGITS": "The 2FA code must contain only digits."
   },
   "errors": {
     "game": {
