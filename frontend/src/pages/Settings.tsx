@@ -1,15 +1,17 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Settings as SettingsIcon } from "lucide-react";
+import { toast } from "sonner";
+
+import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/Card";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { Input } from "@/components/ui/Input";
-import { toast } from "sonner";
+
 import { userService } from "@/services/userService";
-import { Avatar } from "@/components/ui/Avatar";
 import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
-import { Settings as SettingsIcon } from "lucide-react";
 
 interface User {
 	id: number;
@@ -34,25 +36,52 @@ export default function Settings() {
 			[User | null, React.Dispatch<React.SetStateAction<User | null>>]
 		>();
 
+	/* -------------------------------------------------------------------------- */
+	/* Profile state                                                              */
+	/* -------------------------------------------------------------------------- */
+
 	const [username, setUsername] = useState(user?.username || "");
 	const [bio, setBio] = useState(user?.bio || "");
 	const [isSaving, setIsSaving] = useState(false);
+
+	/* -------------------------------------------------------------------------- */
+	/* Avatar state                                                               */
+	/* -------------------------------------------------------------------------- */
+
 	const [isAvatarUploading, setIsAvatarUploading] = useState(false);
+
 	const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
+	/* -------------------------------------------------------------------------- */
+	/* 2FA state                                                                  */
+	/* -------------------------------------------------------------------------- */
+
 	const [twoFactorCode, setTwoFactorCode] = useState("");
+	const [disableTwoFactorCode, setDisableTwoFactorCode] = useState("");
 	const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
 	const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false);
-	const [disableTwoFactorCode, setDisableTwoFactorCode] = useState("");
+
+	/* -------------------------------------------------------------------------- */
+	/* Password state                                                             */
+	/* -------------------------------------------------------------------------- */
 
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
 	const [isPasswordSaving, setIsPasswordSaving] = useState(false);
 
+	/* -------------------------------------------------------------------------- */
+	/* Email state                                                                */
+	/* -------------------------------------------------------------------------- */
+
 	const [newEmail, setNewEmail] = useState(user?.email ?? "");
+
 	const [emailCurrentPassword, setEmailCurrentPassword] = useState("");
+
 	const [isEmailSaving, setIsEmailSaving] = useState(false);
 
+	/**
+	 * Synchronizes local editable form state with the authenticated user.
+	 */
 	useEffect(() => {
 		if (!user) return;
 
@@ -61,25 +90,40 @@ export default function Settings() {
 		setNewEmail(user.email);
 	}, [user]);
 
-	if (!user) {
-		return (
-			<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
-				<EmptyStateCard
-					title={t("settings.title")}
-					icon={<SettingsIcon size={24} />}
-					message={t("settings.notConnected")}
-					description={t("settings.login")}
-					actions={
-						<Button onClick={() => navigate("/")}>
-							{t("buttons.backHome")}
-						</Button>
-					}
-				/>
-			</section>
+	/**
+	 * Refreshes the authenticated user from the backend.
+	 *
+	 * @returns Updated authenticated user.
+	 * @remarks Keeps frontend account state synchronized after mutations.
+	 */
+	async function refreshAuthenticatedUser(): Promise<void> {
+		const refreshedUser = await userService.getMe();
+
+		setUser(refreshedUser);
+	}
+
+	/**
+	 * Displays a translated backend error toast from an unknown error.
+	 *
+	 * @param error - Unknown async error.
+	 */
+	function showBackendError(error: unknown): void {
+		const finalMessage = getBackendErrorMessage(error);
+
+		toast.error(
+			t(`backend.${finalMessage}`, {
+				defaultValue: finalMessage,
+			}),
 		);
 	}
 
-	async function handleAvatarUpload(event: React.ChangeEvent<HTMLInputElement>) {
+	/* -------------------------------------------------------------------------- */
+	/* Avatar handlers                                                            */
+	/* -------------------------------------------------------------------------- */
+
+	async function handleAvatarUpload(
+		event: React.ChangeEvent<HTMLInputElement>,
+	) {
 		if (!user) return;
 
 		const file = event.target.files?.[0];
@@ -90,23 +134,22 @@ export default function Settings() {
 			setIsAvatarUploading(true);
 
 			await userService.uploadAvatar(file);
-			const refreshedUser = await userService.getMe();
-			setUser(refreshedUser);
+
+			await refreshAuthenticatedUser();
 
 			toast.success(t("profile.avatarUpdated"));
 		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t(`backend.${finalMessage}`, {
-					defaultValue: finalMessage,
-				}),
-			);
+			showBackendError(error);
 		} finally {
 			setIsAvatarUploading(false);
+
 			event.target.value = "";
 		}
 	}
+
+	/* -------------------------------------------------------------------------- */
+	/* 2FA handlers                                                               */
+	/* -------------------------------------------------------------------------- */
 
 	async function handleEnableTwoFactor() {
 		if (!user) return;
@@ -120,13 +163,7 @@ export default function Settings() {
 
 			toast.success(t("auth.twofa.setupStarted"));
 		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t(`backend.${finalMessage}`, {
-					defaultValue: finalMessage,
-				}),
-			);
+			showBackendError(error);
 		} finally {
 			setIsTwoFactorLoading(false);
 		}
@@ -147,20 +184,12 @@ export default function Settings() {
 				}),
 			);
 
-			const refreshedUser = await userService.getMe();
-
-			setUser(refreshedUser);
+			await refreshAuthenticatedUser();
 
 			setTwoFactorCode("");
 			setQrCodeDataUrl("");
 		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t(`backend.${finalMessage}`, {
-					defaultValue: finalMessage,
-				}),
-			);
+			showBackendError(error);
 		} finally {
 			setIsTwoFactorLoading(false);
 		}
@@ -182,22 +211,19 @@ export default function Settings() {
 				}),
 			);
 
-			const refreshedUser = await userService.getMe();
-			setUser(refreshedUser);
+			await refreshAuthenticatedUser();
 
 			setDisableTwoFactorCode("");
 		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t(`backend.${finalMessage}`, {
-					defaultValue: finalMessage,
-				}),
-			);
+			showBackendError(error);
 		} finally {
 			setIsTwoFactorLoading(false);
 		}
 	}
+
+	/* -------------------------------------------------------------------------- */
+	/* Password handlers                                                          */
+	/* -------------------------------------------------------------------------- */
 
 	async function handleUpdatePassword() {
 		if (!user) return;
@@ -206,7 +232,9 @@ export default function Settings() {
 			setIsPasswordSaving(true);
 
 			const result = await userService.updatePassword({
-				currentPassword: user.hasPassword ? currentPassword : undefined,
+				currentPassword: user.hasPassword
+					? currentPassword
+					: undefined,
 				newPassword,
 			});
 
@@ -216,23 +244,20 @@ export default function Settings() {
 				}),
 			);
 
-			const refreshedUser = await userService.getMe();
-			setUser(refreshedUser);
+			await refreshAuthenticatedUser();
 
 			setCurrentPassword("");
 			setNewPassword("");
 		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t(`backend.${finalMessage}`, {
-					defaultValue: finalMessage,
-				}),
-			);
+			showBackendError(error);
 		} finally {
 			setIsPasswordSaving(false);
 		}
 	}
+
+	/* -------------------------------------------------------------------------- */
+	/* Email handlers                                                             */
+	/* -------------------------------------------------------------------------- */
 
 	async function handleUpdateEmail() {
 		if (!user) return;
@@ -253,22 +278,19 @@ export default function Settings() {
 				}),
 			);
 
-			const refreshedUser = await userService.getMe();
-			setUser(refreshedUser);
+			await refreshAuthenticatedUser();
 
 			setEmailCurrentPassword("");
 		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t(`backend.${finalMessage}`, {
-					defaultValue: finalMessage,
-				}),
-			);
+			showBackendError(error);
 		} finally {
 			setIsEmailSaving(false);
 		}
 	}
+
+	/* -------------------------------------------------------------------------- */
+	/* Profile handlers                                                           */
+	/* -------------------------------------------------------------------------- */
 
 	async function handleSaveProfile() {
 		if (!user) return;
@@ -281,35 +303,53 @@ export default function Settings() {
 				bio,
 			});
 
-			const refreshedUser = await userService.getMe();
-			setUser(refreshedUser);
+			await refreshAuthenticatedUser();
 
 			toast.success(t("settings.profile.updated"));
 		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t(`backend.${finalMessage}`, {
-					defaultValue: finalMessage,
-				}),
-			);
+			showBackendError(error);
 		} finally {
 			setIsSaving(false);
 		}
 	}
 
+	/* -------------------------------------------------------------------------- */
+	/* Empty state                                                                */
+	/* -------------------------------------------------------------------------- */
+
+	if (!user) {
+		return (
+			<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
+				<EmptyStateCard
+					title={t("settings.title")}
+					icon={<SettingsIcon size={24} />}
+					message={t("settings.notConnected")}
+					description={t("settings.login")}
+					actions={
+						<Button onClick={() => navigate("/")}>
+							{t("buttons.backHome")}
+						</Button>
+					}
+				/>
+			</section>
+		);
+	}
+
 	return (
 		<section className="w-full max-w-6xl mx-auto px-6 py-10 text-white">
+			{/* Header */}
 			<div className="mb-8">
 				<h1 className="text-3xl font-bold bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
 					{t("settings.title")}
 				</h1>
+
 				<p className="text-white/50 mt-2">
 					{t("settings.description")}
 				</p>
 			</div>
 
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+				{/* Profile settings */}
 				<Card className="h-full relative bg-slate-900 space-y-6 p-6">
 					<CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
 						{t("settings.profile.title")}
@@ -340,7 +380,9 @@ export default function Settings() {
 							<Button
 								type="button"
 								variant="secondary"
-								onClick={() => avatarInputRef.current?.click()}
+								onClick={() =>
+									avatarInputRef.current?.click()
+								}
 								disabled={isAvatarUploading}
 							>
 								{isAvatarUploading
@@ -356,7 +398,9 @@ export default function Settings() {
 
 							<Input
 								value={username}
-								onChange={(e) => setUsername(e.target.value)}
+								onChange={(e) =>
+									setUsername(e.target.value)
+								}
 								autoComplete="username"
 							/>
 						</div>
@@ -385,6 +429,7 @@ export default function Settings() {
 					</div>
 				</Card>
 
+				{/* Two-factor authentication */}
 				<Card className="h-full relative bg-slate-900 space-y-6 p-6">
 					<CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
 						{t("settings.security.title")}
@@ -399,6 +444,7 @@ export default function Settings() {
 							<p className="text-sm font-semibold text-white">
 								{t("auth.twofa.title")}
 							</p>
+
 							<p className="text-xs text-white/40 mt-1">
 								{t("auth.twofa.description")}
 							</p>
@@ -413,9 +459,13 @@ export default function Settings() {
 								<Input
 									value={disableTwoFactorCode}
 									onChange={(e) =>
-										setDisableTwoFactorCode(e.target.value)
+										setDisableTwoFactorCode(
+											e.target.value,
+										)
 									}
-									placeholder={t("auth.twofa.enterCode")}
+									placeholder={t(
+										"auth.twofa.enterCode",
+									)}
 									maxLength={6}
 									autoComplete="one-time-code"
 								/>
@@ -426,13 +476,16 @@ export default function Settings() {
 									onClick={handleDisableTwoFactor}
 									disabled={
 										isTwoFactorLoading ||
-										disableTwoFactorCode.length !== 6
+										disableTwoFactorCode.length !==
+											6
 									}
 									className="w-full"
 								>
 									{isTwoFactorLoading
 										? t("auth.twofa.verifying")
-										: t("settings.security.disableTitle")}
+										: t(
+												"settings.security.disableTitle",
+											)}
 								</Button>
 							</>
 						) : (
@@ -460,34 +513,53 @@ export default function Settings() {
 
 										<Input
 											value={twoFactorCode}
-											onChange={(e) => setTwoFactorCode(e.target.value)}
-											placeholder={t("auth.twofa.enterCode")}
+											onChange={(e) =>
+												setTwoFactorCode(
+													e.target.value,
+												)
+											}
+											placeholder={t(
+												"auth.twofa.enterCode",
+											)}
 											maxLength={6}
 											autoComplete="one-time-code"
 										/>
 
 										<Button
 											type="button"
-											onClick={handleVerifyTwoFactor}
+											onClick={
+												handleVerifyTwoFactor
+											}
 											disabled={
 												isTwoFactorLoading ||
-												twoFactorCode.length !== 6
+												twoFactorCode.length !==
+													6
 											}
 											className="w-full"
 										>
 											{isTwoFactorLoading
-												? t("auth.twofa.verifying")
-												: t("auth.twofa.verify")}
+												? t(
+														"auth.twofa.verifying",
+													)
+												: t(
+														"auth.twofa.verify",
+													)}
 										</Button>
 
 										<Button
 											type="button"
 											variant="secondary"
-											onClick={handleEnableTwoFactor}
-											disabled={isTwoFactorLoading}
+											onClick={
+												handleEnableTwoFactor
+											}
+											disabled={
+												isTwoFactorLoading
+											}
 											className="w-full"
 										>
-											{t("auth.twofa.regenerate")}
+											{t(
+												"auth.twofa.regenerate",
+											)}
 										</Button>
 									</div>
 								)}
@@ -496,6 +568,7 @@ export default function Settings() {
 					</div>
 				</Card>
 
+				{/* Email settings */}
 				<Card className="h-full relative bg-slate-900 space-y-6 p-6">
 					<CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
 						{t("settings.security.emailTitle")}
@@ -509,8 +582,12 @@ export default function Settings() {
 						<Input
 							type="email"
 							value={newEmail}
-							onChange={(e) => setNewEmail(e.target.value)}
-							placeholder={t("settings.security.email")}
+							onChange={(e) =>
+								setNewEmail(e.target.value)
+							}
+							placeholder={t(
+								"settings.security.email",
+							)}
 							autoComplete="off"
 							name="settings-email"
 						/>
@@ -520,9 +597,13 @@ export default function Settings() {
 								type="password"
 								value={emailCurrentPassword}
 								onChange={(e) =>
-									setEmailCurrentPassword(e.target.value)
+									setEmailCurrentPassword(
+										e.target.value,
+									)
 								}
-								placeholder={t("settings.security.currentPassword")}
+								placeholder={t(
+									"settings.security.currentPassword",
+								)}
 								autoComplete="new-password"
 								name="settings-email-current-password"
 							/>
@@ -535,28 +616,40 @@ export default function Settings() {
 								isEmailSaving ||
 								newEmail.trim().length === 0 ||
 								(user.hasPassword &&
-									emailCurrentPassword.length === 0)
+									emailCurrentPassword.length ===
+										0)
 							}
 							className="w-full"
 						>
 							{isEmailSaving
 								? t("settings.profile.saving")
-								: t("settings.security.updateEmail")}
+								: t(
+										"settings.security.updateEmail",
+									)}
 						</Button>
 					</div>
 				</Card>
 
+				{/* Password settings */}
 				<Card className="h-full relative bg-slate-900 space-y-6 p-6">
 					<CardTitle className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
 						{user.hasPassword
-							? t("settings.security.passwordTitle")
-							: t("settings.security.setPasswordTitle")}
+							? t(
+									"settings.security.passwordTitle",
+								)
+							: t(
+									"settings.security.setPasswordTitle",
+								)}
 					</CardTitle>
 
 					<CardDescription className="text-white/50">
 						{user.hasPassword
-							? t("settings.security.passwordDescription")
-							: t("settings.security.setPasswordDescription")}
+							? t(
+									"settings.security.passwordDescription",
+								)
+							: t(
+									"settings.security.setPasswordDescription",
+								)}
 					</CardDescription>
 
 					<div className="bg-white/5 border border-white/10 rounded-xl p-6 space-y-4">
@@ -564,8 +657,14 @@ export default function Settings() {
 							<Input
 								type="password"
 								value={currentPassword}
-								onChange={(e) => setCurrentPassword(e.target.value)}
-								placeholder={t("settings.security.currentPassword")}
+								onChange={(e) =>
+									setCurrentPassword(
+										e.target.value,
+									)
+								}
+								placeholder={t(
+									"settings.security.currentPassword",
+								)}
 								autoComplete="current-password"
 								name="settings-current-password"
 							/>
@@ -574,8 +673,12 @@ export default function Settings() {
 						<Input
 							type="password"
 							value={newPassword}
-							onChange={(e) => setNewPassword(e.target.value)}
-							placeholder={t("settings.security.newPassword")}
+							onChange={(e) =>
+								setNewPassword(e.target.value)
+							}
+							placeholder={t(
+								"settings.security.newPassword",
+							)}
 							autoComplete="new-password"
 							name="settings-new-password"
 						/>
@@ -586,15 +689,20 @@ export default function Settings() {
 							disabled={
 								isPasswordSaving ||
 								newPassword.length < 8 ||
-								(user.hasPassword && currentPassword.length === 0)
+								(user.hasPassword &&
+									currentPassword.length === 0)
 							}
 							className="w-full"
 						>
 							{isPasswordSaving
 								? t("settings.profile.saving")
 								: user.hasPassword
-									? t("settings.security.updatePassword")
-									: t("settings.security.setPassword")}
+									? t(
+											"settings.security.updatePassword",
+										)
+									: t(
+											"settings.security.setPassword",
+										)}
 						</Button>
 					</div>
 				</Card>
