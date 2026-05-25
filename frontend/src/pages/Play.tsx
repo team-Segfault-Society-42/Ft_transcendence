@@ -13,6 +13,7 @@ import { useActiveGameStore } from "@/Store/activeGameStore";
 import { gameApi } from "@/services/gameApi";
 import type { User } from "@/type/user.types";
 import { PlayingState } from "@/components/home/playcard/PlayingState";
+import { Username } from "@/components/ui/Username";
 
 
 export default function Play() {
@@ -236,7 +237,7 @@ export default function Play() {
 			{!loading && games.waiting.map((game) => (
 				<div
 				key={game.gameId}
-				className="bg-white/5 border border-white/10 rounded-xl p-1 sm:p-6 flex items-center justify-between gap-4"
+				className="flex flex-col sm:flex-row bg-white/5 border border-white/10 rounded-xl p-1 sm:p-6 items-center justify-between gap-4"
 				>
 					<div className="flex items-center gap-4">
 						<Avatar
@@ -247,7 +248,10 @@ export default function Play() {
 
 						<div>
 							<p className="text-white font-medium">
-								{game.playerX?.username}
+								<Username
+								name={game.playerX?.username || "X"}
+								variant="card"
+								/>
 							</p>
 
 							<p className="text-sm text-white/50">
