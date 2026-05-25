@@ -4,6 +4,14 @@ type RickTerminalProps = {
 	onClose: () => void;
 };
 
+const FRAME_INTERVAL_MS = 90;
+
+/**
+ * Splits ANSI terminal animation text into clean frames.
+ *
+ * @param text - Raw ANSI text loaded from the public rick.txt file.
+ * @returns Clean terminal frames.
+ */
 function splitAnsiFrames(text: string): string[] {
 	return text
 		.split(/\x1b\[2J\x1b\[H/g)
@@ -15,20 +23,28 @@ function splitAnsiFrames(text: string): string[] {
 		.filter((frame) => frame.trim().length > 0);
 }
 
+/**
+ * Displays a fullscreen Rick terminal animation with optional audio.
+ *
+ * @param onClose - Callback used to close the overlay.
+ * @returns Fullscreen Rick easter egg.
+ */
 export function RickTerminal({ onClose }: RickTerminalProps) {
 	const [frames, setFrames] = useState<string[]>([]);
 	const [frameIndex, setFrameIndex] = useState(0);
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 
 	useEffect(() => {
-		async function loadFrames() {
+		async function loadFrames(): Promise<void> {
 			const response = await fetch("/easter-eggs/rick.txt");
 			const text = await response.text();
 
 			setFrames(splitAnsiFrames(text));
 		}
 
-		loadFrames();
+		loadFrames().catch((error: unknown) => {
+			console.error("Failed to load Rick frames:", error);
+		});
 	}, []);
 
 	useEffect(() => {
@@ -36,13 +52,14 @@ export function RickTerminal({ onClose }: RickTerminalProps) {
 
 		const interval = window.setInterval(() => {
 			setFrameIndex((current) => (current + 1) % frames.length);
-		}, 90);
+		}, FRAME_INTERVAL_MS);
 
 		return () => window.clearInterval(interval);
 	}, [frames.length]);
 
 	useEffect(() => {
 		const audio = new Audio("/sounds/rick-8bit.mp3");
+
 		audio.loop = true;
 		audio.volume = 0.25;
 		audioRef.current = audio;
@@ -62,7 +79,7 @@ export function RickTerminal({ onClose }: RickTerminalProps) {
 	}, [frames, frameIndex]);
 
 	return (
-		<div className="fixed inset-0 z-[9999] bg-black text-white overflow-hidden">
+		<div className="fixed inset-0 z-[9999] overflow-hidden bg-black text-white">
 			<div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.18),transparent_45%)]" />
 
 			<div className="absolute left-6 top-6 z-10 rounded-xl border border-pink-500/30 bg-black/80 px-4 py-3 font-mono text-sm">
