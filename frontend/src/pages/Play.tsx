@@ -32,6 +32,12 @@ export default function Play() {
     	? `${window.location.origin}/game/${createdGameId}`
     	: "";
 
+	/**
+ 	* Creates a new multiplayer game and refreshes
+ 	* the list of available games.
+ 	*
+ 	* @returns Promise<void>
+ 	*/
   	async function handleCreateGame() {
     	try {
 			await gameApi.createGame();
@@ -41,6 +47,11 @@ export default function Play() {
     	}
   	}
 
+	/**
+	 * Copies the current invite link to the clipboard.
+	 *
+	 * @returns Promise<void>
+	 */
   	async function handleCopyLink() {
     	try {
       		await navigator.clipboard.writeText(inviteLink);
@@ -49,6 +60,12 @@ export default function Play() {
     	}
   	}
 
+	/**
+	 * Cancels the currently created game and refreshes
+	 * the list of available games.
+	 *
+	 * @returns Promise<void>
+	 */
   	async function handleCancelGame() {
     	if (!createdGameId)
 			return;

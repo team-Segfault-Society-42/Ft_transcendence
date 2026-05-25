@@ -17,6 +17,14 @@ export default function History() {
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
 
+	/**
+	 * Fetches the authenticated user's match history,
+	 * sorts matches by most recent date,
+	 * and updates the local history state.
+	 *
+	 * @returns Promise resolved when the history
+	 * has been fetched and stored.
+	 */
 	useEffect(() => {
 		if (!user) return;
 
@@ -25,7 +33,7 @@ export default function History() {
 			try {
 				const data = await userService.getUserHistory(userId);
 
-				// tri
+				{/* TRI */}
 				const sorted = data.sort(
 					(a: Match, b: Match) =>
 						new Date(b.date).getTime() - new Date(a.date).getTime(),
@@ -46,6 +54,7 @@ export default function History() {
 		fetchHistory();
 	}, [user]);
 
+	{/* NOT CONNECTED CARD */}
 	if (!user || loading) {
 		return (
 			<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
@@ -66,9 +75,9 @@ export default function History() {
 		);
 	}
 
+	{/* HISTORY CARD */}
 	return (
 		<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
-			{/* CARD */}
 			<GameHistoryCard matches={matches} user={user} />
 		</section>
 	);

@@ -27,6 +27,7 @@ export default function LiveGamesDisplay() {
 		fetchGames();
 	}, [fetchGames]);
 
+	{/* NOT CONNECTED CARD */}
 	if (!user) {
 	return (
 		<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
@@ -48,6 +49,7 @@ export default function LiveGamesDisplay() {
 		)
 	}
 
+	{/* LOADING STATE */}
 	if (loading) {
 		return (
 		<div className="w-full flex justify-center items-center py-10 text-white">
@@ -58,6 +60,7 @@ export default function LiveGamesDisplay() {
 
   	function renderPlayingGames() {
 
+	{/* CARD EMPTY */}
     if (games.playing.length === 0) {
 		return (
 			<EmptyStateCard
@@ -78,14 +81,17 @@ export default function LiveGamesDisplay() {
     return (
 		<Card className="min-h-80 h-full relative flex flex-col bg-slate-900">
 			
+			{/* CARD HEADER */}
 			<CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
 				{t("game.liveTitle")}
 			</CardTitle>
 
+			{/* LIVE GAMES COUNTER */}
 			<span className="text-xs text-white/50 mt-8">
 				{t("game.liveCount", { count: games.playing.length })}
 			</span>
 
+			{/* PLAYING GAMES LIST */}
 			<div className="flex-1 flex flex-col mt-16 px-4 overflow-y-auto gap-3 max-h-105">
 				
 			{games.playing.map((game) => (	
@@ -93,6 +99,7 @@ export default function LiveGamesDisplay() {
 				key={game.gameId}
 				className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 gap-3 rounded-xl border border-cyan-400/20 bg-cyan-500/10 transition hover:scale-[1.01]">
 
+					{/* PLAYERS SECTION */}
 					<div className="flex items-center gap-3 min-w-0">
 						<div className="hidden sm:flex items-center -space-x-2 shrink-0">
 							<Avatar
@@ -127,6 +134,7 @@ export default function LiveGamesDisplay() {
 						</div>
 					</div>
 
+					{/* SPECTATE BUTTON */}
 					<Button
 					onClick={() => navigate(`/game/${game.gameId}`)}
 					className="text-xs sm:text-md shrink-0">
