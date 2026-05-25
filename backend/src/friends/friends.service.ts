@@ -111,7 +111,7 @@ export class FriendsService {
 				status: request.status,
 				createdAt: request.createdAt,
 			};
-		} catch (error) {
+		} catch (error: unknown) {
 			if (
 				error instanceof Prisma.PrismaClientKnownRequestError &&
 				error.code === 'P2002'

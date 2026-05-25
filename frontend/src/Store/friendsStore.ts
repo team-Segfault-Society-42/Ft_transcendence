@@ -48,7 +48,7 @@ export const useFriendsStore = create<FriendsStore>((set) => ({
 				outgoingRequests,
 				isLoading: false,
 			});
-		} catch (error) {
+		} catch (error: unknown) {
 			console.error('Failed to load friends data:', error);
 
 			set({

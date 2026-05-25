@@ -256,7 +256,7 @@ export class GameGateway implements OnGatewayDisconnect {
 				);
 			}
 			client.emit('joined_as', { role });
-		} catch (error) {
+		} catch (error: unknown) {
 			client.emit('game_error', {
 				message: error instanceof Error ? error.message : 'Unknown error',
 			});
@@ -296,7 +296,7 @@ export class GameGateway implements OnGatewayDisconnect {
 				);
 			}
 			return newGameState;
-		} catch (error) {
+		} catch (error: unknown) {
 			client.emit('game_error', {
 				message: error instanceof Error ? error.message : 'Unknown error',
 			});
@@ -322,7 +322,7 @@ export class GameGateway implements OnGatewayDisconnect {
 			this.emitUpdatedRoles(updateGame);
 			this.emitGameUpdate(body.gameId, updateGame);
 			return updateGame;
-		} catch (error) {
+		} catch (error: unknown) {
 			client.emit('game_error', {
 				message: error instanceof Error ? error.message : 'Unknown error',
 			});
@@ -360,7 +360,7 @@ export class GameGateway implements OnGatewayDisconnect {
 					await this.presenceService.emitFriendStatusChange(userId);
 				}
 			}
-		} catch (error) {
+		} catch (error: unknown) {
 			client.emit('game_error', {
 				message: error instanceof Error ? error.message : 'Unknown error',
 			});

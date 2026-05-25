@@ -251,7 +251,7 @@ export class AuthService {
 				where: { id: userId },
 				data: { email: newEmail },
 			});
-		} catch (error) {
+		} catch (error: unknown) {
 			if (
 				error instanceof Prisma.PrismaClientKnownRequestError &&
 				error.code === 'P2002'
