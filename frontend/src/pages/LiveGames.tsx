@@ -114,7 +114,7 @@ export default function LiveGamesDisplay() {
 						</div>
 						
 						<div className="min-w-0">
-							<p className="text-xs sm:text-base gap-1">
+							<div className="text-xs sm:text-base gap-1">
 								<Username
 								name={game.playerX?.username || "?"}
 								variant="card"
@@ -126,7 +126,7 @@ export default function LiveGamesDisplay() {
 								name={game.playerO?.username || "?"}
 								variant="card"
 								/>
-							</p>
+							</div>
 
 							<p className="text-xs text-white/60">
 								{t("game.playing")}

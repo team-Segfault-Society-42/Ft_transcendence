@@ -132,12 +132,12 @@ export function GameHistoryCard({ matches, className, user }: Props) {
         {/* OPPONENT INFOS */}
 		<div className="min-w-0">
     
-			<p className="font-medium flex items-center gap-1 truncate">
+			<div className="font-medium flex items-center gap-1 truncate">
        			{t("game.vs")}
                 <Username
                 name={match.opponent.username}
                 variant="topbar"/>
-     		</p>
+     		</div>
 
             {/* MATCH DATE */}
     		<p className="text-xs text-white/60">

@@ -288,12 +288,12 @@ export default function Profile() {
 
 
           {/* USERNAME */}
-          <h1 className="text-2xl font-bold tracking-wide">
-			<Username
-				name={profileData?.username ?? ""}
-				variant="profile"
-			/>
-		</h1>
+          <div className="text-2xl font-bold tracking-wide">
+            <Username
+            name={profileData?.username ?? ""}
+            variant="profile"
+            />
+		      </div>
 
           {rank && (
               <span className="bg-amber-500/10 text-amber-300 border border-amber-500/20 text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">

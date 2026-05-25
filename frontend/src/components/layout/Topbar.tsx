@@ -77,12 +77,12 @@ export function Topbar({ user, onLoginClick, onMenuClick }: HeaderProps) {
           </span>
 
           {/* USERNAME */}
-          <span className="hidden md:flex min-w-0 overflow-visible">
+          <div className="hidden md:flex min-w-0 overflow-visible">
             <Username
             name={user.username}
             variant="topbar"
             />
-          </span>
+          </div>
 
           {/* USER AVATAR */}
           <Avatar

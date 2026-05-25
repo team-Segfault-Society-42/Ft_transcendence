@@ -247,12 +247,12 @@ export default function Play() {
 						/>
 
 						<div>
-							<p className="text-white font-medium">
+							<div className="text-white font-medium">
 								<Username
 								name={game.playerX?.username || "X"}
 								variant="card"
 								/>
-							</p>
+							</div>
 
 							<p className="text-sm text-white/50">
 								{t("play.availGames.waiting")}

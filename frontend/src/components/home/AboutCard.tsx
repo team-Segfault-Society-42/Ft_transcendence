@@ -61,13 +61,13 @@ export function AboutCard({ user, className }: Props) {
           />
 
           <div className="flex flex-col min-w-0">
-            <p className="font-semibold text-white">
+            <div className="font-semibold text-white">
               {user?.username ? (
                 <Username name={user.username}/>
               ) : (
                 t("profile.about.guest")
               )}
-            </p>
+            </div>
             <p className="text-xs text-white/60">
               {t("profile.about.viewProfile")}
             </p>

@@ -49,7 +49,7 @@ export function EndGamePopup({
 
 	return (
 		<Card className={endGamePopupClasses.card}>
-			<h2
+			<div
 				className={`${endGamePopupClasses.title} ${endGameMessage.color}`}
 			>
 				{endGameMessage.winnerName ? (
@@ -64,7 +64,7 @@ export function EndGamePopup({
 				) : (
 					endGameMessage.resultText
 				)}
-			</h2>
+			</div>
 
 			<p className={endGamePopupClasses.subtitle}>
 				{endGameMessage.subtitle}
