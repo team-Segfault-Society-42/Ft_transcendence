@@ -46,8 +46,20 @@ export class AuthController {
 		description: 'Invalid input data',
 	})
 	@Post('register')
-	register(@Body() registerDto: RegisterDto) {
-		return this.authService.register(registerDto);
+	async register(
+		@Body() registerDto: RegisterDto,
+		@Res({ passthrough: true }) res: Response,
+	) {
+		const user = await this.authService.register(registerDto);
+		const accessToken = await this.authService.signTokenForUser(user);
+		res.cookie('access_token', accessToken, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+			maxAge: 8 * 60 * 60 * 1000,
+			path: '/',
+		});
+		return user;
 	}
 
 	@Public()
