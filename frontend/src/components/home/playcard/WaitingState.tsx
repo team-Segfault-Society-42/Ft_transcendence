@@ -31,12 +31,12 @@ export function WaitingState({ gameId, onCancel }: Props) {
 			</CardTitle>
 
 			{/* WAITING CONTENT */}
-			<div className="flex flex-col items-center gap-6 w-full px-6">
+			<div className="flex flex-col items-center justify-center gap-8 w-full px-6">
 
 				{/* ICON */}
                 <Loader
 				size={72}
-				className="mx-auto text-cyan-400 animate-spin animation-duration-[4s]"
+				className="mx-auto mt-12 text-cyan-400 animate-spin animation-duration-[4s]"
 				/>
 
 				{/* WAITING STATUS */}
