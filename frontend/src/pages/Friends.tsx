@@ -2,7 +2,6 @@ import {
 	Check,
 	Inbox,
 	Send,
-	Trash2,
 	UserPlus,
 	UsersRound,
 	X,
@@ -15,18 +14,20 @@ import { toast } from "sonner";
 
 import { useFriendsStore } from "@/Store/friendsStore";
 import { usePresenceStore } from "@/Store/presenceStore";
-import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { Input } from "@/components/ui/Input";
-import { Username } from "@/components/ui/Username";
 import {
 	friendsService,
 	type FriendStatus,
 	type PublicUser,
 } from "@/services/friendsService";
 import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
+
+import { FriendRow } from "@/components/friends/FriendRow";
+import { SearchResultRow } from "@/components/friends/SearchResultRow";
+import { UserRow } from "@/components/friends/UserRow";
 
 interface CurrentUser {
 	id: number;
@@ -421,235 +422,5 @@ export default function Friends() {
 				</div>
 			</div>
 		</section>
-	);
-}
-
-function SearchResultRow({
-	user,
-	state,
-	incomingRequestId,
-	onOpenProfile,
-	onSendRequest,
-	onAcceptRequest,
-	onDeclineRequest,
-}: {
-	user: PublicUser;
-	state: RelationshipState;
-	incomingRequestId?: number;
-	onOpenProfile: () => void;
-	onSendRequest: () => void;
-	onAcceptRequest: (requestId: number) => void;
-	onDeclineRequest: (requestId: number) => void;
-}) {
-	const { t } = useTranslation();
-
-	return (
-		<div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3">
-			<UserRow user={user} onClick={onOpenProfile} />
-
-			{state === "SELF" && (
-				<span className="text-sm text-white/40">
-					{t("friends.states.self")}
-				</span>
-			)}
-
-			{state === "FRIEND" && (
-				<span className="text-sm text-green-400">
-					{t("friends.states.friend")}
-				</span>
-			)}
-
-			{state === "PENDING_SENT" && (
-				<Button variant="secondary" disabled>
-					{t("friends.states.pending")}
-				</Button>
-			)}
-
-			{state === "PENDING_RECEIVED" && incomingRequestId && (
-				<div className="flex gap-2">
-					<Button
-						size="sm"
-						onClick={() => onAcceptRequest(incomingRequestId)}
-					>
-						{t("friends.actions.accept")}
-					</Button>
-
-					<Button
-						size="sm"
-						variant="secondary"
-						onClick={() => onDeclineRequest(incomingRequestId)}
-					>
-						{t("friends.actions.decline")}
-					</Button>
-				</div>
-			)}
-
-			{state === "NONE" && (
-				<Button size="sm" onClick={onSendRequest}>
-					{t("friends.actions.add")}
-				</Button>
-			)}
-		</div>
-	);
-}
-
-function FriendRow({
-	friend,
-	status,
-	onOpenProfile,
-	onRemove,
-}: {
-	friend: PublicUser;
-	status: FriendStatus;
-	onOpenProfile: () => void;
-	onRemove: () => void;
-}) {
-	const { t } = useTranslation();
-
-	return (
-		<div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3">
-			<div>
-				<UserRow user={friend} onClick={onOpenProfile} />
-
-				<p className="text-xs mt-1 flex items-center gap-2">
-					<StatusDot activity={status.activity} />
-
-					<span className={getStatusTextClass(status.activity)}>
-						<StatusLabel activity={status.activity} />
-					</span>
-				</p>
-			</div>
-
-			<Button size="sm" variant="danger" onClick={onRemove}>
-				<Trash2 size={16} />
-				{t("friends.actions.remove")}
-			</Button>
-		</div>
-	);
-}
-
-function StatusLabel({
-	activity,
-}: {
-	activity: FriendStatus["activity"];
-}) {
-	const { t } = useTranslation();
-
-	if (activity === "offline") {
-		return <>{t("friends.status.offline")}</>;
-	}
-
-	if (activity === "available") {
-		return (
-			<>
-				{t("friends.status.online")}
-				{" · "}
-				{t("friends.status.available")}
-			</>
-		);
-	}
-
-	if (activity === "waiting") {
-		return (
-			<>
-				{t("friends.status.online")}
-				{" · "}
-				{t("friends.status.waiting")}
-			</>
-		);
-	}
-
-	return (
-		<>
-			{t("friends.status.online")}
-			{" · "}
-			{t("friends.status.inGame")}
-		</>
-	);
-}
-
-function getStatusTextClass(activity: FriendStatus["activity"]): string {
-	if (activity === "offline") {
-		return "text-red-400/80";
-	}
-
-	if (activity === "waiting") {
-		return "text-yellow-300";
-	}
-
-	if (activity === "playing") {
-		return "text-cyan-300";
-	}
-
-	return "text-green-400";
-}
-
-function UserRow({
-	user,
-	onClick,
-}: {
-	user: PublicUser;
-	onClick?: () => void;
-}) {
-	return (
-		<div
-			className={`flex items-center gap-3 min-w-0 overflow-visible ${
-				onClick ? "cursor-pointer" : ""
-			}`}
-			onClick={onClick}
-		>
-			<Avatar
-				src={user.avatar}
-				alt={user.username}
-				fallback={user.username[0]?.toUpperCase() ?? "?"}
-				size="sm"
-			/>
-
-			<div className="min-w-0">
-				<Username
-					className="font-semibold"
-					name={user.username}
-					variant="card"
-				/>
-
-				<p className="text-xs text-white/40 truncate">
-					{user.xp} XP
-				</p>
-			</div>
-		</div>
-	);
-}
-
-function StatusDot({
-	activity,
-}: {
-	activity: FriendStatus["activity"];
-}) {
-	if (activity === "offline") {
-		return (
-			<span className="inline-flex size-2.5 rounded-full bg-red-400/70" />
-		);
-	}
-
-	if (activity === "waiting") {
-		return (
-			<span className="inline-flex size-2.5 rounded-full bg-yellow-400" />
-		);
-	}
-
-	if (activity === "playing") {
-		return (
-			<span className="relative flex size-2.5">
-				<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
-				<span className="relative inline-flex size-2.5 rounded-full bg-cyan-400" />
-			</span>
-		);
-	}
-
-	return (
-		<span className="relative flex size-2.5">
-			<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-			<span className="relative inline-flex size-2.5 rounded-full bg-green-400" />
-		</span>
 	);
 }
