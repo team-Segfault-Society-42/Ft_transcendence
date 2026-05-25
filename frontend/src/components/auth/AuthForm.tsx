@@ -12,6 +12,17 @@ import { getBackendErrorMessage } from "../../utils/getBackendErrorMessage"
 
 type AuthMode = "login" | "signup"
 
+type LoginFormValues = {
+	email: string;
+	password: string;
+};
+
+type SignupFormValues = LoginFormValues & {
+	username: string;
+};
+
+type AuthFormValues = LoginFormValues | SignupFormValues;
+
 interface AuthFormProps {
     mode: AuthMode
     onSuccess?: () => void
@@ -43,19 +54,35 @@ export function AuthForm({ mode, onSuccess, onTwoFactorRequired, }: AuthFormProp
             mode === "signup" ? { username: "", email: "", password: "" } : { email: "", password: "" },
     })
 
-  async function onSubmit(data: z.infer<typeof schema>) {
-    try {
-			setIsLoading(true)
+	function isSignupFormValues(
+		mode: AuthMode,
+	): boolean {
+		return mode === "signup";
+	}
 
-			if (mode === "signup") {
-				await userService.createUser(data);
+	async function onSubmit(data: AuthFormValues) {
+		try {
+			setIsLoading(true);
+
+			if (isSignupFormValues(mode)) {
+				const signupData = data as SignupFormValues;
+
+				await userService.createUser({
+					username: signupData.username,
+					email: signupData.email,
+					password: signupData.password,
+				});
+
 				toast.success(t("auth.success"));
 				form.reset();
 				onSuccess?.();
 				return;
 			}
 
-			const result = await userService.userLogin(data);
+			const result = await userService.userLogin({
+				email: data.email,
+				password: data.password,
+			});
 
 			if (result.twoFactorRequired) {
 				toast.info(t("auth.twofa.loginPrompt"));
@@ -63,21 +90,21 @@ export function AuthForm({ mode, onSuccess, onTwoFactorRequired, }: AuthFormProp
 				onTwoFactorRequired?.();
 				return;
 			}
-        form.reset()
-        onSuccess?.()
-    } catch (error: unknown) {
-		const finalMessage = getBackendErrorMessage(error);
 
-		toast.error(
-			t(`backend.${finalMessage}`, {
-				defaultValue: finalMessage,
-			}),
-		);
+			form.reset();
+			onSuccess?.();
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
+
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
+		} finally {
+			setIsLoading(false);
+		}
 	}
-    finally {
-      setIsLoading(false)
-    }
-}
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
