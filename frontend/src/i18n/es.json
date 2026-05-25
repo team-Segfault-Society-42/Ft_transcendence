@@ -106,7 +106,7 @@
     "waitingOpponent": "Esperando al oponente...",
     "waitingMove": "Esperando que el oponente se mueva...",
     "status": {
-      "opponentDisconnected": "Oponente desconectado: esperando 20 segundos para volver a conectarse.",
+      "opponentDisconnected": "Oponente desconectado",
       "opponentLeft": "El oponente ha abandonado el juego: ¡no se puede repetir!",
       "opponentReconnected": "¡El oponente se ha vuelto a conectar!"
     },
@@ -143,7 +143,7 @@
     "replayVotes": "Reproducir votos",
     "waitingReplayOther": "Repetición solicitada. \nEsperando al otro jugador...",
     "timer": "Tiempo restante: {{seconds}}s",
-    "opponentDisconnect": "Oponente desconectado: esperando 20 segundos para volver a conectarse..."
+    "opponentDisconnect": "Oponente desconectado"
   },
   "play": {
     "myGames": {
