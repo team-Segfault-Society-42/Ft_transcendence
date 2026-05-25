@@ -3,6 +3,22 @@ import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 
+/**
+ * Displays the global application toaster component.
+ *
+ * Uses Sonner notifications with:
+ * - theme synchronization
+ * - custom icons
+ * - custom toast styles
+ * - animated loading states
+ *
+ * Supports:
+ * - success notifications
+ * - info notifications
+ * - warning notifications
+ * - error notifications
+ * - loading notifications
+ */
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme()
 
@@ -10,6 +26,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
+
+      /* ICONS */
       icons={{
         success: <CircleCheckIcon className="size-4" />,
         info: <InfoIcon className="size-4" />,
@@ -17,6 +35,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
         error: <OctagonXIcon className="size-4" />,
         loading: <Loader2Icon className="size-4 animate-spin" />,
       }}
+
+      /* TOASTER STYLES */
       style={
         {
           "--normal-bg": "var(--popover)",
@@ -25,6 +45,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
           "--border-radius": "var(--radius)",
         } as React.CSSProperties
       }
+
+      /* TOAST CLASSNAMES */
       toastOptions={{
         classNames: {
           toast: "group flex items-center gap-3 rounded-lg px-4 py-3 shadow-md transition-all",

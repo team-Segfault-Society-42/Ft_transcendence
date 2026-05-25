@@ -6,6 +6,14 @@ type CardProps = {
   className?: string
 }
 
+/**
+ * Displays a reusable glassmorphism card container.
+ *
+ * Supports:
+ * - custom content
+ * - hover animations
+ * - custom class names
+ */
 export function Card({ children, className }: CardProps) {
     return (
         <div
@@ -22,6 +30,8 @@ export function Card({ children, className }: CardProps) {
                 "hover:scale-[1.02]",
             className
             )}>
+
+            {/* CARD CONTENT */}
             {children}
         </div>
     )
@@ -32,6 +42,13 @@ type CardTitleProps = {
     className?: string
 }
 
+/**
+ * Displays a reusable card title component.
+ *
+ * Supports:
+ * - custom title content
+ * - custom class names
+ */
 export function CardTitle({ children, className }: CardTitleProps) {
     return (
         <h3
@@ -39,6 +56,8 @@ export function CardTitle({ children, className }: CardTitleProps) {
             "font-bold text-lg mb-2",
             className
             )}>
+
+            {/* TITLE CONTENT */}
             {children}
         </h3>
     )
@@ -48,7 +67,14 @@ type CardDescriptionProps = {
     children: React.ReactNode
     className?: string
 }
-  
+
+/**
+ * Displays a reusable card description component.
+ *
+ * Supports:
+ * - multiline text content
+ * - custom class names
+ */
 export function CardDescription({ children, className }: CardDescriptionProps) {
     return (
         <p
@@ -56,6 +82,8 @@ export function CardDescription({ children, className }: CardDescriptionProps) {
             "text-white wrap-break-word",
             className
             )}>
+
+            {/* DESCRIPTION CONTENT */}
             {children}
       </p>
     )

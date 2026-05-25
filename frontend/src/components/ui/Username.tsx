@@ -15,6 +15,16 @@ const variantStyles: Record<Variant, string> = {
     full: "max-w-none",
 }
 
+/**
+ * Displays a reusable username component with
+ * optional truncation and hover tooltip.
+ *
+ * Supports:
+ * - multiple display variants
+ * - truncated usernames
+ * - full username tooltip on hover
+ * - custom styling
+ */
 export function Username({
     name,
     variant = "card",
@@ -23,7 +33,7 @@ export function Username({
     return (
     <div className="relative group min-w-0 max-w-full">
       
-      {/* texte tronqué */}
+      {/* TRUNCATED USERNAME */}
       <span
         className={cn(
             "block truncate",
@@ -33,7 +43,7 @@ export function Username({
         {name}
       </span>
 
-      {/* uniquement si tronqué */}
+      {/* HOVER TOOLTIP */}
       {variant !== "full" && (
         <span
             className="
@@ -44,6 +54,8 @@ export function Username({
             px-2 py-1 rounded
             whitespace-nowrap
             z-9999">
+
+            {/* FULL USERNAME */}
             {name}
         </span>
       )}

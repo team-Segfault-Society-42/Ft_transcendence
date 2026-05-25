@@ -7,16 +7,29 @@ type InputProps = React.ComponentProps<"input"> & {
   error?: string
 }
 
+/**
+ * Displays a reusable input field component.
+ *
+ * Supports:
+ * - optional label
+ * - validation error display
+ * - custom input props
+ * - custom styling
+ *
+ * Commonly used in forms and authentication flows.
+ */
 function Input({ className, type, label, error, ...props }: InputProps){
   return (
     <div className="flex flex-col gap-1 w-full">
 
+      {/* INPUT LABEL */}
       {label && (
         <Label>
           {label}
         </Label>
       )}
 
+      {/* INPUT FIELD */}
       <input
         type={type}
         data-slot="input"
@@ -30,6 +43,7 @@ function Input({ className, type, label, error, ...props }: InputProps){
         {...props}
       />
 
+      {/* VALIDATION ERROR */}
       {error && (
         <span className="text-xs text-red-400">
           {error}
