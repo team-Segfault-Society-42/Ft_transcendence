@@ -6,10 +6,10 @@ import { gameApi } from "@/services/gameApi";
 import { IdleState } from "./IdleState";
 import { WaitingState } from "./WaitingState";
 import { PlayingState } from "./PlayingState";
-import type { User } from "@/type/user.types"
+import type { User } from "@/type/user.types";
 
 type Props = {
-  	user?: User | null
+  	user: User | null
 }
 
 /**
@@ -39,7 +39,7 @@ export function PlayCard({ user }: Props) {
       	try {
         	await gameApi.createGame();
 		}
-      	catch (error) {
+      	catch (error: unknown) {
         	console.error(error);
       	}
     };
@@ -56,7 +56,7 @@ export function PlayCard({ user }: Props) {
 				return;
 			await gameApi.leaveGame(activeGame.gameId);
 		}
-		catch (error) {
+		catch (error: unknown) {
 			console.error(
 				"Failed to cancel game:",
 				error

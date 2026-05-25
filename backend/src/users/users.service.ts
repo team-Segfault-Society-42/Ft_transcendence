@@ -100,7 +100,7 @@ export class UsersService {
 			});
 
 			return this.toPublicUser(updatedUser);
-		} catch (error) {
+		} catch (error: unknown) {
 			if (
 				error instanceof Prisma.PrismaClientKnownRequestError &&
 				error.code === 'P2002'

@@ -85,7 +85,7 @@ export const useActiveGameStore = create<ActiveGameStore>((set) => ({
                     loading: false,
                 });
             }
-            catch (error) {
+            catch (error: unknown) {
                 console.error("Failed to fetch active game:", error);
         
 				/* ERROR RESET */

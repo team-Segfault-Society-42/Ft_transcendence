@@ -124,7 +124,7 @@ export default function Dashboard() {
 				setFriendStatus(statuses);
 				await loadFriendsData();
         		await fetchActiveGame();
-			} catch (error) {
+			} catch (error: unknown) {
 				console.error("[PresenceSocket] initialization failed", error);
 			}
 		}
