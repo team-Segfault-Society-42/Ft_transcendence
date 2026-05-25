@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -28,7 +23,7 @@ model User {
   twoFactorTempSecret    String?
   gameAsP1               Game[]            @relation("player1")
   gameAsP2               Game[]            @relation("player2")
-  wonGamees              Game[]            @relation("asWinner")
+  wonGames               Game[]            @relation("asWinner")
   moves                  Move[]
   oauthAccounts          OAuthAccount[]
   achievements           UserAchievement[]
