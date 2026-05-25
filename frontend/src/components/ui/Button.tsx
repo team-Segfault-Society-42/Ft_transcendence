@@ -31,6 +31,17 @@ type ButtonProps = React.ComponentProps<"button"> &
     loading?: boolean
   }
 
+/**
+ * Displays a reusable button component with
+ * multiple style and size variants.
+ *
+ * Supports:
+ * - loading state
+ * - disabled state
+ * - visual variants
+ * - predefined sizes
+ * - custom class names
+ */
 export function Button({
   className,
   variant,

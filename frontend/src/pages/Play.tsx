@@ -13,6 +13,7 @@ import { useActiveGameStore } from "@/Store/activeGameStore";
 import { gameApi } from "@/services/gameApi";
 import type { User } from "@/type/user.types";
 import { PlayingState } from "@/components/home/playcard/PlayingState";
+import { Username } from "@/components/ui/Username";
 
 
 export default function Play() {
@@ -32,6 +33,12 @@ export default function Play() {
     	? `${window.location.origin}/game/${createdGameId}`
     	: "";
 
+	/**
+ 	* Creates a new multiplayer game and refreshes
+ 	* the list of available games.
+ 	*
+ 	* @returns Promise<void>
+ 	*/
   	async function handleCreateGame() {
     	try {
 			await gameApi.createGame();
@@ -41,6 +48,11 @@ export default function Play() {
     	}
   	}
 
+	/**
+	 * Copies the current invite link to the clipboard.
+	 *
+	 * @returns Promise<void>
+	 */
   	async function handleCopyLink() {
     	try {
       		await navigator.clipboard.writeText(inviteLink);
@@ -49,6 +61,12 @@ export default function Play() {
     	}
   	}
 
+	/**
+	 * Cancels the currently created game and refreshes
+	 * the list of available games.
+	 *
+	 * @returns Promise<void>
+	 */
   	async function handleCancelGame() {
     	if (!createdGameId)
 			return;
@@ -65,6 +83,7 @@ export default function Play() {
 		fetchGames();
 	}, [fetchGames]);
 
+	{/* GUESS STATE CARD */}
   	if (!user) {
 		return (
 		<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">
@@ -218,7 +237,7 @@ export default function Play() {
 			{!loading && games.waiting.map((game) => (
 				<div
 				key={game.gameId}
-				className="bg-white/5 border border-white/10 rounded-xl p-1 sm:p-6 flex items-center justify-between gap-4"
+				className="flex flex-col sm:flex-row bg-white/5 border border-white/10 rounded-xl p-1 sm:p-6 items-center justify-between gap-4"
 				>
 					<div className="flex items-center gap-4">
 						<Avatar
@@ -228,9 +247,12 @@ export default function Play() {
 						/>
 
 						<div>
-							<p className="text-white font-medium">
-								{game.playerX?.username}
-							</p>
+							<div className="text-white font-medium">
+								<Username
+								name={game.playerX?.username || "X"}
+								variant="card"
+								/>
+							</div>
 
 							<p className="text-sm text-white/50">
 								{t("play.availGames.waiting")}

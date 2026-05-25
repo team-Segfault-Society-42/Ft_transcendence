@@ -15,6 +15,12 @@ export default function Home() {
   const [matches, setMatches] = useState<Match[]>([]);
   const { t } = useTranslation();
 
+  /**
+   * Fetch the authenticated user's match history
+   * whenever the connected user changes.
+   *
+   * Clears the history if no user is authenticated.
+   */
   useEffect(() => {
     if (!user) {
       setMatches([]);
@@ -28,6 +34,7 @@ export default function Home() {
 
   return (
     <section className="w-full flex flex-col gap-6">
+      {/* HERO BANNER WITH EFFECT */}
       <Motion>
         <div className="bg-slate-900 mx-6 mt-6 relative overflow-hidden rounded-2xl border border-white/10 h-62.5 md:h-75">
           <img
@@ -46,11 +53,13 @@ export default function Home() {
         </div>
       </Motion>
 
+      {/* ABOUT CARD */}
       <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Link to="/profile" className="h-full">
           <AboutCard user={user} className="flex-1" />
         </Link>
 
+        {/* PLAYCARD WHEN USER CONNECTED, OTHERWISE RULES CARD */}
         {user ? (
             <PlayCard user={user} />
         ) : (
@@ -59,6 +68,7 @@ export default function Home() {
           </Link>
         )}
 
+        {/* HISTORY CARD */}
         <Link to="/history" className="h-full">
           <GameHistoryCard matches={matches} user={user} />
         </Link>
