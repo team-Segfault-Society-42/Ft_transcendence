@@ -106,7 +106,7 @@
     "waitingOpponent": "Waiting for opponent...",
     "waitingMove": "Waiting for opponent move...",
     "status": {
-      "opponentDisconnected": "Opponent disconnected — waiting 20s for reconnection..",
+      "opponentDisconnected": "Opponent disconnected",
       "opponentLeft": "The opponent has left the game - no replay!",
       "opponentReconnected": "The opponent has reconnected!"
     },
@@ -143,7 +143,7 @@
     "replayVotes": "Replay votes",
     "waitingReplayOther": "Replay requested. Waiting for the other player...",
     "timer": "Time left: {{seconds}}s",
-    "opponentDisconnect": "Opponent disconnected — waiting 20s for reconnection..."
+    "opponentDisconnect": "Opponent disconnected"
   },
   "play": {
     "myGames": {
