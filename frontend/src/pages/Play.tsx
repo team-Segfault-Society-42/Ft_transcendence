@@ -82,6 +82,7 @@ export default function Play() {
 		fetchGames();
 	}, [fetchGames]);
 
+	{/* GUESS STATE CARD */}
   	if (!user) {
 		return (
 		<section className="w-full max-w-3xl mx-auto px-6 py-10 text-white">

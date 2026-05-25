@@ -8,6 +8,15 @@ interface Props {
 	createGame: () => void;
 }
 
+/**
+ * Displays the default play card state when the user
+ * is not currently in a game.
+ *
+ * Allows the user to:
+ * - create a new game
+ * - join an existing game
+ * - spectate live games
+ */
 export function IdleState({ createGame }: Props) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -15,33 +24,39 @@ export function IdleState({ createGame }: Props) {
 	return (
 		<Card className="h-full relative flex items-center justify-center bg-slate-900">
 
+			{/* CARD HEADER */}
 			<CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
 				{t("home.play.idle.title")}
 			</CardTitle>
 
 			<div className="flex flex-col gap-4 w-full px-6">
 
+				{/* GAME ICON */}
 				<Gamepad2
 				size={72}
 				className="mx-auto text-cyan-400 mt-12"
 				/>
 
+				{/* DESCRIPTION */}
 				<p className="text-white/80 text-sm text-center max-w-sm leading-relaxed mb-6 mx-auto">
 					{t("home.play.idle.description")}
 				</p>
 
-
+				{/* ACTION BUTTONS */}
 				<div className="flex flex-col gap-4 w-full">
+					{/* CREATE GAME */}
 					<Button onClick={createGame}>
 						{t("home.play.idle.create")}
 					</Button>
 
+					{/* JOIN GAME */}
 					<Button
 						onClick={() => navigate("/play")}
 					>
 						{t("home.play.idle.join")}
 					</Button>
 
+					{/* SPECTATE */}
 					<Button
 						onClick={() => navigate("/spectate")}
 					>

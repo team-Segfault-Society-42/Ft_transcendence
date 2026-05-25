@@ -14,9 +14,21 @@ type Props = {
   className?: string
 }
 
+/**
+ * Displays the authenticated user's profile summary.
+ *
+ * Shows:
+ * - avatar and username
+ * - biography
+ * - winrate statistics
+ * - XP progression
+ *
+ * Displays an empty state when no user is connected.
+ */
 export function AboutCard({ user, className }: Props) {
   const { t } = useTranslation()
 
+  {/* GUESS STATE CARD */}
   if (!user) {
     return (
       <EmptyStateCard
@@ -32,34 +44,37 @@ export function AboutCard({ user, className }: Props) {
     <Card
       className={cn("min-h-65 h-full flex flex-col bg-slate-900", className)}
     >
-      {/* TITLE */}
+      {/* CARD HEADER */}
       <CardTitle className="absolute top-6 left-6 bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
         {t("profile.about.title")}
       </CardTitle>
 
-      {/* PROFILE */}
+      {/* PROFILE SECTION */}
       <div className="mt-12">
-      <div className="flex items-center gap-4 mt-4 min-w-0">
-        <Avatar
-          src={user?.avatar ?? undefined}
-          fallback={user?.username?.[0] || "?"}
-          size="lg"
-        />
 
-        <div className="flex flex-col min-w-0">
-          <p className="font-semibold text-white">
-            {user?.username ? (
-              <Username name={user.username}/>
-            ) : (
-              t("profile.about.guest")
-            )}
-          </p>
-          <p className="text-xs text-white/60">
-            {t("profile.about.viewProfile")}
-          </p>
+        {/* USER INFOS */}
+        <div className="flex items-center gap-4 mt-4 min-w-0">
+          <Avatar
+            src={user?.avatar ?? undefined}
+            fallback={user?.username?.[0] || "?"}
+            size="lg"
+          />
+
+          <div className="flex flex-col min-w-0">
+            <p className="font-semibold text-white">
+              {user?.username ? (
+                <Username name={user.username}/>
+              ) : (
+                t("profile.about.guest")
+              )}
+            </p>
+            <p className="text-xs text-white/60">
+              {t("profile.about.viewProfile")}
+            </p>
+          </div>
         </div>
       </div>
-      </div>
+      
       {/* BIO */}
       <CardDescription className="mt-4">
         {user?.bio || t("profile.about.noBio")}
