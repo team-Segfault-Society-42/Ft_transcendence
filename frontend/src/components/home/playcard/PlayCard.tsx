@@ -6,9 +6,10 @@ import { gameApi } from "@/services/gameApi";
 import { IdleState } from "./IdleState";
 import { WaitingState } from "./WaitingState";
 import { PlayingState } from "./PlayingState";
+import type { User } from "@/type/user.types"
 
 type Props = {
-  	user: any
+  	user?: User | null
 }
 
 /**
