@@ -7,7 +7,7 @@ import { PresenceService } from './presence.service';
 
 @Module({
 	imports: [
-		AuthModule,
+		forwardRef(() => AuthModule),
 		forwardRef(() => FriendsModule),
 		forwardRef(() => GameModule),
 	],
