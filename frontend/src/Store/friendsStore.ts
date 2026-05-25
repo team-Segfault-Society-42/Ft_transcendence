@@ -56,7 +56,7 @@ export const useFriendsStore = create<FriendsStore>((set) => ({
 	 *
 	 * @returns Nothing. Updates the Zustand store.
 	 */
-	loadFriendsData: async () => {
+		loadFriendsData: async () => {
 		set({
 			isLoading: true,
 			error: null,
@@ -70,11 +70,7 @@ export const useFriendsStore = create<FriendsStore>((set) => ({
 				isLoading: false,
 			});
 		} catch (error: unknown) {
-<<<<<<< HEAD
-			console.error('Failed to load friends data:', error);
-=======
 			console.error("Failed to load friends data:", error);
->>>>>>> 9695421 (refactor(frontend): improve friends store state handling)
 
 			set({
 				error: "Failed to load friends data",

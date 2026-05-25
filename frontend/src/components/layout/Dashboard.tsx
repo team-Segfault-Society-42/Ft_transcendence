@@ -145,7 +145,7 @@ export default function Dashboard() {
 		getCurrentUser();
 	}, []);
 
-	useEffect(() => {
+		useEffect(() => {
 		if (!user) {
 			clearAuthenticatedFrontendState();
 			return;
@@ -153,27 +153,8 @@ export default function Dashboard() {
 
 		const socket = connectPresenceSocket();
 
-<<<<<<< HEAD
-		async function initializeRealtime() {
-			try {
-				const statuses = await friendsService.getFriendsStatus();
-				setFriendStatus(statuses);
-				await loadFriendsData();
-        		await fetchActiveGame();
-			} catch (error: unknown) {
-				console.error("[PresenceSocket] initialization failed", error);
-			}
-		}
-
-		initializeRealtime();
-
-		// With this when socket reconnects frontend state reloads
-		socket.on("connect", () => {
-			initializeRealtime();
-=======
 		initializeRealtimeState().catch((error: unknown) => {
 			console.error("[PresenceSocket] initialization failed:", error);
->>>>>>> ba8860c (refactor(frontend): clean dashboard session and realtime flow)
 		});
 
 		const handleReconnect = () => {
