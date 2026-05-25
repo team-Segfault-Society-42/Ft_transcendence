@@ -38,7 +38,7 @@ export class UsersService {
 	 * @returns Safe public user profile.
 	 * @remarks This response must never expose email, passwordHash, or 2FA secrets.
 	 */
-	private toPublicUser(user: PublicUser) {
+	private toPublicUser(user: PublicUser): PublicUser {
 		return {
 			id: user.id,
 			username: user.username,
@@ -60,7 +60,7 @@ export class UsersService {
 		limit?: number;
 		offset?: number;
 		search?: string;
-	}) {
+	}): Promise<PublicUser[]> {
 		const limit = Math.min(query.limit ?? 20, 100);
 		const offset = query.offset ?? 0;
 
@@ -99,7 +99,7 @@ export class UsersService {
 	 * @returns Safe public user profile.
 	 * @throws NotFoundException when the user does not exist.
 	 */
-	async getUser(id: number) {
+	async getUser(id: number): Promise<PublicUser> {
 		const user = await this.prisma.user.findUnique({
 			where: { id },
 			select: publicUserSelect,
@@ -125,7 +125,7 @@ export class UsersService {
 	async updateUser(
 		id: number,
 		updateUserDto: UpdateUserDto,
-	) {
+	): Promise<PublicUser> {
 		const user = await this.prisma.user.findUnique({
 			where: { id },
 			select: { id: true },
@@ -174,7 +174,7 @@ export class UsersService {
 	async updateAvatar(
 		userId: number,
 		file: Express.Multer.File | undefined,
-	) {
+	): Promise<PublicUser> {
 		if (!file) {
 			throw new BadRequestException(
 				'ERR_USER_AVATAR_REQUIRED',
@@ -233,7 +233,7 @@ export class UsersService {
 	 * @returns Safe public user profile.
 	 * @throws NotFoundException when no user matches the username.
 	 */
-	async getUserByUsername(username: string) {
+	async getUserByUsername(username: string): Promise<PublicUser> {
 		const user = await this.prisma.user.findUnique({
 			where: { username },
 			select: publicUserSelect,
@@ -254,7 +254,7 @@ export class UsersService {
 	 * @returns User XP and 1-based global rank.
 	 * @throws NotFoundException when the user does not exist.
 	 */
-	async getUserRank(id: number) {
+	async getUserRank(id: number): Promise<{ rank: number; xp: number }> {
 		const user = await this.prisma.user.findUnique({
 			where: { id },
 			select: { xp: true },
