@@ -1,3 +1,8 @@
+/**
+ * Realtime event names emitted when the friendship state changes.
+ *
+ * @remarks Keep these values stable because frontend socket listeners depend on them.
+ */
 export const FRIEND_EVENTS = {
 	REQUEST_SENT: 'friend_request_sent',
 	REQUEST_RECEIVED: 'friend_request_received',

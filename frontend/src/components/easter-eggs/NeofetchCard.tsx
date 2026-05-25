@@ -2,6 +2,36 @@ type NeofetchCardProps = {
 	onClose: () => void;
 };
 
+const neofetchRows = [
+	["School:", "42 Lausanne"],
+	["Project:", "ft_transcendence"],
+	["Stack:", "NestJS · React · Prisma · PostgreSQL"],
+	["Sockets:", "/game · /chat · /presence"],
+	["Security:", "JWT · 2FA · OAuth · HttpOnly cookies"],
+	["Members:", "@Nico-Ry @simo1616 @Mikan95 @ldsr18 @nasdhn"],
+	["Uptime:", "until someone runs make nuke"],
+	["Mood:", "one merge conflict away from enlightenment"],
+	["Bug status:", "works on my machine™"],
+	["Final boss:", "evaluation day Wi-Fi"],
+];
+
+const colorBlocks = [
+	"bg-black border border-white/20",
+	"bg-red-500",
+	"bg-green-500",
+	"bg-yellow-400",
+	"bg-blue-500",
+	"bg-pink-500",
+	"bg-cyan-400",
+	"bg-white",
+];
+
+/**
+ * Displays a fullscreen neofetch-style project card.
+ *
+ * @param onClose - Callback used to close the overlay.
+ * @returns Fullscreen neofetch easter egg.
+ */
 export function NeofetchCard({ onClose }: NeofetchCardProps) {
 	return (
 		<div className="fixed inset-0 z-[9999] overflow-hidden bg-black text-white">
@@ -31,29 +61,28 @@ export function NeofetchCard({ onClose }: NeofetchCardProps) {
 
 					<div className="space-y-1 text-white/80">
 						<p>
-							<span className="text-pink-400">Segfault Society</span>@ft_transcendence
+							<span className="text-pink-400">
+								Segfault Society
+							</span>
+							@ft_transcendence
 						</p>
+
 						<p className="text-white/40">--------------------------------</p>
-						<p><span className="text-cyan-400">School:</span> 42 Lausanne</p>
-						<p><span className="text-cyan-400">Project:</span> ft_transcendence</p>
-						<p><span className="text-cyan-400">Stack:</span> NestJS · React · Prisma · PostgreSQL</p>
-						<p><span className="text-cyan-400">Sockets:</span> /game · /chat · /presence</p>
-						<p><span className="text-cyan-400">Security:</span> JWT · 2FA · OAuth · HttpOnly cookies</p>
-						<p><span className="text-cyan-400">Members:</span> @Nico-Ry @simo1616 @Mikan95 @ldsr18 @nasdhn</p>
-						<p><span className="text-cyan-400">Uptime:</span> until someone runs make nuke</p>
-						<p><span className="text-cyan-400">Mood:</span> one merge conflict away from enlightenment</p>
-						<p><span className="text-cyan-400">Bug status:</span> works on my machine™</p>
-						<p><span className="text-cyan-400">Final boss:</span> evaluation day Wi-Fi</p>
+
+						{neofetchRows.map(([label, value]) => (
+							<p key={label}>
+								<span className="text-cyan-400">{label}</span>{" "}
+								{value}
+							</p>
+						))}
 
 						<div className="mt-4 flex gap-1">
-							<span className="h-4 w-8 rounded bg-black border border-white/20" />
-							<span className="h-4 w-8 rounded bg-red-500" />
-							<span className="h-4 w-8 rounded bg-green-500" />
-							<span className="h-4 w-8 rounded bg-yellow-400" />
-							<span className="h-4 w-8 rounded bg-blue-500" />
-							<span className="h-4 w-8 rounded bg-pink-500" />
-							<span className="h-4 w-8 rounded bg-cyan-400" />
-							<span className="h-4 w-8 rounded bg-white" />
+							{colorBlocks.map((className) => (
+								<span
+									key={className}
+									className={`h-4 w-8 rounded ${className}`}
+								/>
+							))}
 						</div>
 					</div>
 				</div>

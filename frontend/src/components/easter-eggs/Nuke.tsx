@@ -4,7 +4,11 @@ type NukeProps = {
 	onClose: () => void;
 };
 
-const lines = [
+const TERMINAL_LINE_DELAY_MS = 300;
+const SHUTDOWN_DELAY_MS = 900;
+const DOT_DELAY_MS = 700;
+
+const terminalLines = [
 	"$ make nuke",
 	"⚠️  This will destroy all containers, images, and volumes for this stack,",
 	"   AND:",
@@ -39,6 +43,43 @@ const lines = [
 	"System shutting down...",
 ];
 
+/**
+ * Chooses the display color for a fake terminal line.
+ *
+ * @param line - Terminal line being rendered.
+ * @returns Tailwind class names for the line.
+ */
+function getTerminalLineClass(line: string): string {
+	if (line.startsWith("$")) {
+		return "text-cyan-300";
+	}
+
+	if (line.includes("⚠️") || line.includes("AND:")) {
+		return "text-orange-300";
+	}
+
+	if (line.includes("Everything is gone")) {
+		return "text-red-400";
+	}
+
+	if (line.includes("<")) {
+		return "text-pink-300";
+	}
+
+	if (line.includes("Run")) {
+		return "text-green-400";
+	}
+
+	return "text-white/70";
+}
+
+/**
+ * Displays a fullscreen fake `make nuke` terminal animation.
+ *
+ * @param onClose - Callback used to close the overlay.
+ * @returns Fullscreen nuke easter egg.
+ * @remarks This is visual only. It does not execute shell commands.
+ */
 export function Nuke({ onClose }: NukeProps) {
 	const [visibleLines, setVisibleLines] = useState(1);
 	const [shutdown, setShutdown] = useState(false);
@@ -47,15 +88,19 @@ export function Nuke({ onClose }: NukeProps) {
 	useEffect(() => {
 		const interval = window.setInterval(() => {
 			setVisibleLines((current) => {
-				if (current >= lines.length) {
+				if (current >= terminalLines.length) {
 					window.clearInterval(interval);
-					window.setTimeout(() => setShutdown(true), 900);
+					window.setTimeout(
+						() => setShutdown(true),
+						SHUTDOWN_DELAY_MS,
+					);
+
 					return current;
 				}
 
 				return current + 1;
 			});
-		}, 300);
+		}, TERMINAL_LINE_DELAY_MS);
 
 		return () => window.clearInterval(interval);
 	}, []);
@@ -63,7 +108,8 @@ export function Nuke({ onClose }: NukeProps) {
 	useEffect(() => {
 		if (!shutdown) return;
 
-		const timeout = window.setTimeout(() => setDot(true), 700);
+		const timeout = window.setTimeout(() => setDot(true), DOT_DELAY_MS);
+
 		return () => window.clearTimeout(timeout);
 	}, [shutdown]);
 
@@ -84,10 +130,10 @@ export function Nuke({ onClose }: NukeProps) {
 			>
 				<div className="relative flex h-full items-center justify-center">
 					{dot && (
-						<div className="h-2 w-2 rounded-full bg-white shadow-[0_0_40px_20px_rgba(255,255,255,0.45)] animate-pulse" />
+						<div className="h-2 w-2 animate-pulse rounded-full bg-white shadow-[0_0_40px_20px_rgba(255,255,255,0.45)]" />
 					)}
 
-					<div className="absolute inset-x-0 top-1/2 h-[1px] bg-white/30 shadow-[0_0_30px_rgba(255,255,255,0.8)] animate-pulse" />
+					<div className="absolute inset-x-0 top-1/2 h-[1px] animate-pulse bg-white/30 shadow-[0_0_30px_rgba(255,255,255,0.8)]" />
 				</div>
 			</div>
 
@@ -97,28 +143,16 @@ export function Nuke({ onClose }: NukeProps) {
 				</div>
 
 				<div className="rounded-2xl border border-cyan-500/20 bg-slate-950/80 p-6 shadow-[0_0_40px_rgba(34,211,238,0.08)]">
-					{lines.slice(0, visibleLines).map((line, index) => (
+					{terminalLines.slice(0, visibleLines).map((line, index) => (
 						<p
 							key={`${line}-${index}`}
-							className={
-								line.startsWith("$")
-									? "text-cyan-300"
-									: line.includes("⚠️") || line.includes("AND:")
-										? "text-orange-300"
-										: line.includes("Everything is gone")
-											? "text-red-400"
-											: line.includes("<")
-												? "text-pink-300"
-												: line.includes("Run")
-													? "text-green-400"
-													: "text-white/70"
-							}
+							className={getTerminalLineClass(line)}
 						>
 							{line || "\u00A0"}
 						</p>
 					))}
 
-					{visibleLines < lines.length && (
+					{visibleLines < terminalLines.length && (
 						<span className="mt-2 inline-block h-4 w-2 animate-pulse bg-white/70" />
 					)}
 				</div>
