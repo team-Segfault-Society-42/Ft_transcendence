@@ -77,7 +77,7 @@ export default function Friends() {
 
 	const currentSearchPage = Math.floor(searchOffset / SEARCH_PAGE_SIZE) + 1;
 	const hasPreviousSearchPage = searchOffset > 0;
-	const hasNextSearchPage = searchResults.length === SEARCH_PAGE_SIZE;
+	const [hasNextSearchPage, setHasNextSearchPage] = useState(false);
 
 	const incomingRequestBySenderId = useMemo(() => {
 		return new Map(
@@ -153,11 +153,12 @@ export default function Friends() {
 		try {
 			const results = await friendsService.searchUsers(
 				query,
-				SEARCH_PAGE_SIZE,
+				SEARCH_PAGE_SIZE + 1,
 				offset,
 			);
 
-			setSearchResults(results);
+			setSearchResults(results.slice(0, SEARCH_PAGE_SIZE));
+			setHasNextSearchPage(results.length > SEARCH_PAGE_SIZE);
 			setSearchOffset(offset);
 			setLastSearchQuery(query);
 		} catch (error: unknown) {
@@ -184,6 +185,7 @@ export default function Friends() {
 			setSearchResults([]);
 			setSearchOffset(0);
 			setLastSearchQuery("");
+			setHasNextSearchPage(false);
 			return;
 		}
 
@@ -321,7 +323,18 @@ export default function Friends() {
 				>
 					<Input
 						value={search}
-						onChange={(event) => setSearch(event.target.value)}
+						onChange={(event) => {
+							const value = event.target.value;
+
+							setSearch(value);
+
+							if (!value.trim()) {
+								setSearchResults([]);
+								setSearchOffset(0);
+								setLastSearchQuery("");
+								setHasNextSearchPage(false);
+							}
+						}}
 						placeholder={t("friends.search.placeholder")}
 					/>
 
