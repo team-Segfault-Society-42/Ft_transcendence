@@ -30,7 +30,7 @@
     },
     "buttons": {
       "register": "S'enregistrer",
-      "login": "Se connecter",
+      "login": "Connexion",
       "start": "LANCER LA PARTIE",
       "hi": "Salut, ",
       "create": "Créer une partie",
@@ -101,7 +101,7 @@
       }
     },
     "waiting": "En attendant..",
-    "backHome": "Retour à la maison",
+    "backHome": "Retour à l'accueil",
     "spectating": "Vous êtes spectateur",
     "waitingOpponent": "En attente de l'adversaire...",
     "waitingMove": "En attente du coup de l'adversaire...",
