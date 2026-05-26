@@ -43,7 +43,9 @@ export function RickTerminal({ onClose }: RickTerminalProps) {
 		}
 
 		loadFrames().catch((error: unknown) => {
-			console.error("Failed to load Rick frames:", error);
+			if (import.meta.env.DEV) {
+				console.error("Failed to load Rick frames:", error);
+			}
 		});
 	}, []);
 

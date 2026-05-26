@@ -40,7 +40,9 @@ export function PlayCard({ user }: Props) {
         	await gameApi.createGame();
 		}
       	catch (error: unknown) {
-        	console.error(error);
+			if (import.meta.env.DEV) {
+				console.warn("[PlayCard] failed to create game:", error);
+			}
       	}
     };
 	
@@ -57,10 +59,9 @@ export function PlayCard({ user }: Props) {
 			await gameApi.leaveGame(activeGame.gameId);
 		}
 		catch (error: unknown) {
-			console.error(
-				"Failed to cancel game:",
-				error
-			);
+			if (import.meta.env.DEV) {
+				console.warn("[PlayCard] failed to cancel game:", error);
+			}
 		}
 	};
 

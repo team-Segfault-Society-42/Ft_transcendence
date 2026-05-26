@@ -86,7 +86,9 @@ export const useActiveGameStore = create<ActiveGameStore>((set) => ({
                 });
             }
             catch (error: unknown) {
-                console.error("Failed to fetch active game:", error);
+                if (import.meta.env.DEV) {
+                    console.warn("[ActiveGame] failed to fetch active game:", error);
+                }
         
 				/* ERROR RESET */
                 set({

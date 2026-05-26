@@ -22,7 +22,10 @@ export const useLiveGamesStore = create<LiveGamesStore>((set) => ({
       const data = await gameApi.getLiveGames();
       set({ games: data, loading: false });
     } catch (error: unknown) {
-      console.error("Error fetching games:", error);
+      if (import.meta.env.DEV) {
+        console.warn("[LiveGames] failed to fetch games:", error);
+      }
+
       set({
         error: error instanceof Error ? error.message : "Failed to fetch games",
         loading: false,

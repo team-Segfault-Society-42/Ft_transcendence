@@ -41,11 +41,9 @@ export default function History() {
 
 				setMatches(sorted);
 			} catch (error: unknown) {
-				if (error instanceof Error) {
-                    console.error('Failed to fetch history:', error.message);
-                } else {
-                    console.error('Failed to fetch history: An unknown error occurred');
-                }
+				if (import.meta.env.DEV) {
+					console.error('[History] failed to fetch history:', error);
+				}
 			} finally {
 				setLoading(false);
 			}

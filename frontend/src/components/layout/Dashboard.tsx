@@ -154,18 +154,24 @@ export default function Dashboard() {
 		const socket = connectPresenceSocket();
 
 		initializeRealtimeState().catch((error: unknown) => {
-			console.error("[PresenceSocket] initialization failed:", error);
+			if (import.meta.env.DEV) {
+				console.warn("[PresenceSocket] initialization failed:", error);
+			}
 		});
 
 		const handleReconnect = () => {
 			initializeRealtimeState().catch((error: unknown) => {
-				console.error("[PresenceSocket] reconnect reload failed:", error);
+				if (import.meta.env.DEV) {
+					console.warn("[PresenceSocket] reconnect reload failed:", error);
+				}
 			});
 		};
 
 		const handleFriendRelationshipEvent = () => {
 			initializeRealtimeState().catch((error: unknown) => {
-				console.error("[PresenceSocket] friend reload failed:", error);
+				if (import.meta.env.DEV) {
+					console.warn("[PresenceSocket] friend reload failed:", error);
+				}
 			});
 		};
 
@@ -181,7 +187,9 @@ export default function Dashboard() {
 		};
 
 		const handleConnectError = (error: Error) => {
-			console.error("[PresenceSocket] connection error:", error.message);
+			if (import.meta.env.DEV) {
+				console.warn("[PresenceSocket] connection error:", error.message);
+			}
 		};
 
 		socket.on("connect", handleReconnect);
@@ -228,7 +236,9 @@ export default function Dashboard() {
 			toast.success(message);
 			navigate("/");
 		} catch (error: unknown) {
-			console.error("[Auth] logout failed:", error);
+			if (import.meta.env.DEV) {
+				console.warn("[Auth] logout failed:", error);
+			}
 			clearAuthenticatedFrontendState();
 		}
 	}

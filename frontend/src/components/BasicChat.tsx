@@ -75,7 +75,9 @@ export function BasicChat({ onClose }: BasicChatProps) {
 		});
 
 		client.on('connect_error', (error: Error) => {
-			console.error('chat socket error:', error.message);
+			if (import.meta.env.DEV) {
+				console.warn('[ChatSocket] connection error:', error.message);
+			}
 		});
 
 		client.on('exception', (error: ChatException) => {
