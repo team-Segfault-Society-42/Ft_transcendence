@@ -14,8 +14,8 @@ export function gameErrorMsg(rawMessage: string | null | undefined): string {
 
   const message = raw.toLowerCase();
 
-  if (raw.startsWith("ERR_GAME_") && i18n.exists(raw)) {
-    return i18n.t(raw);
+  if (raw.startsWith("ERR_GAME_") && i18n.exists(`backend.${raw}`)) {
+    return i18n.t(`backend.${raw}`);
   }
 
   if (message.includes("user not found")) {

@@ -52,14 +52,7 @@ export default function Game() {
 		});
 
 		client.on('game_error', (payload: GameErrorPayload) => {
-			const message = gameErrorMsg(payload.message);
-
-			if (message === 'Game not found') {
-				useGameStore.getState().resetGameState();
-				useGameStore.getState().setError('Game no longer available');
-				return;
-			}
-			useGameStore.getState().setError(gameErrorMsg(payload.message));
+			useGameStore.getState().setError(payload.message);
 		});
 
 		return () => {
