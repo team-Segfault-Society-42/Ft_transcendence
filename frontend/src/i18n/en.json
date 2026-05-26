@@ -301,7 +301,10 @@
     "notConnected": "Not connected",
     "login": "Login to see the chat",
     "open": "Open chat",
-    "placeholder": "Message (max {{count}} characters)"
+    "placeholder": "Message (max {{count}} characters)",
+    "errors": {
+      "default": "Unable to send message."
+    }
   },
   "history": {
     "title": "Game History",

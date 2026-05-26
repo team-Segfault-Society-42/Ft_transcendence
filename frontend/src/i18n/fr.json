@@ -301,7 +301,10 @@
     "notConnected": "Non connecté",
     "login": "Connecte-toi pour accéder à la discussion",
     "open": "Ouvrir le chat",
-    "placeholder": "Message ({{count}} caractères maximum)"
+    "placeholder": "Message ({{count}} caractères maximum)",
+    "errors": {
+      "default": "Impossible d'envoyer le message."
+    }
   },
   "history": {
     "title": "Historique des parties",

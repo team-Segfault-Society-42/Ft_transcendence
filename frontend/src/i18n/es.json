@@ -301,7 +301,10 @@
     "notConnected": "No conectado",
     "login": "Inicia sesión para ver el chat",
     "open": "Abrir chat",
-    "placeholder": "Mensaje (máximo {{count}} caracteres)"
+    "placeholder": "Mensaje (máximo {{count}} caracteres)",
+    "errors": {
+      "default": "No se pudo enviar el mensaje."
+    }
   },
   "history": {
     "title": "Historial de partidas",
