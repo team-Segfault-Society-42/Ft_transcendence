@@ -375,11 +375,7 @@
     "intro": "This application collects and processes user data in order to provide its services.",
     "data": {
       "title": "Data collected",
-      "items": [
-        "Username",
-        "Game statistics",
-        "Profile information"
-      ]
+      "items": ["Username", "Game statistics", "Profile information"]
     },
     "usage": {
       "title": "Usage",
@@ -486,6 +482,7 @@
     "ERR_GAME_ID_REQUIRED": "Game ID is required.",
     "ERR_GAME_ID_INVALID": "Invalid Game ID.",
     "ERR_GAME_MOVE_COORD_INVALID": "Invalid coordinates (must be between 0 and 2).",
+    "ERR_GAME_CELL_OCCUPIED": "This cell is already occupied.",
     "ERR_GAME_NOT_FOUND": "Game not found.",
     "ERR_GAME_ALREADY_ACTIVE": "You already have an active game.",
     "ERR_GAME_NOT_FINISHED": "Game not finished yet.",
@@ -495,6 +492,7 @@
     "ERR_GAME_SPECTATOR_MOVE": "Spectators cannot play.",
     "ERR_GAME_NOT_YOUR_TURN": "It is not your turn.",
     "ERR_GAME_CANT_LEAVE_PLAYING": "Can't leave a game while playing",
+    "ERR_GAME_UNKNOWN": "Something went wrong.",
     "ERR_MATCH_SELF_PLAY": "A player cannot play against themselves.",
     "ERR_MATCH_INVALID_WINNER": "The winner must be one of the two players.",
     "ERR_MATCH_SAVE_FAILED": "Unable to save match result.",

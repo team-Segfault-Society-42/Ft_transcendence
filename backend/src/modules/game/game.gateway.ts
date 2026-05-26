@@ -47,6 +47,15 @@ export class GameGateway implements OnGatewayDisconnect {
 		private readonly presenceService: PresenceService,
 	) {}
 
+	private emitGameError(client: AuthSocket, error: unknown) {
+		const code =
+			error instanceof Error && error.message.startsWith('ERR_')
+				? error.message
+				: 'ERR_GAME_UNKNOWN';
+
+		client.emit('game_error', { code });
+	}
+
 	/**
 	 * Clears the stored turn timer for a game if one exists.
 	 *
@@ -257,9 +266,7 @@ export class GameGateway implements OnGatewayDisconnect {
 			}
 			client.emit('joined_as', { role });
 		} catch (error: unknown) {
-			client.emit('game_error', {
-				message: error instanceof Error ? error.message : 'Unknown error',
-			});
+			this.emitGameError(client, error);
 		}
 	}
 
@@ -297,9 +304,7 @@ export class GameGateway implements OnGatewayDisconnect {
 			}
 			return newGameState;
 		} catch (error: unknown) {
-			client.emit('game_error', {
-				message: error instanceof Error ? error.message : 'Unknown error',
-			});
+			this.emitGameError(client, error);
 		}
 	}
 
@@ -323,9 +328,7 @@ export class GameGateway implements OnGatewayDisconnect {
 			this.emitGameUpdate(body.gameId, updateGame);
 			return updateGame;
 		} catch (error: unknown) {
-			client.emit('game_error', {
-				message: error instanceof Error ? error.message : 'Unknown error',
-			});
+			this.emitGameError(client, error);
 		}
 	}
 
@@ -361,9 +364,7 @@ export class GameGateway implements OnGatewayDisconnect {
 				}
 			}
 		} catch (error: unknown) {
-			client.emit('game_error', {
-				message: error instanceof Error ? error.message : 'Unknown error',
-			});
+			this.emitGameError(client, error);
 		}
 	}
 }
