@@ -35,30 +35,22 @@ export class AuthController {
 	) {}
 
 	@Public()
-	@ApiOperation({ summary: 'Register a new user' })
-	@ApiBody({ type: RegisterDto })
-	@ApiResponse({
-		status: 201,
-		description: 'User registered successfully',
-	})
-	@ApiResponse({
-		status: 400,
-		description: 'Invalid input data',
-	})
 	@Post('register')
+	@ApiOperation({ summary: 'Register a new user and start a session' })
+	@ApiBody({ type: RegisterDto })
+	@ApiCreatedResponse({ description: 'User registered successfully' })
+	@ApiBadRequestResponse({ description: 'Invalid input data' })
+	@ApiConflictResponse({ description: 'Email or username already exists' })
 	async register(
 		@Body() registerDto: RegisterDto,
 		@Res({ passthrough: true }) res: Response,
 	) {
 		const user = await this.authService.register(registerDto);
 		const accessToken = await this.authService.signTokenForUser(user);
-		res.cookie('access_token', accessToken, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			maxAge: 8 * 60 * 60 * 1000,
-			path: '/',
-		});
+
+		res.cookie('access_token', accessToken, accessTokenCookieOptions);
+		res.clearCookie('2fa_pending', baseCookieOptions);
+
 		return user;
 	}
 
