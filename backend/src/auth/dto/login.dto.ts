@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, Matches, MinLength } from 'class-validator';
-import { MaxLength } from 'node:buffer';
+import { IsEmail, IsString, Matches, MinLength, MaxLength } from 'class-validator';
 
 /**
  * Login payload for local email/password authentication.

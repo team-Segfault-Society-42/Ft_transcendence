@@ -91,11 +91,7 @@ export default function Profile() {
           setLoading(false)
         }
         catch (error: unknown) {
-          if (error instanceof Error) {
-            console.error("Failed to load profile:", error.message);
-          } else {
-            console.error("Failed to load profile: An unknown error occurred");
-          }
+          toast.error(t("errors.game.userNotFound") || "Ce profil n'existe pas.");
           navigate("/dashboard");
         }
       }
