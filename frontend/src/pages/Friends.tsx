@@ -363,11 +363,13 @@ export default function Friends() {
 							onClick={handlePreviousSearchPage}
 							disabled={!hasPreviousSearchPage || searchLoading}
 						>
-							Previous
+							{t("friends.search.previous")}
 						</Button>
 
 						<span className="text-sm text-white/50">
-							Page {currentSearchPage}
+							{t("friends.search.page", {
+								page: currentSearchPage,
+							})}
 						</span>
 
 						<Button
@@ -376,7 +378,7 @@ export default function Friends() {
 							onClick={handleNextSearchPage}
 							disabled={!hasNextSearchPage || searchLoading}
 						>
-							Next
+							{t("friends.search.next")}
 						</Button>
 					</div>
 				)}

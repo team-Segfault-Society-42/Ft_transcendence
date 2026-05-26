@@ -251,7 +251,10 @@
     "search": {
       "title": "Find users",
       "placeholder": "Search by username",
-      "button": "Search"
+      "button": "Search",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{page}}"
     },
     "list": {
       "title": "Friends list",

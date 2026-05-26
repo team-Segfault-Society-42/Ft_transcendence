@@ -251,7 +251,10 @@
     "search": {
       "title": "Rechercher des utilisateurs",
       "placeholder": "Rechercher par nom d'utilisateur",
-      "button": "Rechercher"
+      "button": "Rechercher",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "page": "Page {{page}}"
     },
     "list": {
       "title": "Liste d'amis",
