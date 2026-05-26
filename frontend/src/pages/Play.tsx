@@ -80,6 +80,7 @@ export default function Play() {
   	}
 	
 	useEffect(() => {
+		if (!user) return;
 		fetchGames();
 	}, [fetchGames]);
 
