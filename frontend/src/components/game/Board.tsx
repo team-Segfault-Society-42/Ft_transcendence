@@ -16,6 +16,7 @@ import { EndGamePopup } from './EndGamePopup';
 import { SpectatorCount } from './SpectatorCount';
 import { Button } from '@/components/ui/Button';
 import { boardClasses } from '@/styles/gameChatClasses';
+import { gameErrorMsg } from '@/lib/gameErrorMsg';
 
 export default function Board() {
 	const { game, error, playMove, playerRole, requestReplay, leaveGame } =
@@ -61,7 +62,7 @@ export default function Board() {
 	if (error && !game) {
 		return (
 			<div className="text-white text-center p-8">
-				<div className="mb-4">{error}</div>
+				<div className="mb-4">{gameErrorMsg(error)}</div>
 				<Button onClick={() => navigate('/')}>{t('buttons.backHome')}</Button>
 			</div>
 		);

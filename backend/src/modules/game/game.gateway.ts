@@ -48,6 +48,214 @@ export class GameGateway implements OnGatewayDisconnect {
 	) {}
 
 	/**
+	 * Handles player and spectator disconnections from a game socket.
+	 *
+	 * @param client - Authenticated socket that disconnected.
+	 */
+	handleDisconnect(client: AuthSocket) {
+		const result = this.gameService.processPlayerDisconnection(client.id);
+		if (result) {
+			if (result?.game.status === 'finished')
+				result.game.playerLeft = result.role;
+			this.emitGameUpdate(result.gameId, result.game);
+			this.cleanupFinishedGameIfEmpty(result.gameId);
+			return;
+		}
+		const gameId = client.data.currentGameId;
+		if (!gameId) return;
+
+		try {
+			const game = this.gameService.getGameById(gameId);
+			this.emitGameUpdate(gameId, game);
+			this.cleanupFinishedGameIfEmpty(gameId);
+		} catch {
+			return;
+		}
+	}
+
+	/**
+	 * Joins the authenticated user to a game room and broadcasts the updated state.
+	 *
+	 * @param body - Payload containing the game id to join.
+	 * @param client - Authenticated socket joining the game.
+	 */
+	@SubscribeMessage('join_game')
+	async handleJoinGame(
+		@MessageBody() body: { gameId: string },
+		@ConnectedSocket() client: AuthSocket,
+	) {
+		try {
+			const userId = client.data.user.sub;
+
+			const userProfile = await this.usersService.getUser(userId);
+
+			const { game, role } = this.gameService.joinGame(
+				body.gameId,
+				client.id,
+				userId,
+				userProfile,
+			);
+
+			await client.join(body.gameId);
+			client.data.currentGameId = body.gameId;
+
+			this.emitGameUpdate(body.gameId, game);
+			if (game.playerProfiles.X?.id) {
+				await this.presenceService.emitFriendStatusChange(
+					game.playerProfiles.X.id,
+				);
+			}
+
+			if (game.playerProfiles.O?.id) {
+				await this.presenceService.emitFriendStatusChange(
+					game.playerProfiles.O.id,
+				);
+			}
+			client.emit('joined_as', { role });
+		} catch (error: unknown) {
+			this.emitGameError(client, error);
+		}
+	}
+
+	/**
+	 * Applies a move from the authenticated player and broadcasts the new game state.
+	 *
+	 * @param body - Move payload containing the game id and board coordinates.
+	 * @param client - Authenticated socket sending the move.
+	 * @returns The updated game state when the move is accepted.
+	 */
+	@SubscribeMessage('play_move')
+	async handlePlayMove(
+		@MessageBody() body: PlayMoveDto,
+		@ConnectedSocket() client: AuthSocket,
+	) {
+		try {
+			const userId = client.data.user.sub;
+			const newGameState = await this.gameService.playMove(
+				body.gameId,
+				userId,
+				body.r,
+				body.c,
+			);
+			this.emitGameUpdate(body.gameId, newGameState);
+			if (newGameState.playerProfiles.X?.id) {
+				await this.presenceService.emitFriendStatusChange(
+					newGameState.playerProfiles.X.id,
+				);
+			}
+
+			if (newGameState.playerProfiles.O?.id) {
+				await this.presenceService.emitFriendStatusChange(
+					newGameState.playerProfiles.O.id,
+				);
+			}
+			return newGameState;
+		} catch (error: unknown) {
+			this.emitGameError(client, error);
+		}
+	}
+
+	/**
+	 * Registers a replay vote for the authenticated player.
+	 *
+	 * @param body - Payload containing the game id.
+	 * @param client - Authenticated socket requesting the replay.
+	 * @returns The updated game state after the replay vote.
+	 */
+	@SubscribeMessage('request_replay')
+	handleRequestReplay(
+		@MessageBody() body: { gameId: string },
+		@ConnectedSocket() client: AuthSocket,
+	) {
+		try {
+			const userId = client.data.user.sub;
+			const updateGame = this.gameService.requestReplay(body.gameId, userId);
+
+			this.emitUpdatedRoles(updateGame);
+			this.emitGameUpdate(body.gameId, updateGame);
+			return updateGame;
+		} catch (error: unknown) {
+			this.emitGameError(client, error);
+		}
+	}
+
+	/**
+	 * Removes the authenticated user from the game and updates the room state.
+	 *
+	 * @param body - Payload containing the game id to leave.
+	 * @param client - Authenticated socket leaving the game.
+	 */
+	@SubscribeMessage('leave_game')
+	async handleLeaveGame(
+		@MessageBody() body: { gameId: string },
+		@ConnectedSocket() client: AuthSocket,
+	) {
+		try {
+			const userId = client.data.user.sub;
+			const result = this.gameService.leaveGame(body.gameId, userId);
+
+			if (result.deleted) {
+				await client.leave(body.gameId);
+				if (client.data.currentGameId === body.gameId) {
+					delete client.data.currentGameId;
+					await this.presenceService.emitFriendStatusChange(userId);
+				}
+				return;
+			}
+			if (result.game) {
+				this.emitGameUpdate(body.gameId, result.game);
+				await client.leave(body.gameId);
+				if (client.data.currentGameId === body.gameId) {
+					delete client.data.currentGameId;
+					await this.presenceService.emitFriendStatusChange(userId);
+				}
+			}
+		} catch (error: unknown) {
+			this.emitGameError(client, error);
+		}
+	}
+
+	private emitGameError(client: AuthSocket, error: unknown) {
+		const code =
+			error instanceof Error && error.message.startsWith('ERR_')
+				? error.message
+				: 'ERR_GAME_UNKNOWN';
+
+		client.emit('game_error', { code });
+	}
+
+	/**
+	 * Sends the latest game state to every socket in the game room.
+	 * The spectator count is computed from connected sockets at emit time.
+	 *
+	 * @param gameId - Id of the game room.
+	 * @param game - Game state to broadcast.
+	 */
+	private emitGameUpdate(gameId: string, game: GameState) {
+		this.startTurnTimer(gameId, game);
+
+		this.server.to(gameId).emit('game_updated', {
+			...game,
+			spectatCnt: this.getSpectatorsCnt(gameId, game),
+		});
+	}
+
+	/**
+	 * Sends the current X/O roles to player sockets after replay votes may swap seats.
+	 *
+	 * @param game - Game state containing the current player socket ids.
+	 */
+	private emitUpdatedRoles(game: GameState) {
+		const socketId_X = game.players.X.socketIds;
+		const socketId_O = game.players.O.socketIds;
+
+		if (socketId_X.length > 0)
+			this.server.to(socketId_X).emit('role_updated', { role: 'X' });
+		if (socketId_O.length > 0)
+			this.server.to(socketId_O).emit('role_updated', { role: 'O' });
+	}
+
+	/**
 	 * Clears the stored turn timer for a game if one exists.
 	 *
 	 * @param gameId - Id of the game linked to the timer.
@@ -158,212 +366,5 @@ export class GameGateway implements OnGatewayDisconnect {
 
 		this.clearTurnTimer(gameId);
 		this.gameService.deleteGame(gameId);
-	}
-
-	/**
-	 * Sends the latest game state to every socket in the game room.
-	 * The spectator count is computed from connected sockets at emit time.
-	 *
-	 * @param gameId - Id of the game room.
-	 * @param game - Game state to broadcast.
-	 */
-	private emitGameUpdate(gameId: string, game: GameState) {
-		this.startTurnTimer(gameId, game);
-
-		this.server.to(gameId).emit('game_updated', {
-			...game,
-			spectatCnt: this.getSpectatorsCnt(gameId, game),
-		});
-	}
-
-	/**
-	 * Sends the current X/O roles to player sockets after replay votes may swap seats.
-	 *
-	 * @param game - Game state containing the current player socket ids.
-	 */
-	private emitUpdatedRoles(game: GameState) {
-		const socketId_X = game.players.X.socketIds;
-		const socketId_O = game.players.O.socketIds;
-
-		if (socketId_X.length > 0)
-			this.server.to(socketId_X).emit('role_updated', { role: 'X' });
-		if (socketId_O.length > 0)
-			this.server.to(socketId_O).emit('role_updated', { role: 'O' });
-	}
-
-	/**
-	 * Handles player and spectator disconnections from a game socket.
-	 *
-	 * @param client - Authenticated socket that disconnected.
-	 */
-	handleDisconnect(client: AuthSocket) {
-		const result = this.gameService.processPlayerDisconnection(client.id);
-		if (result) {
-			if (result?.game.status === 'finished')
-				result.game.playerLeft = result.role;
-			this.emitGameUpdate(result.gameId, result.game);
-			this.cleanupFinishedGameIfEmpty(result.gameId);
-			return;
-		}
-		const gameId = client.data.currentGameId;
-		if (!gameId) return;
-
-		try {
-			const game = this.gameService.getGameById(gameId);
-			this.emitGameUpdate(gameId, game);
-			this.cleanupFinishedGameIfEmpty(gameId);
-		} catch {
-			return;
-		}
-	}
-
-	/**
-	 * Joins the authenticated user to a game room and broadcasts the updated state.
-	 *
-	 * @param body - Payload containing the game id to join.
-	 * @param client - Authenticated socket joining the game.
-	 */
-	@SubscribeMessage('join_game')
-	async handleJoinGame(
-		@MessageBody() body: { gameId: string },
-		@ConnectedSocket() client: AuthSocket,
-	) {
-		try {
-			const userId = client.data.user.sub;
-
-			const userProfile = await this.usersService.getUser(userId);
-
-			const { game, role } = this.gameService.joinGame(
-				body.gameId,
-				client.id,
-				userId,
-				userProfile,
-			);
-
-			await client.join(body.gameId);
-			client.data.currentGameId = body.gameId;
-
-			this.emitGameUpdate(body.gameId, game);
-			if (game.playerProfiles.X?.id) {
-				await this.presenceService.emitFriendStatusChange(
-					game.playerProfiles.X.id,
-				);
-			}
-
-			if (game.playerProfiles.O?.id) {
-				await this.presenceService.emitFriendStatusChange(
-					game.playerProfiles.O.id,
-				);
-			}
-			client.emit('joined_as', { role });
-		} catch (error: unknown) {
-			client.emit('game_error', {
-				message: error instanceof Error ? error.message : 'Unknown error',
-			});
-		}
-	}
-
-	/**
-	 * Applies a move from the authenticated player and broadcasts the new game state.
-	 *
-	 * @param body - Move payload containing the game id and board coordinates.
-	 * @param client - Authenticated socket sending the move.
-	 * @returns The updated game state when the move is accepted.
-	 */
-	@SubscribeMessage('play_move')
-	async handlePlayMove(
-		@MessageBody() body: PlayMoveDto,
-		@ConnectedSocket() client: AuthSocket,
-	) {
-		try {
-			const userId = client.data.user.sub;
-			const newGameState = await this.gameService.playMove(
-				body.gameId,
-				userId,
-				body.r,
-				body.c,
-			);
-			this.emitGameUpdate(body.gameId, newGameState);
-			if (newGameState.playerProfiles.X?.id) {
-				await this.presenceService.emitFriendStatusChange(
-					newGameState.playerProfiles.X.id,
-				);
-			}
-
-			if (newGameState.playerProfiles.O?.id) {
-				await this.presenceService.emitFriendStatusChange(
-					newGameState.playerProfiles.O.id,
-				);
-			}
-			return newGameState;
-		} catch (error: unknown) {
-			client.emit('game_error', {
-				message: error instanceof Error ? error.message : 'Unknown error',
-			});
-		}
-	}
-
-	/**
-	 * Registers a replay vote for the authenticated player.
-	 *
-	 * @param body - Payload containing the game id.
-	 * @param client - Authenticated socket requesting the replay.
-	 * @returns The updated game state after the replay vote.
-	 */
-	@SubscribeMessage('request_replay')
-	handleRequestReplay(
-		@MessageBody() body: { gameId: string },
-		@ConnectedSocket() client: AuthSocket,
-	) {
-		try {
-			const userId = client.data.user.sub;
-			const updateGame = this.gameService.requestReplay(body.gameId, userId);
-
-			this.emitUpdatedRoles(updateGame);
-			this.emitGameUpdate(body.gameId, updateGame);
-			return updateGame;
-		} catch (error: unknown) {
-			client.emit('game_error', {
-				message: error instanceof Error ? error.message : 'Unknown error',
-			});
-		}
-	}
-
-	/**
-	 * Removes the authenticated user from the game and updates the room state.
-	 *
-	 * @param body - Payload containing the game id to leave.
-	 * @param client - Authenticated socket leaving the game.
-	 */
-	@SubscribeMessage('leave_game')
-	async handleLeaveGame(
-		@MessageBody() body: { gameId: string },
-		@ConnectedSocket() client: AuthSocket,
-	) {
-		try {
-			const userId = client.data.user.sub;
-			const result = this.gameService.leaveGame(body.gameId, userId);
-
-			if (result.deleted) {
-				await client.leave(body.gameId);
-				if (client.data.currentGameId === body.gameId) {
-					delete client.data.currentGameId;
-					await this.presenceService.emitFriendStatusChange(userId);
-				}
-				return;
-			}
-			if (result.game) {
-				this.emitGameUpdate(body.gameId, result.game);
-				await client.leave(body.gameId);
-				if (client.data.currentGameId === body.gameId) {
-					delete client.data.currentGameId;
-					await this.presenceService.emitFriendStatusChange(userId);
-				}
-			}
-		} catch (error: unknown) {
-			client.emit('game_error', {
-				message: error instanceof Error ? error.message : 'Unknown error',
-			});
-		}
 	}
 }

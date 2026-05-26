@@ -36,7 +36,7 @@ export class GameService {
 
 	private getMutableGameById(gameId: string): GameState {
 		const game = this.activeGame.get(gameId);
-		if (!game) throw new NotFoundException(`Game with ID ${gameId} not found`);
+		if (!game) throw new NotFoundException('ERR_GAME_NOT_FOUND');
 		return game;
 	}
 
@@ -86,7 +86,7 @@ export class GameService {
 	 */
 	getGameById(gameId: string): GameState {
 		const game = this.activeGame.get(gameId);
-		if (!game) throw new NotFoundException(`Game with ID ${gameId} not found`);
+		if (!game) throw new NotFoundException('ERR_GAME_NOT_FOUND');
 		return structuredClone(game);
 	}
 

@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
-import { io, type Socket } from "socket.io-client";
-import { useTranslation } from "react-i18next";
+import { useEffect, useRef, useState } from 'react';
+import { io, type Socket } from 'socket.io-client';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
-import { Button } from "./ui/Button";
-import { EasterEggPanel, type EasterEgg } from "./easter-eggs/EasterEggPanel";
-import { basicChatClasses } from "@/styles/gameChatClasses";
-import type { ChatMessage } from "@/type/user.types";
+import { Button } from './ui/Button';
+import { EasterEggPanel, type EasterEgg } from './easter-eggs/EasterEggPanel';
+import { basicChatClasses } from '@/styles/gameChatClasses';
+import type { ChatMessage } from '@/type/user.types';
 
-import { createPortal } from "react-dom";
+import { createPortal } from 'react-dom';
 
 type BasicChatProps = {
 	onClose: () => void;
@@ -18,16 +19,28 @@ type ChatException = {
 };
 
 const easterEggCommands: Record<string, EasterEgg> = {
-	"/rick": "rick",
-	"/matrix": "matrix",
-	"/neofetch": "neofetch",
-	"/nuke": "nuke",
+	'/rick': 'rick',
+	'/matrix': 'matrix',
+	'/neofetch': 'neofetch',
+	'/nuke': 'nuke',
 };
+
+function getChatErrorCode(error: ChatException): string | null {
+	const message = Array.isArray(error.message)
+		? error.message[0]
+		: error.message;
+
+	if (typeof message === 'string' && message.startsWith('ERR_CHAT_')) {
+		return message;
+	}
+
+	return null;
+}
 
 export function BasicChat({ onClose }: BasicChatProps) {
 	const { t } = useTranslation();
 
-	const [content, setContent] = useState("");
+	const [content, setContent] = useState('');
 	const [messages, setMessages] = useState<ChatMessage[]>([]);
 	const [connected, setConnected] = useState(false);
 	const [easterEgg, setEasterEgg] = useState<EasterEgg | null>(null);
@@ -42,44 +55,45 @@ export function BasicChat({ onClose }: BasicChatProps) {
 	 */
 	useEffect(() => {
 		const client = io(`${window.location.origin}/chat`, {
-			path: "/socket.io/",
-			transports: ["websocket"],
+			path: '/socket.io/',
+			transports: ['websocket'],
 			withCredentials: true,
 		});
 
 		clientRef.current = client;
 
-		client.on("connect", () => {
+		client.on('connect', () => {
 			setConnected(true);
 		});
 
-		client.on("disconnect", () => {
+		client.on('disconnect', () => {
 			setConnected(false);
 		});
 
-		client.on("chat_message", (message: ChatMessage) => {
-			setMessages((previousMessages) => [
-				...previousMessages,
-				message,
-			]);
+		client.on('chat_message', (message: ChatMessage) => {
+			setMessages((previousMessages) => [...previousMessages, message]);
 		});
 
-		client.on("connect_error", (error: Error) => {
-			console.error("chat socket error:", error.message);
+		client.on('connect_error', (error: Error) => {
+			if (import.meta.env.DEV) {
+				console.warn('[ChatSocket] connection error:', error.message);
+			}
 		});
 
-		client.on("exception", (error: ChatException) => {
-			console.error("Chat exception:", error.message);
+		client.on('exception', (error: ChatException) => {
+			const code = getChatErrorCode(error);
+
+			toast.error(code ? t(`backend.${code}`) : t('chat.errors.default'));
 		});
 
 		return () => {
 			client.disconnect();
 			clientRef.current = null;
 		};
-	}, []);
+	}, [t]);
 
 	useEffect(() => {
-		bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
 	}, [messages]);
 
 	/**
@@ -98,7 +112,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 		}
 
 		setEasterEgg(egg);
-		setContent("");
+		setContent('');
 
 		return true;
 	}
@@ -119,11 +133,11 @@ export function BasicChat({ onClose }: BasicChatProps) {
 			return;
 		}
 
-		clientRef.current.emit("chat_send", {
+		clientRef.current.emit('chat_send', {
 			content: text,
 		});
 
-		setContent("");
+		setContent('');
 	}
 
 	return (
@@ -162,8 +176,8 @@ export function BasicChat({ onClose }: BasicChatProps) {
 							<div className="flex items-center gap-1">
 								<span className="text-gray-400 text-[10px] shrink-0">
 									{new Date(message.createdAt).toLocaleTimeString([], {
-										hour: "2-digit",
-										minute: "2-digit",
+										hour: '2-digit',
+										minute: '2-digit',
 									})}
 								</span>
 
@@ -187,12 +201,12 @@ export function BasicChat({ onClose }: BasicChatProps) {
 						value={content}
 						onChange={(event) => setContent(event.target.value)}
 						onKeyDown={(event) => {
-							if (event.key === "Enter" && !event.shiftKey) {
+							if (event.key === 'Enter' && !event.shiftKey) {
 								event.preventDefault();
 								sendMessage();
 							}
 						}}
-						placeholder={t("chat.placeholder", { count: 500 })}
+						placeholder={t('chat.placeholder', { count: 500 })}
 						maxLength={500}
 						rows={4}
 						className="flex-1 border p-2 resize-none"
@@ -203,7 +217,7 @@ export function BasicChat({ onClose }: BasicChatProps) {
 						disabled={!connected || content.trim().length === 0}
 						className="hover:scale-100 shrink-0"
 					>
-						{">"}
+						{'>'}
 					</Button>
 				</div>
 			</section>

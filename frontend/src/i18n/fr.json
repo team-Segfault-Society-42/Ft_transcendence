@@ -301,7 +301,10 @@
     "notConnected": "Non connecté",
     "login": "Connecte-toi pour accéder à la discussion",
     "open": "Ouvrir le chat",
-    "placeholder": "Message ({{count}} caractères maximum)"
+    "placeholder": "Message ({{count}} caractères maximum)",
+    "errors": {
+      "default": "Impossible d'envoyer le message."
+    }
   },
   "history": {
     "title": "Historique des parties",
@@ -486,6 +489,7 @@
     "ERR_GAME_ID_REQUIRED": "L'identifiant de la partie est requis.",
     "ERR_GAME_ID_INVALID": "L'identifiant de la partie est invalide.",
     "ERR_GAME_MOVE_COORD_INVALID": "Coordonnées invalides (doivent être entre 0 et 2).",
+    "ERR_GAME_CELL_OCCUPIED": "Cette case est déjà occupée.",
     "ERR_GAME_NOT_FOUND": "Partie introuvable.",
     "ERR_GAME_ALREADY_ACTIVE": "Vous avez déjà une partie en cours.",
     "ERR_GAME_NOT_FINISHED": "La partie n'est pas encore terminée.",
@@ -495,6 +499,7 @@
     "ERR_GAME_SPECTATOR_MOVE": "Les spectateurs ne peuvent pas jouer.",
     "ERR_GAME_NOT_YOUR_TURN": "Ce n'est pas votre tour.",
     "ERR_GAME_CANT_LEAVE_PLAYING": "Impossible de quitter une partie en cours",
+    "ERR_GAME_UNKNOWN": "Une erreur est survenue.",
     "ERR_MATCH_SELF_PLAY": "Un joueur ne peut pas jouer contre lui-même.",
     "ERR_MATCH_INVALID_WINNER": "Le vainqueur doit être l'un des deux participants.",
     "ERR_MATCH_SAVE_FAILED": "Impossible d'enregistrer le résultat du match.",

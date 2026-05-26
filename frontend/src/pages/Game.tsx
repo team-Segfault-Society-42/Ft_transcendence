@@ -3,7 +3,7 @@ import Board from '../components/game/Board';
 import { io } from 'socket.io-client';
 import { useParams } from 'react-router-dom';
 import { useGameStore } from '../Store/gameStore';
-import { gameErrorMsg } from '@/lib/gameErrorMsg';
+import { isGameNotFoundError } from '@/lib/gameErrorMsg';
 import type { GameState, PlayerRole } from '@/type/game.types';
 import i18n from '@/i18n/config';
 import { gamePageClasses } from '@/styles/gameChatClasses';
@@ -13,7 +13,7 @@ type JoinedAsPayload = {
 };
 
 type GameErrorPayload = {
-	message: string;
+	code: string;
 };
 
 export default function Game() {
@@ -52,14 +52,15 @@ export default function Game() {
 		});
 
 		client.on('game_error', (payload: GameErrorPayload) => {
-			const message = gameErrorMsg(payload.message);
+			const store = useGameStore.getState();
 
-			if (message === 'Game not found') {
-				useGameStore.getState().resetGameState();
-				useGameStore.getState().setError('Game no longer available');
+			if (isGameNotFoundError(payload.code)) {
+				store.resetGameState();
+				store.setError('ERR_GAME_NOT_FOUND');
 				return;
 			}
-			useGameStore.getState().setError(gameErrorMsg(payload.message));
+
+			store.setError(payload.code);
 		});
 
 		return () => {

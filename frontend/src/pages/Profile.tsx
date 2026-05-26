@@ -186,10 +186,8 @@ export default function Profile() {
           const data = await userService.getAllAchievements()
           setAllAchievements(data)
         } catch (error: unknown) {
-          if (error instanceof Error) {
-            console.error("Failed to fetch all achievements:", error.message);
-          } else {
-            console.error("Failed to fetch all achievements: An unknown error occurred");
+          if (import.meta.env.DEV) {
+            console.error("[Profile] failed to fetch all achievements:", error);
           }
         }
       }
@@ -202,10 +200,8 @@ export default function Profile() {
             setUnlockedAchievements(data.map((a: UserAchievement) => a.achievementId));
           }
         } catch (error: unknown) {
-          if (error instanceof Error) {
-            console.error("Failed to fetch achievements:", error.message);
-          } else {
-            console.error("Failed to fetch achievements: An unknown error occurred");
+          if (import.meta.env.DEV) {
+            console.error("[Profile] failed to fetch achievements:", error);
           }
         }
       }
@@ -216,10 +212,8 @@ export default function Profile() {
           const rankData = await userService.getUserRank(profileData!.id)
           setRank(rankData.rank)
 			  } catch (error: unknown) {
-          if (error instanceof Error) {
-					  console.error('Failed to fetch user rank:', error.message);
-				  } else {
-					  console.error('Failed to fetch user rank: An unknown error occurred');
+          if (import.meta.env.DEV) {
+					  console.error("[Profile] failed to fetch user rank:", error);
 				  }
 			  }
       }

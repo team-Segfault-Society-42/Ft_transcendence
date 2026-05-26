@@ -44,7 +44,9 @@ export default function Play() {
 			await gameApi.createGame();
       		await fetchGames();
     	} catch (error: unknown) {
-      		console.error("Failed to create game:", error);
+			if (import.meta.env.DEV) {
+				console.warn("[Play] failed to create game:", error);
+			}
     	}
   	}
 
@@ -57,7 +59,9 @@ export default function Play() {
     	try {
       		await navigator.clipboard.writeText(inviteLink);
     	} catch (error: unknown) {
-      		console.error("Failed to copy link:", error);
+			if (import.meta.env.DEV) {
+				console.warn("[Play] failed to copy invite link:", error);
+			}
     	}
   	}
 
@@ -75,7 +79,9 @@ export default function Play() {
     		await gameApi.leaveGame(createdGameId);
    			await fetchGames();
   		} catch (error: unknown) {
-    		console.error("Failed to cancel game:", error);
+			if (import.meta.env.DEV) {
+				console.warn("[Play] failed to cancel game:", error);
+			}
   		}
   	}
 	

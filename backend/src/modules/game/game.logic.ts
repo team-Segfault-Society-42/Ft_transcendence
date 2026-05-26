@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import {
 	GameState,
 	PlayerSymbol,
@@ -100,9 +101,9 @@ export function checkDraw(countMoves: number): boolean {
 export function validateToMove(gameState: GameState, r: number, c: number) {
 	const size = gameState.board.length;
 	if (r < 0 || r >= size || c < 0 || c >= size)
-		throw new Error(`move out of range: cell ${r},${c} dosen't existe`);
+		throw new BadRequestException('ERR_GAME_MOVE_COORD_INVALID');
 	if (!isCellEmpty(gameState, { r, c })) {
-		throw new Error(`This cell ${r},${c} is already occupied`);
+		throw new BadRequestException('ERR_GAME_CELL_OCCUPIED');
 	}
 }
 

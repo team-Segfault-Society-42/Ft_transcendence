@@ -70,7 +70,9 @@ export const useFriendsStore = create<FriendsStore>((set) => ({
 				isLoading: false,
 			});
 		} catch (error: unknown) {
-			console.error("Failed to load friends data:", error);
+			if (import.meta.env.DEV) {
+				console.warn("[Friends] failed to load friends data:", error);
+			}
 
 			set({
 				error: "Failed to load friends data",
