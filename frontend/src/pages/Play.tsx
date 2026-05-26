@@ -82,7 +82,7 @@ export default function Play() {
 	useEffect(() => {
 		if (!user) return;
 		fetchGames();
-	}, [fetchGames]);
+	}, [fetchGames, user]);
 
 	{/* GUESS STATE CARD */}
   	if (!user) {
