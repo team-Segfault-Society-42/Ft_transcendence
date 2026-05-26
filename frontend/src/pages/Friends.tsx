@@ -54,6 +54,8 @@ const defaultOfflineStatus = (userId: number): FriendStatus => ({
 	activity: "offline",
 });
 
+const SEARCH_PAGE_SIZE = 10;
+
 export default function Friends() {
 	const { t } = useTranslation();
 	const [user] = useOutletContext<[CurrentUser | null]>();
@@ -68,8 +70,14 @@ export default function Friends() {
 	const friendStatus = usePresenceStore((state) => state.friendStatus);
 
 	const [search, setSearch] = useState("");
+	const [lastSearchQuery, setLastSearchQuery] = useState("");
+	const [searchOffset, setSearchOffset] = useState(0);
 	const [searchResults, setSearchResults] = useState<PublicUser[]>([]);
 	const [searchLoading, setSearchLoading] = useState(false);
+
+	const currentSearchPage = Math.floor(searchOffset / SEARCH_PAGE_SIZE) + 1;
+	const hasPreviousSearchPage = searchOffset > 0;
+	const [hasNextSearchPage, setHasNextSearchPage] = useState(false);
 
 	const incomingRequestBySenderId = useMemo(() => {
 		return new Map(
@@ -123,33 +131,96 @@ export default function Friends() {
 	}
 
 	/**
+	 * Loads one page of user search results.
+	 *
+	 * This helper centralizes paginated search loading so:
+	 * - initial searches
+	 * - next page requests
+	 * - previous page requests
+	 *
+	 * all reuse the same API logic and loading state handling.
+	 *
+	 * @param query - Username search query.
+	 * @param offset - Number of users skipped before loading results.
+	 * @returns Nothing. Updates local pagination and search result state.
+	 */
+	async function loadSearchResults(
+		query: string,
+		offset: number,
+	): Promise<void> {
+		setSearchLoading(true);
+
+		try {
+			const results = await friendsService.searchUsers(
+				query,
+				SEARCH_PAGE_SIZE + 1,
+				offset,
+			);
+
+			setSearchResults(results.slice(0, SEARCH_PAGE_SIZE));
+			setHasNextSearchPage(results.length > SEARCH_PAGE_SIZE);
+			setSearchOffset(offset);
+			setLastSearchQuery(query);
+		} catch (error: unknown) {
+			showActionError(error, "friends.errors.search");
+		} finally {
+			setSearchLoading(false);
+		}
+	}
+
+	/**
 	 * Searches users by username.
 	 *
 	 * @param event - Search form submit event.
 	 * @returns Nothing. Updates local search result state.
 	 */
-	async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
+	async function handleSearch(
+		event: React.FormEvent<HTMLFormElement>,
+	): Promise<void> {
 		event.preventDefault();
 
 		const trimmedSearch = search.trim();
 
 		if (!trimmedSearch) {
 			setSearchResults([]);
+			setSearchOffset(0);
+			setLastSearchQuery("");
+			setHasNextSearchPage(false);
 			return;
 		}
 
-		try {
-			setSearchLoading(true);
-			setSearchResults([]);
+		await loadSearchResults(trimmedSearch, 0);
+	}
 
-			const results = await friendsService.searchUsers(trimmedSearch);
-
-			setSearchResults(results);
-		} catch (error: unknown) {
-			showActionError(error, "friends.errors.search");
-		} finally {
-			setSearchLoading(false);
+	/**
+	 * Loads the previous page of search results.
+	 *
+	 * @returns Nothing. Reuses the last submitted search query.
+	 */
+	async function handlePreviousSearchPage(): Promise<void> {
+		if (!lastSearchQuery || !hasPreviousSearchPage) {
+			return;
 		}
+
+		const previousOffset = Math.max(searchOffset - SEARCH_PAGE_SIZE, 0);
+
+		await loadSearchResults(lastSearchQuery, previousOffset);
+	}
+
+	/**
+	 * Loads the next page of search results.
+	 *
+	 * @returns Nothing. Reuses the last submitted search query.
+	 */
+	async function handleNextSearchPage(): Promise<void> {
+		if (!lastSearchQuery || !hasNextSearchPage) {
+			return;
+		}
+
+		await loadSearchResults(
+			lastSearchQuery,
+			searchOffset + SEARCH_PAGE_SIZE,
+		);
 	}
 
 	/**
@@ -252,7 +323,18 @@ export default function Friends() {
 				>
 					<Input
 						value={search}
-						onChange={(event) => setSearch(event.target.value)}
+						onChange={(event) => {
+							const value = event.target.value;
+
+							setSearch(value);
+
+							if (!value.trim()) {
+								setSearchResults([]);
+								setSearchOffset(0);
+								setLastSearchQuery("");
+								setHasNextSearchPage(false);
+							}
+						}}
 						placeholder={t("friends.search.placeholder")}
 					/>
 
@@ -286,6 +368,33 @@ export default function Friends() {
 						);
 					})}
 				</div>
+				{searchResults.length > 0 && (
+					<div className="flex items-center justify-between pt-4">
+						<Button
+							size="sm"
+							variant="secondary"
+							onClick={handlePreviousSearchPage}
+							disabled={!hasPreviousSearchPage || searchLoading}
+						>
+							{t("friends.search.previous")}
+						</Button>
+
+						<span className="text-sm text-white/50">
+							{t("friends.search.page", {
+								page: currentSearchPage,
+							})}
+						</span>
+
+						<Button
+							size="sm"
+							variant="secondary"
+							onClick={handleNextSearchPage}
+							disabled={!hasNextSearchPage || searchLoading}
+						>
+							{t("friends.search.next")}
+						</Button>
+					</div>
+				)}
 			</Card>
 
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

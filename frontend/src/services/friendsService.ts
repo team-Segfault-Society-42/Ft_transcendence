@@ -101,16 +101,19 @@ async function getOutgoingFriendRequests(): Promise<OutgoingFriendRequest[]> {
  *
  * @param query - Username search text.
  * @param limit - Maximum number of users to return.
+ * @param offset - Number of users to skip before returning results.
  * @returns Matching public users.
  */
 async function searchUsers(
 	query: string,
 	limit = 10,
+	offset = 0,
 ): Promise<PublicUser[]> {
 	const response = await api.get<PublicUser[]>("users", {
 		params: {
 			search: query,
 			limit,
+			offset,
 		},
 	});
 
