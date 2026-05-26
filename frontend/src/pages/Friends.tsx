@@ -1,31 +1,33 @@
 import {
-	UsersRound,
-	UserPlus,
+	Check,
 	Inbox,
 	Send,
-	Trash2,
-	Check,
+	UserPlus,
+	UsersRound,
 	X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Avatar } from "@/components/ui/Avatar";
-import { Card, CardTitle } from "@/components/ui/Card";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+
+import { useFriendsStore } from "@/Store/friendsStore";
+import { usePresenceStore } from "@/Store/presenceStore";
+import { Button } from "@/components/ui/Button";
+import { Card, CardTitle } from "@/components/ui/Card";
+import { EmptyStateCard } from "@/components/ui/EmptyCard";
+import { Input } from "@/components/ui/Input";
 import {
 	friendsService,
-	type PublicUser,
 	type FriendStatus,
+	type PublicUser,
 } from "@/services/friendsService";
-import { usePresenceStore } from "@/Store/presenceStore";
-import { useFriendsStore } from "@/Store/friendsStore";
 import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
-import { Username } from "@/components/ui/Username";
+
+import { FriendRow } from "@/components/friends/FriendRow";
+import { SearchResultRow } from "@/components/friends/SearchResultRow";
+import { UserRow } from "@/components/friends/UserRow";
 
 interface CurrentUser {
 	id: number;
@@ -45,6 +47,13 @@ export type RelationshipState =
 	| "PENDING_RECEIVED"
 	| "NONE";
 
+const defaultOfflineStatus = (userId: number): FriendStatus => ({
+	userId,
+	online: false,
+	inGame: false,
+	activity: "offline",
+});
+
 export default function Friends() {
 	const { t } = useTranslation();
 	const [user] = useOutletContext<[CurrentUser | null]>();
@@ -55,46 +64,44 @@ export default function Friends() {
 	const outgoingRequests = useFriendsStore((state) => state.outgoingRequests);
 	const loading = useFriendsStore((state) => state.isLoading);
 	const loadFriendsData = useFriendsStore((state) => state.loadFriendsData);
+
+	const friendStatus = usePresenceStore((state) => state.friendStatus);
+
 	const [search, setSearch] = useState("");
 	const [searchResults, setSearchResults] = useState<PublicUser[]>([]);
-
 	const [searchLoading, setSearchLoading] = useState(false);
-	const friendStatus = usePresenceStore(
-		(state) => state.friendStatus,
-	);
 
-	async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault();
+	const incomingRequestBySenderId = useMemo(() => {
+		return new Map(
+			incomingRequests.map((request) => [request.sender.id, request]),
+		);
+	}, [incomingRequests]);
 
-		const trimmedSearch = search.trim();
+	/**
+	 * Displays a translated backend error toast.
+	 *
+	 * @param error - Unknown async error from an API call.
+	 * @param translationKey - Frontend translation key wrapping the backend error.
+	 * @returns Nothing.
+	 */
+	function showActionError(error: unknown, translationKey: string): void {
+		const finalMessage = getBackendErrorMessage(error);
 
-		if (!trimmedSearch) {
-			setSearchResults([]);
-			return;
-		}
-
-		try {
-			setSearchLoading(true);
-			setSearchResults([]);
-
-			const results = await friendsService.searchUsers(trimmedSearch);
-
-			setSearchResults(results);
-		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t("friends.errors.search", {
-					error: t(`backend.${finalMessage}`, {
-						defaultValue: finalMessage,
-					}),
+		toast.error(
+			t(translationKey, {
+				error: t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
 				}),
-			);
-		} finally {
-			setSearchLoading(false);
-		}
+			}),
+		);
 	}
 
+	/**
+	 * Calculates the relationship between the current user and a target user.
+	 *
+	 * @param targetUserId - User ID shown in search results.
+	 * @returns Relationship state used to decide which button to show.
+	 */
 	function getRelationshipState(targetUserId: number): RelationshipState {
 		if (user && targetUserId === user.id) {
 			return "SELF";
@@ -115,85 +122,91 @@ export default function Friends() {
 		return "NONE";
 	}
 
-	async function handleSendRequest(userId: number) {
-		try {
-			await friendsService.sendFriendRequest(userId);
-			toast.success(t("friends.success.requestSent"));
-			await loadFriendsData();
-		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
+	/**
+	 * Searches users by username.
+	 *
+	 * @param event - Search form submit event.
+	 * @returns Nothing. Updates local search result state.
+	 */
+	async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault();
 
-			toast.error(
-				t("friends.errors.action", {
-					error: t(`backend.${finalMessage}`, {
-						defaultValue: finalMessage,
-					}),
-				}),
-			);
+		const trimmedSearch = search.trim();
+
+		if (!trimmedSearch) {
+			setSearchResults([]);
+			return;
+		}
+
+		try {
+			setSearchLoading(true);
+			setSearchResults([]);
+
+			const results = await friendsService.searchUsers(trimmedSearch);
+
+			setSearchResults(results);
+		} catch (error: unknown) {
+			showActionError(error, "friends.errors.search");
+		} finally {
+			setSearchLoading(false);
 		}
 	}
 
-	async function handleAcceptRequest(requestId: number) {
+	/**
+	 * Runs a friend action, shows a success toast, and refreshes friend state.
+	 *
+	 * @param action - Friend API action to execute.
+	 * @param successKey - Translation key shown after success.
+	 * @returns Nothing.
+	 */
+	async function runFriendAction(
+		action: () => Promise<void>,
+		successKey: string,
+	): Promise<void> {
 		try {
-			await friendsService.acceptFriendRequest(requestId);
-			toast.success(t("friends.success.accepted"));
+			await action();
+			toast.success(t(successKey));
 			await loadFriendsData();
 		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t("friends.errors.action", {
-					error: t(`backend.${finalMessage}`, {
-						defaultValue: finalMessage,
-					}),
-				}),
-			);
+			showActionError(error, "friends.errors.action");
 		}
 	}
 
-	async function handleDeclineRequest(requestId: number) {
-		try {
-			await friendsService.declineFriendRequest(requestId);
-			toast.success(t("friends.success.declined"));
-			await loadFriendsData();
-		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t("friends.errors.action", {
-					error: t(`backend.${finalMessage}`, {
-						defaultValue: finalMessage,
-					}),
-				}),
-			);
-		}
-	}
-
-	async function handleRemoveFriend(friendshipId: number) {
-		try {
-			await friendsService.removeFriend(friendshipId);
-			toast.success(t("friends.success.removed"));
-			await loadFriendsData();
-		} catch (error: unknown) {
-			const finalMessage = getBackendErrorMessage(error);
-
-			toast.error(
-				t("friends.errors.action", {
-					error: t(`backend.${finalMessage}`, {
-						defaultValue: finalMessage,
-					}),
-				}),
-			);
-		}
-	}
-
-
-
-	const incomingRequestBySenderId = useMemo(() => {
-		return new Map(
-			incomingRequests.map((request) => [request.sender.id, request]),
+	function handleSendRequest(userId: number) {
+		return runFriendAction(
+			async () => {
+				await friendsService.sendFriendRequest(userId);
+			},
+			"friends.success.requestSent",
 		);
-	}, [incomingRequests]);
+	}
+
+	function handleAcceptRequest(requestId: number) {
+		return runFriendAction(
+			async () => {
+				await friendsService.acceptFriendRequest(requestId);
+			},
+			"friends.success.accepted",
+		);
+	}
+
+	function handleDeclineRequest(requestId: number) {
+		return runFriendAction(
+			async () => {
+				await friendsService.declineFriendRequest(requestId);
+			},
+			"friends.success.declined",
+		);
+	}
+
+	function handleRemoveFriend(friendshipId: number) {
+		return runFriendAction(
+			async () => {
+				await friendsService.removeFriend(friendshipId);
+			},
+			"friends.success.removed",
+		);
+	}
 
 	if (!user) {
 		return (
@@ -212,29 +225,37 @@ export default function Friends() {
 			</section>
 		);
 	}
+
 	return (
 		<section className="w-full max-w-5xl mx-auto px-6 py-10 text-white">
+			{/* Page header */}
 			<div className="mb-8 text-center">
 				<h1 className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent text-3xl font-bold">
 					{t("friends.title")}
 				</h1>
+
 				<p className="text-white/50 mt-2">
 					{t("friends.description")}
 				</p>
 			</div>
 
+			{/* User search */}
 			<Card className="mb-6">
 				<CardTitle className="flex items-center gap-2">
 					<UserPlus size={20} />
 					{t("friends.search.title")}
 				</CardTitle>
 
-				<form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
+				<form
+					onSubmit={handleSearch}
+					className="flex flex-col sm:flex-row gap-3"
+				>
 					<Input
 						value={search}
 						onChange={(event) => setSearch(event.target.value)}
 						placeholder={t("friends.search.placeholder")}
 					/>
+
 					<Button type="submit" loading={searchLoading}>
 						{t("friends.search.button")}
 					</Button>
@@ -246,66 +267,29 @@ export default function Friends() {
 						const incomingRequest = incomingRequestBySenderId.get(result.id);
 
 						return (
-							<div
+							<SearchResultRow
 								key={result.id}
-								className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
-							>
-								<UserRow 
-									user={result}
-									onClick={() => navigate(`/profile/${result.username}`)} 
-								/>
-
-								{state === "SELF" && (
-									<span className="text-sm text-white/40">
-										{t("friends.states.self")}
-									</span>
-								)}
-
-								{state === "FRIEND" && (
-									<span className="text-sm text-green-400">
-										{t("friends.states.friend")}
-									</span>
-								)}
-
-								{state === "PENDING_SENT" && (
-									<Button variant="secondary" disabled>
-										{t("friends.states.pending")}
-									</Button>
-								)}
-
-								{state === "PENDING_RECEIVED" && incomingRequest && (
-									<div className="flex gap-2">
-										<Button
-											size="sm"
-											onClick={() => handleAcceptRequest(incomingRequest.requestId)}
-										>
-											{t("friends.actions.accept")}
-										</Button>
-										<Button
-											size="sm"
-											variant="secondary"
-											onClick={() => handleDeclineRequest(incomingRequest.requestId)}
-										>
-											{t("friends.actions.decline")}
-										</Button>
-									</div>
-								)}
-
-								{state === "NONE" && (
-									<Button
-										size="sm"
-										onClick={() => handleSendRequest(result.id)}
-									>
-										{t("friends.actions.add")}
-									</Button>
-								)}
-							</div>
+								user={result}
+								state={state}
+								incomingRequestId={incomingRequest?.requestId}
+								onOpenProfile={() =>
+									navigate(`/profile/${result.username}`)
+								}
+								onSendRequest={() => handleSendRequest(result.id)}
+								onAcceptRequest={(requestId) =>
+									handleAcceptRequest(requestId)
+								}
+								onDeclineRequest={(requestId) =>
+									handleDeclineRequest(requestId)
+								}
+							/>
 						);
 					})}
 				</div>
 			</Card>
 
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+				{/* Accepted friends */}
 				<Card>
 					<CardTitle className="flex items-center gap-2">
 						<UsersRound size={20} />
@@ -319,81 +303,29 @@ export default function Friends() {
 					) : (
 						<div className="space-y-3">
 							{friends.map((item) => {
-								const status = friendStatus[item.friend.id] ?? {
-									userId: item.friend.id,
-									online: false,
-									inGame: false,
-									activity: "offline" as const,
-								};
+								const status =
+									friendStatus[item.friend.id] ??
+									defaultOfflineStatus(item.friend.id);
 
 								return (
-									<div
+									<FriendRow
 										key={item.friendshipId}
-										className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
-									>
-										<div>
-											<UserRow 
-												user={item.friend}
-												onClick={() => navigate(`/profile/${item.friend.username}`)} 
-											/>
-											<p className="text-xs mt-1 flex items-center gap-2">
-												<StatusDot activity={status.activity ?? "offline"} />
-
-												<span
-													className={
-														status.activity === "offline"
-															? "text-red-400/80"
-															: status.activity === "waiting"
-																? "text-yellow-300"
-																: status.activity === "playing"
-																	? "text-cyan-300"
-																	: "text-green-400"
-													}
-												>
-													{status.activity === "offline" && t("friends.status.offline")}
-
-													{status.activity === "available" && (
-														<>
-															{t("friends.status.online")}
-															{" · "}
-															{t("friends.status.available")}
-														</>
-													)}
-
-													{status.activity === "waiting" && (
-														<>
-															{t("friends.status.online")}
-															{" · "}
-															{t("friends.status.waiting")}
-														</>
-													)}
-
-													{status.activity === "playing" && (
-														<>
-															{t("friends.status.online")}
-															{" · "}
-															{t("friends.status.inGame")}
-														</>
-													)}
-												</span>
-											</p>
-										</div>
-
-										<Button
-											size="sm"
-											variant="danger"
-											onClick={() => handleRemoveFriend(item.friendshipId)}
-										>
-											<Trash2 size={16} />
-											{t("friends.actions.remove")}
-										</Button>
-									</div>
+										friend={item.friend}
+										status={status}
+										onOpenProfile={() =>
+											navigate(`/profile/${item.friend.username}`)
+										}
+										onRemove={() =>
+											handleRemoveFriend(item.friendshipId)
+										}
+									/>
 								);
 							})}
 						</div>
 					)}
 				</Card>
 
+				{/* Friend requests */}
 				<div className="space-y-6">
 					<Card>
 						<CardTitle className="flex items-center gap-2">
@@ -404,7 +336,9 @@ export default function Friends() {
 						{loading ? (
 							<p className="text-white/50">{t("friends.loading")}</p>
 						) : incomingRequests.length === 0 ? (
-							<p className="text-white/50">{t("friends.requests.noIncoming")}</p>
+							<p className="text-white/50">
+								{t("friends.requests.noIncoming")}
+							</p>
 						) : (
 							<div className="space-y-3">
 								{incomingRequests.map((request) => (
@@ -412,15 +346,19 @@ export default function Friends() {
 										key={request.requestId}
 										className="flex flex-col gap-3 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
-										<UserRow 
+										<UserRow
 											user={request.sender}
-											onClick={() => navigate(`/profile/${request.sender.username}`)} 
-										 />
+											onClick={() =>
+												navigate(`/profile/${request.sender.username}`)
+											}
+										/>
 
 										<div className="flex gap-2 justify-center">
 											<Button
 												size="sm"
-												onClick={() => handleAcceptRequest(request.requestId)}
+												onClick={() =>
+													handleAcceptRequest(request.requestId)
+												}
 												aria-label={t("friends.actions.accept")}
 												title={t("friends.actions.accept")}
 												className="px-8"
@@ -431,7 +369,9 @@ export default function Friends() {
 											<Button
 												size="sm"
 												variant="secondary"
-												onClick={() => handleDeclineRequest(request.requestId)}
+												onClick={() =>
+													handleDeclineRequest(request.requestId)
+												}
 												aria-label={t("friends.actions.decline")}
 												title={t("friends.actions.decline")}
 												className="px-8"
@@ -454,7 +394,9 @@ export default function Friends() {
 						{loading ? (
 							<p className="text-white/50">{t("friends.loading")}</p>
 						) : outgoingRequests.length === 0 ? (
-							<p className="text-white/50">{t("friends.requests.noOutgoing")}</p>
+							<p className="text-white/50">
+								{t("friends.requests.noOutgoing")}
+							</p>
 						) : (
 							<div className="space-y-3">
 								{outgoingRequests.map((request) => (
@@ -462,10 +404,13 @@ export default function Friends() {
 										key={request.requestId}
 										className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
-										<UserRow 
-											user={request.receiver} 
-											onClick={() => navigate(`/profile/${request.receiver.username}`)}
+										<UserRow
+											user={request.receiver}
+											onClick={() =>
+												navigate(`/profile/${request.receiver.username}`)
+											}
 										/>
+
 										<span className="text-sm text-yellow-400">
 											{t("friends.states.pending")}
 										</span>
@@ -477,65 +422,5 @@ export default function Friends() {
 				</div>
 			</div>
 		</section>
-	);
-}
-
-function UserRow({ user, onClick }: { user: PublicUser; onClick?: () => void }) {
-	return (
-		<div 
-			className={`flex items-center gap-3 min-w-0 overflow-visible ${onClick ? "cursor-pointer" : ""}`}
-			onClick={onClick}
-		>
-			<Avatar
-				src={user.avatar}
-				alt={user.username}
-				fallback={user.username[0]?.toUpperCase() ?? "?"}
-				size="sm"
-			/>
-			<div className="min-w-0">
-				<Username
-				className="font-semibold"
-				name={user.username}
-				variant="card"
-				/>
-				<p className="text-xs text-white/40 truncate">
-					{user.xp} XP
-				</p>
-			</div>
-		</div>
-	);
-}
-
-function StatusDot({
-	activity,
-}: {
-	activity: FriendStatus["activity"];
-}) {
-	if (activity === "offline") {
-		return (
-			<span className="inline-flex size-2.5 rounded-full bg-red-400/70" />
-		);
-	}
-
-	if (activity === "waiting") {
-		return (
-			<span className="inline-flex size-2.5 rounded-full bg-yellow-400" />
-		);
-	}
-
-	if (activity === "playing") {
-		return (
-			<span className="relative flex size-2.5">
-				<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
-				<span className="relative inline-flex size-2.5 rounded-full bg-cyan-400" />
-			</span>
-		);
-	}
-
-	return (
-		<span className="relative flex size-2.5">
-			<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-			<span className="relative inline-flex size-2.5 rounded-full bg-green-400" />
-		</span>
 	);
 }

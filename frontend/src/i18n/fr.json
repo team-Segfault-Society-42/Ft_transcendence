@@ -106,7 +106,7 @@
     "waitingOpponent": "En attente de l'adversaire...",
     "waitingMove": "En attente du coup de l'adversaire...",
     "status": {
-      "opponentDisconnected": "Adversaire déconnecté – attente 20 secondes pour la reconnexion.",
+      "opponentDisconnected": "Adversaire déconnecté",
       "opponentLeft": "L'adversaire a quitté la partie - pas de replay !",
       "opponentReconnected": "L'adversaire s'est reconnecté !"
     },
@@ -143,7 +143,7 @@
     "replayVotes": "Rejouer les votes",
     "waitingReplayOther": "Replay demandé. \nEn attendant l'autre joueur...",
     "timer": "Temps restant : {{seconds}}s",
-    "opponentDisconnect": "Adversaire déconnecté — attente 20 secondes pour la reconnexion..."
+    "opponentDisconnect": "Adversaire déconnecté"
   },
   "play": {
     "myGames": {
@@ -511,7 +511,8 @@
     "ERR_AUTH_CURRENT_PWD_REQUIRED": "Le mot de passe actuel est requis.",
     "AUTH_PASSWORD_UPDATED_SUCCESS": "Mot de passe mis à jour avec succès.",
     "ERR_AUTH_EMAIL_ALREADY_EXISTS": "Cette adresse e-mail existe déjà.",
-    "AUTH_EMAIL_UPDATED_SUCCESS": "Adresse e-mail mise à jour avec succès."
+    "AUTH_EMAIL_UPDATED_SUCCESS": "Adresse e-mail mise à jour avec succès.",
+    "ERR_AUTH_2FA_CODE_DIGITS": "Le code 2FA doit contenir uniquement des chiffres."
   },
   "errors": {
     "game": {
