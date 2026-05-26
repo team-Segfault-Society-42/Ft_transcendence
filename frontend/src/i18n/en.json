@@ -411,6 +411,7 @@
     "ERR_AUTH_CURRENT_PWD_STRING": "Current password must be a string.",
     "ERR_AUTH_PWD_STRING": "Password must be a string.",
     "ERR_AUTH_PWD_MIN_LENGTH": "Password must be at least 8 characters.",
+    "ERR_AUTH_PWD_MAX_LENGTH": "Password is too long",
     "ERR_AUTH_PWD_COMPLEXITY": "Password must contain a lowercase, an uppercase, and a number.",
     "ERR_USERNAME_STRING": "Username must be a string.",
     "ERR_USER_USERNAME_MIN_LENGTH": "Username is too short (min 3).",

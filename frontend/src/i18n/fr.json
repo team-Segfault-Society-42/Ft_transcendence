@@ -411,6 +411,7 @@
     "ERR_AUTH_CURRENT_PWD_STRING": "Le mot de passe actuel doit être une chaîne de caractères.",
     "ERR_AUTH_PWD_STRING": "Le mot de passe doit être une chaîne de caractères.",
     "ERR_AUTH_PWD_MIN_LENGTH": "Le mot de passe doit faire 8 caractères minimum.",
+    "ERR_AUTH_PWD_MAX_LENGTH": "Le mot de passe est trop long",
     "ERR_AUTH_PWD_COMPLEXITY": "Le mot de passe doit contenir une minuscule, une majuscule et un chiffre.",
     "ERR_USERNAME_STRING": "Le nom d'utilisateur doit être une chaîne de caractères.",
     "ERR_USER_USERNAME_MIN_LENGTH": "Le nom d'utilisateur est trop court (3 min).",
