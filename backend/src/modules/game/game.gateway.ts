@@ -47,159 +47,6 @@ export class GameGateway implements OnGatewayDisconnect {
 		private readonly presenceService: PresenceService,
 	) {}
 
-	private emitGameError(client: AuthSocket, error: unknown) {
-		const code =
-			error instanceof Error && error.message.startsWith('ERR_')
-				? error.message
-				: 'ERR_GAME_UNKNOWN';
-
-		client.emit('game_error', { code });
-	}
-
-	/**
-	 * Clears the stored turn timer for a game if one exists.
-	 *
-	 * @param gameId - Id of the game linked to the timer.
-	 */
-	private clearTurnTimer(gameId: string) {
-		const timer = this.turnTimers.get(gameId);
-
-		if (timer) {
-			clearTimeout(timer);
-			this.turnTimers.delete(gameId);
-		}
-	}
-
-	/**
-	 * Starts the backend turn timer for a playing game.
-	 * Frontend countdowns only mirror this server-side timestamp.
-	 *
-	 * @param gameId - Id of the game to time.
-	 * @param game - Current game state used to compute the remaining delay.
-	 */
-	private startTurnTimer(gameId: string, game: GameState) {
-		this.clearTurnTimer(gameId);
-
-		if (game.status !== 'playing') return;
-
-		const delay = Math.max(0, TURN_TIMEOUT_MS - (Date.now() - game.lastMove));
-
-		const timer = setTimeout(() => {
-			this.gameService
-				.finalizeTurnTimeout(gameId)
-				.then(async (result) => {
-					if (result) {
-						this.emitGameUpdate(gameId, result);
-
-						if (result.playerProfiles.X?.id) {
-							await this.presenceService.emitFriendStatusChange(
-								result.playerProfiles.X.id,
-							);
-						}
-
-						if (result.playerProfiles.O?.id) {
-							await this.presenceService.emitFriendStatusChange(
-								result.playerProfiles.O.id,
-							);
-						}
-					}
-				})
-				.finally(() => {
-					if (this.turnTimers.get(gameId) === timer) {
-						this.turnTimers.delete(gameId);
-					}
-				})
-				.catch((error) => {
-					console.error('Turn timeout error:', error);
-				});
-		}, delay);
-
-		this.turnTimers.set(gameId, timer);
-	}
-
-	/**
-	 * Counts unique spectators currently connected to a game room.
-	 *
-	 * @param gameId - Id of the Socket.IO room.
-	 * @param game - Current game state used to exclude player seats.
-	 * @returns Number of unique connected users who are not players.
-	 */
-	private getSpectatorsCnt(gameId: string, game: GameState): number {
-		const room = this.server.adapter.rooms.get(gameId);
-		if (!room) return 0;
-
-		const userIdsInRoom = new Set<number>();
-
-		for (const socketId of room) {
-			const socket = this.server.sockets.get(socketId) as
-				| AuthSocket
-				| undefined;
-			const userId = socket?.data.user.sub;
-			if (userId) userIdsInRoom.add(userId);
-		}
-
-		if (game.players.X.ownerUserId !== null)
-			userIdsInRoom.delete(game.players.X.ownerUserId);
-		if (game.players.O.ownerUserId !== null)
-			userIdsInRoom.delete(game.players.O.ownerUserId);
-
-		return userIdsInRoom.size;
-	}
-
-	/**
-	 * Deletes a finished game when no socket is still connected to its room.
-	 *
-	 * @param gameId - Id of the game to clean up.
-	 */
-	private cleanupFinishedGameIfEmpty(gameId: string) {
-		let game: GameState;
-
-		try {
-			game = this.gameService.getGameById(gameId);
-		} catch {
-			return;
-		}
-
-		if (game.status !== 'finished') return;
-
-		const room = this.server.adapter.rooms.get(gameId);
-		if (room && room.size > 0) return;
-
-		this.clearTurnTimer(gameId);
-		this.gameService.deleteGame(gameId);
-	}
-
-	/**
-	 * Sends the latest game state to every socket in the game room.
-	 * The spectator count is computed from connected sockets at emit time.
-	 *
-	 * @param gameId - Id of the game room.
-	 * @param game - Game state to broadcast.
-	 */
-	private emitGameUpdate(gameId: string, game: GameState) {
-		this.startTurnTimer(gameId, game);
-
-		this.server.to(gameId).emit('game_updated', {
-			...game,
-			spectatCnt: this.getSpectatorsCnt(gameId, game),
-		});
-	}
-
-	/**
-	 * Sends the current X/O roles to player sockets after replay votes may swap seats.
-	 *
-	 * @param game - Game state containing the current player socket ids.
-	 */
-	private emitUpdatedRoles(game: GameState) {
-		const socketId_X = game.players.X.socketIds;
-		const socketId_O = game.players.O.socketIds;
-
-		if (socketId_X.length > 0)
-			this.server.to(socketId_X).emit('role_updated', { role: 'X' });
-		if (socketId_O.length > 0)
-			this.server.to(socketId_O).emit('role_updated', { role: 'O' });
-	}
-
 	/**
 	 * Handles player and spectator disconnections from a game socket.
 	 *
@@ -366,5 +213,158 @@ export class GameGateway implements OnGatewayDisconnect {
 		} catch (error: unknown) {
 			this.emitGameError(client, error);
 		}
+	}
+
+	private emitGameError(client: AuthSocket, error: unknown) {
+		const code =
+			error instanceof Error && error.message.startsWith('ERR_')
+				? error.message
+				: 'ERR_GAME_UNKNOWN';
+
+		client.emit('game_error', { code });
+	}
+
+	/**
+	 * Sends the latest game state to every socket in the game room.
+	 * The spectator count is computed from connected sockets at emit time.
+	 *
+	 * @param gameId - Id of the game room.
+	 * @param game - Game state to broadcast.
+	 */
+	private emitGameUpdate(gameId: string, game: GameState) {
+		this.startTurnTimer(gameId, game);
+
+		this.server.to(gameId).emit('game_updated', {
+			...game,
+			spectatCnt: this.getSpectatorsCnt(gameId, game),
+		});
+	}
+
+	/**
+	 * Sends the current X/O roles to player sockets after replay votes may swap seats.
+	 *
+	 * @param game - Game state containing the current player socket ids.
+	 */
+	private emitUpdatedRoles(game: GameState) {
+		const socketId_X = game.players.X.socketIds;
+		const socketId_O = game.players.O.socketIds;
+
+		if (socketId_X.length > 0)
+			this.server.to(socketId_X).emit('role_updated', { role: 'X' });
+		if (socketId_O.length > 0)
+			this.server.to(socketId_O).emit('role_updated', { role: 'O' });
+	}
+
+	/**
+	 * Clears the stored turn timer for a game if one exists.
+	 *
+	 * @param gameId - Id of the game linked to the timer.
+	 */
+	private clearTurnTimer(gameId: string) {
+		const timer = this.turnTimers.get(gameId);
+
+		if (timer) {
+			clearTimeout(timer);
+			this.turnTimers.delete(gameId);
+		}
+	}
+
+	/**
+	 * Starts the backend turn timer for a playing game.
+	 * Frontend countdowns only mirror this server-side timestamp.
+	 *
+	 * @param gameId - Id of the game to time.
+	 * @param game - Current game state used to compute the remaining delay.
+	 */
+	private startTurnTimer(gameId: string, game: GameState) {
+		this.clearTurnTimer(gameId);
+
+		if (game.status !== 'playing') return;
+
+		const delay = Math.max(0, TURN_TIMEOUT_MS - (Date.now() - game.lastMove));
+
+		const timer = setTimeout(() => {
+			this.gameService
+				.finalizeTurnTimeout(gameId)
+				.then(async (result) => {
+					if (result) {
+						this.emitGameUpdate(gameId, result);
+
+						if (result.playerProfiles.X?.id) {
+							await this.presenceService.emitFriendStatusChange(
+								result.playerProfiles.X.id,
+							);
+						}
+
+						if (result.playerProfiles.O?.id) {
+							await this.presenceService.emitFriendStatusChange(
+								result.playerProfiles.O.id,
+							);
+						}
+					}
+				})
+				.finally(() => {
+					if (this.turnTimers.get(gameId) === timer) {
+						this.turnTimers.delete(gameId);
+					}
+				})
+				.catch((error) => {
+					console.error('Turn timeout error:', error);
+				});
+		}, delay);
+
+		this.turnTimers.set(gameId, timer);
+	}
+
+	/**
+	 * Counts unique spectators currently connected to a game room.
+	 *
+	 * @param gameId - Id of the Socket.IO room.
+	 * @param game - Current game state used to exclude player seats.
+	 * @returns Number of unique connected users who are not players.
+	 */
+	private getSpectatorsCnt(gameId: string, game: GameState): number {
+		const room = this.server.adapter.rooms.get(gameId);
+		if (!room) return 0;
+
+		const userIdsInRoom = new Set<number>();
+
+		for (const socketId of room) {
+			const socket = this.server.sockets.get(socketId) as
+				| AuthSocket
+				| undefined;
+			const userId = socket?.data.user.sub;
+			if (userId) userIdsInRoom.add(userId);
+		}
+
+		if (game.players.X.ownerUserId !== null)
+			userIdsInRoom.delete(game.players.X.ownerUserId);
+		if (game.players.O.ownerUserId !== null)
+			userIdsInRoom.delete(game.players.O.ownerUserId);
+
+		return userIdsInRoom.size;
+	}
+
+	/**
+	 * Deletes a finished game when no socket is still connected to its room.
+	 *
+	 * @param gameId - Id of the game to clean up.
+	 */
+	private cleanupFinishedGameIfEmpty(gameId: string) {
+		let game: GameState;
+
+		try {
+			game = this.gameService.getGameById(gameId);
+		} catch {
+			return;
+		}
+
+		if (game.status !== 'finished') return;
+
+		const room = this.server.adapter.rooms.get(gameId);
+		if (room && room.size > 0) return;
+
+		this.clearTurnTimer(gameId);
+		this.gameService.deleteGame(gameId);
 	}
 }
