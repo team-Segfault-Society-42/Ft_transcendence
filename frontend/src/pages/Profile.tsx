@@ -1,12 +1,9 @@
-// import avatarImg from "/avatar.png"
 import { useEffect, useState } from "react";
 import { userService } from "../services/userService";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
 import { useOutletContext } from "react-router";
 import { toast } from "sonner";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { useNavigate } from 'react-router-dom';
 import { Avatar } from "@/components/ui/Avatar";
 import { Winrate } from "@/components/ui/Winrate";
 import { LevelProgress } from "@/components/ui/Level";

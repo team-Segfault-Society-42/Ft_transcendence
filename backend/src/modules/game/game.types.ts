@@ -36,7 +36,7 @@ export interface PlayerSeat {
 	ownerUserId: number | null;
 	socketIds: SocketIds;
 }
-// to stock socketId of client x and client o
+
 export interface PlayersInGame {
 	X: PlayerSeat;
 	O: PlayerSeat;
