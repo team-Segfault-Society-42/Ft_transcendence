@@ -50,7 +50,7 @@ export function Topbar({ user, onLoginClick, onMenuClick }: HeaderProps) {
       {/* TITLE */}
       <Motion>
         <Link to="/">
-          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+          <h1 className="text-lg sm:text-xl md:text-3xl lg:text-4xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
             {t("title")}
           </h1>
         </Link>
