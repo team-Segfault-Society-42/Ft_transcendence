@@ -26,6 +26,7 @@ export class RegisterDto {
 	})
 	@IsString({ message: 'ERR_AUTH_PWD_STRING' })
 	@MinLength(8, { message: 'ERR_AUTH_PWD_MIN_LENGTH' })
+	@MaxLength(72, { message: 'ERR_AUTH_PWD_MAX_LENGTH' })
 	@Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, {
 		message: 'ERR_AUTH_PWD_COMPLEXITY',
 	})

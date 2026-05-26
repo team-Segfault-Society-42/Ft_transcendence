@@ -4,7 +4,9 @@ import {
 	IsString,
 	Matches,
 	MinLength,
+	MaxLength
 } from 'class-validator';
+import { kMaxLength } from 'node:buffer';
 
 /**
  * Password update payload for the authenticated user's account.
@@ -28,6 +30,7 @@ export class UpdatePasswordDto {
 	})
 	@IsString({ message: 'ERR_AUTH_PWD_STRING' })
 	@MinLength(8, { message: 'ERR_AUTH_PWD_MIN_LENGTH' })
+	@MaxLength(72, { message: 'ERR_AUTH_PWD_MAX_LENGTH' })
 	@Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, {
 		message: 'ERR_AUTH_PWD_COMPLEXITY',
 	})
