@@ -426,7 +426,7 @@
     "AUTH_LOGOUT_SUCCESS": "Déconnexion réussie.",
     "ERR_AUTH_MISSING_2FA_TOKEN": "Jeton d'attente 2FA manquant.",
     "AUTH_2FA_LOGIN_SUCCESS": "Connexion 2FA réussie.",
-    "ERR_AUTH_ALREADY_EXISTS": "Ce nom d'utilisateur est déjà pris.",
+    "ERR_AUTH_ALREADY_EXISTS": "Cette valeur est déjà utilisée.",
     "ERR_AUTH_INVALID_CREDENTIALS": "Identifiants invalides.",
     "ERR_USER_NOT_FOUND": "Utilisateur introuvable.",
     "ERR_AUTH_MISSING_TOKEN": "Jeton d'authentification manquant.",

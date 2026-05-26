@@ -426,7 +426,7 @@
     "AUTH_LOGOUT_SUCCESS": "Cierre de sesión exitoso.",
     "ERR_AUTH_MISSING_2FA_TOKEN": "Falta el token de espera de 2FA.",
     "AUTH_2FA_LOGIN_SUCCESS": "Inicio de sesión 2FA exitoso.",
-    "ERR_AUTH_ALREADY_EXISTS": "El nombre de usuario ya existe.",
+    "ERR_AUTH_ALREADY_EXISTS": "Este valor ya está en uso.",
     "ERR_AUTH_INVALID_CREDENTIALS": "Credenciales inválidas.",
     "ERR_USER_NOT_FOUND": "Usuario no encontrado.",
     "ERR_AUTH_MISSING_TOKEN": "Falta el token de autenticación.",

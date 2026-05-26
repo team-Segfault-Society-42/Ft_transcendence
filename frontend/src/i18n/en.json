@@ -426,7 +426,7 @@
     "AUTH_LOGOUT_SUCCESS": "Logout successful.",
     "ERR_AUTH_MISSING_2FA_TOKEN": "Missing two-factor pending token.",
     "AUTH_2FA_LOGIN_SUCCESS": "Two-factor login successful.",
-    "ERR_AUTH_ALREADY_EXISTS": "Username already exists.",
+    "ERR_AUTH_ALREADY_EXISTS": "This value is already taken.",
     "ERR_AUTH_INVALID_CREDENTIALS": "Invalid credentials.",
     "ERR_USER_NOT_FOUND": "User not found.",
     "ERR_AUTH_MISSING_TOKEN": "Missing authentication token.",
