@@ -54,11 +54,13 @@ export function EndGamePopup({
 			>
 				{endGameMessage.winnerName ? (
 					<>
-						<Username
-							name={endGameMessage.winnerName}
-							variant="card"
-							className={endGamePopupClasses.winnerName}
-						/>
+						<div className="min-w-0">
+							<Username
+								name={endGameMessage.winnerName}
+								variant="card"
+								className={endGamePopupClasses.winnerName}
+							/>	
+						</div>
 						<span>{endGameMessage.resultText}</span>
 					</>
 				) : (
