@@ -28,7 +28,7 @@ export const boardClasses = {
 
 export const endGamePopupClasses = {
 	card:
-		'flex min-w-80 max-w-[90vw] flex-col items-center gap-4 bg-slate-900 p-8 text-white hover:scale-100',
+		'flex max-w-[90vw] flex-col items-center gap-4 bg-slate-900 p-6 sm:p-8 text-white hover:scale-100',
 	title:
 		'flex max-w-full items-center justify-center gap-2 text-center text-2xl font-bold',
 	winnerName: 'max-w-32 font-bold',
