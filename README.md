@@ -308,7 +308,7 @@ erDiagram
 
 ## Modules
 
-**Total: 17 points** across 13 modules.
+**Total: 20 points** across 16 modules.
 
 ### Major Modules (2 pts each)
 
