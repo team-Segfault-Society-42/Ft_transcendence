@@ -335,6 +335,17 @@ export class GameService {
 		return this.activeGame.delete(gameId);
 	}
 
+	deleteWaitingGameByOwner(userId: number): void {
+		const active = this.findActiveGameByUserId(userId);
+		if (!active) return;
+
+		const [gameId, game] = active;
+		if (game.status === 'waiting' && game.players.X.ownerUserId === userId) {
+			this.activeGame.delete(gameId);
+			this.presenceService.emitActiveGameUpdated(userId, null);
+		}
+	}
+
 	/**
 	 * Persists a completed game to the database.
 	 * Maps the in-memory game state (X/O players) to the MatchesService format
