@@ -175,10 +175,16 @@ Uses Vite HMR and HTTP only. Available at `http://localhost:1024`.
 | `make help` | Full colour-coded list of available targets | |
 | `make prod` | Build and start production stack | PROD |
 | `make up` | Build and start dev stack | DEV |
-| `make down-all` | Stop all containers from both stacks. Safe to use with one stack running. | PROD & DEV |
+| `make ps` | Display all running containers | PROD & DEV |
+| `make down-all` | Stop all containers from both stacks. Safe to use with one stack running | PROD & DEV |
 | `make reset` | Stop → remove volumes → full rebuild → restart | DEV |
+| `make clean` | Remove dangling images, stopped containers, unused networks + build cache | PROD & DEV |
+| `make nuke` | Full wipe → stops stack → removes volumes + images → deletes .env + secrets | PROD & DEV |
 | `make logs` | Stream all DEV container logs | DEV |
 | `make p-logs` | Stream all PROD container logs | PROD |
+| `make logs-help` | Show all available log commands | |
+| `make swagger` | Print URL to access Swagger Documentation | |
+| `make prisma` | Start Prisma Studio (Stack MUST be running) | DEV |
 
 ---
 
