@@ -133,6 +133,7 @@ export class PresenceService {
 
 		if (sockets.size === 0) {
 			this.onlineUsers.delete(userId);
+			this.gameService.deleteWaitingGameByOwner(userId);
 
 			return {
 				userId,
