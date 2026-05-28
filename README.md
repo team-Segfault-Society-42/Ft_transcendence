@@ -318,6 +318,7 @@ erDiagram
 | Remote players (real-time multiplayer on separate machines) | 2 | mbendidi |
 | User interaction (friends, social features) | 2 | mbendidi (chat/sockets), nryser (friends system) |
 | Standard user management and authentication | 2 | nryser |
+| Real-time features (WebSocket infrastructure, live updates, graceful connection handling) | 2 | mbendidi, nryser |
 
 ### Minor Modules (1 pt each)
 
@@ -332,6 +333,9 @@ erDiagram
 | Spectator mode | 1 | mbendidi |
 | Two-Factor Authentication (TOTP via otplib) | 1 | nryser + ameechan |
 | Game statistics and match history | 1 | nadahman |
+| Advanced search (filters, sorting, pagination) | 1 | nryser + nadahman |
+| Gamification system (achievements, badges, leaderboards, XP/levels, daily challenges — persistent, with visual feedback) | 1 | nadahman |
+
 
 ---
 
