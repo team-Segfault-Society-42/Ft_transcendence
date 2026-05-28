@@ -40,19 +40,18 @@ async function bootstrap(): Promise<void> {
 		}),
 	);
 
-	const config = new DocumentBuilder()
-		.setTitle('ft_transcendence API')
-		.setDescription('API documentation for ft_transcendence backend')
-		.setVersion('1.0')
-		.addCookieAuth('access_token')
-		.addServer('/api')
-		.build();
+	if (process.env.NODE_ENV !== 'production') {
+		const config = new DocumentBuilder()
+			.setTitle('ft_transcendence API')
+			.setDescription('API documentation for ft_transcendence backend')
+			.setVersion('1.0')
+			.addServer('/api')
+			.build();
 
-	const document = SwaggerModule.createDocument(app, config);
-
-	SwaggerModule.setup('api-docs', app, document);
-
-	await app.listen(process.env.PORT ?? 3000);
+		const document = SwaggerModule.createDocument(app, config);
+		SwaggerModule.setup('api-docs', app, document);
+	}
+  await app.listen(process.env.PORT ?? 3000);
 }
 
 bootstrap();
