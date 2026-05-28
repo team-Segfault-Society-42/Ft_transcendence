@@ -192,21 +192,23 @@ Uses Vite HMR and HTTP only. Available at `http://localhost:1024`.
 
 | Feature | Description | Contributor(s) |
 | --- | --- | --- |
-| Tic-Tac-Toe multiplayer | Real-time game vs an opponent over WebSocket | mbendidi |
+| Tic-Tac-Toe multiplayer | Endless real-time game vs an opponent over WebSocket, Draw after 20 moves each and no victor, 30s timer per move | mbendidi |
+| Game Management & Lobby system | Create a lobby, Copy invite link, Join open lobbies, cancel/delete lobby, reconnect to an active game | mbendidi + jdecarro |
 | Spectator mode | Watch live games in real-time | mbendidi |
 | Live chat | Global real-time chat via WebSocket | mbendidi |
 | JWT authentication | Secure login with HTTP-only cookie-based JWT | nryser |
-| Two-Factor Authentication | TOTP-based 2FA via authenticator app (otplib) | nryser |
-| 42 OAuth | Login via 42 Intra OAuth 2.0 | nryser |
-| Friends system | Send, accept, and manage friend requests | nryser |
+| Two-Factor Authentication | Activate/deactivate TOTP-based 2FA via authenticator app (otplib) | nryser |
+| 42 OAuth | Login via 42 Intra OAuth 2.0 + email synchronisation | nryser |
+| Friends system | Search users, send, accept, and manage friend requests. | nryser |
+| Friends (Realtime update) | Friend `online`,`offline`, `waiting`, `playing` status | nryser |
 | Match history & stats | Per-user game statistics, XP progression, and full match history | nadahman |
-| Achievements | Unlockable milestones based on game and social activity | nadahman |
+| Achievements | Unlockable milestones based on game activity (first win, losing by time, `n` number of wins, etc.) | nadahman |
 | Dynamic leaderboard | Filterable rankings with player stats | nadahman |
-| Player profiles | Per-user profile pages with stats and match history | nadahman |
+| Player profiles | Per-user profile pages with stats, bio, avatar, achievements progress, leaderboard rank, user level, winrate, match history and friend actions (add/remove) | nadahman |
 | Auth persistence & profile sync | Session continuity and profile synchronization across logins | nadahman |
 | Multi-language support | UI available in English, French, and Spanish | jdecarro |
 | Design system | 10+ reusable UI components with consistent styling | jdecarro |
-| Infrastructure tooling | Interactive `make setup` wizard, `make help` colour-coded command reference, dev/prod build targets | ameechan |
+| Infrastructure & DevOps tooling | Docker/Compose dev-prod setup, env/secrets generation, Nginx proxy/TLS support, Makefile automation, logs/cleanup helpers, seed/Prisma commands, and general run/deploy workflow | ameechan |
 
 ---
 
@@ -229,7 +231,7 @@ Uses Vite HMR and HTTP only. Available at `http://localhost:1024`.
 | --- | --- | --- |
 | Routing | React Router | Standard SPA routing for React; `BrowserRouter` provides client-side navigation with minimal setup. |
 | Styling | Tailwind CSS | Required by the subject. Utility-first approach speeds up styling and enforces visual consistency through design tokens. |
-| Real-time | Socket.IO | Bidirectional WebSocket library with built-in room management — well-suited for real-time game state sync and live chat. |
+| Real-time | Socket.IO | Bidirectional WebSocket library with built-in room management, well-suited for realtime state sync across games, online presence, friend requests and live chat as well as active game updates. |
 
 ---
 
