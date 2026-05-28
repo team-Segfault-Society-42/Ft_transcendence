@@ -308,7 +308,7 @@ erDiagram
 
 ## Modules
 
-**Total: 21 points** across 16 modules.
+**Total: 14 points + 8 bonus points** across 17 modules.
 
 ### Major Modules (2 pts each)
 
@@ -318,8 +318,7 @@ erDiagram
 | Remote players (real-time multiplayer on separate machines) | 2 | mbendidi |
 | User interaction (friends, social features) | 2 | mbendidi (chat/sockets), nryser (friends system) |
 | Standard user management and authentication | 2 | nryser |
-| Real-time features (WebSocket infrastructure, live updates, graceful connection handling) | 2 | mbendidi, nryser |
-| **Total:** | **`10`** | (5 modules) |
+| **Total:** | **`8`** | (4 modules) |
 
 ### Minor Modules (1 pt each)
 
@@ -328,15 +327,23 @@ erDiagram
 | Use a frontend framework (React + Vite) | 1 | jdecarro |
 | Use a backend framework (NestJS) | 1 | nryser |
 | Use an ORM for the database (Prisma 7) | 1 | nryser + ameechan |
-| Remote authentication via OAuth 2.0 (42 OAuth) | 1 | nryser + ameechan |
 | Multiple language support (EN, FR, ES) | 1 | jdecarro |
 | Custom design system (10+ reusable components) | 1 | jdecarro |
-| Spectator mode | 1 | mbendidi |
-| Two-Factor Authentication (TOTP via otplib) | 1 | nryser + ameechan |
 | Game statistics and match history | 1 | nadahman |
-| Advanced search (filters, sorting, pagination) | 1 | nryser + nadahman |
+| **Total:** | **`6`** | (6 modules) |
+
+### Bonus Modules
+
+| Module | Points | Contributor(s) |
+| --- | --- | --- |
+| Remote authentication via OAuth 2.0 (42 OAuth) | 1 | nryser + ameechan |
+| Two-Factor Authentication (TOTP via otplib) | 1 | nryser + ameechan |
+| Spectator mode | 1 | mbendidi |
 | Gamification system (achievements, badges, leaderboards, XP/levels, daily challenges — persistent, with visual feedback) | 1 | nadahman |
-| **Total:** | **`11`** | (11 modules) |
+| Advanced search (filters, sorting, pagination) | 1 | nryser + nadahman |
+| Interactive API documentation via Swagger UI (auto-generated OpenAPI schema, browsable and testable endpoints) | 1 | nryser + mbendidi + nadahman |
+| Real-time features (WebSocket infrastructure, live updates, graceful connection handling) | 2 | mbendidi, nryser |
+| **Total:** | **`8`** | (7 modules) |
 
 ---
 
