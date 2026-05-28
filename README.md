@@ -357,27 +357,33 @@ erDiagram
 | nadahman | - Achievement system (backed logic and frontend display)<br>- Dynamic leaderboard with filters<br>- Match data recording, persistence, history and XP/level progression<br>- Player profile access logic (clickable user profiles)<br>- Auth persistence and profile synchronization<br>- Frontend–backend integration<br>- I18n error message handling/translations<br>- Early login/register frontend work |
 | jdecarro | - Full frontend UI (pages, layout)<br>- Component library (design system)<br>- Responsive UI<br>- i18n (EN/FR/ES, config and translations)<br>- Active game state management and real-time sync (Zustand + global socket)<br>- Active game presence system (emits in game service + presence service)<br>- Game rules, Terms of Service and Privacy Policy |
 
-### Challenges
+## Challenges
 
-#### Learning TypeScript
+### Learning TypeScript
 
 None of us had meaningful TypeScript experience coming into the project. We learned at our own pace, relying on pair programming sessions on Discord with screen sharing and/or leaning on each other for support and understanding.
 
 While this slowed us down at first, it paid off in the long term. Proper typing allowed for catching errors at compile time rather than runtime, making it easier to keep on top of the codebase as it grew.
 
-#### Keeping Focus When Everything Blurs Together
+---
+
+### Keeping Focus When Everything Blurs Together
 
 With so many tasks running in parallel and the open-ended nature of the modules, it was easy to lose sight of what actually needed to be done versus what was us going too far down the rabbit hole.
 
 We used Excalidraw as a shared Kanban board to track modules and features visually, which not only helped everyone stay focused but also allowed us to draw the line on when we were heading too far outside the scope of the selected modules.
 
-#### Building a Workflow That Works for Everyone
+---
+
+### Building a Workflow That Works for Everyone
 
 We settled on a set of conventions early, a GitHub Issue for every change before writing a single line of code, a strict commit message format (`type(scope): short message`), and PRs written to a shared standard.
 
 It was a lot to take on at first, but across different schedules and availability it kept us aligned without needing to always be online at the same time.
 
-#### Balancing Life and Code
+---
+
+### Balancing Life and Code
 
 Everyone on the team has their own commitments outside the project, be it family, work, or other responsibilities. Juggling all these obligations while maintaining the ability to contribute substantially to the project was a challenge in itself.
 
@@ -385,7 +391,9 @@ We tried not to let that create guilt or friction and had a dedicated 'absence' 
 
 Furthermore, our weekly Monday meeting helped stay in sync and plan for any prolonged absences.
 
-#### The Language Barrier
+---
+
+### The Language Barrier
 
 Mixed comfort levels across English and French added friction that a single-language team doesn't face.
 
@@ -395,13 +403,17 @@ English was the obvious choice for code communication as it is the industry stan
 
 This kept discussions fluid and the repository consistent without forcing anyone into a language they weren't comfortable speaking. When needed, teammates would step in to bridge gaps mid-meeting, keeping the conversation moving without derailing into full translations.
 
-#### Keeping the Frontend Clean and Scalable
+---
+
+### Keeping the Frontend Clean and Scalable
 
 As the project grew, the frontend became harder to maintain. Components that were written early on didn't hold up as the design evolved.
 
 We gradually replaced one-off components with reusable ones, improving consistency in layout and readability. It never felt fully finished, but each pass left things cleaner than before.
 
-#### Collaborating Remotely as Strangers
+---
+
+### Collaborating Remotely as Strangers
 
 We didn't know each other before the project and intended from early on to work mostly remotely due to multiple team members living a considerable distance away from the school. Naturally, this was a source of potential concern to begin with.
 
@@ -411,13 +423,17 @@ From there, we built a culture around openness and honesty. If something wasn't 
 
 This ensured all bases were covered and each member had time to share any updates, questions and concerns they had.
 
-#### Designing a Unified Auth Architecture
+---
+
+### Designing a Unified Auth Architecture
 
 The authentication system had to work consistently across REST endpoints, WebSocket connections, 42 OAuth, and TOTP-based 2FA. Each layer added new constraints. Cookies behaved differently over WebSockets, OAuth required a partial authentication state before a full session could be issued, and 2FA needed its own intermediate step without prematurely granting access.
 
 We solved this by centralising everything behind a single global JWT guard and modelling partial authentication explicitly using a temporary cookie before full session validation. It required more upfront design than wiring things up case by case, but it kept the logic predictable and consistent across the entire backend.
 
-#### Realtime Synchronisation Across Clients
+---
+
+### Realtime Synchronisation Across Clients
 
 Keeping multiple clients in sync in real time turned out to be harder than expected. A user could be connected from several tabs at once, disconnect mid-session, or change state in ways that needed to propagate immediately to others. Friend status, online presence, and active game state all needed to stay consistent without polling.
 
