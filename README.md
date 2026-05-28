@@ -308,7 +308,7 @@ erDiagram
 
 ## Modules
 
-**Total: 20 points** across 16 modules.
+**Total: 21 points** across 16 modules.
 
 ### Major Modules (2 pts each)
 
@@ -319,6 +319,7 @@ erDiagram
 | User interaction (friends, social features) | 2 | mbendidi (chat/sockets), nryser (friends system) |
 | Standard user management and authentication | 2 | nryser |
 | Real-time features (WebSocket infrastructure, live updates, graceful connection handling) | 2 | mbendidi, nryser |
+| **Total:** | **`10`** | (5 modules) |
 
 ### Minor Modules (1 pt each)
 
@@ -335,7 +336,7 @@ erDiagram
 | Game statistics and match history | 1 | nadahman |
 | Advanced search (filters, sorting, pagination) | 1 | nryser + nadahman |
 | Gamification system (achievements, badges, leaderboards, XP/levels, daily challenges — persistent, with visual feedback) | 1 | nadahman |
-
+| **Total:** | **`11`** | (11 modules) |
 
 ---
 
