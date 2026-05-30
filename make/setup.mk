@@ -25,7 +25,6 @@ DEFAULT_SECRETS = \
 	backend_pw.txt=changeme \
 	postgres_root_pw.txt=changeme \
 	jwt_secret.txt=jwt-changeme \
-	database_url.txt=postgresql://backend_user:changeme@db:5432/transcendence?schema=public \
 	fortytwo_client_id.txt=your_42_OAuth_id \
 	fortytwo_client_secret.txt=your_42_OAuth_Secret
 
@@ -36,7 +35,6 @@ REQUIRED_FILES = \
 	$(SECRETS_DIR)backend_pw.txt \
 	$(SECRETS_DIR)postgres_root_pw.txt \
 	$(SECRETS_DIR)jwt_secret.txt \
-	$(SECRETS_DIR)database_url.txt \
 	$(SECRETS_DIR)fortytwo_client_id.txt \
 	$(SECRETS_DIR)fortytwo_client_secret.txt
 

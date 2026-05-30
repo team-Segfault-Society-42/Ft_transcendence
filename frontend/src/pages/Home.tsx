@@ -1,6 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AboutCard } from "@/components/home/AboutCard";
-import { PlayCard } from "@/components/home/PlayCard";
+import { PlayCard } from "@/components/home/playcard/PlayCard";
 import { GameHistoryCard } from "@/components/home/GameHistoryCard";
 import type { Match } from "@/lib/match";
 import { useEffect, useState } from "react";
@@ -8,24 +8,19 @@ import { useOutletContext } from "react-router";
 import { userService } from "@/services/userService";
 import { Motion } from "@/components/ui/Motion";
 import { useTranslation } from "react-i18next";
-import { gameApi } from "@/services/gameApi";
+import type { User } from "@/type/user.types";
 
 export default function Home() {
-  const navigate = useNavigate();
-  const [user] = useOutletContext<any>();
+  const [user] = useOutletContext<[User | null, React.Dispatch<React.SetStateAction<User | null>>]>();
   const [matches, setMatches] = useState<Match[]>([]);
   const { t } = useTranslation();
-  const [createError, setCreateError] = useState<string | null>(null);
 
-  const createGame = async () => {
-    try {
-      const data = await gameApi.createGame();
-      navigate(`/game/${data.gameId}`);
-    } catch {
-      setCreateError("Failed to create game. Please try again.");
-    }
-  };
-
+  /**
+   * Fetch the authenticated user's match history
+   * whenever the connected user changes.
+   *
+   * Clears the history if no user is authenticated.
+   */
   useEffect(() => {
     if (!user) {
       setMatches([]);
@@ -38,7 +33,8 @@ export default function Home() {
   }, [user]);
 
   return (
-    <section className="w-full flex flex-col gap-10">
+    <section className="w-full flex flex-col gap-6">
+      {/* HERO BANNER WITH EFFECT */}
       <Motion>
         <div className="bg-slate-900 mx-6 mt-6 relative overflow-hidden rounded-2xl border border-white/10 h-62.5 md:h-75">
           <img
@@ -57,24 +53,22 @@ export default function Home() {
         </div>
       </Motion>
 
-      {createError && (
-        <p className="text-red-500 text-sm text-center">{createError}</p>
-      )}
-      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* ABOUT CARD */}
+      <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Link to="/profile" className="h-full">
           <AboutCard user={user} className="flex-1" />
         </Link>
 
+        {/* PLAYCARD WHEN USER CONNECTED, OTHERWISE RULES CARD */}
         {user ? (
-          <Link to="/lobby">
-            <PlayCard createGame={createGame} user={user} />
-          </Link>
+            <PlayCard user={user} />
         ) : (
           <Link to="/rules">
-            <PlayCard createGame={createGame} user={user} />
+            <PlayCard user={user} />
           </Link>
         )}
 
+        {/* HISTORY CARD */}
         <Link to="/history" className="h-full">
           <GameHistoryCard matches={matches} user={user} />
         </Link>

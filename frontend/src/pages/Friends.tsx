@@ -1,29 +1,33 @@
 import {
-	UsersRound,
-	UserPlus,
+	Check,
 	Inbox,
 	Send,
-	Trash2,
-	Check,
+	UserPlus,
+	UsersRound,
 	X,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { EmptyStateCard } from "@/components/ui/EmptyCard";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOutletContext } from "react-router";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Avatar } from "@/components/ui/Avatar";
-import { Card, CardTitle } from "@/components/ui/Card";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+
+import { useFriendsStore } from "@/Store/friendsStore";
+import { usePresenceStore } from "@/Store/presenceStore";
+import { Button } from "@/components/ui/Button";
+import { Card, CardTitle } from "@/components/ui/Card";
+import { EmptyStateCard } from "@/components/ui/EmptyCard";
+import { Input } from "@/components/ui/Input";
 import {
 	friendsService,
-	type FriendListItem,
-	type IncomingFriendRequest,
-	type OutgoingFriendRequest,
+	type FriendStatus,
 	type PublicUser,
 } from "@/services/friendsService";
+import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
+
+import { FriendRow } from "@/components/friends/FriendRow";
+import { SearchResultRow } from "@/components/friends/SearchResultRow";
+import { UserRow } from "@/components/friends/UserRow";
 
 interface CurrentUser {
 	id: number;
@@ -36,78 +40,76 @@ interface CurrentUser {
 	xp?: number;
 }
 
-type RelationshipState =
+export type RelationshipState =
 	| "SELF"
 	| "FRIEND"
 	| "PENDING_SENT"
 	| "PENDING_RECEIVED"
 	| "NONE";
 
+const defaultOfflineStatus = (userId: number): FriendStatus => ({
+	userId,
+	online: false,
+	inGame: false,
+	activity: "offline",
+});
+
+const SEARCH_PAGE_SIZE = 10;
+
 export default function Friends() {
 	const { t } = useTranslation();
 	const [user] = useOutletContext<[CurrentUser | null]>();
 	const navigate = useNavigate();
 
-	const [friends, setFriends] = useState<FriendListItem[]>([]);
-	const [incomingRequests, setIncomingRequests] = useState<IncomingFriendRequest[]>([]);
-	const [outgoingRequests, setOutgoingRequests] = useState<OutgoingFriendRequest[]>([]);
+	const friends = useFriendsStore((state) => state.friends);
+	const incomingRequests = useFriendsStore((state) => state.incomingRequests);
+	const outgoingRequests = useFriendsStore((state) => state.outgoingRequests);
+	const loading = useFriendsStore((state) => state.isLoading);
+	const loadFriendsData = useFriendsStore((state) => state.loadFriendsData);
+
+	const friendStatus = usePresenceStore((state) => state.friendStatus);
+
 	const [search, setSearch] = useState("");
+	const [lastSearchQuery, setLastSearchQuery] = useState("");
+	const [searchOffset, setSearchOffset] = useState(0);
 	const [searchResults, setSearchResults] = useState<PublicUser[]>([]);
-	const [loading, setLoading] = useState(false);
 	const [searchLoading, setSearchLoading] = useState(false);
 
-	const loadFriendsData = useCallback(async () => {
-		if (!user) return;
+	const currentSearchPage = Math.floor(searchOffset / SEARCH_PAGE_SIZE) + 1;
+	const hasPreviousSearchPage = searchOffset > 0;
+	const [hasNextSearchPage, setHasNextSearchPage] = useState(false);
 
-		try {
-			setLoading(true);
+	const incomingRequestBySenderId = useMemo(() => {
+		return new Map(
+			incomingRequests.map((request) => [request.sender.id, request]),
+		);
+	}, [incomingRequests]);
 
-			const [friendsData, incomingData, outgoingData] = await Promise.all([
-				friendsService.getFriends(),
-				friendsService.getIncomingFriendRequests(),
-				friendsService.getOutgoingFriendRequests(),
-			]);
+	/**
+	 * Displays a translated backend error toast.
+	 *
+	 * @param error - Unknown async error from an API call.
+	 * @param translationKey - Frontend translation key wrapping the backend error.
+	 * @returns Nothing.
+	 */
+	function showActionError(error: unknown, translationKey: string): void {
+		const finalMessage = getBackendErrorMessage(error);
 
-			setFriends(friendsData);
-			setIncomingRequests(incomingData);
-			setOutgoingRequests(outgoingData);
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.load", { error: message }));
-		} finally {
-			setLoading(false);
-		}
-	}, [user, t]);
-
-	useEffect(() => {
-		loadFriendsData();
-	}, [loadFriendsData]);
-
-	async function handleSearch(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault();
-
-		const trimmedSearch = search.trim();
-
-		if (!trimmedSearch) {
-			setSearchResults([]);
-			return;
-		}
-
-		try {
-			setSearchLoading(true);
-			setSearchResults([]);
-
-			const results = await friendsService.searchUsers(trimmedSearch);
-
-			setSearchResults(results);
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.search", { error: message }));
-		} finally {
-			setSearchLoading(false);
-		}
+		toast.error(
+			t(translationKey, {
+				error: t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			}),
+		);
 	}
 
+	/**
+	 * Calculates the relationship between the current user and a target user.
+	 *
+	 * @param targetUserId - User ID shown in search results.
+	 * @returns Relationship state used to decide which button to show.
+	 */
 	function getRelationshipState(targetUserId: number): RelationshipState {
 		if (user && targetUserId === user.id) {
 			return "SELF";
@@ -128,55 +130,154 @@ export default function Friends() {
 		return "NONE";
 	}
 
-	async function handleSendRequest(userId: number) {
+	/**
+	 * Loads one page of user search results.
+	 *
+	 * This helper centralizes paginated search loading so:
+	 * - initial searches
+	 * - next page requests
+	 * - previous page requests
+	 *
+	 * all reuse the same API logic and loading state handling.
+	 *
+	 * @param query - Username search query.
+	 * @param offset - Number of users skipped before loading results.
+	 * @returns Nothing. Updates local pagination and search result state.
+	 */
+	async function loadSearchResults(
+		query: string,
+		offset: number,
+	): Promise<void> {
+		setSearchLoading(true);
+
 		try {
-			await friendsService.sendFriendRequest(userId);
-			toast.success(t("friends.success.requestSent"));
-			await loadFriendsData();
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action", { error: message }));
+			const results = await friendsService.searchUsers(
+				query,
+				SEARCH_PAGE_SIZE + 1,
+				offset,
+			);
+
+			setSearchResults(results.slice(0, SEARCH_PAGE_SIZE));
+			setHasNextSearchPage(results.length > SEARCH_PAGE_SIZE);
+			setSearchOffset(offset);
+			setLastSearchQuery(query);
+		} catch (error: unknown) {
+			showActionError(error, "friends.errors.search");
+		} finally {
+			setSearchLoading(false);
 		}
 	}
 
-	async function handleAcceptRequest(requestId: number) {
-		try {
-			await friendsService.acceptFriendRequest(requestId);
-			toast.success(t("friends.success.accepted"));
-			await loadFriendsData();
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action", { error: message }));
+	/**
+	 * Searches users by username.
+	 *
+	 * @param event - Search form submit event.
+	 * @returns Nothing. Updates local search result state.
+	 */
+	async function handleSearch(
+		event: React.FormEvent<HTMLFormElement>,
+	): Promise<void> {
+		event.preventDefault();
+
+		const trimmedSearch = search.trim();
+
+		if (!trimmedSearch) {
+			setSearchResults([]);
+			setSearchOffset(0);
+			setLastSearchQuery("");
+			setHasNextSearchPage(false);
+			return;
 		}
+
+		await loadSearchResults(trimmedSearch, 0);
 	}
 
-	async function handleDeclineRequest(requestId: number) {
-		try {
-			await friendsService.declineFriendRequest(requestId);
-			toast.success(t("friends.success.declined"));
-			await loadFriendsData();
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action", { error: message }));
+	/**
+	 * Loads the previous page of search results.
+	 *
+	 * @returns Nothing. Reuses the last submitted search query.
+	 */
+	async function handlePreviousSearchPage(): Promise<void> {
+		if (!lastSearchQuery || !hasPreviousSearchPage) {
+			return;
 		}
+
+		const previousOffset = Math.max(searchOffset - SEARCH_PAGE_SIZE, 0);
+
+		await loadSearchResults(lastSearchQuery, previousOffset);
 	}
 
-	async function handleRemoveFriend(friendshipId: number) {
-		try {
-			await friendsService.removeFriend(friendshipId);
-			toast.success(t("friends.success.removed"));
-			await loadFriendsData();
-		} catch (error: any) {
-			const message = error.response?.data?.message || error.message;
-			toast.error(t("friends.errors.action", { error: message }));
+	/**
+	 * Loads the next page of search results.
+	 *
+	 * @returns Nothing. Reuses the last submitted search query.
+	 */
+	async function handleNextSearchPage(): Promise<void> {
+		if (!lastSearchQuery || !hasNextSearchPage) {
+			return;
 		}
-	}
 
-	const incomingRequestBySenderId = useMemo(() => {
-		return new Map(
-			incomingRequests.map((request) => [request.sender.id, request]),
+		await loadSearchResults(
+			lastSearchQuery,
+			searchOffset + SEARCH_PAGE_SIZE,
 		);
-	}, [incomingRequests]);
+	}
+
+	/**
+	 * Runs a friend action, shows a success toast, and refreshes friend state.
+	 *
+	 * @param action - Friend API action to execute.
+	 * @param successKey - Translation key shown after success.
+	 * @returns Nothing.
+	 */
+	async function runFriendAction(
+		action: () => Promise<void>,
+		successKey: string,
+	): Promise<void> {
+		try {
+			await action();
+			toast.success(t(successKey));
+			await loadFriendsData();
+		} catch (error: unknown) {
+			showActionError(error, "friends.errors.action");
+		}
+	}
+
+	function handleSendRequest(userId: number) {
+		return runFriendAction(
+			async () => {
+				await friendsService.sendFriendRequest(userId);
+			},
+			"friends.success.requestSent",
+		);
+	}
+
+	function handleAcceptRequest(requestId: number) {
+		return runFriendAction(
+			async () => {
+				await friendsService.acceptFriendRequest(requestId);
+			},
+			"friends.success.accepted",
+		);
+	}
+
+	function handleDeclineRequest(requestId: number) {
+		return runFriendAction(
+			async () => {
+				await friendsService.declineFriendRequest(requestId);
+			},
+			"friends.success.declined",
+		);
+	}
+
+	function handleRemoveFriend(friendshipId: number) {
+		return runFriendAction(
+			async () => {
+				await friendsService.removeFriend(friendshipId);
+			},
+			"friends.success.removed",
+		);
+	}
 
 	if (!user) {
 		return (
@@ -198,27 +299,45 @@ export default function Friends() {
 
 	return (
 		<section className="w-full max-w-5xl mx-auto px-6 py-10 text-white">
+			{/* Page header */}
 			<div className="mb-8 text-center">
 				<h1 className="bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent text-3xl font-bold">
 					{t("friends.title")}
 				</h1>
+
 				<p className="text-white/50 mt-2">
 					{t("friends.description")}
 				</p>
 			</div>
 
+			{/* User search */}
 			<Card className="mb-6">
 				<CardTitle className="flex items-center gap-2">
 					<UserPlus size={20} />
 					{t("friends.search.title")}
 				</CardTitle>
 
-				<form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
+				<form
+					onSubmit={handleSearch}
+					className="flex flex-col sm:flex-row gap-3"
+				>
 					<Input
 						value={search}
-						onChange={(event) => setSearch(event.target.value)}
+						onChange={(event) => {
+							const value = event.target.value;
+
+							setSearch(value);
+
+							if (!value.trim()) {
+								setSearchResults([]);
+								setSearchOffset(0);
+								setLastSearchQuery("");
+								setHasNextSearchPage(false);
+							}
+						}}
 						placeholder={t("friends.search.placeholder")}
 					/>
+
 					<Button type="submit" loading={searchLoading}>
 						{t("friends.search.button")}
 					</Button>
@@ -230,63 +349,56 @@ export default function Friends() {
 						const incomingRequest = incomingRequestBySenderId.get(result.id);
 
 						return (
-							<div
+							<SearchResultRow
 								key={result.id}
-								className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
-							>
-								<UserRow user={result} />
-
-								{state === "SELF" && (
-									<span className="text-sm text-white/40">
-										{t("friends.states.self")}
-									</span>
-								)}
-
-								{state === "FRIEND" && (
-									<span className="text-sm text-green-400">
-										{t("friends.states.friend")}
-									</span>
-								)}
-
-								{state === "PENDING_SENT" && (
-									<Button variant="secondary" disabled>
-										{t("friends.states.pending")}
-									</Button>
-								)}
-
-								{state === "PENDING_RECEIVED" && incomingRequest && (
-									<div className="flex gap-2">
-										<Button
-											size="sm"
-											onClick={() => handleAcceptRequest(incomingRequest.requestId)}
-										>
-											{t("friends.actions.accept")}
-										</Button>
-										<Button
-											size="sm"
-											variant="secondary"
-											onClick={() => handleDeclineRequest(incomingRequest.requestId)}
-										>
-											{t("friends.actions.decline")}
-										</Button>
-									</div>
-								)}
-
-								{state === "NONE" && (
-									<Button
-										size="sm"
-										onClick={() => handleSendRequest(result.id)}
-									>
-										{t("friends.actions.add")}
-									</Button>
-								)}
-							</div>
+								user={result}
+								state={state}
+								incomingRequestId={incomingRequest?.requestId}
+								onOpenProfile={() =>
+									navigate(`/profile/${result.username}`)
+								}
+								onSendRequest={() => handleSendRequest(result.id)}
+								onAcceptRequest={(requestId) =>
+									handleAcceptRequest(requestId)
+								}
+								onDeclineRequest={(requestId) =>
+									handleDeclineRequest(requestId)
+								}
+							/>
 						);
 					})}
 				</div>
+				{searchResults.length > 0 && (
+					<div className="flex items-center justify-between pt-4">
+						<Button
+							size="sm"
+							variant="secondary"
+							onClick={handlePreviousSearchPage}
+							disabled={!hasPreviousSearchPage || searchLoading}
+						>
+							{t("friends.search.previous")}
+						</Button>
+
+						<span className="text-sm text-white/50">
+							{t("friends.search.page", {
+								page: currentSearchPage,
+							})}
+						</span>
+
+						<Button
+							size="sm"
+							variant="secondary"
+							onClick={handleNextSearchPage}
+							disabled={!hasNextSearchPage || searchLoading}
+						>
+							{t("friends.search.next")}
+						</Button>
+					</div>
+				)}
 			</Card>
 
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+				{/* Accepted friends */}
 				<Card>
 					<CardTitle className="flex items-center gap-2">
 						<UsersRound size={20} />
@@ -299,26 +411,30 @@ export default function Friends() {
 						<p className="text-white/50">{t("friends.list.empty")}</p>
 					) : (
 						<div className="space-y-3">
-							{friends.map((item) => (
-								<div
-									key={item.friendshipId}
-									className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
-								>
-									<UserRow user={item.friend} />
-									<Button
-										size="sm"
-										variant="danger"
-										onClick={() => handleRemoveFriend(item.friendshipId)}
-									>
-										<Trash2 size={16} />
-										{t("friends.actions.remove")}
-									</Button>
-								</div>
-							))}
+							{friends.map((item) => {
+								const status =
+									friendStatus[item.friend.id] ??
+									defaultOfflineStatus(item.friend.id);
+
+								return (
+									<FriendRow
+										key={item.friendshipId}
+										friend={item.friend}
+										status={status}
+										onOpenProfile={() =>
+											navigate(`/profile/${item.friend.username}`)
+										}
+										onRemove={() =>
+											handleRemoveFriend(item.friendshipId)
+										}
+									/>
+								);
+							})}
 						</div>
 					)}
 				</Card>
 
+				{/* Friend requests */}
 				<div className="space-y-6">
 					<Card>
 						<CardTitle className="flex items-center gap-2">
@@ -329,7 +445,9 @@ export default function Friends() {
 						{loading ? (
 							<p className="text-white/50">{t("friends.loading")}</p>
 						) : incomingRequests.length === 0 ? (
-							<p className="text-white/50">{t("friends.requests.noIncoming")}</p>
+							<p className="text-white/50">
+								{t("friends.requests.noIncoming")}
+							</p>
 						) : (
 							<div className="space-y-3">
 								{incomingRequests.map((request) => (
@@ -337,15 +455,22 @@ export default function Friends() {
 										key={request.requestId}
 										className="flex flex-col gap-3 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
-										<UserRow user={request.sender} />
+										<UserRow
+											user={request.sender}
+											onClick={() =>
+												navigate(`/profile/${request.sender.username}`)
+											}
+										/>
 
 										<div className="flex gap-2 justify-center">
 											<Button
 												size="sm"
-												onClick={() => handleAcceptRequest(request.requestId)}
+												onClick={() =>
+													handleAcceptRequest(request.requestId)
+												}
 												aria-label={t("friends.actions.accept")}
 												title={t("friends.actions.accept")}
-												className="px-10"
+												className="px-8"
 											>
 												<Check size={16} />
 											</Button>
@@ -353,10 +478,12 @@ export default function Friends() {
 											<Button
 												size="sm"
 												variant="secondary"
-												onClick={() => handleDeclineRequest(request.requestId)}
+												onClick={() =>
+													handleDeclineRequest(request.requestId)
+												}
 												aria-label={t("friends.actions.decline")}
 												title={t("friends.actions.decline")}
-												className="px-10"
+												className="px-8"
 											>
 												<X size={16} />
 											</Button>
@@ -376,7 +503,9 @@ export default function Friends() {
 						{loading ? (
 							<p className="text-white/50">{t("friends.loading")}</p>
 						) : outgoingRequests.length === 0 ? (
-							<p className="text-white/50">{t("friends.requests.noOutgoing")}</p>
+							<p className="text-white/50">
+								{t("friends.requests.noOutgoing")}
+							</p>
 						) : (
 							<div className="space-y-3">
 								{outgoingRequests.map((request) => (
@@ -384,7 +513,13 @@ export default function Friends() {
 										key={request.requestId}
 										className="flex items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl p-3"
 									>
-										<UserRow user={request.receiver} />
+										<UserRow
+											user={request.receiver}
+											onClick={() =>
+												navigate(`/profile/${request.receiver.username}`)
+											}
+										/>
+
 										<span className="text-sm text-yellow-400">
 											{t("friends.states.pending")}
 										</span>
@@ -396,24 +531,5 @@ export default function Friends() {
 				</div>
 			</div>
 		</section>
-	);
-}
-
-function UserRow({ user }: { user: PublicUser }) {
-	return (
-		<div className="flex items-center gap-3 min-w-0">
-			<Avatar
-				src={user.avatar}
-				alt={user.username}
-				fallback={user.username[0]?.toUpperCase() ?? "?"}
-				size="sm"
-			/>
-			<div className="min-w-0">
-				<p className="font-semibold truncate">{user.username}</p>
-				<p className="text-xs text-white/40 truncate">
-					{user.xp} XP
-				</p>
-			</div>
-		</div>
 	);
 }

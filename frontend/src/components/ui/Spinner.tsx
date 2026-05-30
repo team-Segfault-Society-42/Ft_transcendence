@@ -6,17 +6,30 @@ type SpinnerProps = {
   className?: string
 }
 
+/**
+ * Displays a reusable animated spinner component.
+ *
+ * Supports:
+ * - multiple sizes
+ * - multiple color variants
+ * - custom styling
+ *
+ * Commonly used for loading states.
+ */
 export function Spinner({
   size = "md",
   variant = "default",
   className,
 }: SpinnerProps) {
+
+  /* SPINNER SIZE VARIANTS */
   const sizes = {
     sm: "size-6",
     md: "size-10",
     lg: "size-16",
   }
 
+  /* SPINNER COLOR VARIANTS */
   const variants = {
     default: "text-slate-400",
     cyan: "text-cyan-400",

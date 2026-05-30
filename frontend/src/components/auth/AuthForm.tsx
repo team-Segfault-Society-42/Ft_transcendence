@@ -8,8 +8,20 @@ import { Input } from "@/components/ui/Input"
 import { Button } from "@/components/ui/Button"
 import { userService } from "@/services/userService"
 import { FormField } from "../ui/FormField"
+import { getBackendErrorMessage } from "../../utils/getBackendErrorMessage"
 
 type AuthMode = "login" | "signup"
+
+type LoginFormValues = {
+	email: string;
+	password: string;
+};
+
+type SignupFormValues = LoginFormValues & {
+	username: string;
+};
+
+type AuthFormValues = LoginFormValues | SignupFormValues;
 
 interface AuthFormProps {
     mode: AuthMode
@@ -42,39 +54,57 @@ export function AuthForm({ mode, onSuccess, onTwoFactorRequired, }: AuthFormProp
             mode === "signup" ? { username: "", email: "", password: "" } : { email: "", password: "" },
     })
 
-  async function onSubmit(data: any) {
-    try {
-			setIsLoading(true)
+	function isSignupFormValues(
+		mode: AuthMode,
+	): boolean {
+		return mode === "signup";
+	}
 
-			if (mode === "signup") {
-				await userService.createUser(data);
+	async function onSubmit(data: AuthFormValues) {
+		try {
+			setIsLoading(true);
+
+			if (isSignupFormValues(mode)) {
+				const signupData = data as SignupFormValues;
+
+				await userService.createUser({
+					username: signupData.username,
+					email: signupData.email,
+					password: signupData.password,
+				});
+
 				toast.success(t("auth.success"));
 				form.reset();
 				onSuccess?.();
 				return;
 			}
 
-			const result = await userService.userLogin(data);
+			const result = await userService.userLogin({
+				email: data.email,
+				password: data.password,
+			});
 
 			if (result.twoFactorRequired) {
-				toast.info("Enter your 2FA code to finish login");
+				toast.info(t("auth.twofa.loginPrompt"));
 				form.reset();
 				onTwoFactorRequired?.();
 				return;
 			}
-        toast.success(t("auth.success"))
-        form.reset()
-        onSuccess?.()
-    }
-    catch (error: any) {
-        const serverMessage = error.response?.data?.message || error.message
-        const finalMessage = Array.isArray(serverMessage) ? serverMessage[0] : serverMessage
-        toast.error(t("auth.error") + finalMessage)
-    }
-    finally {
-      setIsLoading(false)
-    }
-}
+
+			form.reset();
+			onSuccess?.();
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
+
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
+		} finally {
+			setIsLoading(false);
+		}
+	}
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

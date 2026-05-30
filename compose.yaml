@@ -25,10 +25,16 @@ services:
     networks:
       - client-side
       - server-side
+    environment:
+      - BACKEND_USER=${BACKEND_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - FORTYTWO_REDIRECT_URI=${FORTYTWO_REDIRECT_URI}
+      - FRONTEND_OAUTH_SUCCESS_URL=${FRONTEND_OAUTH_SUCCESS_URL}
+      - DOMAIN=${DOMAIN}
+      - TWO_FACTOR_URL=${TWO_FACTOR_URL}
     secrets:
       - backend_pw
       - jwt_secret
-      - database_url
       - fortytwo_client_id
       - fortytwo_client_secret
     depends_on:
@@ -82,8 +88,6 @@ secrets:
     file: ./secrets/postgres_root_pw.txt
   jwt_secret:
     file: ./secrets/jwt_secret.txt
-  database_url:
-    file: ./secrets/database_url.txt
   fortytwo_client_id:
     file: ./secrets/fortytwo_client_id.txt
   fortytwo_client_secret:

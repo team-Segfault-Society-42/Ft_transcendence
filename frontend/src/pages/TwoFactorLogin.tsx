@@ -4,7 +4,8 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { userService } from "@/services/userService";
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "react-i18next";
+import { getBackendErrorMessage } from "../utils/getBackendErrorMessage";
 
 export default function TwoFactorLogin() {
 	const [code, setCode] = useState("");
@@ -23,13 +24,14 @@ export default function TwoFactorLogin() {
 
 			navigate("/");
 			window.location.reload();
-		} catch (error: any) {
-			const serverMessage = error.response?.data?.message || error.message;
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
 
-			toast.error(t("auth.twofa.error") + finalMessage);
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
 		} finally {
 			setIsLoading(false);
 		}
@@ -65,7 +67,7 @@ export default function TwoFactorLogin() {
 							className="w-full"
 							disabled={isLoading || code.length !== 6}
 						>
-							{isLoading 
+							{isLoading
 							? t("auth.twofa.verifying")
 							: t("auth.twofa.verify")}
 						</Button>

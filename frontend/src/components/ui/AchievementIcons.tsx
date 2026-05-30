@@ -8,6 +8,19 @@ interface AchievementIconProps {
   className?: string;
 }
 
+/**
+ * Displays a reusable achievement icon component.
+ *
+ * Shows:
+ * - achievement icon
+ * - unlocked visual state
+ * - locked overlay state
+ *
+ * Supports:
+ * - dynamic icon rendering
+ * - custom sizes
+ * - custom styling
+ */
 export function AchievementIcon({
   iconName,
   isUnlocked,
@@ -18,6 +31,8 @@ export function AchievementIcon({
 
   return (
     <div className={`relative flex items-center justify-center ${className}`}>
+
+      {/* ICON */}
       <IconComponent
         size={size}
         className={`transition-all duration-500 ${
@@ -27,6 +42,7 @@ export function AchievementIcon({
         }`}
       />
 
+      {/* LOCKED STATE OVERLAY */}
       {!isUnlocked && (
         <div className="absolute inset-0 flex items-center justify-center opacity-40">
           <Lock size={size / 2} className="text-white/30" />

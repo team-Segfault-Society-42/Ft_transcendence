@@ -37,7 +37,7 @@ nuke: ## Full wipe — stops stack, removes volumes + images, deletes .env + sec
 		*) \
 			exit 0 ;; \
 	esac
-	
+
 _nuke-apply: # Runs a full wipe
   	# ── Prompt for Postgres Image Removal ────────────────────────────────────
 	@printf "$(CYAN)Remove postgres:$(POSTGRES_VERSION)? Skip if rebuilding soon$(RES) [y/N] "; read ans; \
@@ -51,8 +51,9 @@ _nuke-apply: # Runs a full wipe
   	# ── Stop Stack, Remove Containers + Volumes ──────────────────────────────
 	@echo ""
 	@echo "$(CYAN)<Stopping stack and removing containers + volumes>$(RES)"
-	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) down --volumes --remove-orphans
-	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) $(ENV_PROD) down --volumes --remove-orphans
+	@[ -f .env.dev ] && [ -f .env.prod ] || echo "$(ORANGE)Warning: .env files not found — compose context unavailable. Compose down skipped; Docker pruning will still run.$(RES)"
+	@docker compose -p dev -f $(COMPOSE_FILE) -f $(COMPOSE_DEV) $(ENV_DEV) down --volumes --remove-orphans 2>/dev/null || true
+	@docker compose -p prod -f $(COMPOSE_FILE) -f $(COMPOSE_PROD) $(ENV_PROD) down --volumes --remove-orphans 2>/dev/null || true
 	@docker volume prune -f
 
   	# ── Remove dev & prod Images ─────────────────────────────────────────────
@@ -73,5 +74,5 @@ _nuke-apply: # Runs a full wipe
 	@echo "   Run \`make up\` to rebuild from scratch."
 	@echo ""
 	@docker system df
-	
+
 .PHONY: clean nuke _nuke-apply

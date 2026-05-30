@@ -1,93 +1,88 @@
-export type PlayerSymbol = "X" | "O";
+export type PlayerSymbol = 'X' | 'O';
 
 export type CellValue = PlayerSymbol | null;
 
-export type GameStatus = "waiting" | "playing" | "finished";
+export type GameStatus = 'waiting' | 'playing' | 'finished';
 
-export type EndReason = "win" | "draw" | "timeout" | "forfeit" | null;
+export type EndReason = 'win' | 'draw' | 'timeout' | 'forfeit' | null;
 
-export type PlayerRole = PlayerSymbol | "spectator";
+export type PlayerRole = PlayerSymbol | 'spectator';
 
 export type MovesGameHistory = number[];
 
 export type SpectatorsCnt = number;
 
-export type PlayerLeft = "X" | "O" | null;
+export type PlayerLeft = 'X' | 'O' | null;
+
+export type SocketIds = string[];
 
 export interface PublicPlayerProfile {
-  id: number;
-  username: string;
-  avatar: string | null;
+	id: number;
+	username: string;
+	avatar: string | null;
 }
 
 export interface PlayerProfilesInGame {
-  X: PublicPlayerProfile | null;
-  O: PublicPlayerProfile | null;
+	X: PublicPlayerProfile | null;
+	O: PublicPlayerProfile | null;
 }
 
 export interface BoardPosition {
-  r: number;
-  c: number;
+	r: number;
+	c: number;
 }
 
 export interface Move extends BoardPosition {
-  player: PlayerSymbol;
+	player: PlayerSymbol;
 }
 
 export interface PlayerSeat {
-  ownerUserId: number | null;
-  socketId: string | null;
+	ownerUserId: number | null;
+	socketIds: SocketIds;
 }
-// to stock socketId of client x and client o
+
 export interface PlayersInGame {
-  X: PlayerSeat;
-  O: PlayerSeat;
+	X: PlayerSeat;
+	O: PlayerSeat;
 }
 
 export interface ReplayState {
-  X: boolean;
-  O: boolean;
-}
-
-export interface ScoreBoard {
-  X: number;
-  O: number;
-  D: number;
+	X: boolean;
+	O: boolean;
 }
 
 export interface WaitingGame {
-  gameId: string;
-  playerX: PublicPlayerProfile | null;
+	gameId: string;
+	playerX: PublicPlayerProfile | null;
 }
 
 export interface PlayingGame {
-  gameId: string;
-  playerX: PublicPlayerProfile | null;
-  playerO: PublicPlayerProfile | null;
+	gameId: string;
+	playerX: PublicPlayerProfile | null;
+	playerO: PublicPlayerProfile | null;
 }
 
 export interface LiveGamesResponse {
-  waiting: WaitingGame[];
-  playing: PlayingGame[];
+	waiting: WaitingGame[];
+	playing: PlayingGame[];
 }
 
 export interface GameState {
-  board: CellValue[][];
-  currentPlayer: PlayerSymbol;
-  status: GameStatus;
-  winner: PlayerSymbol | null;
-  endReason: EndReason;
+	board: CellValue[][];
+	currentPlayer: PlayerSymbol;
+	status: GameStatus;
+	winner: PlayerSymbol | null;
+	endReason: EndReason;
 
-  moveCount: number;
-  queuIdx: BoardPosition[];
-  toDisapear: number;
-  lastMove: number;
+	moveCount: number;
+	queuIdx: BoardPosition[];
+	toDisapear: number;
+	lastMove: number;
 
-  players: PlayersInGame;
-  scores: ScoreBoard;
-  replayVotes: ReplayState;
-  playerProfiles: PlayerProfilesInGame;
-  movesGameHistory: MovesGameHistory;
-  spectatCnt: SpectatorsCnt;
-  playerLeft: PlayerLeft;
+	players: PlayersInGame;
+	replayVotes: ReplayState;
+	playerProfiles: PlayerProfilesInGame;
+	movesGameHistory: MovesGameHistory;
+	spectatCnt: SpectatorsCnt;
+	playerLeft: PlayerLeft;
 }

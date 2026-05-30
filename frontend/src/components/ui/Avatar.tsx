@@ -8,6 +8,15 @@ type AvatarProps = {
     className?: string
 }
 
+/**
+ * Displays a reusable user avatar component.
+ *
+ * Supports:
+ * - image avatars
+ * - fallback text
+ * - multiple predefined sizes
+ * - custom styling
+ */
 export function Avatar({
     src,
     alt = "",
@@ -15,6 +24,8 @@ export function Avatar({
     size = "md",
     className,
 }: AvatarProps) {
+
+    /* AVATAR SIZE VARIANTS */
     const sizes = {
         sm: "w-8 h-8 text-xs",
         md: "w-12 h-12 text-sm",
@@ -27,6 +38,8 @@ export function Avatar({
         sizes[size],
         className
     )}>
+
+    {/* AVATAR IMAGE */}
     {src ? (
         <img
             src={src}

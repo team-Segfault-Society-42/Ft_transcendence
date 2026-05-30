@@ -1,317 +1,486 @@
 import {
-  BadRequestException,
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
+	BadRequestException,
+	ConflictException,
+	ForbiddenException,
+	Injectable,
+	Inject,
+	forwardRef,
+	NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { GameState, PlayerRole, PublicPlayerProfile } from './game.types';
 import { MatchesService } from './matches.service';
 import {
-  initGameState,
-  validateToMove,
-  applyMove,
-  getPlayerRoleByUserId,
-  getPlayerRoleBySocketId,
-  assignPlayerRole,
-  resetBoardForReplay,
+	initGameState,
+	validateToMove,
+	applyMove,
+	getPlayerRoleByUserId,
+	getPlayerRoleBySocketId,
+	assignPlayerRole,
+	resetBoardForReplay,
 } from './game.logic';
+import { PresenceService } from '../../presence/presence.service';
 
 export const TURN_TIMEOUT_MS = 30000;
 
 @Injectable()
 export class GameService {
-  constructor(private readonly matchService: MatchesService) {}
+	constructor(
+		private readonly matchService: MatchesService,
 
-  private activeGame = new Map<string, GameState>();
+		@Inject(forwardRef(() => PresenceService))
+		private readonly presenceService: PresenceService,
+	) {}
 
-  private getMutableGameById(gameId: string): GameState {
-    const game = this.activeGame.get(gameId);
-    if (!game) throw new NotFoundException(`Game with ID ${gameId} not found`);
-    return game;
-  }
+	private activeGame = new Map<string, GameState>();
 
-  private findActiveGameByUserId(userId: number): [string, GameState] | null {
-    for (const [gameId, game] of this.activeGame.entries()) {
-      if (game.status === 'finished') continue;
+	private getMutableGameById(gameId: string): GameState {
+		const game = this.activeGame.get(gameId);
+		if (!game) throw new NotFoundException('ERR_GAME_NOT_FOUND');
+		return game;
+	}
 
-      if (
-        game.players.X.ownerUserId === userId ||
-        game.players.O.ownerUserId === userId
-      ) {
-        return [gameId, game];
-      }
-    }
+	private findActiveGameByUserId(userId: number): [string, GameState] | null {
+		for (const [gameId, game] of this.activeGame.entries()) {
+			if (game.status === 'finished') continue;
 
-    return null;
-  }
+			if (
+				game.players.X.ownerUserId === userId ||
+				game.players.O.ownerUserId === userId
+			) {
+				return [gameId, game];
+			}
+		}
 
-  createGame(user: PublicPlayerProfile): string {
-    const active = this.findActiveGameByUserId(user.id);
-    if (active) throw new ConflictException('User already has an active game');
-    const gameId = randomUUID();
-    const newGame = initGameState();
-    newGame.players.X.ownerUserId = user.id;
-    newGame.playerProfiles.X = user;
-    this.activeGame.set(gameId, newGame);
-    return gameId;
-  }
+		return null;
+	}
 
-  /*
-   * - !!!return a copy of game
-   */
-  getGameById(gameId: string): GameState {
-    const game = this.activeGame.get(gameId);
-    if (!game) throw new NotFoundException(`Game with ID ${gameId} not found`);
-    return structuredClone(game);
-  }
+	/**
+	 * Creates a waiting game and reserves the X seat for the current user.
+	 *
+	 * @param user - Public profile of the user creating the game.
+	 * @returns Id of the newly created game.
+	 */
+	createGame(user: PublicPlayerProfile): string {
+		const active = this.findActiveGameByUserId(user.id);
+		if (active) throw new ConflictException('ERR_GAME_ALREADY_ACTIVE');
+		const gameId = randomUUID();
+		const newGame = initGameState();
+		newGame.players.X.ownerUserId = user.id;
+		newGame.playerProfiles.X = user;
+		this.activeGame.set(gameId, newGame);
+		this.presenceService.emitActiveGameUpdated(user.id, {
+			gameId,
+			status: 'waiting',
+			playerX: newGame.playerProfiles.X,
+		});
+		return gameId;
+	}
 
-  getFinishedGamesHistory(gameId: string) {
-    const game = this.getMutableGameById(gameId);
+	/**
+	 * Returns a cloned game state so callers cannot mutate the active game directly.
+	 *
+	 * @param gameId - Id of the game to read.
+	 * @returns A copy of the current game state.
+	 * @throws When the game does not exist.
+	 */
+	getGameById(gameId: string): GameState {
+		const game = this.activeGame.get(gameId);
+		if (!game) throw new NotFoundException('ERR_GAME_NOT_FOUND');
+		return structuredClone(game);
+	}
 
-    if (game.status !== 'finished')
-      throw new BadRequestException('Game not finished yet');
+	getFinishedGamesHistory(gameId: string) {
+		const game = this.getMutableGameById(gameId);
 
-    return {
-      gameId,
-      movesGameHistory: [...game.movesGameHistory],
-      winner: game.winner,
-      endReason: game.endReason,
-    };
-  }
+		if (game.status !== 'finished')
+			throw new BadRequestException('ERR_GAME_NOT_FINISHED');
 
-  getActiveGameByUserId(userId: number) {
-    const active = this.findActiveGameByUserId(userId);
-    if (!active) return null;
+		return {
+			gameId,
+			movesGameHistory: [...game.movesGameHistory],
+			winner: game.winner,
+			endReason: game.endReason,
+		};
+	}
 
-    const [gameId, game] = active;
-    const role = getPlayerRoleByUserId(game, userId);
-    const opponent =
-      role === 'X' ? game.playerProfiles.O : game.playerProfiles.X;
-    return {
-      gameId,
-      status: game.status,
-      role,
-      currentPlayer: game.currentPlayer,
-      opponent,
-    };
-  }
+	/**
+	 * Builds the active game summary used by the frontend lobby cards.
+	 *
+	 * @param userId - Id of the user asking for their active game.
+	 * @returns The active game summary, or null when the user is free.
+	 */
+	getActiveGameByUserId(userId: number) {
+		const active = this.findActiveGameByUserId(userId);
+		if (!active) return null;
 
-  joinGame(
-    gameId: string,
-    socketId: string,
-    userId: number,
-    user?: PublicPlayerProfile,
-  ): { game: GameState; role: PlayerRole } {
-    const game = this.getMutableGameById(gameId);
-    const active = this.findActiveGameByUserId(userId);
-    if (active && active[0] !== gameId) {
-      throw new ConflictException('User already has an active game');
-    }
+		const [gameId, game] = active;
+		const role = getPlayerRoleByUserId(game, userId);
+		const opponent =
+			role === 'X' ? game.playerProfiles.O : game.playerProfiles.X;
+		return {
+			gameId,
+			status: game.status,
+			role,
+			currentPlayer: game.currentPlayer,
+			opponent,
+			playerX: game.playerProfiles.X,
+			playerO: game.playerProfiles.O,
+		};
+	}
 
-    const role = assignPlayerRole(game, userId, socketId);
+	isUserInGame(userId: number): boolean {
+		const active = this.findActiveGameByUserId(userId);
 
-    if (user && (role === 'X' || role === 'O')) {
-      game.playerProfiles[role] = user;
-    }
+		if (!active) {
+			return false;
+		}
 
-    this.activeGame.set(gameId, game);
-    return { game, role };
-  }
+		const [, game] = active;
 
-  requestReplay(gameId: string, userId: number): GameState {
-    const game = this.getMutableGameById(gameId);
+		return game.status === 'playing';
+	}
 
-    if (game.status !== 'finished')
-      throw new BadRequestException('Replay is only available after game end');
+	getUserGameActivity(userId: number): 'available' | 'waiting' | 'playing' {
+		const active = this.findActiveGameByUserId(userId);
 
-    const role = getPlayerRoleByUserId(game, userId);
+		if (!active) {
+			return 'available';
+		}
 
-    if (role !== 'X' && role !== 'O')
-      throw new ForbiddenException('Spectators cannot request replay');
+		const [, game] = active;
 
-    game.replayVotes[role] = true;
+		if (game.status === 'waiting') {
+			return 'waiting';
+		}
 
-    if (game.replayVotes.X && game.replayVotes.O) resetBoardForReplay(game);
+		if (game.status === 'playing') {
+			return 'playing';
+		}
 
-    this.activeGame.set(gameId, game);
-    return game;
-  }
+		return 'available';
+	}
 
-  async playMove(
-    gameId: string,
-    userId: number,
-    r: number,
-    c: number,
-  ): Promise<GameState> {
-    const game = this.getMutableGameById(gameId);
-    if (game.status !== 'playing')
-      throw new BadRequestException('Waiting for both players');
+	/**
+	 * Adds a socket to a game and assigns the user as X, O, or spectator.
+	 *
+	 * @param gameId - Id of the game to join.
+	 * @param socketId - Socket id joining the game.
+	 * @param userId - Id of the authenticated user.
+	 * @param user - Public profile used for player seats.
+	 * @returns The updated game state and assigned role.
+	 */
+	joinGame(
+		gameId: string,
+		socketId: string,
+		userId: number,
+		user?: PublicPlayerProfile,
+	): { game: GameState; role: PlayerRole } {
+		const game = this.getMutableGameById(gameId);
+		const active = this.findActiveGameByUserId(userId);
+		if (active && active[0] !== gameId) {
+			throw new ConflictException('ERR_GAME_ALREADY_ACTIVE');
+		}
 
-    const role = getPlayerRoleByUserId(game, userId);
-    if (role === 'spectator')
-      throw new ForbiddenException('Spectators cannot play');
-    if (role !== game.currentPlayer)
-      throw new BadRequestException('It is not your turn');
+		const role = assignPlayerRole(game, userId, socketId);
 
-    const now = Date.now();
-    const timeOnClick = now - game.lastMove;
+		if (user && (role === 'X' || role === 'O')) {
+			game.playerProfiles[role] = user;
+		}
 
-    // 30 SEC
-    if (timeOnClick > TURN_TIMEOUT_MS) {
-      const timeOutGame = await this.finalizeTurnTimeout(gameId);
-      if (timeOutGame) return timeOutGame;
-    }
+		this.activeGame.set(gameId, game);
 
-    validateToMove(game, r, c);
-    game.lastMove = now;
+		if (game.status === 'playing') {
+			const payload = {
+				gameId,
+				status: game.status,
+				playerX: game.playerProfiles.X!,
+				playerO: game.playerProfiles.O!,
+			};
 
-    const updatState = applyMove(game, r, c);
+			if (game.playerProfiles.X?.id) {
+				this.presenceService.emitActiveGameUpdated(
+					game.playerProfiles.X.id,
+					payload,
+				);
+			}
 
-    if (updatState.status === 'finished') {
-      await this.saveGameToDB(updatState);
-    }
+			if (game.playerProfiles.O?.id) {
+				this.presenceService.emitActiveGameUpdated(
+					game.playerProfiles.O.id,
+					payload,
+				);
+			}
+		}
+		return { game, role };
+	}
 
-    this.activeGame.set(gameId, updatState);
-    return updatState;
-  }
+	/**
+	 * Registers a replay vote and resets the board when both players agree.
+	 *
+	 * @param gameId - Id of the finished game.
+	 * @param userId - Id of the user voting for replay.
+	 * @returns The updated game state after the vote.
+	 * @throws When the game is not finished or the user is a spectator.
+	 */
+	requestReplay(gameId: string, userId: number): GameState {
+		const game = this.getMutableGameById(gameId);
 
-  processPlayerDisconnection(
-    socketId: string,
-  ): { gameId: string; role: 'X' | 'O'; game: GameState } | null {
-    for (const [gameId, game] of this.activeGame.entries()) {
-      const role = getPlayerRoleBySocketId(game, socketId);
-      if (role === 'spectator') continue;
+		if (game.status !== 'finished')
+			throw new BadRequestException('ERR_GAME_REPLAY_NOT_AVAILABLE');
 
-      game.players[role].socketId = null;
-      this.activeGame.set(gameId, game);
-      return { gameId, role, game };
-    }
+		const role = getPlayerRoleByUserId(game, userId);
 
-    return null;
-  }
+		if (role !== 'X' && role !== 'O')
+			throw new ForbiddenException('ERR_GAME_SPECTATOR_REPLAY');
 
-  deleteGame(gameId: string): boolean {
-    return this.activeGame.delete(gameId);
-  }
+		game.replayVotes[role] = true;
 
-  private async saveGameToDB(game: GameState) {
-    if (!game.playerProfiles.X || !game.playerProfiles.O) return;
+		if (game.replayVotes.X && game.replayVotes.O) resetBoardForReplay(game);
 
-    const data = {
-      player1Id: game.playerProfiles.X.id,
-      player2Id: game.playerProfiles.O.id,
-      scoresP1: game.winner === 'X' ? 1 : 0,
-      scoresP2: game.winner === 'O' ? 1 : 0,
-      winnerId:
-        game.winner === 'X'
-          ? game.playerProfiles.X?.id
-          : game.winner === 'O'
-            ? game.playerProfiles.O?.id
-            : undefined,
-      endReason: game.endReason,
-    };
+		this.activeGame.set(gameId, game);
+		return game;
+	}
 
-    await this.matchService.recordMatch(data, game.movesGameHistory);
-  }
+	/**
+	 * Validates and applies a player move, including turn timeout checks.
+	 *
+	 * @param gameId - Id of the game being played.
+	 * @param userId - Id of the player sending the move.
+	 * @param r - Board row selected by the player.
+	 * @param c - Board column selected by the player.
+	 * @returns The updated game state after the move or timeout.
+	 * @throws When the user cannot play this move.
+	 */
+	async playMove(
+		gameId: string,
+		userId: number,
+		r: number,
+		c: number,
+	): Promise<GameState> {
+		const game = this.getMutableGameById(gameId);
+		if (game.status !== 'playing')
+			throw new BadRequestException('ERR_GAME_WAITING_PLAYERS');
 
-  async finalizeReconnectTimeout(
-    gameId: string,
-    role: 'X' | 'O',
-  ): Promise<{ gameId: string; game: GameState } | null> {
-    const game = this.getMutableGameById(gameId);
+		const role = getPlayerRoleByUserId(game, userId);
+		if (role === 'spectator')
+			throw new ForbiddenException('ERR_GAME_SPECTATOR_MOVE');
+		if (role !== game.currentPlayer)
+			throw new BadRequestException('ERR_GAME_NOT_YOUR_TURN');
 
-    const seat = game.players[role];
-    if (seat.socketId != null) return null;
-    if (game.status !== 'playing') return null;
+		const now = Date.now();
+		const timeOnClick = now - game.lastMove;
 
-    const other = role === 'X' ? 'O' : 'X';
-    if (game.players[other].ownerUserId === null) return null;
-    if (game.players[other].socketId == null) return null;
+		if (timeOnClick > TURN_TIMEOUT_MS) {
+			const timeOutGame = await this.finalizeTurnTimeout(gameId);
+			if (timeOutGame) return timeOutGame;
+		}
 
-    game.status = 'finished';
-    game.winner = other;
-    game.endReason = 'forfeit';
-    game.scores[other] += 1;
-    game.toDisapear = -1;
-    game.replayVotes = { X: false, O: false };
+		validateToMove(game, r, c);
+		game.lastMove = now;
 
-    await this.saveGameToDB(game);
-    this.activeGame.set(gameId, game);
-    return { gameId, game };
-  }
+		const updatState = applyMove(game, r, c);
 
-  async finalizeTurnTimeout(gameId: string): Promise<GameState | null> {
-    const game = this.getMutableGameById(gameId);
-    if (game.status !== 'playing') return null;
+		if (updatState.status === 'finished') {
+			await this.saveGameToDB(updatState);
 
-    const elapsedTime = Date.now() - game.lastMove;
-    if (elapsedTime < TURN_TIMEOUT_MS) return null;
+			if (updatState.playerProfiles.X?.id) {
+				this.presenceService.emitActiveGameUpdated(
+					updatState.playerProfiles.X.id,
+					null,
+				);
+			}
 
-    const timeOutWinner = game.currentPlayer === 'X' ? 'O' : 'X';
+			if (updatState.playerProfiles.O?.id) {
+				this.presenceService.emitActiveGameUpdated(
+					updatState.playerProfiles.O.id,
+					null,
+				);
+			}
+		}
+		this.activeGame.set(gameId, updatState);
+		return updatState;
+	}
 
-    game.status = 'finished';
-    game.winner = timeOutWinner;
-    game.endReason = 'timeout';
-    game.scores[timeOutWinner] += 1;
-    game.toDisapear = -1;
-    game.replayVotes = { X: false, O: false };
+	/**
+	 * Removes one socket and reports a player disconnect only after all their sockets close.
+	 *
+	 * @param socketId - Socket id that disconnected.
+	 * @returns The disconnected player and game, or null if the user still has another socket.
+	 */
+	processPlayerDisconnection(
+		socketId: string,
+	): { gameId: string; role: 'X' | 'O'; game: GameState } | null {
+		for (const [gameId, game] of this.activeGame.entries()) {
+			const role = getPlayerRoleBySocketId(game, socketId);
+			if (role === 'spectator') continue;
 
-    await this.saveGameToDB(game);
-    this.activeGame.set(gameId, game);
-    return game;
-  }
+			game.players[role].socketIds = game.players[role].socketIds.filter(
+				(id) => id !== socketId,
+			);
 
-  setPlayerLeft(gameId: string, userId: number): GameState {
-    const game = this.getMutableGameById(gameId);
-    const role = getPlayerRoleByUserId(game, userId);
-    if (role === 'X' || role === 'O') game.playerLeft = role;
-    this.activeGame.set(gameId, game);
-    return game;
-  }
+			this.activeGame.set(gameId, game);
 
-  getLiveGames(userId: number) {
-    const waiting: { gameId: string; playerX: PublicPlayerProfile | null }[] =
-      [];
-    const playing: {
-      gameId: string;
-      playerX: PublicPlayerProfile | null;
-      playerO: PublicPlayerProfile | null;
-    }[] = [];
-    const allGames = [...this.activeGame.entries()];
-    for (const [gameId, game] of allGames) {
-      if (game.status === 'waiting' && game.players.X.ownerUserId !== userId)
-        waiting.push({ gameId, playerX: game.playerProfiles.X });
-      else if (game.status === 'playing')
-        playing.push({
-          gameId,
-          playerX: game.playerProfiles.X,
-          playerO: game.playerProfiles.O,
-        });
-    }
-    return { waiting, playing };
-  }
+			if (game.players[role].socketIds.length > 0) {
+				return null;
+			}
 
-  leaveGame(
-    gameId: string,
-    userId: number,
-  ): { deleted: boolean; game: GameState | null } {
-    const game = this.getMutableGameById(gameId);
-    const role = getPlayerRoleByUserId(game, userId);
+			return { gameId, role, game };
+		}
 
-    // playing
-    if (game.status === 'playing')
-      throw new BadRequestException('Cant delete game pplaying');
+		return null;
+	}
 
-    if (game.status === 'waiting' && role === 'X') {
-      this.activeGame.delete(gameId);
-      return { deleted: true, game: null };
-    }
+	deleteGame(gameId: string): boolean {
+		return this.activeGame.delete(gameId);
+	}
 
-    if (role === 'X' || role === 'O') game.playerLeft = role;
+	deleteWaitingGameByOwner(userId: number): void {
+		const active = this.findActiveGameByUserId(userId);
+		if (!active) return;
 
-    this.activeGame.set(gameId, game);
-    return { deleted: false, game };
-  }
+		const [gameId, game] = active;
+		if (game.status === 'waiting' && game.players.X.ownerUserId === userId) {
+			this.activeGame.delete(gameId);
+			this.presenceService.emitActiveGameUpdated(userId, null);
+		}
+	}
+
+	/**
+	 * Persists a completed game to the database.
+	 * Maps the in-memory game state (X/O players) to the MatchesService format
+	 * before delegating the storage operation.
+	 *
+	 * @param game - The finished game state containing players, scores, and move history.
+	 */
+	private async saveGameToDB(game: GameState) {
+		if (!game.playerProfiles.X || !game.playerProfiles.O) return;
+
+		const data = {
+			player1Id: game.playerProfiles.X.id,
+			player2Id: game.playerProfiles.O.id,
+			scoresP1: game.winner === 'X' ? 1 : 0,
+			scoresP2: game.winner === 'O' ? 1 : 0,
+			winnerId:
+				game.winner === 'X'
+					? game.playerProfiles.X?.id
+					: game.winner === 'O'
+						? game.playerProfiles.O?.id
+						: undefined,
+			endReason: game.endReason,
+		};
+		await this.matchService.recordMatch(data, game.movesGameHistory);
+	}
+
+	/**
+	 * Ends the game when the current player exceeds the turn timer and persists the result.
+	 *
+	 * @param gameId - Id of the game to check.
+	 * @returns The finished game state, or null if the timeout should not fire.
+	 */
+	async finalizeTurnTimeout(gameId: string): Promise<GameState | null> {
+		const game = this.getMutableGameById(gameId);
+		if (game.status !== 'playing') return null;
+
+		const elapsedTime = Date.now() - game.lastMove;
+		if (elapsedTime < TURN_TIMEOUT_MS) return null;
+
+		const timeOutWinner = game.currentPlayer === 'X' ? 'O' : 'X';
+
+		game.status = 'finished';
+		game.winner = timeOutWinner;
+		game.endReason = 'timeout';
+		game.toDisapear = -1;
+		game.replayVotes = { X: false, O: false };
+
+		await this.saveGameToDB(game);
+		this.activeGame.set(gameId, game);
+
+		if (game.playerProfiles.X?.id) {
+			this.presenceService.emitActiveGameUpdated(
+				game.playerProfiles.X.id,
+				null,
+			);
+		}
+
+		if (game.playerProfiles.O?.id) {
+			this.presenceService.emitActiveGameUpdated(
+				game.playerProfiles.O.id,
+				null,
+			);
+		}
+
+		return game;
+	}
+
+	setPlayerLeft(gameId: string, userId: number): GameState {
+		const game = this.getMutableGameById(gameId);
+		const role = getPlayerRoleByUserId(game, userId);
+		if (role === 'X' || role === 'O') game.playerLeft = role;
+		this.activeGame.set(gameId, game);
+		return game;
+	}
+
+	/**
+	 * Lists games the current user can join or spectate.
+	 *
+	 * @param userId - Id of the current user.
+	 * @returns Waiting and playing games that do not already include this user.
+	 */
+	getLiveGames(userId: number) {
+		const waiting: { gameId: string; playerX: PublicPlayerProfile | null }[] =
+			[];
+		const playing: {
+			gameId: string;
+			playerX: PublicPlayerProfile | null;
+			playerO: PublicPlayerProfile | null;
+		}[] = [];
+		const allGames = [...this.activeGame.entries()];
+		for (const [gameId, game] of allGames) {
+			if (game.status === 'waiting' && game.players.X.ownerUserId !== userId)
+				waiting.push({ gameId, playerX: game.playerProfiles.X });
+			else if (
+				game.status === 'playing' &&
+				game.players.X.ownerUserId !== userId &&
+				game.players.O.ownerUserId !== userId
+			)
+				playing.push({
+					gameId,
+					playerX: game.playerProfiles.X,
+					playerO: game.playerProfiles.O,
+				});
+		}
+		return { waiting, playing };
+	}
+
+	/**
+	 * Cancels a waiting game or marks a finished game as left by a player.
+	 *
+	 * @param gameId - Id of the game to leave.
+	 * @param userId - Id of the user leaving the game.
+	 * @returns Whether the game was deleted and the remaining game state if any.
+	 * @throws When the user tries to leave a game that is still playing.
+	 */
+	leaveGame(
+		gameId: string,
+		userId: number,
+	): { deleted: boolean; game: GameState | null } {
+		const game = this.getMutableGameById(gameId);
+		const role = getPlayerRoleByUserId(game, userId);
+
+		if (game.status === 'waiting' && role === 'X') {
+			this.activeGame.delete(gameId);
+			this.presenceService.emitActiveGameUpdated(userId, null);
+			return { deleted: true, game: null };
+		}
+
+		if (game.status === 'playing') {
+			throw new BadRequestException('ERR_GAME_CANT_LEAVE_PLAYING');
+		}
+
+		if (role === 'X' || role === 'O') game.playerLeft = role;
+
+		this.activeGame.set(gameId, game);
+		return { deleted: false, game };
+	}
 }

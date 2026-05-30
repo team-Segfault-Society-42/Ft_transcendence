@@ -1,7 +1,19 @@
-import { IsOptional, IsInt, Min, IsString, MaxLength, MinLength } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+	IsInt,
+	IsOptional,
+	IsString,
+	MaxLength,
+	Min,
+	MinLength,
+} from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
+/**
+ * Query parameters for listing and searching public users.
+ *
+ * @remarks Search is trimmed in the service so whitespace-only searches can be rejected.
+ */
 export class GetUsersQueryDto {
 	@ApiPropertyOptional({
 		example: 20,
@@ -9,8 +21,8 @@ export class GetUsersQueryDto {
 	})
 	@IsOptional()
 	@Type(() => Number)
-	@IsInt()
-	@Min(0)
+	@IsInt({ message: 'ERR_QUERY_LIMIT_INVALID' })
+	@Min(0, { message: 'ERR_QUERY_LIMIT_INVALID' })
 	limit?: number;
 
 	@ApiPropertyOptional({
@@ -19,8 +31,8 @@ export class GetUsersQueryDto {
 	})
 	@IsOptional()
 	@Type(() => Number)
-	@IsInt()
-	@Min(0)
+	@IsInt({ message: 'ERR_QUERY_OFFSET_INVALID' })
+	@Min(0, { message: 'ERR_QUERY_OFFSET_INVALID' })
 	offset?: number;
 
 	@ApiPropertyOptional({
@@ -30,8 +42,8 @@ export class GetUsersQueryDto {
 		maxLength: 50,
 	})
 	@IsOptional()
-	@IsString()
-	@MinLength(1)
-	@MaxLength(50)
+	@IsString({ message: 'ERR_QUERY_SEARCH_INVALID' })
+	@MinLength(1, { message: 'ERR_QUERY_SEARCH_INVALID' })
+	@MaxLength(50, { message: 'ERR_QUERY_SEARCH_INVALID' })
 	search?: string;
 }

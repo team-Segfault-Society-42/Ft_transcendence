@@ -4,68 +4,97 @@ import { useTranslation } from "react-i18next";
 import { Username } from "@/components/ui/Username";
 import { Motion } from "@/components/ui/Motion";
 import { Link, useNavigate } from "react-router-dom";
-
-interface User {
-  username: string
-  avatar?: string
-  wins?: number
-  losses?: number
-}
+import type { User } from "@/type/user.types";
+import { Menu } from "lucide-react";
 
 interface HeaderProps {
   user: User | null
   onLoginClick: () => void
+  onMenuClick: () => void
 }
 
-export function Topbar({ user, onLoginClick}: HeaderProps) {
+/**
+ * Displays the main application topbar.
+ *
+ * Contains:
+ * - mobile sidebar toggle button
+ * - application title
+ * - authentication actions
+ * - authenticated user shortcut
+ */
+export function Topbar({ user, onLoginClick, onMenuClick }: HeaderProps) {
 
   const { t } = useTranslation()
   const navigate = useNavigate()
 
   return (
-    <header className="relative h-16 min-h-20 border-b border-white/10 flex items-center justify-between px-6">
+    <header className="h-16 border-b border-white/10 flex items-center px-4 lg:px-6 overflow-visible">
 
-    <div className="w-24" />
+      {/* LEFT SECTION */}
+      <div className="flex-1 flex items-center">
 
-    <div className="absolute left-1/2 -translate-x-1/2">
+        {/* MOBILE MENU BUTTON */}
+        <button
+          className="xl:hidden p-2 rounded-lg hover:bg-white/10 transition min-h-11 min-w-11 flex items-center justify-center"
+          onClick={onMenuClick}
+          aria-label="Ouvrir le menu"
+        >
+          <Menu size={22} />
+        </button>
+
+      </div>
+
+    {/* CENTER SECTION */}
+    <div className="flex-1 flex items-center justify-center">
+
+      {/* TITLE */}
       <Motion>
-      <Link to="/">
-        <h1 className="text-5xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
-          {t("title")}
-        </h1>
-      </Link>
+        <Link to="/">
+          <h1 className="text-lg sm:text-xl md:text-3xl lg:text-4xl font-extrabold tracking-tight bg-linear-to-r from-cyan-400 to-pink-500 bg-clip-text text-transparent">
+            {t("title")}
+          </h1>
+        </Link>
       </Motion>
     </div>
 
-    <div className="flex items-center gap-4">
+    {/* RIGHT SECTION */}
+    <div className="flex-1 flex items-center justify-end gap-2 overflow-visible">
+
+      {/* AUTHENTICATED USER ? */}
       {user ? (
       <>
-      <div className="flex items-center h-10 font-bold text-lg">
+
+        {/* PROFILE BUTTON */}
         <Button
         onClick={() => navigate("/profile")}
         variant="secondary"
-        className="rounded-full px-3 gap-2">
+        size="sm"
+        className="rounded-full px-3 gap-2 overflow-visible">
 
-          <span>
+          {/* GREETING */}
+          <span className= "hidden md:inline">
             {t("home.buttons.hi")}
           </span>
 
-          <Username
-          name={user.username}
-          variant="topbar"
-          />
+          {/* USERNAME */}
+          <div className="hidden md:flex min-w-0 overflow-visible">
+            <Username
+            name={user.username}
+            variant="topbar"
+            />
+          </div>
 
+          {/* USER AVATAR */}
           <Avatar
-          src={user.avatar}
+          src={user.avatar ?? undefined}
           fallback={user.username[0]}
           />
         </Button>
-      </div>
-
       </>
 
       ) : (
 
+      /* USER AVATAR */
       <Button
           onClick={onLoginClick}
           variant="secondary">

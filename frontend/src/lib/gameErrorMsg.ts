@@ -1,47 +1,30 @@
+import i18n from '@/i18n/config';
+
+/**
+ * Maps backend game errors to messages that can be shown in the UI.
+ *
+ * @param rawMessage - Error message or code received from the game socket.
+ * @returns A readable game error message.
+ */
 export function gameErrorMsg(rawMessage: string | null | undefined): string {
-  if (!rawMessage) return "Something went wrong";
+	if (!rawMessage) return i18n.t('errors.game.default');
 
-  const message = rawMessage.toLowerCase();
+	const raw = rawMessage.trim();
+	if (!raw) return i18n.t('errors.game.default');
 
-  if (message.includes("user not found")) {
-    return "User not found";
-  }
+	if (isGameNotFoundError(raw)) {
+		return i18n.t('game.errors.noLongerAvailable');
+	}
 
-  if (message.includes("game with id") && message.includes("not found")) {
-    return "Game not found";
-  }
+	if (raw.startsWith('ERR_') && i18n.exists(`backend.${raw}`)) {
+		return i18n.t(`backend.${raw}`);
+	}
 
-  if (message.includes("not your turn")) {
-    return "It is not your turn";
-  }
+	return i18n.t('errors.game.default');
+}
 
-  if (message.includes("waiting for both players")) {
-    return "Waiting for opponent...";
-  }
-
-  if (message.includes("already occupied")) {
-    return "This cell is already occupied";
-  }
-
-  if (message.includes("replay is only available after game end")) {
-    return "Replay is only available after the game ends";
-  }
-
-  if (message.includes("spectators cannot play")) {
-    return "Spectators cannot play";
-  }
-
-  if (message.includes("spectators cannot request replay")) {
-    return "Spectators cannot request replay";
-  }
-
-  if (message.includes("move out of range")) {
-    return "Invalid move";
-  }
-
-  if (message.includes("unknown error")) {
-    return "Unknown error";
-  }
-
-  return rawMessage;
+export function isGameNotFoundError(
+	rawMessage: string | null | undefined,
+): boolean {
+	return rawMessage?.trim() === 'ERR_GAME_NOT_FOUND';
 }

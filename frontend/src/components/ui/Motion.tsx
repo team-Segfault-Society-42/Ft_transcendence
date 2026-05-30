@@ -7,6 +7,16 @@ interface MotionWrapperProps {
   tapScale?: number;
 }
 
+/**
+ * Displays a reusable motion wrapper component
+ * using Framer Motion animations.
+ *
+ * Adds:
+ * - hover scale animation
+ * - tap scale animation
+ *
+ * Supports custom animation scales.
+ */
 export function Motion({
   children,
   hoverScale = 1.05,

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/Input";
 import { userService } from "@/services/userService";
 import { OAuth42Button } from "./OAuth42Button";
 import { Divider } from "@/components/ui/Divider";
+import { getBackendErrorMessage } from "../../utils/getBackendErrorMessage";
 
 type AuthMode = "login" | "signup";
 
@@ -48,12 +49,14 @@ export function AuthModal({
 			setCode("");
 			setStep("auth");
 			onSuccess?.();
-		} catch (error: any) {
-			const serverMessage = error.response?.data?.message || error.message;
-			const finalMessage = Array.isArray(serverMessage)
-				? serverMessage[0]
-				: serverMessage;
-			toast.error(t("auth.error") + finalMessage);
+		} catch (error: unknown) {
+			const finalMessage = getBackendErrorMessage(error);
+
+			toast.error(
+				t(`backend.${finalMessage}`, {
+					defaultValue: finalMessage,
+				}),
+			);
 		} finally {
 			setIsVerifying(false);
 		}

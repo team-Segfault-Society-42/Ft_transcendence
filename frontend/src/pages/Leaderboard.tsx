@@ -8,6 +8,7 @@ import { Trophy } from "lucide-react";
 import { EmptyStateCard } from "@/components/ui/EmptyCard";
 import { useNavigate } from "react-router-dom";
 import { Card, CardTitle } from "@/components/ui/Card"
+import type { User } from "@/type/user.types"
 
 interface LeaderBoard {
   id: number;
@@ -21,20 +22,23 @@ export default function LeaderBoard() {
   const [leaderboard, setLeaderboard] = useState<LeaderBoard[]>([]);
   const [sortBy, setSortBy] = useState<"xp" | "totalGames" | "wins">("wins");
   const { t } = useTranslation();
-  const [user] = useOutletContext<any>();
+  const [user] = useOutletContext<[User | null]>();
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!user) return;
     async function fetchLeaderboard() {
       try {
         const data = await userService.getLeaderboard(sortBy);
         setLeaderboard(data);
-      } catch (error) {
-        console.error("Failed to fetch leaderboard:", error);
+      } catch (error: unknown) {
+        if (import.meta.env.DEV) {
+          console.error("[Leaderboard] failed to fetch leaderboard:", error);
+        }
       }
     }
     fetchLeaderboard();
-  }, [sortBy]);
+  }, [sortBy, user]);
 
   if (!user) {
     return (
@@ -66,8 +70,8 @@ export default function LeaderBoard() {
           {t("leaderboard.title")}
         </CardTitle>
       
-      <div className="flex flex-col pt-20 pb-20 gap-6">
-        <div className="flex gap-4 justify-center mb-8">
+      <div className="flex flex-col pt-20 pb-10 gap-6">
+        <div className="flex flex-col gap-4 justify-center mb-8 sm:flex-row w-full">
           <Button
             onClick={() => setSortBy("xp")}
             variant={sortBy === "xp"
@@ -106,7 +110,8 @@ export default function LeaderBoard() {
             {leaderboard.map((l, index) => (
               <div
                 key={l.id}
-                className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl"
+                onClick={() => navigate(`/profile/${l.username}`)}
+                className="flex flex-col items-center cursor-pointer justify-between p-4 bg-white/5 border border-white/10 rounded-xl sm:flex-row"
               >
                 <div className="flex items-center gap-4 min-w-0 flex-1">
                   <span className="text-white/30 font-mono w-6">
@@ -114,7 +119,7 @@ export default function LeaderBoard() {
                   </span>
                   <Username
                     name={l.username}
-                    variant="profile"
+                    variant="card"
                     className="font-medium min-w-0"/>
                 </div>
 
