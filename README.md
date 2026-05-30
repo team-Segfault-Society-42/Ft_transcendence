@@ -1,5 +1,7 @@
 *This project has been created as part of the 42 curriculum by ameechan, nryser, nadahman, mbendidi and jdecarro.*
 
+<img width="822" height="268" alt="image" src="https://github.com/user-attachments/assets/cc90b270-f54a-4b4e-a725-58099f782ffc" />
+
 ## Table of Contents
 
 - [Description](#description)
